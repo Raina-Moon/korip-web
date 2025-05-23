@@ -25,12 +25,12 @@ const page = () => {
         </button>
       </div>
 
-      <div className="flex justify-between items-center mt-5 px-5 w-[40%]">
-        <div className="border-b border-primary-800">
+      <div className="flex justify-between items-center mt-5 px-5 w-[60%] gap-10">
+        <div className="border-b border-primary-800 w-full">
           <p className="text-primary-800 font-bold text-3xl">News</p>
         </div>
 
-        <div className="border-b border-primary-800">
+        <div className="border-b border-primary-800 w-full">
           <p className="text-primary-800 font-bold text-3xl">Events</p>
         </div>
       </div>
