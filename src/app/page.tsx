@@ -10,25 +10,30 @@ const page = () => {
 
   return (
     <>
-    <div>
-      <HeaderBar />
-    </div>
-    <div>
-      <input
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <button>Search</button>
-    </div>
+      <div>
+        <HeaderBar />
+      </div>
+      <div className="flex justify-center items-center gap-4 mt-5">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border border-primary-800 rounded px-2 py-1 w-[60%] outline-none"
+        />
+        <button className="bg-primary-700 text-white px-2 py-1 rounded-md">
+          Search
+        </button>
+      </div>
 
-    <div>
-      <p>News</p>
-    </div>
+      <div className="flex justify-between items-center mt-5 px-5 w-[40%]">
+        <div className="border-b border-primary-800">
+          <p className="text-primary-800 font-bold text-3xl">News</p>
+        </div>
 
-    <div>
-      <p>Events</p>
-    </div>
+        <div className="border-b border-primary-800">
+          <p className="text-primary-800 font-bold text-3xl">Events</p>
+        </div>
+      </div>
     </>
   );
 };
