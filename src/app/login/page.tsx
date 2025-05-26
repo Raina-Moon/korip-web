@@ -80,6 +80,13 @@ const LoginPage = () => {
           </a>
         </p>
       </div>
+
+      <h2 className="text-2xl text-primary-800">Social Login</h2>
+      <div className="flex flex-row gap-6">
+      <button className="text-primary-700 text-4xl"><i className="bi bi-apple"></i></button>
+      <button className="text-primary-700 text-4xl"><i className="bi bi-google"></i></button>
+      <button className="text-primary-700 text-4xl"><i className="bi bi-facebook"></i></button>
+      </div>
     </div>
   );
 };
