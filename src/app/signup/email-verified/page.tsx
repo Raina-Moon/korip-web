@@ -2,17 +2,23 @@
 
 import { useSignUpMutation } from "@/app/lib/auth/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const EmailVerifPage = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
+
   const [signup, { isLoading }] = useSignUpMutation();
 
   const params = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    setPasswordMatch(password === confirmPassword);
+  }, [password, confirmPassword]);
 
   const handleSignUp = async () => {
     if (!nickname || !email || !password || !confirmPassword) {
@@ -36,7 +42,7 @@ const EmailVerifPage = () => {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-primary-700 rounded-sm px-2 py-1 outline-none"
+            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
           />
         </div>
         <div>
@@ -44,7 +50,7 @@ const EmailVerifPage = () => {
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            className="border border-primary-700 rounded-sm px-2 py-1 outline-none"
+            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
           />
         </div>
         <div>
@@ -52,7 +58,7 @@ const EmailVerifPage = () => {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-primary-700 rounded-sm px-2 py-1 outline-none"
+            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
             type="password"
           />
         </div>
@@ -63,9 +69,14 @@ const EmailVerifPage = () => {
           <input
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="border border-primary-700 rounded-sm px-2 py-1 outline-none"
+            className={`border ${
+              passwordMatch ? "border-primary-700" : "border-red-700"
+            } rounded-md px-2 py-1 outline-none`}
             type="password"
           />
+          {!passwordMatch && (
+            <p className="text-red-700 text-sm mt-1">Password do not match</p>
+          )}
         </div>
       </div>
 
