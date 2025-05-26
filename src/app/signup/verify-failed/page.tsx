@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const VerifFailedPage = () => {
+    const router = useRouter();
   return (
     <div>
       <h1 className="text-3xl font-semibold text-primary-800">
@@ -14,7 +15,7 @@ const VerifFailedPage = () => {
         again or contact support if you need assistance.
       </p>
       <button
-        onClick={() => useRouter().push("/signup/email")}
+        onClick={() => router.push("/signup/email")}
         className="bg-primary-700 text-white px-4 py-2 rounded-md mt-4 hover:bg-primary-500"
       >
         Go Back to Email Verification
