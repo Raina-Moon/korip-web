@@ -10,6 +10,7 @@ const EmailVerifPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
 
   const [signup, { isLoading }] = useSignUpMutation();
 
@@ -18,6 +19,9 @@ const EmailVerifPage = () => {
 
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
+
+    const passwodRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]){10,}$/;
+    setPasswordValid(passwodRegex.test(password));
   }, [password, confirmPassword]);
 
   const handleSignUp = async () => {
@@ -58,9 +62,14 @@ const EmailVerifPage = () => {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
+            className={`border ${
+              passwordValid ? "border-primary-700" : "border-red-700"
+            } rounded-md px-2 py-1 outline-none`}
             type="password"
           />
+          {!passwordValid && (
+            <p className="text-red-700 text-sm mt-1">Must be +10 ch, including uppercase, number, and symbol</p>
+          )}
         </div>
         <div>
           <p className="text-primary-800 font-medium text-sm">
