@@ -46,6 +46,17 @@ const LoginPage = () => {
           </button>
         </div>
       </div>
+      <div className="flex flex-row items-center gap-2">
+        <input
+            type="checkbox"
+            id="remember-me"
+            className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+        />
+        <label htmlFor="remember-me" className="text-primary-800 text-sm">
+            Remember Me
+        </label>
+        </div>
+
       <button
         onClick={handleLogin}
         className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
@@ -68,6 +79,13 @@ const LoginPage = () => {
             Reset Password
           </a>
         </p>
+      </div>
+
+      <h2 className="text-2xl text-primary-800">Social Login</h2>
+      <div className="flex flex-row gap-6">
+      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-apple"></i></button>
+      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-google"></i></button>
+      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-facebook"></i></button>
       </div>
     </div>
   );
