@@ -20,8 +20,8 @@ const EmailVerifPage = () => {
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
 
-    const passwodRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]){10,}$/;
-    setPasswordValid(passwodRegex.test(password));
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
+    setPasswordValid(passwordRegex.test(password));
   }, [password, confirmPassword]);
 
   const handleSignUp = async () => {
@@ -68,7 +68,7 @@ const EmailVerifPage = () => {
             type="password"
           />
           {!passwordValid && (
-            <p className="text-red-700 text-sm mt-1">Must be +10 ch, including uppercase, number, and symbol</p>
+            <p className="text-red-700 text-sm mt-1">Must be +10 chs, including uppercase, number, and symbol</p>
           )}
         </div>
         <div>
