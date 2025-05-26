@@ -27,21 +27,24 @@ const LoginPage = () => {
       <div className="flex flex-col gap-1">
         <p className="text-primary-800 text-sm font-medium">Password</p>
         <div className="relative">
-
-        <input
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        />
-         <button
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          />
+          <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-primary-700 hover:underline"
-            >
-            {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
+          >
+            {showPassword ? (
+              <i className="bi bi-eye-slash"></i>
+            ) : (
+              <i className="bi bi-eye"></i>
+            )}
           </button>
-              </div>
+        </div>
       </div>
       <button
         onClick={handleLogin}
@@ -49,6 +52,23 @@ const LoginPage = () => {
       >
         Log In
       </button>
+      <div className="flex flex-col gap-2">
+        <p className="text-primary-800 text-sm">
+          Don't have an account?{" "}
+          <a href="/signup/email" className="text-primary-700 hover:underline">
+            Sign Up
+          </a>
+        </p>
+        <p className="text-primary-800 text-sm">
+          Forgot your password?{" "}
+          <a
+            href="/reset-password"
+            className="text-primary-700 hover:underline"
+          >
+            Reset Password
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
