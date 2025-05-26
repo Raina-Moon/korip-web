@@ -1,5 +1,6 @@
 "use client";
 
+import Modal from "@/app/components/ui/Modal";
 import { useSignUpMutation } from "@/app/lib/auth/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -11,6 +12,8 @@ const EmailVerifPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
+  const [agree, setAgree] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [signup, { isLoading }] = useSignUpMutation();
 
@@ -27,6 +30,10 @@ const EmailVerifPage = () => {
   const handleSignUp = async () => {
     if (!nickname || !email || !password || !confirmPassword) {
       return alert("Please fill in all fields");
+    }
+
+    if (!agree) {
+      return alert("Please agree to the terms and conditions");
     }
 
     try {
@@ -68,7 +75,9 @@ const EmailVerifPage = () => {
             type="password"
           />
           {!passwordValid && (
-            <p className="text-red-700 text-sm mt-1">Must be +10 chs, including uppercase, number, and symbol</p>
+            <p className="text-red-700 text-sm mt-1">
+              Must be +10 chs, including uppercase, number, and symbol
+            </p>
           )}
         </div>
         <div>
@@ -89,9 +98,42 @@ const EmailVerifPage = () => {
         </div>
       </div>
 
+      <input
+        type="checkbox"
+        checked={agree}
+        onChange={(e) => setAgree(e.target.checked)}
+        className="w-4 h-4"
+      />
+
+      <label htmlFor="agree" className="text-sm text-gray-800">
+        I agree to the{" "}
+        <button
+          onClick={() => setShowModal(true)}
+          className="text-primary-700 underline"
+        >
+          Privacy Policy
+        </button>
+      </label>
+
       <button className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500">
         Sign Up
       </button>
+
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="p-4">
+            <h2 className="text-lg font-semibold text-primary-800 mb-2">
+              Privacy Policy
+            </h2>
+            <p className="text-sm text-gray-700 mb-4">
+              Your privacy is important to us. We collect and use your personal
+              information only for the purposes of providing our services. We do
+              not share your information with third parties without your
+              consent.
+            </p>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
