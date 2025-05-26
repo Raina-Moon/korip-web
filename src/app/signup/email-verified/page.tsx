@@ -98,22 +98,24 @@ const EmailVerifPage = () => {
         </div>
       </div>
 
-      <input
-        type="checkbox"
-        checked={agree}
-        onChange={(e) => setAgree(e.target.checked)}
-        className="w-4 h-4"
-      />
+      <div className="flex flex-row gap-2 items-center">
+        <input
+          type="checkbox"
+          checked={agree}
+          onChange={(e) => setAgree(e.target.checked)}
+          className="w-4 h-4"
+        />
 
-      <label htmlFor="agree" className="text-sm text-gray-800">
-        I agree to the{" "}
-        <button
-          onClick={() => setShowModal(true)}
-          className="text-primary-700 underline"
-        >
-          Privacy Policy
-        </button>
-      </label>
+        <label htmlFor="agree" className="text-sm text-gray-800">
+          I agree to the{" "}
+          <button
+            onClick={() => setShowModal(true)}
+            className="text-primary-700 underline"
+          >
+            Privacy Policy
+          </button>
+        </label>
+      </div>
 
       <button className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500">
         Sign Up
@@ -125,11 +127,52 @@ const EmailVerifPage = () => {
             <h2 className="text-lg font-semibold text-primary-800 mb-2">
               Privacy Policy
             </h2>
-            <p className="text-sm text-gray-700 mb-4">
-              Your privacy is important to us. We collect and use your personal
-              information only for the purposes of providing our services. We do
-              not share your information with third parties without your
-              consent.
+            <p className="text-sm text-gray-700 mb-2">
+              We value your privacy. This policy outlines how we collect, use,
+              and protect your personal information.
+            </p>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              1. Data Collection
+            </h3>
+            <p className="text-sm text-gray-700 mb-2">
+              We collect your email address, nickname, and password during
+              signup. This information is used solely for authentication and
+              user identification.
+            </p>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">2. Data Usage</h3>
+            <div className="text-sm text-gray-700 mb-2">
+              <p>Your data is used to:</p>
+              <ul className="list-disc ml-6 mt-1">
+                <li>Allow you to log in securely</li>
+                <li>Personalize your experience</li>
+                <li>Improve our services</li>
+              </ul>
+            </div>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">3. Data Storage</h3>
+            <p className="text-sm text-gray-700 mb-2">
+              Your information is stored securely and encrypted where
+              applicable. We do not store plaintext passwords.
+            </p>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">4. Data Sharing</h3>
+            <p className="text-sm text-gray-700 mb-2">
+              We do not share your personal information with third parties
+              without your explicit consent, unless required by law.
+            </p>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">5. Your Rights</h3>
+            <p className="text-sm text-gray-700 mb-2">
+              You can request to update or delete your personal information at
+              any time. Contact us at <span className="underline">koripSupport@gmail.com.</span>
+            </p>
+
+            <h3 className="text-md font-semibold mt-4 mb-1">6. Consent</h3>
+            <p className="text-sm text-gray-700">
+              By using our services, you consent to the collection and use of
+              your information as described in this policy.
             </p>
           </div>
         </Modal>
