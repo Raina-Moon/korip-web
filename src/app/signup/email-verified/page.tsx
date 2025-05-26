@@ -10,6 +10,7 @@ const EmailVerifPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [nicknameValid, setNicknameValid] = useState(true);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [agree, setAgree] = useState(false);
@@ -25,7 +26,8 @@ const EmailVerifPage = () => {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
     setPasswordValid(passwordRegex.test(password));
-  }, [password, confirmPassword]);
+    setNicknameValid(nickname.length >= 4 && nickname.length <= 15);
+  }, [password, confirmPassword, nickname]);
 
   const handleSignUp = async () => {
     if (!nickname || !email || !password || !confirmPassword) {
@@ -63,6 +65,11 @@ const EmailVerifPage = () => {
             onChange={(e) => setNickname(e.target.value)}
             className="border border-primary-700 rounded-md px-2 py-1 outline-none"
           />
+          {!nicknameValid && (
+            <p className="text-red-700 text-sm mt-1">
+              Nickname must be 4-15 characters long
+            </p>
+          )}
         </div>
         <div>
           <p className="text-primary-800 font-medium text-sm">Password</p>
@@ -166,7 +173,8 @@ const EmailVerifPage = () => {
             <h3 className="text-md font-semibold mt-4 mb-1">5. Your Rights</h3>
             <p className="text-sm text-gray-700 mb-2">
               You can request to update or delete your personal information at
-              any time. Contact us at <span className="underline">koripSupport@gmail.com.</span>
+              any time. Contact us at{" "}
+              <span className="underline">koripSupport@gmail.com.</span>
             </p>
 
             <h3 className="text-md font-semibold mt-4 mb-1">6. Consent</h3>
