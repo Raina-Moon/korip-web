@@ -7,7 +7,6 @@ interface SignupInput {
   nickname: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 interface SignupSuccessResponse {
