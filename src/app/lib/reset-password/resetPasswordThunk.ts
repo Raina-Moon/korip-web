@@ -6,14 +6,14 @@ export const sendResetCode = createAsyncThunk(
   async (email: string, thunkAPI) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/send-code`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password`,
         {
           email,
         }
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.res.data.message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
     }
   }
 );
@@ -23,7 +23,7 @@ export const verifyCode = createAsyncThunk(
   async ({ email, code }: { email: string; code: string }, thunkAPI) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/verify-code`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/verify`,
         {
           email,
           code,
@@ -31,7 +31,7 @@ export const verifyCode = createAsyncThunk(
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data.message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
     }
   }
 );
@@ -43,12 +43,12 @@ export const updatePassword = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/update-password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/update`,
         { email, newPassword }
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data.message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
     }
   }
 );
