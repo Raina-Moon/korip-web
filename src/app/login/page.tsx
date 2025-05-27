@@ -1,5 +1,7 @@
 "use client";
 
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 import React, { useState } from "react";
 
 const LoginPage = () => {
@@ -48,14 +50,14 @@ const LoginPage = () => {
       </div>
       <div className="flex flex-row items-center gap-2">
         <input
-            type="checkbox"
-            id="remember-me"
-            className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          type="checkbox"
+          id="remember-me"
+          className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
         />
         <label htmlFor="remember-me" className="text-primary-800 text-sm">
-            Remember Me
+          Remember Me
         </label>
-        </div>
+      </div>
 
       <button
         onClick={handleLogin}
@@ -83,9 +85,26 @@ const LoginPage = () => {
 
       <h2 className="text-2xl text-primary-800">Social Login</h2>
       <div className="flex flex-row gap-6">
-      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-apple"></i></button>
-      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-google"></i></button>
-      <button className="text-primary-700 text-4xl hover:text-primary-500"><i className="bi bi-facebook"></i></button>
+        <button className="text-primary-700 text-4xl hover:text-primary-500">
+          <i className="bi bi-apple"></i>
+        </button>
+        <GoogleLogin
+          onSuccess={async (credentialResponse) => {
+            const { credential } = credentialResponse;
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/v1/social-login`, {
+              provider: "google",
+              accessToken: credential,
+            });
+            console.log(res.data);
+          }}
+          onError={() => {
+            console.error("Login failed:");
+            alert("Login failed, please try again.");
+          }}
+        />
+        <button className="text-primary-700 text-4xl hover:text-primary-500">
+          <i className="bi bi-facebook"></i>
+        </button>
       </div>
     </div>
   );
