@@ -19,7 +19,7 @@ const ResetPwdPage = () => {
       if (sendResetCode.fulfilled.match(result)) {
         router.push(`/reset-password/verify-reset?email=${email}`);
       } else {
-        alert("Failed to send reset code. Please try again.");
+        alert(result.payload)
       }
     } catch (err) {
       console.error("Error during password reset:", err);
