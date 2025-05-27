@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  updatePassword,
+  verifyCode,
+} from "@/app/lib/reset-password/resetPasswordThunk";
+import { useAppDispatch } from "@/app/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -12,6 +17,7 @@ const VerifyandResetPage = () => {
   const params = useSearchParams();
   const email = params.get("email") || "";
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setPasswordMatch(newPassword === confirmPassword);
@@ -31,6 +37,28 @@ const VerifyandResetPage = () => {
     if (val && i < 6) {
       document.getElementById(`code=${i + 1}`)?.focus();
     }
+    setCode(next);
+  };
+
+  const handleVerify = async () => {
+    const joinedCode = code.join("");
+    const result = await dispatch(verifyCode({ email, code: joinedCode }));
+    if (verifyCode.fulfilled.match(result)) {
+      setIsCodeValid(true);
+      alert("Code verified successfully. You can now reset your password.");
+    } else {
+      alert(result.payload || "Invalid code. Please try again.");
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    const result = await dispatch(updatePassword({ email, newPassword }));
+    if (updatePassword.fulfilled.match(result)) {
+      alert("Password updated successfully. Redirecting to login...");
+      router.push("/login");
+    } else {
+      alert(result.payload || "Failed to update password. Please try again.");
+    }
   };
 
   return (
@@ -41,7 +69,7 @@ const VerifyandResetPage = () => {
           <input
             type="text"
             key={idx}
-            id={`code=$${idx}`}
+            id={`code=${idx}`}
             maxLength={1}
             value={digit}
             onChange={(e) => handleCodeChange(idx, e.target.value)}
@@ -49,24 +77,45 @@ const VerifyandResetPage = () => {
             required
           />
         ))}
-        <button className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500">
+        <button
+          className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
+          onClick={handleVerify}
+        >
           Verify Code
         </button>
       </div>
 
       <div>
         <p>New Password</p>
-        <input type="password"
-        value={newPassword}
-        disabled={!isCodeValid}
-        placeholder={isCodeValid ? "Create new password" : "Verify code first"}
-        className="border-primary-800 outline-none"/>
+        <input
+          type="password"
+          value={newPassword}
+          disabled={!isCodeValid}
+          placeholder={
+            isCodeValid ? "Create new password" : "Verify code first"
+          }
+          className="border-primary-800 outline-none"
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
         <p>Confirm Password</p>
-        <input type="password"
-        value={confirmPassword}
-        disabled={!isCodeValid}
-        placeholder={isCodeValid ? "Confirm new password" : "Verify code first"}
-        className="border-primary-800 outline-none"/>
+        <input
+          type="password"
+          value={confirmPassword}
+          disabled={!isCodeValid}
+          placeholder={
+            isCodeValid ? "Confirm new password" : "Verify code first"
+          }
+          className="border-primary-800 outline-none"
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          disabled={!isCodeValid}
+          onClick={handleUpdatePassword}
+          className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
+        >
+          Change Password
+        </button>
       </div>
     </div>
   );
