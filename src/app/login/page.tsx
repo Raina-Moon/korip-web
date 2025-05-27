@@ -91,7 +91,7 @@ const LoginPage = () => {
         <GoogleLogin
           onSuccess={async (credentialResponse) => {
             const { credential } = credentialResponse;
-            const res = await axios.post("/api/auth/social-login", {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/v1/social-login`, {
               provider: "google",
               accessToken: credential,
             });
