@@ -20,6 +20,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
+    credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any).auth.token;
       if (token) {
@@ -35,6 +36,23 @@ export const authApi = createApi({
     >({
       query: (body) => ({
         url: "/request-verify",
+        method: "POST",
+        body,
+      }),
+    }),
+    login: builder.mutation<
+      {
+        token: string;
+        user: {
+          id: number;
+          nickname: string;
+          email: string;
+        };
+      },
+      { email: string; password: string }
+    >({
+      query: (body) => ({
+        url: "/login",
         method: "POST",
         body,
       }),
