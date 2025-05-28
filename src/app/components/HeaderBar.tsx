@@ -65,7 +65,7 @@ const HeaderBar = () => {
             </div>
           )}
 
-          <i className="bi bi-person-circle text-primary-800 text-3xl relative z-10"></i>
+          <i className="bi bi-person-circle text-primary-800 text-3xl relative z-10 cursor-pointer"></i>
 
           {isHover && (
             <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-300 shadow-xl rounded p-3 z-50">
@@ -88,6 +88,7 @@ const HeaderBar = () => {
                       e.stopPropagation();
                       handleLogout();
                     }}
+                    className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
                   >
                     Logout
                   </button>
