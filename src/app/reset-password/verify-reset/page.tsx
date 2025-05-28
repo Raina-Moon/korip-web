@@ -40,8 +40,6 @@ const VerifyandResetPage = () => {
     setCode(next);
     };
 
-    console.log("Code:", code);
-
   const handleVerify = async () => {
     const joinedCode = code.join("");
     const result = await dispatch(verifyCode({ email, code: joinedCode }));
