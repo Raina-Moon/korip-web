@@ -1,3 +1,5 @@
+"use client"
+
 import { setCredential } from "@/app/lib/auth/authSlice";
 import axios from "axios";
 import { useEffect } from "react";

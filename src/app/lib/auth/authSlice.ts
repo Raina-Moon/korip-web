@@ -5,6 +5,7 @@ interface User {
   id: number;
   nickname: string;
   email: string;
+  role: string;
   createdAt: string;
 }
 
