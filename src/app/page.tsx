@@ -10,9 +10,6 @@ const page = () => {
 
   return (
     <>
-      <div>
-        <HeaderBar />
-      </div>
       <div className="flex justify-center items-center gap-4 mt-5">
         <input
           type="text"
