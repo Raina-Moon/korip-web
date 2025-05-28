@@ -1,20 +1,27 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useAppSelector } from "../lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
+import { logoutUser } from "../lib/auth/logoutThunk";
 
 const HeaderBar = () => {
   const [select, setSelect] = useState("en");
   const [isHover, setIsHover] = useState(false);
 
   const router = useRouter();
-  
+
   const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
 
   const languages = [
     { name: "English", code: "en" },
     { name: "한국어", code: "kr" },
   ];
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    router.push("/");
+  };
 
   return (
     <div className="flex justify-between items-center px-5 border-b border-primary-800">
@@ -28,8 +35,11 @@ const HeaderBar = () => {
         />
       </div>
       <div className="flex items-center gap-4 pr-3">
-        <select value={select} onChange={(e) => setSelect(e.target.value)}
-          className="border border-primary-800 rounded-sm px-2 py-1">
+        <select
+          value={select}
+          onChange={(e) => setSelect(e.target.value)}
+          className="border border-primary-800 rounded-sm px-2 py-1"
+        >
           {languages.map((lang) => (
             <option key={lang.code} value={lang.code}>
               {lang.name}
@@ -37,10 +47,12 @@ const HeaderBar = () => {
           ))}
         </select>
 
-        <button onClick={() => router.push(user ? "/profile" : "/login")}
+        <div
+          onClick={() => router.push(user ? "/profile" : "/login")}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
-          className="relative">
+          className="relative"
+        >
           <i className="bi bi-person-circle text-primary-800 text-3xl"></i>
 
           {isHover && (
@@ -49,21 +61,30 @@ const HeaderBar = () => {
                 <div>
                   <p>Login to Continue</p>
                   <button
-                  onClick={() => router.push("/login")}
-                  className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500">Login</button>
+                    onClick={() => router.push("/login")}
+                    className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500"
+                  >
+                    Login
+                  </button>
                 </div>
               ) : (
                 <div>
                   <p>{user.nickname}</p>
                   <p>{user.email}</p>
-                
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogout();
+                    }}
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
           )}
-        </button>
+        </div>
       </div>
-
     </div>
   );
 };
