@@ -38,7 +38,7 @@ const VerifyandResetPage = () => {
       document.getElementById(`code=${i + 1}`)?.focus();
     }
     setCode(next);
-  };
+    };
 
   const handleVerify = async () => {
     const joinedCode = code.join("");
@@ -49,6 +49,7 @@ const VerifyandResetPage = () => {
     } else {
       alert(result.payload || "Invalid code. Please try again.");
     }
+    setCode(["", "", "", "", "", ""]);
   };
 
   const handleUpdatePassword = async () => {
