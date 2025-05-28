@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/auth";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/v1/auth";
 
 interface SignupInput {
   nickname: string;
@@ -61,7 +61,6 @@ export const authApi = createApi({
       query: () => ({
         url: "/logout",
         method: "POST",
-        credentials: "include",
       }),
     }),
     signUp: builder.mutation<SignupSuccessResponse, SignupInput>({
@@ -84,4 +83,6 @@ export const {
   useRequestVerificationMutation,
   useSignUpMutation,
   useDeleteAccountMutation,
+  useLoginMutation,
+  useLogoutMutation,
 } = authApi;
