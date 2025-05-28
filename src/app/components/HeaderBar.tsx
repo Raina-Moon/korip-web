@@ -47,55 +47,57 @@ const HeaderBar = () => {
           ))}
         </select>
 
-        <div
-          onClick={() => router.push(user ? "/profile" : "/login")}
-          onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}
-          className="relative"
-        >
-          {isHover && (
-            <div className="absolute -inset-[14px]  rounded-full z-0 pointer-events-none">
-              <div
-                className="w-[60px] h-[60px] rounded-full"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(59,130,246,0.4) 20%, rgba(59,130,246,0.05) 70%, transparent 100%)",
-                }}
-              />
-            </div>
-          )}
+        <div className="relative">
+          <div
+            onClick={() => router.push(user ? "/profile" : "/login")}
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
+            className="flex flex-col items-end"
+          >
+            {isHover && (
+              <div className="absolute -inset-[14px]  rounded-full z-0 pointer-events-none">
+                <div
+                  className="w-[60px] h-[60px] rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(circle, rgba(59,130,246,0.4) 20%, rgba(59,130,246,0.05) 70%, transparent 100%)",
+                  }}
+                />
+              </div>
+            )}
 
-          <i className="bi bi-person-circle text-primary-800 text-3xl relative z-10 cursor-pointer"></i>
+            <i className="bi bi-person-circle text-primary-800 text-3xl relative z-10 cursor-pointer"></i>
 
-          {isHover && (
-            <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-300 shadow-xl rounded p-3 z-50">
-              {!user ? (
-                <div>
-                  <p>Login to Continue</p>
-                  <button
-                    onClick={() => router.push("/login")}
-                    className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500"
-                  >
-                    Login
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <p>{user.nickname}</p>
-                  <p>{user.email}</p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLogout();
-                    }}
-                    className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+            {isHover && (
+              <div className="absolute right-0 mt-8 w-56 bg-white border border-gray-300 shadow-xl rounded p-3 z-50">
+                {!user ? (
+                  <div>
+                    <p>Login to Continue</p>
+                    <button
+                      onClick={() => router.push("/login")}
+                      className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500"
+                    >
+                      Login
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p>{user.nickname}</p>
+                    <p>{user.email}</p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLogout();
+                      }}
+                      className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
