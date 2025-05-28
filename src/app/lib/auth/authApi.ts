@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/auth";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/v1/auth";
 
 interface SignupInput {
   nickname: string;
@@ -20,6 +20,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
+    credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any).auth.token;
       if (token) {
@@ -37,6 +38,29 @@ export const authApi = createApi({
         url: "/request-verify",
         method: "POST",
         body,
+      }),
+    }),
+    login: builder.mutation<
+      {
+        token: string;
+        user: {
+          id: number;
+          nickname: string;
+          email: string;
+        };
+      },
+      { email: string; password: string }
+    >({
+      query: (body) => ({
+        url: "/login",
+        method: "POST",
+        body,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
       }),
     }),
     signUp: builder.mutation<SignupSuccessResponse, SignupInput>({
@@ -59,4 +83,6 @@ export const {
   useRequestVerificationMutation,
   useSignUpMutation,
   useDeleteAccountMutation,
+  useLoginMutation,
+  useLogoutMutation,
 } = authApi;
