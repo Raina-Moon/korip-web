@@ -3,6 +3,9 @@
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { setupAxiosInterceptor } from "./axios/interceptor";
+
+setupAxiosInterceptor();
 
 export function Providers({children}: {children: React.ReactNode}) {
   return (
