@@ -53,7 +53,19 @@ const HeaderBar = () => {
           onMouseLeave={() => setIsHover(false)}
           className="relative"
         >
-          <i className="bi bi-person-circle text-primary-800 text-3xl"></i>
+          {isHover && (
+            <div className="absolute -inset-[14px]  rounded-full z-0 pointer-events-none">
+              <div
+                className="w-[60px] h-[60px] rounded-full"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(59,130,246,0.4) 20%, rgba(59,130,246,0.05) 70%, transparent 100%)",
+                }}
+              />
+            </div>
+          )}
+
+          <i className="bi bi-person-circle text-primary-800 text-3xl relative z-10"></i>
 
           {isHover && (
             <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-300 shadow-xl rounded p-3 z-50">
