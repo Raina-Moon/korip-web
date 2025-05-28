@@ -14,10 +14,12 @@ const AdminPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!user || user.role !== "ADMIN") {
-      router.push("/");
+    if (user ===null) {
+      router.push("/login");
+    } else if (user.role !== "ADMIN"){
+     router.push("/");
     } else {
-        handleFetchUsers()
+        handleFetchUsers();
     }
   }, [user]);
 
@@ -39,6 +41,10 @@ const AdminPage = () => {
       alert("Failed to delete user");
     }
   };
+
+  if(!user || user.role !== "ADMIN") {
+    return <p>Access Denied</p>;
+  }
 
   return (
     <div>
