@@ -1,7 +1,7 @@
 "use client";
 
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loginUser } from "../lib/auth/loginThunk";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "../lib/store/hooks";
@@ -11,12 +11,28 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("rememberedEmail");
+    if (storedEmail) {
+      setEmail(storedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
       return alert("Please fill in all fields");
+    }
+
+    if (rememberMe) {
+      localStorage.setItem("rememberedEmail", email);
+    } else {
+      localStorage.removeItem("rememberedEmail");
     }
 
     try {
@@ -84,6 +100,8 @@ const LoginPage = () => {
           type="checkbox"
           id="remember-me"
           className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          onChange={(e) => setRememberMe(e.target.checked)}
+          checked={rememberMe}
         />
         <label htmlFor="remember-me" className="text-primary-800 text-sm">
           Remember Me
