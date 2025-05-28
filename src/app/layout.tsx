@@ -4,6 +4,7 @@ import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Providers } from "./lib/providers";
 import AuthLoader from "./components/AuthLoader";
+import HeaderWrapper from "./components/HeaderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <Providers>
           <AuthLoader />
+          <HeaderWrapper />
           {children}
         </Providers>
       </body>
