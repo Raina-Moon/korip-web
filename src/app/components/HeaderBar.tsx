@@ -32,6 +32,7 @@ const HeaderBar = () => {
           onClick={() => router.push("/")}
           width={100}
           height={100}
+          className="cursor-pointer"
         />
       </div>
       <div className="flex items-center gap-4 pr-3">
