@@ -10,16 +10,17 @@ export const refreshTokenThunk = () => async (dispatch: any) => {
         withCredentials: true,
       }
     );
+    
     const newToken = res.data.accessToken;
-    localStorage.setItem("token", newToken);
 
-    const userString = localStorage.getItem("user");
-    const user = userString ? JSON.parse(userString) : null;
-    if (user) {
+    const userRes = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/user`, {
+        headers: {
+          Authorization: `Bearer ${newToken}`,
+        },
+      })
+    const user = userRes.data;
       dispatch(setCredential({ token: newToken, user }));
-    } else {
-      dispatch(logout());
-    }
   } catch (err) {
     dispatch(logout());
   }

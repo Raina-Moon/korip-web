@@ -13,7 +13,5 @@ export const socialLoginThunk =
     );
 
     const { token, user } = res.data;
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
     dispatch(setCredential({ token, user }));
   };
