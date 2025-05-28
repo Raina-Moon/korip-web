@@ -41,7 +41,6 @@ const VerifyandResetPage = () => {
     };
 
     console.log("Code:", code);
-    
 
   const handleVerify = async () => {
     const joinedCode = code.join("");
