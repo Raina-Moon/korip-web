@@ -6,8 +6,8 @@ export const hotspringApi = createApi({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/v1/hotspring`,
   }),
   endpoints: (builder) => ({
-    getHotspringBySido: builder.query<any[], {lat:number; lng:number}>({
-      query: ({ lat, lng }) => `?lat=${lat}&lng=${lng}`,
+    getHotspringBySido: builder.query({
+      query: () => '/'
     }),
   }),
 });
