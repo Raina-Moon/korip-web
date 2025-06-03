@@ -6,9 +6,23 @@ import Calendar from "react-calendar";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [checkin, setCheckin] = useState<Date | null>(null);
+  const [checkout, setCheckout] = useState<Date | null>(null);
+  const [dates, setDates] = useState<"checkin" | "checkout" | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const handleDateChange = (value: Date | Date[]) => {
+    if (!(value instanceof Date)) return;
+
+    if (dates === "checkin") {
+      setCheckin(value);
+      setDates("checkout");
+    } else if (dates === "checkout") {
+      setCheckout(value);
+      setDates(null);
+    }
+  };
 
   return (
     <div className="h-screen">
@@ -38,10 +52,25 @@ const page = () => {
                 flex flex-col items-center justify-center gap-5 px-5"
       >
         <input className="border border-primary-800 rounded-md outline-none px-3 py-1" />
-        <input 
-        className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        type="date"
-        onClick={() => setCalendar(!calendar)}
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          type="date"
+          readOnly
+          onClick={() => {
+            setDates("checkin");
+            setCalendar(true);
+          }}
+          value={checkin ? checkin.toLocaleDateString() : ""}
+        />
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          type="date"
+          readOnly
+          onClick={() => {
+            setDates("checkout");
+            setCalendar(true);
+          }}
+          value={checkout ? checkout.toLocaleDateString() : ""}
         />
         <button className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
           Search
@@ -64,16 +93,11 @@ const page = () => {
 
       {calendar && (
         <>
-        <Calendar 
-        onChange={(value) => {
-          if (value instanceof Date) {
-            setDate(value);
-          } else if (Array.isArray(value) && value[0] instanceof Date) {
-            setDate(value[0]);
-          }
-        }}
-        value={date}
-        />
+          <Calendar
+            onChange={handleDateChange}
+            value={dates === "checkin" ? checkin : checkout}
+            minDate={new Date()}
+          />
         </>
       )}
     </div>
