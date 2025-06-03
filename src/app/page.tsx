@@ -7,28 +7,12 @@ import "react-calendar/dist/Calendar.css";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
-  const [checkin, setCheckin] = useState<Date | null>(null);
-  const [checkout, setCheckout] = useState<Date | null>(null);
-  const [dates, setDates] = useState<"checkin" | "checkout" | null>(null);
+  const [range, setRange] = useState<[Date, Date] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleDateChange:React.ComponentProps<typeof Calendar>["onChange"] = (
-    value
-  ) => {
-    if (!value || Array.isArray(value)) return;
-
-    if (dates === "checkin") {
-      setCheckin(value);
-      setDates(null);
-      setCalendar(false);
-    } else if (dates === "checkout") {
-      setCheckout(value);
-      setDates(null);
-      setCalendar(false);
-    }
-
-    setCalendar(false);
+  const formatDate = (date: Date | null) => {
+    return date ? date.toISOString().split("T")[0] : "";
   };
 
   return (
@@ -61,23 +45,23 @@ const page = () => {
         <input className="border border-primary-800 rounded-md outline-none px-3 py-1" />
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          type="date"
           readOnly
           onClick={() => {
-            setDates("checkin");
             setCalendar(true);
+            setRange(null);
           }}
-          value={checkin ? checkin.toISOString().split("T")[0] : ""}
+          value={formatDate(range?.[0] ?? null)}
+          placeholder="Check-in Date"
         />
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          type="date"
           readOnly
           onClick={() => {
-            setDates("checkout");
             setCalendar(true);
+            setRange(null);
           }}
-          value={checkout ? checkout.toISOString().split("T")[0] : ""}
+          value={formatDate(range?.[1] ?? null)}
+          placeholder="Check-out Date"
         />
         <button className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
           Search
@@ -101,8 +85,16 @@ const page = () => {
       {calendar && (
         <>
           <Calendar
-            onChange={handleDateChange}
-            value={dates === "checkin" ? checkin : checkout}
+            calendarType="gregory"
+            onChange={(value) => {
+              if (Array.isArray(value) && value.length === 2) {
+                setRange(value as [Date, Date]);
+                setCalendar(false);
+              }
+            }}
+            selectRange
+            showDoubleView
+            value={range}
             minDate={new Date()}
           />
         </>
