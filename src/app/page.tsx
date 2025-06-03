@@ -141,16 +141,67 @@ const page = () => {
 
       {isActive && (
         <>
-          <div className="absolute inset-0 bg-white">
-            <p>Room : {room}</p>
-            <button onClick={() => handleRoomChange(-1)}>-</button>
-            <button onClick={() => handleRoomChange(1)}>+</button>
-            <p>Adult : {adult}</p>
-            <button onClick={() => handleAdultChange(-1)}>-</button>
-            <button onClick={() => handleAdultChange(1)}>+</button>
-            <p>Children : {children}</p>
-            <button onClick={() => handleChildrenChange(-1)}>-</button>
-            <button onClick={() => handleChildrenChange(1)}>+</button>
+          <div className="absolute mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+            <div className="flex justify-end mb-3">
+              <button
+              onClick={() => setIsActive(false)}
+              className="text-primary-900 font-bold text-xl hover:text-primary-500">
+                X
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">Room </p>
+              <button
+                onClick={() => handleRoomChange(-1)}
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold">{room}</p>
+              <button
+                onClick={() => handleRoomChange(1)}
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+              >
+                +
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">Adult</p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleAdultChange(-1)}
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold"> {adult}</p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleAdultChange(1)}
+              >
+                +
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">
+                Children{" "}
+              </p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleChildrenChange(-1)}
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold">
+                {" "}
+                {children}
+              </p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleChildrenChange(1)}
+              >
+                +
+              </button>
+            </div>
           </div>
         </>
       )}
