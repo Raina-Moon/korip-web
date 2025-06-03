@@ -8,11 +8,28 @@ import "react-calendar/dist/Calendar.css";
 const page = () => {
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
+  const [region, setRegion] = useState("All");
+  const [room, setRoom] = useState(1);
+  const [adult, setAdult] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const formatDate = (date: Date | null) => {
     return date ? date.toISOString().split("T")[0] : "";
+  };
+
+  const handleRoomChange = (delta: number) => {
+    setRoom((prev) => Math.max(1, prev + delta));
+  };
+
+  const handleAdultChange = (delta: number) => {
+    setAdult((prev) => Math.max(1, prev + delta));
+  };
+
+  const handleChildrenChange = (delta: number) => {
+    setChildren((prev) => Math.max(0, prev + delta));
   };
 
   return (
@@ -42,7 +59,21 @@ const page = () => {
                 w-[60%] h-[300px] bg-white rounded-lg shadow-lg 
                 flex flex-col items-center justify-center gap-5 px-5"
       >
-        <input className="border border-primary-800 rounded-md outline-none px-3 py-1" />
+        <select
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+        >
+          <option value="All">All Regions</option>
+          <option value="Seoul">Seoul</option>
+          <option value="Busan">Busan</option>
+          <option value="Gyeonggi-do">Gyeonggi-do</option>
+          <option value="Chungcheong-do">Chungcheong-do</option>
+          <option value="Jeolla-do">Jeolla-do</option>
+          <option value="Gyeongsang-do">Gyeongsang-do</option>
+          <option value="Jeju-do">Jeju-do</option>
+          <option value="Gangwon-do">Gangwon-do</option>
+        </select>
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
           readOnly
@@ -63,6 +94,14 @@ const page = () => {
           value={formatDate(range?.[1] ?? null)}
           placeholder="Check-out Date"
         />
+        <div
+          onClick={() => setIsActive(!isActive)}
+          className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
+        >
+          <p>Room : {room}</p>
+          <p>Adult : {adult}</p>
+          <p>Children : {children}</p>
+        </div>
         <button className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
           Search
         </button>
@@ -97,6 +136,22 @@ const page = () => {
             value={range}
             minDate={new Date()}
           />
+        </>
+      )}
+
+      {isActive && (
+        <>
+          <div className="absolute inset-0 bg-white">
+            <p>Room : {room}</p>
+            <button onClick={() => handleRoomChange(-1)}>-</button>
+            <button onClick={() => handleRoomChange(1)}>+</button>
+            <p>Adult : {adult}</p>
+            <button onClick={() => handleAdultChange(-1)}>-</button>
+            <button onClick={() => handleAdultChange(1)}>+</button>
+            <p>Children : {children}</p>
+            <button onClick={() => handleChildrenChange(-1)}>-</button>
+            <button onClick={() => handleChildrenChange(1)}>+</button>
+          </div>
         </>
       )}
     </div>
