@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -12,16 +13,22 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleDateChange = (value: Date | Date[]) => {
-    if (!(value instanceof Date)) return;
+  const handleDateChange:React.ComponentProps<typeof Calendar>["onChange"] = (
+    value
+  ) => {
+    if (!value || Array.isArray(value)) return;
 
     if (dates === "checkin") {
       setCheckin(value);
-      setDates("checkout");
+      setDates(null);
+      setCalendar(false);
     } else if (dates === "checkout") {
       setCheckout(value);
       setDates(null);
+      setCalendar(false);
     }
+
+    setCalendar(false);
   };
 
   return (
@@ -60,7 +67,7 @@ const page = () => {
             setDates("checkin");
             setCalendar(true);
           }}
-          value={checkin ? checkin.toLocaleDateString() : ""}
+          value={checkin ? checkin.toISOString().split("T")[0] : ""}
         />
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
@@ -70,7 +77,7 @@ const page = () => {
             setDates("checkout");
             setCalendar(true);
           }}
-          value={checkout ? checkout.toLocaleDateString() : ""}
+          value={checkout ? checkout.toISOString().split("T")[0] : ""}
         />
         <button className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
           Search
