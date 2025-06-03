@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -15,6 +16,8 @@ const page = () => {
   const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const router = useRouter();
 
   const formatDate = (date: Date | null) => {
     return date ? date.toISOString().split("T")[0] : "";
@@ -31,6 +34,24 @@ const page = () => {
   const handleChildrenChange = (delta: number) => {
     setChildren((prev) => Math.max(0, prev + delta));
   };
+
+  const handleSearch = () => {
+    if (!range || !range[0] || !range[1]) {
+            alert("Please select a check-in and check-out date.");
+            return;
+          }
+
+          const query = new URLSearchParams({
+            region,
+            checkIn: formatDate(range[0]),
+            checkOut: formatDate(range[1]),
+            room: room.toString(),
+            adult: adult.toString(),
+            children: children.toString(),
+          })
+
+          router.push(`/search?${query.toString()}`);
+  }
 
   return (
     <div className="h-screen">
@@ -102,7 +123,9 @@ const page = () => {
           <p>Adult : {adult}</p>
           <p>Children : {children}</p>
         </div>
-        <button className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
+        <button 
+        onClick={handleSearch}
+        className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
           Search
         </button>
       </div>
@@ -144,8 +167,9 @@ const page = () => {
           <div className="absolute mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
             <div className="flex justify-end mb-3">
               <button
-              onClick={() => setIsActive(false)}
-              className="text-primary-900 font-bold text-xl hover:text-primary-500">
+                onClick={() => setIsActive(false)}
+                className="text-primary-900 font-bold text-xl hover:text-primary-500"
+              >
                 X
               </button>
             </div>
