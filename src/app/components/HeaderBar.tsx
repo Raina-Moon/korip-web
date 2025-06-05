@@ -81,7 +81,7 @@ const HeaderBar = () => {
                       Login
                     </button>
                   </div>
-                ) : user.role === "ADMIN" ? (
+                ) : user.role !== "ADMIN" ? (
                   <div>
                     <p>{user.nickname}</p>
                     <p>{user.email}</p>
