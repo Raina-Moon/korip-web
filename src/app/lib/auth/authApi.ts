@@ -47,6 +47,7 @@ export const authApi = createApi({
           id: number;
           nickname: string;
           email: string;
+          role: string;
         };
       },
       { email: string; password: string }
