@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../lib/store/store";
-import { deleteUser, fetchAllUsers, User } from "../lib/admin/adminThunk";
+import { deleteUser, fetchAllUsers, User } from "../lib/admin/user/adminThunk";
 import { useAppDispatch } from "../lib/store/hooks";
 
 const AdminPage = () => {
