@@ -1,5 +1,6 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { User } from "./authThunk";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/v1/auth";
 
@@ -77,6 +78,12 @@ export const authApi = createApi({
         method: "DELETE",
       }),
     }),
+    getCurrentUser: builder.query<User, void>({
+      query: () => ({
+        url: "/me",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -86,4 +93,5 @@ export const {
   useDeleteAccountMutation,
   useLoginMutation,
   useLogoutMutation,
+  useGetCurrentUserQuery,
 } = authApi;

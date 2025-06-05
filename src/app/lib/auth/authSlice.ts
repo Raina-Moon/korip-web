@@ -10,13 +10,13 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
+  user: User | null | undefined;
   token: string | null;
   isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
-  user: null,
+  user: undefined,
   token: null,
   isAuthenticated: false,
 };
@@ -38,8 +38,12 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
     },
+    setUserOnly: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload;
+      state.isAuthenticated = action.payload !== null;
+    },
   },
 });
 
-export const { setCredential, logout } = authSlice.actions;
+export const { setCredential, logout, setUserOnly } = authSlice.actions;
 export default authSlice.reducer;
