@@ -81,6 +81,20 @@ const HeaderBar = () => {
                       Login
                     </button>
                   </div>
+                ) : user.role === "ADMIN" ? (
+                  <div>
+                    <p>{user.nickname}</p>
+                    <p>{user.email}</p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLogout();
+                      }}
+                      className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
+                    >
+                      Logout
+                    </button>
+                  </div>
                 ) : (
                   <div>
                     <p>{user.nickname}</p>
@@ -93,6 +107,12 @@ const HeaderBar = () => {
                       className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
                     >
                       Logout
+                    </button>
+                    <button
+                      onClick={() => router.push("/admin")}
+                      className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500 mt-2"
+                    >
+                      Go to Admin
                     </button>
                   </div>
                 )}
