@@ -50,7 +50,7 @@ const page = () => {
             children: children.toString(),
           })
 
-          router.push(`/search?${query.toString()}`);
+          router.push(`/list?${query.toString()}`);
   }
 
   return (
