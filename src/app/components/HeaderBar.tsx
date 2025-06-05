@@ -109,7 +109,10 @@ const HeaderBar = () => {
                       Logout
                     </button>
                     <button
-                      onClick={() => router.push("/admin")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("/admin");
+                      }}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500 mt-2"
                     >
                       Go to Admin
