@@ -19,11 +19,12 @@ export const fetchLodges = createAsyncThunk<
 >("admin/fetchLodges", async (_, { dispatch, rejectWithValue }) => {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodges`,
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
       {
         withCredentials: true,
       }
     );
+    console.log("📦 res.data in fetchLodges:", res.data);
     return res.data as Lodge[];
   } catch (err: any) {
     if (err.response?.status === 401 || err.response?.status === 403) {
