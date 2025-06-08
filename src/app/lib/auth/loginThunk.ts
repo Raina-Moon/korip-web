@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AppDispatch } from "../store/store";
-import { setCredential } from "./authSlice";
+import { setUserOnly } from "./authSlice";
 
 export const loginUser =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
@@ -15,6 +15,6 @@ export const loginUser =
       }
     );
 
-    const { token, user } = res.data;
-    dispatch(setCredential({ token, user }));
+    const { user } = res.data;
+    dispatch(setUserOnly(user));
   };
