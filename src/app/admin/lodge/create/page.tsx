@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { createLodge } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch } from "@/app/lib/store/hooks";
 import { useRouter } from "next/navigation";
-import { create } from "domain";
 import KakaoMap from "@/app/components/KakaoMap";
 
 const CreateLodgePage = () => {
@@ -13,7 +12,7 @@ const CreateLodgePage = () => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [description, setDescription] = useState("");
-  const [accommodationType, setAccommodationType] = useState("");
+  const [accommodationType, setAccommodationType] = useState("호텔");
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -29,6 +28,8 @@ const CreateLodgePage = () => {
         accommodationType,
       })
     );
+
+    console.log("Lodge creation response:", lodgeData);
 
     if (createLodge.fulfilled.match(lodgeData)) {
       alert("숙소가 성공적으로 등록되었습니다.");
@@ -84,14 +85,14 @@ const CreateLodgePage = () => {
           <option value="pension">펜션</option>
           <option value="other">기타</option>
         </select>
-      </form>
-
       <button
         type="submit"
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         숙소 등록하기
       </button>
+      </form>
+
     </div>
   );
 };
