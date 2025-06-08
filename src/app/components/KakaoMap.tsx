@@ -67,10 +67,17 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
             const lat = latlng.getLat(); // 위도
             const lng = latlng.getLng(); // 경도
 
-            geocoder.coord2Address(lat, lng, (result: any, status: any) => {
+            geocoder.coord2Address(lng, lat, (result: any, status: any) => {
               if (status === window.kakao.maps.services.Status.OK) {
-                const address = result[0].address.address_name; // 주소
+                const address =
+                  result[0].road_address?.address_name ||
+                  result[0].address.address_name;
                 onLocationChange(lat, lng, address); // 부모 컴포넌트로 좌표와 주소 전달
+              } else if (
+                status === window.kakao.maps.services.Status.ZERO_RESULT
+              ) {
+                onLocationChange(lat, lng, "주소 없음");
+                console.warn("주소가 없는 지역입니다.");
               } else {
                 console.error("주소 변환 실패:", status);
               }
