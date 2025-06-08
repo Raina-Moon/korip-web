@@ -1,6 +1,9 @@
 "use client";
 
-import { fetchLodges, Lodge } from "@/app/lib/admin/lodge/lodgeThunk";
+import {
+  fetchLodges,
+  Lodge,
+} from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -40,6 +43,9 @@ const LodgePage = () => {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6">관리자 – 숙소 목록</h1>
+      <button onClick={() => router.push("/admin/lodge/create")}>
+        숙소 추가하기
+      </button>
 
       {lodges.length === 0 ? (
         <p className="text-gray-500">등록된 숙소가 없습니다.</p>
