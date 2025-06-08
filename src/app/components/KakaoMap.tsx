@@ -20,6 +20,8 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
   const [marker, setMarker] = useState<any>(null);
   const [placeService, setPlaceService] = useState<any>(null);
   const [infowindow, setInfowindow] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [listOpen, setListOpen] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -97,6 +99,9 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
 
     placeService.keywordSearch(keyword, (data: any[], status: string) => {
       if (status === window.kakao.maps.services.Status.OK) {
+        setSearchResults(data);
+        setListOpen(true);
+
         const place = data[0];
         const lat = parseFloat(place.y);
         const lng = parseFloat(place.x);
@@ -135,6 +140,34 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
         >
           검색
         </button>
+        <ul className="absolute z-10 bg-white border rounded shadow-lg w-full max-h-60 overflow-y-auto">
+          {searchResults.map((place, idx) => (
+            <li
+              key={idx}
+              className="cursor-pointer hover:bg-gray-100 p-2 border-b"
+              onClick={() => {
+                const lat = parseFloat(place.y);
+                const lng = parseFloat(place.x);
+                const moveLatLng = new window.kakao.maps.LatLng(lat, lng);
+                map.setCenter(moveLatLng); // 지도 중심 이동
+                marker.setPosition(moveLatLng); // 마커 위치 변경
+                infowindow.setContent(
+                  `<div style="padding:5px;">${place.place_name}</div>`
+                );
+                infowindow.open(map, marker); // 인포윈도우 열기
+
+                onLocationChange(lat, lng, place.address_name); // 부모 컴포넌트로 좌표와 주소 전달
+
+                setListOpen(false);
+              }}
+            >
+              <strong>{place.place_name}</strong>
+              <span className="text-sm text-gray-600">
+                {place.road_address_name}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
       <div
         ref={mapRef}
