@@ -12,6 +12,15 @@ export interface Lodge {
   accommodationType: string;
 }
 
+export interface RoomType {
+  name: string;
+  description: string | null;
+  basePrice: number;
+  maxAdults: number;
+  maxChildren: number;
+  totalRooms: number;
+}
+
 export const fetchLodges = createAsyncThunk<
   Lodge[],
   void,
@@ -43,6 +52,14 @@ export const createLodge = createAsyncThunk<
     longitude: number;
     description?: string | null;
     accommodationType: string;
+    roomTypes: {
+      name: string;
+      description: string | null;
+      basePrice: number;
+      maxAdults: number;
+      maxChildren: number;
+      totalRooms: number;
+    }[]
   },
   { rejectValue: string }
 >("admin/createLodge", async (newLodgeData, { dispatch, rejectWithValue }) => {
