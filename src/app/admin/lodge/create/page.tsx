@@ -5,6 +5,7 @@ import { createLodge } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch } from "@/app/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import { create } from "domain";
+import KakaoMap from "@/app/components/KakaoMap";
 
 const CreateLodgePage = () => {
   const [name, setName] = useState("");
@@ -39,6 +40,14 @@ const CreateLodgePage = () => {
 
   return (
     <div>
+      <KakaoMap
+        onLocationChange={(lat, lng, addr) => {
+          setLatitude(lat);
+          setLongitude(lng);
+          setAddress(addr);
+        }}
+      />
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
