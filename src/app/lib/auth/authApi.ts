@@ -1,5 +1,6 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { User } from "./authThunk";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/v1/auth";
 
@@ -21,13 +22,6 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     credentials: "include",
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as any).auth.token;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
   }),
   endpoints: (builder) => ({
     requestVerification: builder.mutation<
@@ -47,6 +41,7 @@ export const authApi = createApi({
           id: number;
           nickname: string;
           email: string;
+          role: string;
         };
       },
       { email: string; password: string }
@@ -76,6 +71,12 @@ export const authApi = createApi({
         method: "DELETE",
       }),
     }),
+    getCurrentUser: builder.query<User, void>({
+      query: () => ({
+        url: "/me",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -85,4 +86,5 @@ export const {
   useDeleteAccountMutation,
   useLoginMutation,
   useLogoutMutation,
+  useGetCurrentUserQuery,
 } = authApi;

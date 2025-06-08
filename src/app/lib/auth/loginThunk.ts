@@ -1,11 +1,11 @@
 import axios from "axios";
 import { AppDispatch } from "../store/store";
-import { setCredential } from "./authSlice";
+import { setUserOnly } from "./authSlice";
 
 export const loginUser =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     const res = await axios.post(
-      "/v1/auth/login",
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/login`,
       {
         email,
         password,
@@ -15,6 +15,6 @@ export const loginUser =
       }
     );
 
-    const { token, user } = res.data;
-    dispatch(setCredential({ token, user }));
+    const { user } = res.data;
+    dispatch(setUserOnly(user));
   };

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { AppDispatch } from "../store/store";
-import { logout } from "../auth/authSlice";
+import { AppDispatch } from "../../store/store";
+import { logout } from "../../auth/authSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface User {
