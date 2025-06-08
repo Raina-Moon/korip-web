@@ -15,8 +15,13 @@ const LodgePage = () => {
   const status = useAppSelector((state) => state["admin/lodge"].state);
   const error = useAppSelector((state) => state["admin/lodge"].error);
 
+  console.log("🔥 lodge state:", status);
+
   useEffect(() => {
-    if (status === "idle") dispatch(fetchLodges());
+    if (status === "idle") {
+          console.log("✅ dispatching fetchLodges()");
+
+      dispatch(fetchLodges())};
   }, [dispatch, status]);
 
   if (status === "loading") {
