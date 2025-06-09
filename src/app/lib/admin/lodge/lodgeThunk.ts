@@ -33,7 +33,6 @@ export const fetchLodges = createAsyncThunk<
         withCredentials: true,
       }
     );
-    console.log("📦 res.data in fetchLodges:", res.data);
     return res.data as Lodge[];
   } catch (err: any) {
     if (err.response?.status === 401 || err.response?.status === 403) {
