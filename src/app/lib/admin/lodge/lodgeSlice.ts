@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createLodge,
   deleteLodge,
+  fetchLodgeById,
   fetchLodges,
   Lodge,
   updateLodge,
@@ -34,6 +35,29 @@ const lodgeSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(fetchLodges.rejected, (state, action) => {
+        state.state = "failed";
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(fetchLodgeById.pending, (state) => {
+        state.state = "loading";
+        state.error = null;
+      })
+      .addCase(
+        fetchLodgeById.fulfilled,
+        (state, action: PayloadAction<Lodge>) => {
+          state.state = "succeeded";
+          const lodge = action.payload;
+          const index = state.list.findIndex((l) => l.id === lodge.id);
+          if (index !== -1) {
+            state.list[index] = lodge;
+          } else {
+            state.list.push(lodge);
+          }
+        }
+      )
+      .addCase(fetchLodgeById.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
       });

@@ -59,7 +59,7 @@ export const createLodge = createAsyncThunk<
       maxAdults: number;
       maxChildren: number;
       totalRooms: number;
-    }[]
+    }[];
   },
   { rejectValue: string }
 >("admin/createLodge", async (newLodgeData, { dispatch, rejectWithValue }) => {
@@ -75,6 +75,25 @@ export const createLodge = createAsyncThunk<
       dispatch(logout());
     }
     return rejectWithValue("Failed to create lodge");
+  }
+});
+
+export const fetchLodgeById = createAsyncThunk<
+  Lodge,
+  number,
+  { rejectValue: string }
+>("admin/fetchLodgeById", async (lodgeId, { dispatch, rejectWithValue }) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}`,
+      { withCredentials: true }
+    );
+    return res.data as Lodge;
+  } catch (err: any) {
+    if (err.response?.status === 401 || err.response?.status === 403) {
+      dispatch(logout());
+    }
+    return rejectWithValue("Failed to fetch lodge by ID");
   }
 });
 
