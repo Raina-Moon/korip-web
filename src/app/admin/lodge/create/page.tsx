@@ -57,6 +57,7 @@ const CreateLodgePage = () => {
         maxAdults: roomTypeMaxAdults,
         maxChildren: roomTypeMaxChildren,
         totalRooms: roomTypeTotalRooms,
+        roomPricing: [],
       },
     ]);
   };
@@ -64,7 +65,7 @@ const CreateLodgePage = () => {
   const handleRoomTypeChange = (
     idx: number,
     key: string,
-    value: string | number
+    value: any
   ) => {
     const updatedRoomTypes = [...roomTypes];
     updatedRoomTypes[idx] = {
@@ -207,6 +208,90 @@ const CreateLodgePage = () => {
                 placeholder="총 객실 수"
                 className="input"
               />
+
+              <h4 className="font-semibold">가격 설정</h4>
+              {room.roomPricing?.map((pricing, pIdx) => (
+                <div key={pIdx} className="flex gap-2 mb-1">
+                  <input
+                    type="date"
+                    value={pricing.date}
+                    onChange={(e) =>
+                      handleRoomTypeChange(idx, "roomPricing", [
+                        ...room.roomPricing.slice(0, pIdx),
+                        { ...pricing, date: e.target.value },
+                        ...room.roomPricing.slice(pIdx + 1),
+                      ])
+                    }
+                    className="input w-[130px]"
+                  />
+                  <input
+                    type="number"
+                    placeholder="가격"
+                    value={pricing.price}
+                    onChange={(e) =>
+                      handleRoomTypeChange(idx, "roomPricing", [
+                        ...room.roomPricing.slice(0, pIdx),
+                        { ...pricing, price: Number(e.target.value) },
+                        ...room.roomPricing.slice(pIdx + 1),
+                      ])
+                    }
+                    className="input w-[100px]"
+                  />
+                  <select
+                    value={pricing.priceType}
+                    onChange={(e) =>
+                      handleRoomTypeChange(idx, "roomPricing", [
+                        ...room.roomPricing.slice(0, pIdx),
+                        {
+                          ...pricing,
+                          priceType: e.target.value as
+                            | "WEEKDAY"
+                            | "WEEKEND"
+                            | "PEAK"
+                            | "OFF",
+                        },
+                        ...room.roomPricing.slice(pIdx + 1),
+                      ])
+                    }
+                    className="input w-[120px]"
+                  >
+                    <option value="WEEKDAY">주중</option>
+                    <option value="WEEKEND">주말</option>
+                    <option value="PEAK">성수기</option>
+                    <option value="OFF">비수기</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newPricing = room.roomPricing.filter(
+                        (_, i) => i !== pIdx
+                      );
+                      handleRoomTypeChange(idx, "roomPricing", newPricing);
+                    }}
+                    className="text-red-500 text-sm"
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                className="text-sm text-blue-600 mt-1"
+                onClick={() => {
+                  const newPricing = [
+                    ...(room.roomPricing ?? []),
+                    {
+                      date: "",
+                      price: 0,
+                      priceType: "WEEKDAY" as const,
+                    },
+                  ];
+                  handleRoomTypeChange(idx, "roomPricing", newPricing);
+                }}
+              >
+                + 가격 추가
+              </button>
             </div>
           ))}
           <button
