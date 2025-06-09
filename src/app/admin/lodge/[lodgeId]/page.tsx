@@ -6,7 +6,8 @@ import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 const LodgeDetailPage = () => {
-  const lodgeId = Number(useParams());
+  const params = useParams();
+  const lodgeId = Number(params.lodgeId);
 
   const dispatch = useAppDispatch();
   const lodge = useAppSelector((state) =>
@@ -16,8 +17,9 @@ const LodgeDetailPage = () => {
   const error = useAppSelector((state) => state["admin/lodge"].error);
 
   useEffect(() => {
-    if (!lodge) return;
-    dispatch(fetchLodgeById(lodgeId));
+    if (!isNaN(lodgeId) && !lodge && status !== "loading") {
+      dispatch(fetchLodgeById(lodgeId));
+    }
   }, [dispatch, lodgeId, lodge]);
 
   if (status === "loading") {
