@@ -16,14 +16,18 @@ export interface RoomType {
   name: string;
   description: string | null;
   basePrice: number;
+  weekendPrice?: number;
   maxAdults: number;
   maxChildren: number;
   totalRooms: number;
-  roomPricing: {
-    date: string;
-    price: number;
-    priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
-  }[];
+  seasonalPricing?: SeasonalPricing[];
+}
+
+export interface SeasonalPricing {
+  from: string;
+  to: string;
+  price: number;
+  type: "PEAK" | "OFF";
 }
 
 export const fetchLodges = createAsyncThunk<
@@ -60,13 +64,15 @@ export const createLodge = createAsyncThunk<
       name: string;
       description: string | null;
       basePrice: number;
+      weekendPrice?: number;
       maxAdults: number;
       maxChildren: number;
       totalRooms: number;
-      roomPricing: {
-        date: string;
+      seasonalPricing: {
+        from: string;
+        to: string; 
         price: number;
-        priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
+        type: "PEAK" | "OFF";
       }[];
     }[];
   },
