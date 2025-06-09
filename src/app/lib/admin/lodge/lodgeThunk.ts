@@ -19,6 +19,11 @@ export interface RoomType {
   maxAdults: number;
   maxChildren: number;
   totalRooms: number;
+  roomPricing: {
+    date: string;
+    price: number;
+    priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
+  }[];
 }
 
 export const fetchLodges = createAsyncThunk<
@@ -58,6 +63,11 @@ export const createLodge = createAsyncThunk<
       maxAdults: number;
       maxChildren: number;
       totalRooms: number;
+      roomPricing: {
+        date: string;
+        price: number;
+        priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
+      }[];
     }[];
   },
   { rejectValue: string }
