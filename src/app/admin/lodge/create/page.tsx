@@ -17,6 +17,7 @@ const CreateLodgePage = () => {
   const [roomTypeName, setRoomTypeName] = useState("");
   const [roomTypeDescription, setRoomTypeDescription] = useState("");
   const [roomTypeBasePrice, setRoomTypeBasePrice] = useState(0);
+  const [roomTypeWeekendPrice, setRoomTypeWeekendPrice] = useState(0);
   const [roomTypeMaxAdults, setRoomTypeMaxAdults] = useState(1);
   const [roomTypeMaxChildren, setRoomTypeMaxChildren] = useState(0);
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
@@ -33,7 +34,10 @@ const CreateLodgePage = () => {
         longitude,
         description,
         accommodationType,
-        roomTypes,
+        roomTypes: roomTypes.map((room) => ({
+          ...room,
+          seasonalPricing: room.seasonalPricing ?? [],
+        })),
       })
     );
 
@@ -57,16 +61,12 @@ const CreateLodgePage = () => {
         maxAdults: roomTypeMaxAdults,
         maxChildren: roomTypeMaxChildren,
         totalRooms: roomTypeTotalRooms,
-        roomPricing: [],
+        seasonalPricing: [],
       },
     ]);
   };
 
-  const handleRoomTypeChange = (
-    idx: number,
-    key: string,
-    value: any
-  ) => {
+  const handleRoomTypeChange = (idx: number, key: string, value: any) => {
     const updatedRoomTypes = [...roomTypes];
     updatedRoomTypes[idx] = {
       ...updatedRoomTypes[idx],
@@ -167,6 +167,20 @@ const CreateLodgePage = () => {
                 placeholder="가격"
                 className="input"
               />
+              <input
+                type="number"
+                value={room.weekendPrice ?? 0}
+                onChange={(e) =>
+                  handleRoomTypeChange(
+                    idx,
+                    "weekendPrice",
+                    Number(e.target.value)
+                  )
+                }
+                placeholder="주말 가격"
+                className="input"
+              />
+
               <div className="flex gap-2">
                 <input
                   type="number"
@@ -209,64 +223,56 @@ const CreateLodgePage = () => {
                 className="input"
               />
 
-              <h4 className="font-semibold">가격 설정</h4>
-              {room.roomPricing?.map((pricing, pIdx) => (
-                <div key={pIdx} className="flex gap-2 mb-1">
+              <h4 className="font-semibold">성수기 / 비수기 가격</h4>
+              {room.seasonalPricing?.map((sp, spIdx) => (
+                <div key={spIdx} className="flex gap-2 items-center mb-1">
                   <input
                     type="date"
-                    value={pricing.date}
-                    onChange={(e) =>
-                      handleRoomTypeChange(idx, "roomPricing", [
-                        ...room.roomPricing.slice(0, pIdx),
-                        { ...pricing, date: e.target.value },
-                        ...room.roomPricing.slice(pIdx + 1),
-                      ])
-                    }
-                    className="input w-[130px]"
+                    value={sp.from}
+                    onChange={(e) => {
+                      const updated = [...(room.seasonalPricing ?? [])];
+                      updated[spIdx].from = e.target.value;
+                      handleRoomTypeChange(idx, "seasonalPricing", updated);
+                    }}
+                  />
+                  <span>~</span>
+                  <input
+                    type="date"
+                    value={sp.to}
+                    onChange={(e) => {
+                      const updated = [...(room.seasonalPricing ?? [])];
+                      updated[spIdx].to = e.target.value;
+                      handleRoomTypeChange(idx, "seasonalPricing", updated);
+                    }}
                   />
                   <input
                     type="number"
+                    value={sp.price}
                     placeholder="가격"
-                    value={pricing.price}
-                    onChange={(e) =>
-                      handleRoomTypeChange(idx, "roomPricing", [
-                        ...room.roomPricing.slice(0, pIdx),
-                        { ...pricing, price: Number(e.target.value) },
-                        ...room.roomPricing.slice(pIdx + 1),
-                      ])
-                    }
-                    className="input w-[100px]"
+                    onChange={(e) => {
+                      const updated = [...(room.seasonalPricing ?? [])];
+                      updated[spIdx].price = Number(e.target.value);
+                      handleRoomTypeChange(idx, "seasonalPricing", updated);
+                    }}
                   />
                   <select
-                    value={pricing.priceType}
-                    onChange={(e) =>
-                      handleRoomTypeChange(idx, "roomPricing", [
-                        ...room.roomPricing.slice(0, pIdx),
-                        {
-                          ...pricing,
-                          priceType: e.target.value as
-                            | "WEEKDAY"
-                            | "WEEKEND"
-                            | "PEAK"
-                            | "OFF",
-                        },
-                        ...room.roomPricing.slice(pIdx + 1),
-                      ])
-                    }
-                    className="input w-[120px]"
+                    value={sp.type}
+                    onChange={(e) => {
+                      const updated = [...(room.seasonalPricing ?? [])];
+                      updated[spIdx].type = e.target.value as "PEAK" | "OFF";
+                      handleRoomTypeChange(idx, "seasonalPricing", updated);
+                    }}
                   >
-                    <option value="WEEKDAY">주중</option>
-                    <option value="WEEKEND">주말</option>
                     <option value="PEAK">성수기</option>
                     <option value="OFF">비수기</option>
                   </select>
                   <button
                     type="button"
                     onClick={() => {
-                      const newPricing = room.roomPricing.filter(
-                        (_, i) => i !== pIdx
+                      const updated = (room.seasonalPricing ?? []).filter(
+                        (_, i) => i !== spIdx
                       );
-                      handleRoomTypeChange(idx, "roomPricing", newPricing);
+                      handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
                     className="text-red-500 text-sm"
                   >
@@ -280,17 +286,18 @@ const CreateLodgePage = () => {
                 className="text-sm text-blue-600 mt-1"
                 onClick={() => {
                   const newPricing = [
-                    ...(room.roomPricing ?? []),
+                    ...(room.seasonalPricing ?? []),
                     {
-                      date: "",
+                      from: "",
+                      to: "",
                       price: 0,
-                      priceType: "WEEKDAY" as const,
+                      type: "PEAK" as const,
                     },
                   ];
-                  handleRoomTypeChange(idx, "roomPricing", newPricing);
+                  handleRoomTypeChange(idx, "seasonalPricing", newPricing);
                 }}
               >
-                + 가격 추가
+                + 성수기/비수기 추가
               </button>
             </div>
           ))}
