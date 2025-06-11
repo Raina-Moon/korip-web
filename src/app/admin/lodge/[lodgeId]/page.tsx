@@ -46,7 +46,7 @@ const LodgeDetailPage = () => {
         <p>Accommodation Type: {lodge.accommodationType}</p>
         <p>RoomType :</p>
         <ul>
-          {lodge.roomTypes.map((roomType, idx) => (
+          {lodge.roomTypes?.map((roomType, idx) => (
             <li key={idx}>
               <p>{roomType.name}</p>
               <p>{roomType.description}</p>
