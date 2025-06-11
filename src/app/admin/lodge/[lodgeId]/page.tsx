@@ -44,6 +44,30 @@ const LodgeDetailPage = () => {
         <p>Latitude: {lodge.latitude}</p>
         <p>Longitude: {lodge.longitude}</p>
         <p>Accommodation Type: {lodge.accommodationType}</p>
+        <p>RoomType :</p>
+        <ul>
+          {lodge.roomTypes.map((roomType, idx) => (
+            <li key={idx}>
+              <p>{roomType.name}</p>
+              <p>{roomType.description}</p>
+              <p>{roomType.basePrice}</p>
+              <p>{roomType.weekendPrice}</p>
+              <p>{roomType.maxAdults}</p>
+              <p>{roomType.maxChildren}</p>
+              <p>{roomType.totalRooms}</p>
+              <ul>
+                {roomType.seasonalPricing?.map((season, idx) => (
+                  <li key={idx}>
+                    <p>From : {season.from}</p>
+                    <p>To : {season.to}</p>
+                    <p>Price : {season.price}</p>
+                    <p>Type : {season.type}</p>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
