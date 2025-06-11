@@ -1,9 +1,9 @@
 "use client";
 
+import React, { useEffect } from "react";
 import { fetchLodgeById } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
-import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 const LodgeDetailPage = () => {
   const params = useParams();
@@ -13,6 +13,8 @@ const LodgeDetailPage = () => {
   const lodge = useAppSelector((state) => state["admin/lodge"].detail);
   const status = useAppSelector((state) => state["admin/lodge"].state);
   const error = useAppSelector((state) => state["admin/lodge"].error);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (!isNaN(lodgeId) && (!lodge || lodge.id !== lodgeId)) {
@@ -31,7 +33,10 @@ const LodgeDetailPage = () => {
       <div className="flex flex-row items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Lodge Detail Page</h1>
         <div className="flex space-x-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={() => router.push(`/admin/lodge/edit/${lodge.id}`)}
+          >
             수정
           </button>
           <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
