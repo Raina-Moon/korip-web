@@ -10,12 +10,14 @@ import {
 
 interface LodgeState {
   list: Lodge[];
+  detail: Lodge | null;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: LodgeState = {
   list: [],
+  detail: null,
   state: "idle",
   error: null,
 };
@@ -44,19 +46,10 @@ const lodgeSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(
-        fetchLodgeById.fulfilled,
-        (state, action: PayloadAction<Lodge>) => {
-          state.state = "succeeded";
-          const lodge = action.payload;
-          const index = state.list.findIndex((l) => l.id === lodge.id);
-          if (index !== -1) {
-            state.list[index] = lodge;
-          } else {
-            state.list.push(lodge);
-          }
-        }
-      )
+      .addCase(fetchLodgeById.fulfilled, (state, action) => {
+        state.state = "succeeded";
+        state.detail = action.payload;
+      })
       .addCase(fetchLodgeById.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
