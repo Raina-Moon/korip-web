@@ -10,6 +10,7 @@ export interface Lodge {
   longitude: number;
   description: string | null;
   accommodationType: string;
+  roomTypes: RoomType[];
 }
 
 export interface RoomType {
