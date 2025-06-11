@@ -11,7 +11,7 @@ const PriceInput = ({ value, onChange, placeholder }: PriceInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setDisplayValue(value.toLocaleString());
+    setDisplayValue((value ?? 0).toLocaleString());
   },[value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
