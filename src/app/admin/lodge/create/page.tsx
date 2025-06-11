@@ -5,6 +5,7 @@ import { createLodge, RoomType } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch } from "@/app/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import KakaoMap from "@/app/components/KakaoMap";
+import PriceInput from "@/app/components/ui/PriceInput";
 
 const CreateLodgePage = () => {
   const [name, setName] = useState("");
@@ -24,6 +25,10 @@ const CreateLodgePage = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+
+
+ 
 
   const handleCreateLodge = async () => {
     const lodgeData = await dispatch(
@@ -158,27 +163,19 @@ const CreateLodgePage = () => {
                 placeholder="방 설명"
                 className="input"
               />
-              <input
-                type="number"
+              <PriceInput
                 value={room.basePrice}
-                onChange={(e) =>
-                  handleRoomTypeChange(idx, "basePrice", Number(e.target.value))
+                onChange={(value) =>
+                  handleRoomTypeChange(idx, "basePrice", value)
                 }
-                placeholder="가격"
-                className="input"
+                placeholder="평일 가격"
               />
-              <input
-                type="number"
+              <PriceInput
                 value={room.weekendPrice ?? 0}
-                onChange={(e) =>
-                  handleRoomTypeChange(
-                    idx,
-                    "weekendPrice",
-                    Number(e.target.value)
-                  )
+                onChange={(value) =>
+                  handleRoomTypeChange(idx, "weekendPrice", value)
                 }
                 placeholder="주말 가격"
-                className="input"
               />
 
               <div className="flex gap-2">
@@ -245,25 +242,23 @@ const CreateLodgePage = () => {
                       handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
                   />
-                  <input
-                    type="number"
+                  <PriceInput
                     value={sp.basePrice}
-                    placeholder="평일일가격"
-                    onChange={(e) => {
+                    onChange={(value) => {
                       const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].basePrice = Number(e.target.value);
+                      updated[spIdx].basePrice = value;
                       handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
+                    placeholder="평일가격"
                   />
-                  <input
-                    type="number"
-                    value={sp.weekendPrice}
-                    placeholder="주말가격"
-                    onChange={(e) => {
+                  <PriceInput
+                    value={sp.weekendPrice ?? 0}
+                    onChange={(value) => {
                       const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].weekendPrice = Number(e.target.value);
+                      updated[spIdx].weekendPrice = value;
                       handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
+                    placeholder="주말가격"
                   />
                   <button
                     type="button"
