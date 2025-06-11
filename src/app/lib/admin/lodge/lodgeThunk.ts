@@ -27,8 +27,8 @@ export interface RoomType {
 export interface SeasonalPricing {
   from: string;
   to: string;
-  price: number;
-  type: "PEAK" | "OFF";
+  basePrice: number;
+  weekendPrice: number;
 }
 
 export const fetchLodges = createAsyncThunk<
@@ -72,8 +72,8 @@ export const createLodge = createAsyncThunk<
       seasonalPricing: {
         from: string;
         to: string; 
-        price: number;
-        type: "PEAK" | "OFF";
+        basePrice: number;
+        weekendPrice: number;
       }[];
     }[];
   },

@@ -247,25 +247,24 @@ const CreateLodgePage = () => {
                   />
                   <input
                     type="number"
-                    value={sp.price}
-                    placeholder="가격"
+                    value={sp.basePrice}
+                    placeholder="평일일가격"
                     onChange={(e) => {
                       const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].price = Number(e.target.value);
+                      updated[spIdx].basePrice = Number(e.target.value);
                       handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
                   />
-                  <select
-                    value={sp.type}
+                  <input
+                    type="number"
+                    value={sp.weekendPrice}
+                    placeholder="주말가격"
                     onChange={(e) => {
                       const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].type = e.target.value as "PEAK" | "OFF";
+                      updated[spIdx].weekendPrice = Number(e.target.value);
                       handleRoomTypeChange(idx, "seasonalPricing", updated);
                     }}
-                  >
-                    <option value="PEAK">성수기</option>
-                    <option value="OFF">비수기</option>
-                  </select>
+                  />
                   <button
                     type="button"
                     onClick={() => {
