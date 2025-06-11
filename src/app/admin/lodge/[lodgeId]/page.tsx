@@ -10,14 +10,12 @@ const LodgeDetailPage = () => {
   const lodgeId = Number(params.lodgeId);
 
   const dispatch = useAppDispatch();
-  const lodge = useAppSelector((state) =>
-    state["admin/lodge"].list.find((l) => l.id === lodgeId)
-  );
+  const lodge = useAppSelector((state) => state["admin/lodge"].detail);
   const status = useAppSelector((state) => state["admin/lodge"].state);
   const error = useAppSelector((state) => state["admin/lodge"].error);
 
   useEffect(() => {
-    if (!isNaN(lodgeId) && !lodge && status !== "loading") {
+    if (!isNaN(lodgeId) && (!lodge || lodge.id !== lodgeId)) {
       dispatch(fetchLodgeById(lodgeId));
     }
   }, [dispatch, lodgeId, lodge]);
