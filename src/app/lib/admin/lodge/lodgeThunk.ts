@@ -113,7 +113,7 @@ export const updateLodge = createAsyncThunk<
   "admin/updateLodge",
   async (updatedLodgeData, { dispatch, rejectWithValue }) => {
     try {
-      const res = await axios.put(
+      const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
         updatedLodgeData,
         { withCredentials: true }
