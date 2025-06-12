@@ -45,29 +45,39 @@ const LodgeDetailPage = () => {
           </button>
         </div>
       </div>
-      <section className="space-y-2">
-        <h2 className="text-xl font-semibold text-gray-700">{lodge.name}</h2>
-        <p>
-          <span className="font-medium text-gray-600">Address:</span>{" "}
-          {lodge.address}
-        </p>
-        <p>
-          <span className="font-medium text-gray-600">Description:</span>{" "}
-          {lodge.description}
-        </p>
-        <p>
-          <span className="font-medium text-gray-600">Accommodation Type:</span>{" "}
-          {lodge.accommodationType}
-        </p>
-        <KakaoMap
-          viewOnly
-          initialPosition={{
-            lat: Number(lodge.latitude),
-            lng: Number(lodge.longitude),
-            address: lodge.address,
-          }}
-          onLocationChange={() => {}}
-        />
+      <section className="space-y-1">
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold text-gray-700">
+              {lodge.name}
+            </h2>
+            <p>
+              <span className="font-medium text-gray-600">Address:</span>{" "}
+              {lodge.address}
+            </p>
+            <p>
+              <span className="font-medium text-gray-600">Description:</span>{" "}
+              {lodge.description}
+            </p>
+            <p>
+              <span className="font-medium text-gray-600">
+                Accommodation Type:
+              </span>{" "}
+              {lodge.accommodationType}
+            </p>
+          </div>
+          <div className="flex-1">
+            <KakaoMap
+              viewOnly
+              initialPosition={{
+                lat: Number(lodge.latitude),
+                lng: Number(lodge.longitude),
+                address: lodge.address,
+              }}
+              onLocationChange={() => {}}
+            />
+          </div>
+        </div>
       </section>
 
       <section>
