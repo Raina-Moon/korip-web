@@ -56,14 +56,6 @@ const LodgeDetailPage = () => {
           {lodge.description}
         </p>
         <p>
-          <span className="font-medium text-gray-600">Latitude:</span>{" "}
-          {lodge.latitude}
-        </p>
-        <p>
-          <span className="font-medium text-gray-600">Longitude:</span>{" "}
-          {lodge.longitude}
-        </p>
-        <p>
           <span className="font-medium text-gray-600">Accommodation Type:</span>{" "}
           {lodge.accommodationType}
         </p>
