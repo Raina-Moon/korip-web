@@ -74,6 +74,15 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
           setLongitude(lng);
           setAddress(addr);
         }}
+        initialPosition={
+          mode === "edit" && initialData
+            ? {
+                lat: initialData.latitude ?? 0,
+                lng: initialData.longitude ?? 0,
+                address: initialData.address ?? "",
+              }
+            : undefined
+        }
       />
 
       <form
