@@ -17,10 +17,10 @@ const LodgeDetailPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isNaN(lodgeId) && (!lodge || lodge.id !== lodgeId)) {
+    if (!isNaN(lodgeId)) {
       dispatch(fetchLodgeById(lodgeId));
     }
-  }, [dispatch, lodgeId, lodge]);
+  }, [dispatch, lodgeId]);
 
   if (status === "loading")
     return <p className="p-8 text-lg">Loading lodge details...</p>;
