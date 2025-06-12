@@ -52,31 +52,16 @@ export const fetchLodges = createAsyncThunk<
   }
 });
 
+type CreateLodgePayload = Omit<Lodge, "id" | "roomTypes"> & {
+  roomTypes: Omit<RoomType, "seasonalPricing"> &
+    {
+      seasonalPricing?: SeasonalPricing[];
+    }[];
+};
+
 export const createLodge = createAsyncThunk<
   { message: string; lodge: Lodge },
-  {
-    name: string;
-    address: string;
-    latitude: number;
-    longitude: number;
-    description?: string | null;
-    accommodationType: string;
-    roomTypes: {
-      name: string;
-      description: string | null;
-      basePrice: number;
-      weekendPrice?: number;
-      maxAdults: number;
-      maxChildren: number;
-      totalRooms: number;
-      seasonalPricing: {
-        from: string;
-        to: string;
-        basePrice: number;
-        weekendPrice: number;
-      }[];
-    }[];
-  },
+  CreateLodgePayload,
   { rejectValue: string }
 >("admin/createLodge", async (newLodgeData, { dispatch, rejectWithValue }) => {
   try {
