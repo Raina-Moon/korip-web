@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { fetchLodgeById } from "@/app/lib/admin/lodge/lodgeThunk";
+import { deleteLodge, fetchLodgeById } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
 import KakaoMap from "@/app/components/KakaoMap";
@@ -10,12 +10,12 @@ const LodgeDetailPage = () => {
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
 
-  const dispatch = useAppDispatch();
   const lodge = useAppSelector((state) => state["admin/lodge"].detail);
   const status = useAppSelector((state) => state["admin/lodge"].state);
   const error = useAppSelector((state) => state["admin/lodge"].error);
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!isNaN(lodgeId)) {
@@ -29,6 +29,19 @@ const LodgeDetailPage = () => {
     return <p className="p-8 text-red-600">Error: {error}</p>;
   if (!lodge) return <p className="p-8">No lodge found with ID {lodgeId}</p>;
 
+  const handleDeleteLodge = async () => {
+    if (confirm("정말로 이 숙소를 삭제하시겠습니까?")) {
+      try {
+        await dispatch(deleteLodge(lodgeId)).unwrap();
+        alert("숙소가 성공적으로 삭제되었습니다.");
+        router.push("/admin/lodge");
+      } catch (error) {
+        alert("숙소 삭제에 실패했습니다.");
+        console.error("Failed to delete lodge:", error);
+      }
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -40,7 +53,12 @@ const LodgeDetailPage = () => {
           >
             수정
           </button>
-          <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            onClick={() => {handleDeleteLodge()
+              console.log("Delete lodge button clicked")
+            }}
+          >
             삭제
           </button>
         </div>
