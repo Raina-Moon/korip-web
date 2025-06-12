@@ -101,30 +101,32 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
           });
         }}
-        className="space-y-4"
+        className="flex flex-col gap-4 p-6"
       >
-        <p>숙소명</p>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-        <p>숙소 주소</p>
-        <input value={address} onChange={(e) => setAddress(e.target.value)} />
-        <p>숙소 좌표</p>
+        <p className="font-bold text-lg">숙소명</p>
         <input
-          value={latitude}
-          onChange={(e) => setLatitude(Number(e.target.value))}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
         />
+        <p className="font-bold text-lg">숙소 주소</p>
         <input
-          value={longitude}
-          onChange={(e) => setLongitude(Number(e.target.value))}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
         />
-        <p>숙소 설명</p>
+        <p className="font-bold text-lg">숙소 설명</p>
         <input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
         />
-        <p>숙소 유형</p>
+
+        <p className="font-bold text-lg">숙소 유형</p>
         <select
           value={accommodationType}
           onChange={(e) => setAccommodationType(e.target.value)}
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
         >
           <option value="hotel">호텔</option>
           <option value="motel">모텔</option>
@@ -134,37 +136,43 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         </select>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-bold mt-6">Room Types</h3>
+          <h3 className="text-2xl font-bold mt-6">방 유형</h3>
           {roomTypes.map((room, idx) => (
-            <div key={idx} className="border p-4 rounded space-y-2">
+            <div
+              key={idx}
+              className="border p-4 rounded border-gray-400 space-y-2 shadow-md"
+            >
               <div className="flex justify-between items-center">
-                <p className="font-semibold">방 유형 {idx + 1}</p>
+                <p className="font-semibold text-xl">방 유형 {idx + 1}</p>
                 {roomTypes.length > 1 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveRoomType(idx)}
-                    className="text-red-600 text-sm"
+                    className="bg-red-600 text-white text-md px-3 py-1 rounded hover:bg-red-700"
                   >
                     삭제
                   </button>
                 )}
               </div>
+              <p className="font-semibold text-lg">방 이름</p>
               <input
                 value={room.name}
                 onChange={(e) =>
                   handleRoomTypeChange(idx, "name", e.target.value)
                 }
                 placeholder="방 이름 (예: 스탠다드)"
-                className="input"
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
               />
+              <p className="font-semibold text-lg">방 설명</p>
               <input
                 value={room.description ?? ""}
                 onChange={(e) =>
                   handleRoomTypeChange(idx, "description", e.target.value)
                 }
                 placeholder="방 설명"
-                className="input"
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
               />
+              <p className="font-semibold text-lg">기본 가격</p>
               <PriceInput
                 value={room.basePrice}
                 onChange={(value) =>
@@ -172,6 +180,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                 }
                 placeholder="평일 가격"
               />
+              <p className="font-semibold text-lg">주말 가격</p>
               <PriceInput
                 value={room.weekendPrice ?? 0}
                 onChange={(value) =>
@@ -181,6 +190,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               />
 
               <div className="flex gap-2">
+                <p className="font-semibold text-lg">최대 성인 수</p>
                 <input
                   type="number"
                   value={room.maxAdults}
@@ -192,8 +202,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     )
                   }
                   placeholder="성인 최대"
-                  className="input flex-1"
+                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1"
                 />
+                <p className="font-semibold text-lg">최대 어린이 수</p>
                 <input
                   type="number"
                   value={room.maxChildren}
@@ -205,9 +216,10 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     )
                   }
                   placeholder="어린이 최대"
-                  className="input flex-1"
+                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1"
                 />
               </div>
+              <p className="font-semibold text-lg">총 객실 수</p>
               <input
                 type="number"
                 value={room.totalRooms}
@@ -219,88 +231,91 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   )
                 }
                 placeholder="총 객실 수"
-                className="input"
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
               />
+              <div className="border-t pt-10">
+                <h4 className="font-bold text-xl">성수기 / 비수기 설정</h4>
+                {room.seasonalPricing?.map((sp, spIdx) => (
+                  <div key={spIdx} className="flex gap-2 items-center mb-1">
+                    <input
+                      type="date"
+                      value={sp.from}
+                      onChange={(e) => {
+                        const updated = [...(room.seasonalPricing ?? [])];
+                        updated[spIdx].from = e.target.value;
+                        handleRoomTypeChange(idx, "seasonalPricing", updated);
+                      }}
+                      className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+                    />
+                    <span>~</span>
+                    <input
+                      type="date"
+                      value={sp.to}
+                      onChange={(e) => {
+                        const updated = [...(room.seasonalPricing ?? [])];
+                        updated[spIdx].to = e.target.value;
+                        handleRoomTypeChange(idx, "seasonalPricing", updated);
+                      }}
+                      className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+                    />
+                    <PriceInput
+                      value={sp.basePrice}
+                      onChange={(value) => {
+                        const updated = [...(room.seasonalPricing ?? [])];
+                        updated[spIdx].basePrice = value;
+                        handleRoomTypeChange(idx, "seasonalPricing", updated);
+                      }}
+                      placeholder="평일가격"
+                    />
+                    <PriceInput
+                      value={sp.weekendPrice ?? 0}
+                      onChange={(value) => {
+                        const updated = [...(room.seasonalPricing ?? [])];
+                        updated[spIdx].weekendPrice = value;
+                        handleRoomTypeChange(idx, "seasonalPricing", updated);
+                      }}
+                      placeholder="주말가격"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = (room.seasonalPricing ?? []).filter(
+                          (_, i) => i !== spIdx
+                        );
+                        handleRoomTypeChange(idx, "seasonalPricing", updated);
+                      }}
+                      className="bg-red-600 text-white text-sm px-2 py-1 rounded hover:bg-red-700"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                ))}
 
-              <h4 className="font-semibold">성수기 / 비수기 가격</h4>
-              {room.seasonalPricing?.map((sp, spIdx) => (
-                <div key={spIdx} className="flex gap-2 items-center mb-1">
-                  <input
-                    type="date"
-                    value={sp.from}
-                    onChange={(e) => {
-                      const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].from = e.target.value;
-                      handleRoomTypeChange(idx, "seasonalPricing", updated);
-                    }}
-                  />
-                  <span>~</span>
-                  <input
-                    type="date"
-                    value={sp.to}
-                    onChange={(e) => {
-                      const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].to = e.target.value;
-                      handleRoomTypeChange(idx, "seasonalPricing", updated);
-                    }}
-                  />
-                  <PriceInput
-                    value={sp.basePrice}
-                    onChange={(value) => {
-                      const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].basePrice = value;
-                      handleRoomTypeChange(idx, "seasonalPricing", updated);
-                    }}
-                    placeholder="평일가격"
-                  />
-                  <PriceInput
-                    value={sp.weekendPrice ?? 0}
-                    onChange={(value) => {
-                      const updated = [...(room.seasonalPricing ?? [])];
-                      updated[spIdx].weekendPrice = value;
-                      handleRoomTypeChange(idx, "seasonalPricing", updated);
-                    }}
-                    placeholder="주말가격"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = (room.seasonalPricing ?? []).filter(
-                        (_, i) => i !== spIdx
-                      );
-                      handleRoomTypeChange(idx, "seasonalPricing", updated);
-                    }}
-                    className="text-red-500 text-sm"
-                  >
-                    삭제
-                  </button>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                className="text-sm text-blue-600 mt-1"
-                onClick={() => {
-                  const newPricing = [
-                    ...(room.seasonalPricing ?? []),
-                    {
-                      from: "",
-                      to: "",
-                      price: 0,
-                      type: "PEAK" as const,
-                    },
-                  ];
-                  handleRoomTypeChange(idx, "seasonalPricing", newPricing);
-                }}
-              >
-                + 성수기/비수기 추가
-              </button>
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 mt-1 hover:underline"
+                  onClick={() => {
+                    const newPricing = [
+                      ...(room.seasonalPricing ?? []),
+                      {
+                        from: "",
+                        to: "",
+                        price: 0,
+                        type: "PEAK" as const,
+                      },
+                    ];
+                    handleRoomTypeChange(idx, "seasonalPricing", newPricing);
+                  }}
+                >
+                  + 성수기/비수기 추가
+                </button>
+              </div>
             </div>
           ))}
           <button
             type="button"
             onClick={handleAddRoomType}
-            className="px-3 py-1 bg-green-500 text-white rounded"
+            className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
           >
             + 방 유형 추가
           </button>
