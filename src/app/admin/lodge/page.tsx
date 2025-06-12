@@ -5,6 +5,7 @@ import {
   Lodge,
 } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -42,10 +43,16 @@ const LodgePage = () => {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">관리자 – 숙소 목록</h1>
-      <button onClick={() => router.push("/admin/lodge/create")}>
+    <div className="flex items-center justify-between mb-6">
+      <h1 className="text-3xl font-bold">관리자 – 숙소 목록</h1>
+      <button
+        onClick={() => router.push("/admin/lodge/create")}
+        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        <Plus size={18} />
         숙소 추가하기
       </button>
+    </div>
 
       {lodges.length === 0 ? (
         <p className="text-gray-500">등록된 숙소가 없습니다.</p>
