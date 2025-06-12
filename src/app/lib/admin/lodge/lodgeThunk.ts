@@ -71,7 +71,7 @@ export const createLodge = createAsyncThunk<
       totalRooms: number;
       seasonalPricing: {
         from: string;
-        to: string; 
+        to: string;
         basePrice: number;
         weekendPrice: number;
       }[];
@@ -113,17 +113,16 @@ export const fetchLodgeById = createAsyncThunk<
   }
 });
 
+type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
+  roomTypes: Omit<RoomType, "seasonalPricing"> &
+    {
+      seasonalPricing?: SeasonalPricing[];
+    }[];
+};
+
 export const updateLodge = createAsyncThunk<
   { message: string; lodge: Lodge },
-  {
-    id: number;
-    name: string;
-    address: string;
-    latitude: number;
-    longitude: number;
-    description?: string | null;
-    accommodationType: string;
-  },
+  UpdateLodgePayload,
   { rejectValue: string }
 >(
   "admin/updateLodge",
