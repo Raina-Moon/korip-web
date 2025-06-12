@@ -1,5 +1,6 @@
 "use client";
 
+import { initialize } from "next/dist/server/lib/render-server";
 import Script from "next/script";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -11,9 +12,14 @@ declare global {
 
 interface KakaoMapProps {
   onLocationChange: (lat: number, lng: number, address: string) => void;
+  initialPosition?: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
 }
 
-const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
+const KakaoMap = ({ onLocationChange, initialPosition }: KakaoMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [map, setMap] = useState<any>(null);
@@ -37,17 +43,21 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
         var container = mapRef.current; // 지도를 표시할 div
         if (!container) return; // container가 없으면 실행하지 않음
 
-        var options = {
-          //지도를 생성할 때 필요한 기본 옵션
-          center: new window.kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-          level: 3, //지도의 레벨(확대, 축소 정도)
+        const centerLat = initialPosition?.lat || 33.450701;
+        const centerLng = initialPosition?.lng || 126.570667;
+
+        const center = new window.kakao.maps.LatLng(centerLat, centerLng);
+
+        const options = {
+          center,
+          level: 3,
         };
 
         const createdMap = new window.kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
         const geocoder = new window.kakao.maps.services.Geocoder();
 
         const markerInstance = new window.kakao.maps.Marker({
-          position: createdMap.getCenter(),
+          position: center,
           map: createdMap,
         });
 
@@ -58,6 +68,19 @@ const KakaoMap = ({ onLocationChange }: KakaoMapProps) => {
         setMarker(markerInstance);
         setPlaceService(places);
         setInfowindow(info);
+
+        if(initialPosition) {
+          geocoder.coord2Address(centerLng, centerLat, (result: any, status: any) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const address =
+                result[0].road_address?.address_name ||
+                result[0].address.address_name;
+              onLocationChange(centerLat, centerLng, address);
+            } else {
+              console.error("주소 변환 실패:", status);
+            }
+          });
+        }
 
         window.kakao.maps.event.addListener(
           createdMap,
