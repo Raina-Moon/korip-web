@@ -31,6 +31,8 @@ if(!isNaN(id)) {
     }
   };
 
+  console.log("LodgeEditPage lodgeData:", lodgeData);
+
   return <LodgeForm mode="edit" 
   initialData={lodgeData ?? undefined}
   onSubmit={handleUpdateLodge} />;
