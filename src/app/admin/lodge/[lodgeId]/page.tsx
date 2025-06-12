@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { fetchLodgeById } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
+import KakaoMap from "@/app/components/KakaoMap";
 
 const LodgeDetailPage = () => {
   const params = useParams();
@@ -66,6 +67,15 @@ const LodgeDetailPage = () => {
           <span className="font-medium text-gray-600">Accommodation Type:</span>{" "}
           {lodge.accommodationType}
         </p>
+        <KakaoMap
+          viewOnly
+          initialPosition={{
+            lat: Number(lodge.latitude),
+            lng: Number(lodge.longitude),
+            address: lodge.address,
+          }}
+          onLocationChange={() => {}}
+        />
       </section>
 
       <section>
