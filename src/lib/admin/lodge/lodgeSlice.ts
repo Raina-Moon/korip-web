@@ -4,9 +4,9 @@ import {
   deleteLodge,
   fetchLodgeById,
   fetchLodges,
-  Lodge,
   updateLodge,
 } from "./lodgeThunk";
+import { Lodge } from "@/types/lodge";
 
 interface LodgeState {
   list: Lodge[];

@@ -1,49 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
-
-export interface Lodge {
-  id: number;
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  description: string | null;
-  accommodationType: string;
-  roomTypes: RoomType[];
-  hotSpringLodgeImage: LodgeImage[]
-}
-
-export interface LodgeImage {
-  id: number;
-  lodgeId: number;
-  imageUrl: string;
-}
-
-export interface RoomType {
-  name: string;
-  description: string | null;
-  basePrice: number;
-  weekendPrice?: number;
-  maxAdults: number;
-  maxChildren: number;
-  totalRooms: number;
-  seasonalPricing?: SeasonalPricing[];
-  roomTypeImage: RoomTypeImage[];
-}
-
-export interface RoomTypeImage {
-  id: number;
-  roomTypeId: number;
-  imageUrl: string;
-}
-
-export interface SeasonalPricing {
-  from: string;
-  to: string;
-  basePrice: number;
-  weekendPrice: number;
-}
+import { Lodge, RoomType, SeasonalPricing } from "@/types/lodge";
 
 export const fetchLodges = createAsyncThunk<
   Lodge[],

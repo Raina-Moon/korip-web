@@ -3,9 +3,9 @@ import {
   createRoomType,
   deleteRoomType,
   fetchRoomTypes,
-  RoomType,
   updateRoomType,
 } from "./roomTypeThunk";
+import { RoomType } from "@/types/lodge";
 
 interface RoomTypeState {
   list: RoomType[];
