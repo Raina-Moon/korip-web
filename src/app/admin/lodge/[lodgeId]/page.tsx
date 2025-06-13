@@ -9,6 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
 import KakaoMap from "@/app/components/KakaoMap";
+import { ArrowLeft } from "lucide-react";
 
 const LodgeDetailPage = () => {
   const params = useParams();
@@ -50,9 +51,12 @@ const LodgeDetailPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">숙소 상세 정보</h1>
-        <div className="flex space-x-4">
+      <div className=" relative flex-row items-center justify-between mb-6">
+        <div className="cursor-pointer absolute left-0" onClick={() => router.back()}>
+          <ArrowLeft />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-800 text-center">숙소 상세 정보</h1>
+        <div className="gap-4 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             onClick={() => router.push(`/admin/lodge/edit/${lodge.id}`)}
@@ -68,8 +72,8 @@ const LodgeDetailPage = () => {
         </div>
       </div>
       <section className="space-y-1">
-        <div className="flex flex-row items-center justify-between">
-          <div className="flex-1">
+        <div className="flex flex-row items-center justify-start">
+          <div className="flex-1 items-start">
             <h2 className="text-xl font-semibold text-gray-700">
               숙소명 : {lodge.name}
             </h2>
