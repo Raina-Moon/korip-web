@@ -166,15 +166,15 @@ const KakaoMap = ({
             type="text"
             ref={inputRef}
             placeholder="장소를 검색하세요"
-            className="border px-2 py-1 rounded w-full"
+            className="border px-2 py-1 rounded w-full focus:border-blue-500 focus:outline-none"
           />
           <button
             onClick={handleSearch}
-            className="px-3 py-1 bg-blue-500 text-white rounded"
+            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             검색
           </button>
-          <ul className="absolute z-10 bg-white border rounded shadow-lg w-full max-h-60 overflow-y-auto">
+          <ul className="absolute top-56 z-10 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
             {searchResults.map((place, idx) => (
               <li
                 key={idx}
