@@ -1,7 +1,8 @@
 "use client";
 
-import { fetchLodges, Lodge } from "@/lib/admin/lodge/lodgeThunk";
+import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { Lodge } from "@/types/lodge";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
