@@ -1,7 +1,7 @@
 "use client";
 
-import Modal from "@/app/components/ui/Modal";
-import { useSignUpMutation } from "@/app/lib/auth/authApi";
+import Modal from "@/components/ui/Modal";
+import { useSignUpMutation } from "@/lib/auth/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 

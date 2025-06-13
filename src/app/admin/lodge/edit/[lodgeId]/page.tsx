@@ -1,8 +1,9 @@
 "use client";
 
-import LodgeForm from "@/app/components/ui/LodgeForm";
-import { fetchLodgeById, updateLodge } from "@/app/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
+import LodgeForm from "@/components/ui/LodgeForm";
+import { fetchLodgeById, updateLodge } from "@/lib/admin/lodge/lodgeThunk";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -31,9 +32,21 @@ if(!isNaN(id)) {
     }
   };
 
-  return <LodgeForm mode="edit" 
-  initialData={lodgeData ?? undefined}
-  onSubmit={handleUpdateLodge} />;
+  return (
+<div className="flex flex-col">
+      <div className="relative flex items-center justify-center mx-24 mt-10">
+        <div className="absolute left-0 p-2 cursor-pointer" onClick={() => router.back()}>
+          <ArrowLeft />
+        </div>
+        <h1 className="text-2xl font-bold text-center">숙소 수정</h1>
+      </div>
+      <LodgeForm
+        mode="edit"
+        initialData={lodgeData ?? undefined}
+        onSubmit={handleUpdateLodge}
+      />
+    </div>
+  );
 };
 
 export default LodgeEditPage;

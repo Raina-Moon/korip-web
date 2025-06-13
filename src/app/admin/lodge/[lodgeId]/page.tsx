@@ -5,10 +5,10 @@ import {
   deleteLodge,
   fetchLodgeById,
   fetchLodges,
-} from "@/app/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch, useAppSelector } from "@/app/lib/store/hooks";
+} from "@/lib/admin/lodge/lodgeThunk";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
-import KakaoMap from "@/app/components/KakaoMap";
+import KakaoMap from "@/components/KakaoMap";
 import { ArrowLeft } from "lucide-react";
 
 const LodgeDetailPage = () => {

@@ -2,11 +2,11 @@
 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../lib/store/store";
+import { RootState } from "@/lib/store/store";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "../lib/store/hooks";
-import { useGetCurrentUserQuery } from "../lib/auth/authApi";
-import { setUserOnly } from "../lib/auth/authSlice";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { useGetCurrentUserQuery } from "@/lib/auth/authApi";
+import { setUserOnly } from "@/lib/auth/authSlice";
 
 interface AdminLayoutProps {
   children: React.ReactNode;

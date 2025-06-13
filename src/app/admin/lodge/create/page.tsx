@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { createLodge, RoomType } from "@/app/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch } from "@/app/lib/store/hooks";
+import { createLodge, RoomType } from "@/lib/admin/lodge/lodgeThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
-import LodgeForm from "@/app/components/ui/LodgeForm";
+import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
 
 const CreateLodgePage = () => {

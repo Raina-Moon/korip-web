@@ -1,6 +1,6 @@
 "use client";
 
-import { useRequestVerificationMutation } from "@/app/lib/auth/authApi";
+import { useRequestVerificationMutation } from "@/lib/auth/authApi";
 import React, { useState } from "react";
 
 const EmailPage = () => {

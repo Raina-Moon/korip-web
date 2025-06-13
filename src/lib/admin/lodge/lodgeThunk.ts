@@ -11,6 +11,13 @@ export interface Lodge {
   description: string | null;
   accommodationType: string;
   roomTypes: RoomType[];
+  hotSpringLodgeImage: LodgeImage[]
+}
+
+export interface LodgeImage {
+  id: number;
+  lodgeId: number;
+  imageUrl: string;
 }
 
 export interface RoomType {
@@ -22,6 +29,13 @@ export interface RoomType {
   maxChildren: number;
   totalRooms: number;
   seasonalPricing?: SeasonalPricing[];
+  roomTypeImage: RoomTypeImage[];
+}
+
+export interface RoomTypeImage {
+  id: number;
+  roomTypeId: number;
+  imageUrl: string;
 }
 
 export interface SeasonalPricing {
