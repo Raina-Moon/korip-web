@@ -1,5 +1,6 @@
 "use client";
 
+import { Mouse } from "lucide-react";
 import Script from "next/script";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -32,6 +33,7 @@ const KakaoMap = ({
   const [infowindow, setInfowindow] = useState<any>(null);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [listOpen, setListOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -123,6 +125,22 @@ const KakaoMap = ({
     }
   }, [onLocationChange]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        listOpen &&
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setListOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [listOpen]);
+
   const handleSearch = () => {
     const keyword = inputRef.current?.value;
     if (!keyword || keyword.trim() === "") {
@@ -161,47 +179,58 @@ const KakaoMap = ({
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
       />
       {!viewOnly && (
-        <div className="mb-2 flex gap-2">
-          <input
-            type="text"
-            ref={inputRef}
-            placeholder="장소를 검색하세요"
-            className="border px-2 py-1 rounded w-full focus:border-blue-500 focus:outline-none"
-          />
-          <button
-            onClick={handleSearch}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            검색
-          </button>
-          <ul className="absolute top-56 z-10 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
-            {searchResults.map((place, idx) => (
-              <li
-                key={idx}
-                className="cursor-pointer hover:bg-gray-100 p-2 border-b"
-                onClick={() => {
-                  const lat = parseFloat(place.y);
-                  const lng = parseFloat(place.x);
-                  const moveLatLng = new window.kakao.maps.LatLng(lat, lng);
-                  map.setCenter(moveLatLng); // 지도 중심 이동
-                  marker.setPosition(moveLatLng); // 마커 위치 변경
-                  infowindow.setContent(
-                    `<div style="padding:5px;">${place.place_name}</div>`
-                  );
-                  infowindow.open(map, marker); // 인포윈도우 열기
+        <div ref={wrapperRef} className="mb-2 relative">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              ref={inputRef}
+              placeholder="장소를 검색하세요"
+              className="border px-2 py-1 rounded w-full focus:border-blue-500 focus:outline-none"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch();
+                }
+              }}
+            />
+            <button
+              onClick={handleSearch}
+              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              검색
+            </button>
+          </div>
 
-                  onLocationChange(lat, lng, place.address_name); // 부모 컴포넌트로 좌표와 주소 전달
+          {listOpen && (
+            <ul className="absolute top-14 z-10 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
+              {searchResults.map((place, idx) => (
+                <li
+                  key={idx}
+                  className="cursor-pointer hover:bg-gray-100 p-2 border-b"
+                  onClick={() => {
+                    const lat = parseFloat(place.y);
+                    const lng = parseFloat(place.x);
+                    const moveLatLng = new window.kakao.maps.LatLng(lat, lng);
+                    map.setCenter(moveLatLng); // 지도 중심 이동
+                    marker.setPosition(moveLatLng); // 마커 위치 변경
+                    infowindow.setContent(
+                      `<div style="padding:5px;">${place.place_name}</div>`
+                    );
+                    infowindow.open(map, marker); // 인포윈도우 열기
 
-                  setListOpen(false);
-                }}
-              >
-                <strong>{place.place_name}</strong>
-                <span className="text-sm text-gray-600">
-                  {place.road_address_name}
-                </span>
-              </li>
-            ))}
-          </ul>
+                    onLocationChange(lat, lng, place.address_name); // 부모 컴포넌트로 좌표와 주소 전달
+
+                    setListOpen(false);
+                  }}
+                >
+                  <strong>{place.place_name}</strong>
+                  <span className="text-sm text-gray-600">
+                    {place.road_address_name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
       <div
