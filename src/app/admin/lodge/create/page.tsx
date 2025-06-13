@@ -5,6 +5,7 @@ import { createLodge, RoomType } from "@/app/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch } from "@/app/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import LodgeForm from "@/app/components/ui/LodgeForm";
+import { ArrowBigLeft, ArrowLeft } from "lucide-react";
 
 const CreateLodgePage = () => {
   const dispatch = useAppDispatch();
@@ -32,10 +33,18 @@ const CreateLodgePage = () => {
   };
 
   return (
-    <LodgeForm
-      mode="create"
-      onSubmit={handleCreateLodge}
-    />
+    <div className="flex flex-col">
+      <div className="relative flex items-center justify-center mx-24 mt-10">
+        <div className="absolute left-0 p-2 cursor-pointer" onClick={() => router.back()}>
+          <ArrowLeft />
+        </div>
+        <h1 className="text-2xl font-bold text-center">숙소 등록</h1>
+      </div>
+      <LodgeForm
+        mode="create"
+        onSubmit={handleCreateLodge}
+      />
+      </div>
   );
 };
 
