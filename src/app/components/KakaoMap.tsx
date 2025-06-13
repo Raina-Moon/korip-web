@@ -1,8 +1,7 @@
 "use client";
 
-import { Mouse } from "lucide-react";
-import Script from "next/script";
 import React, { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 
 declare global {
   interface Window {
