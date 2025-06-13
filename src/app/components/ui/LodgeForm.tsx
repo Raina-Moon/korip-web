@@ -67,7 +67,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   }, [mode, initialData]);
 
   return (
-    <div>
+    <div className="my-20 flex flex-row items-start justify-center">
+      <div className="flex flex-col w-full max-w-xl p-6">
       <KakaoMap
         onLocationChange={(lat, lng, addr) => {
           setLatitude(lat);
@@ -82,8 +83,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                 address: initialData.address ?? "",
               }
             : undefined
-        }
-      />
+          }
+          />
+          </div>
 
       <form
         onSubmit={(e) => {
@@ -101,32 +103,33 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
           });
         }}
-        className="flex flex-col gap-4 p-6"
+        className="flex flex-col gap-4 p-6 max-w-2xl w-full"
       >
         <p className="font-bold text-lg">숙소명</p>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
         />
         <p className="font-bold text-lg">숙소 주소</p>
         <input
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
         />
         <p className="font-bold text-lg">숙소 설명</p>
-        <input
+        <textarea
+          placeholder="숙소에 대한 자세한 설명을 입력하세요."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+    className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
         />
 
         <p className="font-bold text-lg">숙소 유형</p>
         <select
           value={accommodationType}
           onChange={(e) => setAccommodationType(e.target.value)}
-          className="border border-gray-600 px-3 py-1 outline-none rounded-md"
+          className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
         >
           <option value="hotel">호텔</option>
           <option value="motel">모텔</option>
@@ -161,16 +164,16 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   handleRoomTypeChange(idx, "name", e.target.value)
                 }
                 placeholder="방 이름 (예: 스탠다드)"
-                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
               />
               <p className="font-semibold text-lg">방 설명</p>
-              <input
+              <textarea
                 value={room.description ?? ""}
                 onChange={(e) =>
                   handleRoomTypeChange(idx, "description", e.target.value)
                 }
                 placeholder="방 설명"
-                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
+    className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
               />
               <p className="font-semibold text-lg">기본 가격</p>
               <PriceInput
@@ -202,7 +205,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     )
                   }
                   placeholder="성인 최대"
-                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1"
+                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1 focus:border-blue-500"
                 />
                 <p className="font-semibold text-lg">최대 어린이 수</p>
                 <input
@@ -216,7 +219,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     )
                   }
                   placeholder="어린이 최대"
-                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1"
+                  className="border border-gray-600 px-3 py-1 outline-none rounded-md flex-1 focus:border-blue-500"
                 />
               </div>
               <p className="font-semibold text-lg">총 객실 수</p>
@@ -231,7 +234,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   )
                 }
                 placeholder="총 객실 수"
-                className="input border border-gray-600 px-3 py-1 outline-none rounded-md"
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
               />
               <div className="border-t pt-10">
                 <h4 className="font-bold text-xl">성수기 / 비수기 설정</h4>
@@ -258,6 +261,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       }}
                       className="border border-gray-600 px-3 py-1 outline-none rounded-md"
                     />
+                    <p className="font-semibold text-lg">기본 가격</p>
                     <PriceInput
                       value={sp.basePrice}
                       onChange={(value) => {
@@ -267,6 +271,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       }}
                       placeholder="평일가격"
                     />
+                    <p className="font-semibold text-lg">주말 가격</p>
                     <PriceInput
                       value={sp.weekendPrice ?? 0}
                       onChange={(value) => {
