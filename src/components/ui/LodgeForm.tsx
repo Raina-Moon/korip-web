@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import KakaoMap from "../KakaoMap";
 import PriceInput from "./PriceInput";
 import { Lodge, LodgeImage, RoomType } from "@/types/lodge";
+import Image from "next/image";
 
 type LodgeFormProps = {
   mode: "create" | "edit";
@@ -24,6 +25,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeMaxAdults, setRoomTypeMaxAdults] = useState(1);
   const [roomTypeMaxChildren, setRoomTypeMaxChildren] = useState(0);
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
+  const [lodgeImageFile, setLodgeImageFile] = useState<File[]>([]);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
 
   const handleAddRoomType = () => {
@@ -69,42 +71,77 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     }
   }, [mode, initialData]);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+
+      if (lodgeImageFile.length + newFiles.length > 10) {
+        alert("최대 10개의 이미지만 업로드할 수 있습니다.");
+        return;
+      }
+      setLodgeImageFile((prev) => [...prev, ...newFiles]);
+    }
+  };
+
   return (
     <div className="my-20 flex flex-row items-start justify-center">
       <div className="flex flex-col w-full max-w-xl p-6">
-      <KakaoMap
-        onLocationChange={(lat, lng, addr) => {
-          setLatitude(lat);
-          setLongitude(lng);
-          setAddress(addr);
-        }}
-        initialPosition={
-          mode === "edit" && initialData
-            ? {
-                lat: initialData.latitude ?? 0,
-                lng: initialData.longitude ?? 0,
-                address: initialData.address ?? "",
-              }
-            : undefined
+        <KakaoMap
+          onLocationChange={(lat, lng, addr) => {
+            setLatitude(lat);
+            setLongitude(lng);
+            setAddress(addr);
+          }}
+          initialPosition={
+            mode === "edit" && initialData
+              ? {
+                  lat: initialData.latitude ?? 0,
+                  lng: initialData.longitude ?? 0,
+                  address: initialData.address ?? "",
+                }
+              : undefined
           }
-          />
-          <div className="flex flex-col mt-7 gap-5">
-
-          <p className="text-lg font-semibold">숙소 사진 업로드</p>
-          <ul>
-          {lodgeImages.length > 0 && (
-            <li key={lodgeImages[0].id} className="mb-4">
-              <img
-                src={lodgeImages[0].imageUrl}
-                alt={`Lodge Image ${0}`}
-                className="w-full h-auto rounded-md"
-              />
-            </li>
-          )}
-          </ul>
+        />
+        <div className="flex flex-col mt-7 gap-5">
+          <div className="text-start gap-1">
+            <p className="text-lg font-semibold">숙소 사진 업로드</p>
+            <p className="text-sm text-gray-500">
+              숙소 전경 및 공용시설 사진을 업로드 해주세요.
+            </p>
           </div>
-
+          <div className="grid grid-cols-5 gap-4">
+            {Array.from({ length: 10 }).map((_, idx) => {
+              const file = lodgeImageFile[idx];
+              return (
+                <div
+                  key={idx}
+                  className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
+                >
+                  {file ? (
+                    <Image
+                      src={URL.createObjectURL(file)}
+                      alt={`Lodge Image ${idx + 1}`}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <>
+                      <input
+                        id={`file-input-${idx}`}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={lodgeImageFile.length > idx}
+                      />
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </div>
+        </div>
+      </div>
 
       <form
         onSubmit={(e) => {
@@ -141,7 +178,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
           placeholder="숙소에 대한 자세한 설명을 입력하세요."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-    className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
+          className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
         />
 
         <p className="font-bold text-lg">숙소 유형</p>
@@ -192,7 +229,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   handleRoomTypeChange(idx, "description", e.target.value)
                 }
                 placeholder="방 설명"
-    className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
+                className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[120px] focus:border-blue-500 focus:outline-none"
               />
               <p className="font-semibold text-lg">기본 가격</p>
               <PriceInput
