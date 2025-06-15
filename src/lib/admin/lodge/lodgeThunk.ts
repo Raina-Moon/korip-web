@@ -24,7 +24,11 @@ export const fetchLodges = createAsyncThunk<
   }
 });
 
-type CreateLodgePayload = Omit<Lodge, "id" | "roomTypes"> & {
+type CreateLodgePayload = Omit<
+  Lodge,
+  "id" | "roomTypes" | "hotSpringLodgeImage"
+> & {
+  lodgeImageFile: File[];
   roomTypes: Omit<RoomType, "seasonalPricing"> &
     {
       seasonalPricing?: SeasonalPricing[];
@@ -37,12 +41,29 @@ export const createLodge = createAsyncThunk<
   { rejectValue: string }
 >("admin/createLodge", async (newLodgeData, { dispatch, rejectWithValue }) => {
   try {
+    const formData = new FormData();
+
+    formData.append("name", newLodgeData.name);
+    formData.append("address", newLodgeData.address);
+    formData.append("latitude", newLodgeData.latitude.toString());
+    formData.append("longitude", newLodgeData.longitude.toString());
+    formData.append("description", newLodgeData.description || "");
+    formData.append("accommodationType", newLodgeData.accommodationType);
+    formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
+
+    newLodgeData.lodgeImageFile.forEach((file) => {
+      formData.append("lodgeImageFile", file);
+    });
+
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
-      newLodgeData,
-      { withCredentials: true }
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      }
     );
-    return res.data as { message: string; lodge: Lodge };
+    return res.data;
   } catch (err: any) {
     if (err.response?.status === 401 || err.response?.status === 403) {
       dispatch(logout());
