@@ -1,7 +1,7 @@
-import { Lodge, RoomType } from "@/app/lib/admin/lodge/lodgeThunk";
 import React, { useEffect, useState } from "react";
 import KakaoMap from "../KakaoMap";
 import PriceInput from "./PriceInput";
+import { Lodge, LodgeImage, RoomType } from "@/types/lodge";
 
 type LodgeFormProps = {
   mode: "create" | "edit";
@@ -24,6 +24,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeMaxAdults, setRoomTypeMaxAdults] = useState(1);
   const [roomTypeMaxChildren, setRoomTypeMaxChildren] = useState(0);
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
+  const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -37,6 +38,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         maxChildren: roomTypeMaxChildren,
         totalRooms: roomTypeTotalRooms,
         seasonalPricing: [],
+        roomTypeImage: [],
       },
     ]);
   };
@@ -63,6 +65,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setDescription(initialData.description ?? "");
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
+      setLodgeImages(initialData.hotSpringLodgeImage ?? []);
     }
   }, [mode, initialData]);
 
@@ -85,6 +88,22 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             : undefined
           }
           />
+          <div className="flex flex-col mt-7 gap-5">
+
+          <p className="text-lg font-semibold">숙소 사진 업로드</p>
+          <ul>
+          {lodgeImages.length > 0 && (
+            <li key={lodgeImages[0].id} className="mb-4">
+              <img
+                src={lodgeImages[0].imageUrl}
+                alt={`Lodge Image ${0}`}
+                className="w-full h-auto rounded-md"
+              />
+            </li>
+          )}
+          </ul>
+          </div>
+
           </div>
 
       <form
