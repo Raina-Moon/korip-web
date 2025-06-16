@@ -52,16 +52,16 @@ const LodgeDetailPage = () => {
   };
 
   const handlePrevImage = () => {
-    if (!lodge.hotSpringLodgeImage) return;
+    if (!lodge.images) return;
     setCurrentImage((prev) =>
-      prev === 0 ? lodge.hotSpringLodgeImage.length - 1 : prev - 1
+      prev === 0 ? lodge.images.length - 1 : prev - 1
     );
   };
 
   const handleNextImage = () => {
-    if (!lodge.hotSpringLodgeImage) return;
+    if (!lodge.images) return;
     setCurrentImage((prev) =>
-      prev === lodge.hotSpringLodgeImage.length - 1 ? 0 : prev + 1
+      prev === lodge.images.length - 1 ? 0 : prev + 1
     );
   };
 
@@ -112,11 +112,10 @@ const LodgeDetailPage = () => {
             </p>
           </div>
           <div className="flex-1">
-            {lodge.hotSpringLodgeImage &&
-            lodge.hotSpringLodgeImage.length > 0 ? (
+            {lodge.images && lodge.images.length > 0 ? (
               <>
                 <img
-                  src={lodge.hotSpringLodgeImage[currentImage].imageUrl}
+                  src={lodge.images[currentImage].imageUrl}
                   alt={lodge.name}
                   className="w-full h-auto rounded-lg shadow-md"
                 />
