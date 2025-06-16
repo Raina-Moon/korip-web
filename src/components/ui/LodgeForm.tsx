@@ -67,7 +67,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setDescription(initialData.description ?? "");
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
-      setLodgeImages(initialData.hotSpringLodgeImage ?? []);
+      setLodgeImages(initialData.images ?? []);
     }
   }, [mode, initialData]);
 
