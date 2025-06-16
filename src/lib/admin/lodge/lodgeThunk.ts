@@ -51,7 +51,7 @@ export const createLodge = createAsyncThunk<
     formData.append("accommodationType", newLodgeData.accommodationType);
     formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
-    newLodgeData.lodgeImageFile.forEach((file) => {
+    newLodgeData.lodgeImageFile.forEach((file: File) => {
       formData.append("hotSpringLodgeImages", file);
     });
 
