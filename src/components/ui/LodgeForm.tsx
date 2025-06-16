@@ -27,6 +27,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
   const [lodgeImageFile, setLodgeImageFile] = useState<File[]>([]);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -71,17 +73,18 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     }
   }, [mode, initialData]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>  ) => {
     const files = e.target.files;
-    if (files) {
-      const newFiles = Array.from(files);
-
-      if (lodgeImageFile.length + newFiles.length > 10) {
-        alert("최대 10개의 이미지만 업로드할 수 있습니다.");
-        return;
-      }
-      setLodgeImageFile((prev) => [...prev, ...newFiles]);
+    if (files && files[0]) {
+      setUploadedImages((prev) => {
+        return [...prev, files[0]];
+      });
     }
+  };
+
+  const handleImageRemove = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -111,15 +114,11 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             </p>
           </div>
           <div className="grid grid-cols-5 gap-4">
-            {Array.from({ length: 10 }).map((_, idx) => {
-              const file = lodgeImageFile[idx];
-              return (
-                <label
-                  htmlFor={`file-input-${idx}`}
-                  key={idx}
-                  className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
-                >
-                  {file ? (
+            {uploadedImages.map((file, idx) => (
+              <div
+                key={idx}
+                className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
+              >
                     <Image
                       src={URL.createObjectURL(file)}
                       alt={`Lodge Image ${idx + 1}`}
@@ -127,22 +126,33 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       width={128}
                       height={128}
                     />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-gray-500">
-                      <p>이미지 업로드</p>
+                    <button
+                      type="button"
+                      className="absolute z-10 right-0 top-5 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleImageRemove(idx);
+                      }}
+                    >
+                      X
+                    </button>
                     </div>
-                  )}
+                 
 
-                  <input
-                    id={`file-input-${idx}`}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </label>
-              );
-            })}
+            ))}
+            {Array.from({ length: 10 - uploadedImages.length }).map((_, idx) => (
+              <div key={idx} className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden">
+                <p>이미지 업로드</p>
+                <input
+                  id={`file-input-${idx}`}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -161,7 +171,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               ...room,
               seasonalPricing: room.seasonalPricing ?? [],
             })),
-            lodgeImageFile
+            lodgeImageFile,
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
