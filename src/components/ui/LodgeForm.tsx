@@ -114,7 +114,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             {Array.from({ length: 10 }).map((_, idx) => {
               const file = lodgeImageFile[idx];
               return (
-                <div
+                <label
+                  htmlFor={`file-input-${idx}`}
                   key={idx}
                   className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
                 >
@@ -125,18 +126,19 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <>
-                      <input
-                        id={`file-input-${idx}`}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                        disabled={lodgeImageFile.length > idx}
-                      />
-                    </>
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      <p>이미지 업로드</p>
+                    </div>
                   )}
-                </div>
+
+                  <input
+                    id={`file-input-${idx}`}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </label>
               );
             })}
           </div>
@@ -157,6 +159,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               ...room,
               seasonalPricing: room.seasonalPricing ?? [],
             })),
+            lodgeImageFile
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
