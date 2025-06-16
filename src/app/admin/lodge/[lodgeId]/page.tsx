@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   deleteLodge,
   fetchLodgeById,
@@ -9,9 +9,11 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
 import KakaoMap from "@/components/KakaoMap";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const LodgeDetailPage = () => {
+  const [currentImage, setCurrentImage] = useState(0);
+
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
 
@@ -49,13 +51,32 @@ const LodgeDetailPage = () => {
     }
   };
 
+  const handlePrevImage = () => {
+    if (!lodge.hotSpringLodgeImage) return;
+    setCurrentImage((prev) =>
+      prev === 0 ? lodge.hotSpringLodgeImage.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    if (!lodge.hotSpringLodgeImage) return;
+    setCurrentImage((prev) =>
+      prev === lodge.hotSpringLodgeImage.length - 1 ? 0 : prev + 1
+    );
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className=" relative flex-row items-center justify-between mb-6">
-        <div className="cursor-pointer absolute left-0" onClick={() => router.back()}>
+        <div
+          className="cursor-pointer absolute left-0"
+          onClick={() => router.back()}
+        >
           <ArrowLeft />
         </div>
-        <h1 className="text-3xl font-bold text-gray-800 text-center">숙소 상세 정보</h1>
+        <h1 className="text-3xl font-bold text-gray-800 text-center">
+          숙소 상세 정보
+        </h1>
         <div className="gap-4 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -79,37 +100,49 @@ const LodgeDetailPage = () => {
             </h2>
             <p>
               <span className="font-medium text-gray-600">주소:</span>{" "}
-               {lodge.address}
+              {lodge.address}
             </p>
             <p>
               <span className="font-medium text-gray-600">설명:</span>{" "}
               {lodge.description}
             </p>
             <p>
-              <span className="font-medium text-gray-600">
-                숙소 유형:
-              </span>{" "}
+              <span className="font-medium text-gray-600">숙소 유형:</span>{" "}
               {lodge.accommodationType}
             </p>
           </div>
           <div className="flex-1">
-            <KakaoMap
-              viewOnly
-              initialPosition={{
-                lat: Number(lodge.latitude),
-                lng: Number(lodge.longitude),
-                address: lodge.address,
-              }}
-              onLocationChange={() => {}}
-            />
+            {lodge.hotSpringLodgeImage &&
+            lodge.hotSpringLodgeImage.length > 0 ? (
+              <>
+                <img
+                  src={lodge.hotSpringLodgeImage[currentImage].imageUrl}
+                  alt={lodge.name}
+                  className="w-full h-auto rounded-lg shadow-md"
+                />
+
+                <button
+                  onClick={handlePrevImage}
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                >
+                  <ArrowLeft />
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                >
+                  <ArrowRight />
+                </button>
+              </>
+            ) : (
+              <p className="text-gray-500">이미지가 없습니다.</p>
+            )}
           </div>
         </div>
       </section>
 
       <section>
-        <h3 className="text-2xl font-bold text-gray-700 mt-10 mb-4">
-          방 유형
-        </h3>
+        <h3 className="text-2xl font-bold text-gray-700 mt-10 mb-4">방 유형</h3>
         <div className="grid gap-6">
           {lodge.roomTypes?.map((roomType, idx) => (
             <div
@@ -148,9 +181,7 @@ const LodgeDetailPage = () => {
               {roomType.seasonalPricing &&
                 roomType.seasonalPricing.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="text-md font-semibold mb-2">
-                      성수기
-                    </h4>
+                    <h4 className="text-md font-semibold mb-2">성수기</h4>
                     <table className="w-full text-sm text-left border">
                       <thead className="bg-gray-100">
                         <tr>
@@ -163,16 +194,23 @@ const LodgeDetailPage = () => {
                       <tbody>
                         {roomType.seasonalPricing.map((season, idx) => (
                           <tr key={idx}>
-                            <td className="border px-2 py-1">{new Date(season.from).toLocaleDateString("ko-KR",{
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}</td>
-                            <td className="border px-2 py-1">{new Date(season.to).toLocaleDateString("ko-KR", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}</td>
+                            <td className="border px-2 py-1">
+                              {new Date(season.from).toLocaleDateString(
+                                "ko-KR",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
+                            </td>
+                            <td className="border px-2 py-1">
+                              {new Date(season.to).toLocaleDateString("ko-KR", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </td>
                             <td className="border px-2 py-1">
                               {typeof season.basePrice === "number"
                                 ? `${season.basePrice.toLocaleString()}원`
@@ -191,6 +229,18 @@ const LodgeDetailPage = () => {
                 )}
             </div>
           ))}
+        </div>
+
+        <div className="flex-1 mt-20">
+          <KakaoMap
+            viewOnly
+            initialPosition={{
+              lat: Number(lodge.latitude),
+              lng: Number(lodge.longitude),
+              address: lodge.address,
+            }}
+            onLocationChange={() => {}}
+          />
         </div>
       </section>
     </div>
