@@ -96,6 +96,8 @@ type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
     {
       seasonalPricing?: SeasonalPricing[];
     }[];
+  keepImgIds?: number[];
+  newImageFiles: File[];
 };
 
 export const updateLodge = createAsyncThunk<
@@ -106,9 +108,25 @@ export const updateLodge = createAsyncThunk<
   "admin/updateLodge",
   async (updatedLodgeData, { dispatch, rejectWithValue }) => {
     try {
+      const formData = new FormData();
+
+      formData.append("name", updatedLodgeData.name);
+      formData.append("address", updatedLodgeData.address);
+      formData.append("latitude", updatedLodgeData.latitude.toString());
+      formData.append("longitude", updatedLodgeData.longitude.toString());
+      formData.append("description", updatedLodgeData.description || "");
+      formData.append("accommodationType", updatedLodgeData.accommodationType);
+      formData.append("roomTypes", JSON.stringify(updatedLodgeData.roomTypes));
+
+      formData.append("keepImgIds", JSON.stringify(updatedLodgeData.keepImgIds || []));
+
+      updatedLodgeData.newImageFiles.forEach((file) => {
+        formData.append("hotSpringLodgeImages", file);
+      })
+
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
-        updatedLodgeData,
+        formData,
         { withCredentials: true }
       );
       return res.data as { message: string; lodge: Lodge };
