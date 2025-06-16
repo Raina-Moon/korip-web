@@ -13,13 +13,15 @@ const CreateLodgePage = () => {
   const router = useRouter();
 
   const handleCreateLodge = async (data: any) => {
+    const {lodgeImageFile, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({
-        ...data,
-        roomTypes: data.roomTypes.map((room: RoomType) => ({
+        ...dataWithoutImages,
+        roomTypes: dataWithoutImages.roomTypes.map((room: RoomType) => ({
           ...room,
           seasonalPricing: room.seasonalPricing ?? [],
         })),
+        lodgeImageFile,
       })
     );
 
