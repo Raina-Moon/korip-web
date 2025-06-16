@@ -113,7 +113,7 @@ const LodgeDetailPage = () => {
           </div>
           <div className="flex-1">
             {lodge.images && lodge.images.length > 0 ? (
-              <>
+              <div className="relative">
                 <img
                   src={lodge.images[currentImage].imageUrl}
                   alt={lodge.name}
@@ -122,17 +122,17 @@ const LodgeDetailPage = () => {
 
                 <button
                   onClick={handlePrevImage}
-                  className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
                 >
                   <ArrowLeft />
                 </button>
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
                 >
                   <ArrowRight />
                 </button>
-              </>
+              </div>
             ) : (
               <p className="text-gray-500">이미지가 없습니다.</p>
             )}
