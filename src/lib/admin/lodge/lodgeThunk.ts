@@ -52,7 +52,7 @@ export const createLodge = createAsyncThunk<
     formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
     newLodgeData.lodgeImageFile.forEach((file) => {
-      formData.append("lodgeImageFile", file);
+      formData.append("hotSpringLodgeImages", file);
     });
 
     const res = await axios.post(
