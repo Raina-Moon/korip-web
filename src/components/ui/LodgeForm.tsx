@@ -124,6 +124,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       src={URL.createObjectURL(file)}
                       alt={`Lodge Image ${idx + 1}`}
                       className="object-cover w-full h-full"
+                      width={128}
+                      height={128}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-500">
