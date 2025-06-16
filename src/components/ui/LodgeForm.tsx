@@ -29,7 +29,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
 
-
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
       ...prev,
@@ -73,8 +72,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     }
   }, [mode, initialData]);
 
-  const handleImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>  ) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files[0]) {
       setUploadedImages((prev) => {
@@ -85,6 +83,10 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleImageRemove = (index: number) => {
     setUploadedImages((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleRemoveLodgeImage = (index: number) => {
+    setLodgeImages((prev) => prev.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -114,45 +116,65 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             </p>
           </div>
           <div className="grid grid-cols-5 gap-4">
+            {mode === "edit" &&
+              lodgeImages.map((image, idx) => (
+                <div
+                  key={idx}
+                  className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
+                >
+                  <Image
+                    src={image.imageUrl}
+                    alt={`Lodge Image ${idx + 1}`}
+                    className="object-cover w-full h-full"
+                    width={128}
+                    height={128}
+                  />
+                  <button
+                    type="button"
+                    className="absolute z-10 right-0 top-5 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                    onClick={() => handleRemoveLodgeImage(idx)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+
             {uploadedImages.map((file, idx) => (
               <div
                 key={idx}
                 className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden"
               >
-                    <Image
-                      src={URL.createObjectURL(file)}
-                      alt={`Lodge Image ${idx + 1}`}
-                      className="object-cover w-full h-full"
-                      width={128}
-                      height={128}
-                    />
-                    <button
-                      type="button"
-                      className="absolute z-10 right-0 top-5 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleImageRemove(idx);
-                      }}
-                    >
-                      X
-                    </button>
-                    </div>
-                 
-
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt={`Lodge Image ${idx + 1}`}
+                  className="object-cover w-full h-full"
+                  width={128}
+                  height={128}
+                />
+                <button
+                  type="button"
+                  className="absolute z-10 right-0 top-5 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleImageRemove(idx);
+                  }}
+                >
+                  X
+                </button>
+              </div>
             ))}
-            {Array.from({ length: 10 - uploadedImages.length }).map((_, idx) => (
-              <div key={idx} className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden">
+            {lodgeImages.length + uploadedImages.length < 10 && (
+              <div className="relative w-full h-32 bg-gray-300 rounded-md overflow-hidden">
                 <p>이미지 업로드</p>
                 <input
-                  id={`file-input-${idx}`}
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="absolute inset-0 opacity-0 cursor-pointer"
                 />
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
