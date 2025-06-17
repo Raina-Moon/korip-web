@@ -139,8 +139,9 @@ export const updateLodge = createAsyncThunk<
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
         formData,
-        { withCredentials: true }
-      );
+        { withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" }
+      });
       return res.data as { message: string; lodge: Lodge };
     } catch (err: any) {
       if (err.response?.status === 401 || err.response?.status === 403) {
