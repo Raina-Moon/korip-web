@@ -183,6 +183,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         onSubmit={(e) => {
           e.preventDefault();
           onSubmit({
+            id:initialData?.id,
             name,
             address,
             latitude,
@@ -194,6 +195,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               seasonalPricing: room.seasonalPricing ?? [],
             })),
             lodgeImageFile,
+            newImageFiles: uploadedImages,
+            keepImgIds: lodgeImages.map((img) => img.id),
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
