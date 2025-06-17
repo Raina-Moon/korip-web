@@ -25,7 +25,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeMaxAdults, setRoomTypeMaxAdults] = useState(1);
   const [roomTypeMaxChildren, setRoomTypeMaxChildren] = useState(0);
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
-  const [lodgeImageFile, setLodgeImageFile] = useState<File[]>([]);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
 
@@ -69,15 +68,15 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
       setLodgeImages(initialData.images ?? []);
+      console.log("Initial Image Data:",initialData.images);
     }
   }, [mode, initialData]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      setUploadedImages((prev) => {
-        return [...prev, files[0]];
-      });
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0 ) {
+      setUploadedImages((prev) => [...prev, ...files]);
+      console.log("Uploaded Images:", files);
     }
   };
 
@@ -87,6 +86,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleRemoveLodgeImage = (index: number) => {
     setLodgeImages((prev) => prev.filter((_, idx) => idx !== index));
+    console.log("Remaining Lodge Image :", lodgeImages);
   };
 
   return (
@@ -194,7 +194,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               ...room,
               seasonalPricing: room.seasonalPricing ?? [],
             })),
-            lodgeImageFile,
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
           });
