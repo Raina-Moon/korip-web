@@ -124,6 +124,17 @@ export const updateLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       })
 
+      console.log("Updating lodge with data:", {
+        name: updatedLodgeData.name,
+        address: updatedLodgeData.address,
+        latitude: updatedLodgeData.latitude,
+        longitude: updatedLodgeData.longitude,
+        description: updatedLodgeData.description,
+        accommodationType: updatedLodgeData.accommodationType,
+        roomTypes: updatedLodgeData.roomTypes,
+        keepImgIds: updatedLodgeData.keepImgIds,
+      })
+      
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
         formData,
