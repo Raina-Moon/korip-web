@@ -86,6 +86,14 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     setLodgeImages((prev) => prev.filter((_, idx) => idx !== index));
   };
 
+  const formateDate = (date:string | Date) => {
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = `${d.getMonth() + 1}`.padStart(2, '0')
+    const day = `${d.getDate()}`.padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   return (
     <div className="my-20 flex flex-row items-start justify-center">
       <div className="flex flex-col w-full max-w-xl p-6">
@@ -125,6 +133,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     className="object-cover w-full h-full"
                     width={128}
                     height={128}
+                    style={{ width: "auto", height: "auto" }} 
                   />
                   <button
                     type="button"
@@ -334,7 +343,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   <div key={spIdx} className="flex gap-2 items-center mb-1">
                     <input
                       type="date"
-                      value={sp.from}
+                      value={formateDate(sp.from)}
                       onChange={(e) => {
                         const updated = [...(room.seasonalPricing ?? [])];
                         updated[spIdx].from = e.target.value;
@@ -345,7 +354,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     <span>~</span>
                     <input
                       type="date"
-                      value={sp.to}
+                      value={formateDate(sp.to)}
                       onChange={(e) => {
                         const updated = [...(room.seasonalPricing ?? [])];
                         updated[spIdx].to = e.target.value;
