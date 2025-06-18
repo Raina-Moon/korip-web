@@ -58,9 +58,23 @@ export const createLodge = createAsyncThunk<
       formData.append("hotSpringLodgeImages", file);
     });
 
-    console.log("Appending room type images to FormData");
+    console.log("Appending room type images to FormData", newLodgeData.roomTypeImages);
+    if(!Array.isArray(newLodgeData.roomTypeImages) || newLodgeData.roomTypeImages.length === 0) {
+      console.error("roomTypeImages is not an array or is empty", newLodgeData.roomTypeImages);
+      throw new Error("roomTypeImages must be an array of File arrays");
+    }
     newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-      roomFiles.forEach((file: File, i) => {
+      console.log(`Appending images for room type ${idx}`, roomFiles);
+      if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
+        console.error(`roomTypeImages[${idx}] is not an array or is empty`, roomFiles);
+        throw new Error(`roomTypeImages[${idx}] must be an array of File objects`);
+      }
+      roomFiles.forEach((file: File, i: number) => {
+        if(!(file instanceof File)) {
+          console.error(`roomTypeImages[${idx}][${i}] is not a File`,file)
+          throw new Error(`roomTypeImages[${idx}][${i}] must be a File object`);
+        }
+        console.log(`Appending file for room type ${idx}, image ${i}`, file);
         formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
       });
     });
