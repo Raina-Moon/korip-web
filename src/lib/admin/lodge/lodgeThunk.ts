@@ -33,6 +33,7 @@ type CreateLodgePayload = Omit<
     {
       seasonalPricing?: SeasonalPricing[];
     }[];
+    roomTypeImages: File[][];
 };
 
 export const createLodge = createAsyncThunk<
@@ -53,6 +54,12 @@ export const createLodge = createAsyncThunk<
 
     newLodgeData.lodgeImageFile.forEach((file: File) => {
       formData.append("hotSpringLodgeImages", file);
+    });
+
+    newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
+      roomFiles.forEach((file: File, i) => {
+        formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+      });
     });
 
     const res = await axios.post(
