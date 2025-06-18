@@ -74,6 +74,7 @@ export const createLodge = createAsyncThunk<
         withCredentials: true,
       }
     );
+    console.log("Lodge created successfully", res.data);
     return res.data;
   } catch (err: any) {
     if (err.response?.status === 401 || err.response?.status === 403) {
