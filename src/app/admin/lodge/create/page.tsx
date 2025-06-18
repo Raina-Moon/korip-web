@@ -13,6 +13,7 @@ const CreateLodgePage = () => {
   const router = useRouter();
 
   const handleCreateLodge = async (data: any) => {
+    console.log("Creating lodge with data:", data);
     const {lodgeImageFile, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({

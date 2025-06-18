@@ -75,7 +75,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0 ) {
+    if (files.length > 0) {
       setUploadedImages((prev) => [...prev, ...files]);
     }
   };
@@ -88,13 +88,13 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     setLodgeImages((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  const formateDate = (date:string | Date) => {
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = `${d.getMonth() + 1}`.padStart(2, '0')
-    const day = `${d.getDate()}`.padStart(2, '0')
-    return `${year}-${month}-${day}`
-  }
+  const formateDate = (date: string | Date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <div className="my-20 flex flex-row items-start justify-center">
@@ -135,7 +135,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     className="object-cover w-full h-full"
                     width={128}
                     height={128}
-                    style={{ width: "auto", height: "auto" }} 
+                    style={{ width: "auto", height: "auto" }}
                   />
                   <button
                     type="button"
@@ -190,8 +190,21 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          console.log("Submitting form...");
+          console.log("Submitted Data : ", {
+            name,
+            address,
+            latitude,
+            longitude,
+            description,
+            accommodationType,
+            roomTypes,
+            lodgeImages,
+            uploadedImages,
+            roomTypeImages,
+          })
           onSubmit({
-            id:initialData?.id,
+            id: initialData?.id,
             name,
             address,
             latitude,
@@ -204,7 +217,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
-            roomTypeImages
+            roomTypeImages,
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
@@ -342,42 +355,42 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               />
 
               <p className="font-semibold text-lg">방 이미지 업로드</p>
-<div className="flex flex-wrap gap-2">
-  {roomTypeImages[idx]?.map((file, imgIdx) => (
-    <div key={imgIdx} className="relative w-24 h-24">
-      <Image
-        src={URL.createObjectURL(file)}
-        alt="preview"
-        fill
-        className="object-cover rounded"
-      />
-      <button
-        type="button"
-        className="absolute top-0 right-0 bg-black text-white text-xs p-1"
-        onClick={() => {
-          const copy = [...roomTypeImages];
-          copy[idx] = copy[idx].filter((_, i) => i !== imgIdx);
-          setRoomTypeImages(copy);
-        }}
-      >
-        X
-      </button>
-    </div>
-  ))}
-  {roomTypeImages[idx]?.length < 5 && (
-    <input
-      type="file"
-      accept="image/*"
-      onChange={(e) => {
-        if (e.target.files?.[0]) {
-          const copy = [...roomTypeImages];
-          copy[idx] = [...(copy[idx] || []), e.target.files[0]];
-          setRoomTypeImages(copy);
-        }
-      }}
-    />
-  )}
-</div>
+              <div className="flex flex-wrap gap-2">
+                {roomTypeImages[idx]?.map((file, imgIdx) => (
+                  <div key={imgIdx} className="relative w-24 h-24">
+                    <Image
+                      src={URL.createObjectURL(file)}
+                      alt="preview"
+                      fill
+                      className="object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0 bg-black text-white text-xs p-1"
+                      onClick={() => {
+                        const copy = [...roomTypeImages];
+                        copy[idx] = copy[idx].filter((_, i) => i !== imgIdx);
+                        setRoomTypeImages(copy);
+                      }}
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+                {roomTypeImages[idx]?.length < 5 && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        const copy = [...roomTypeImages];
+                        copy[idx] = [...(copy[idx] || []), e.target.files[0]];
+                        setRoomTypeImages(copy);
+                      }
+                    }}
+                  />
+                )}
+              </div>
 
               <div className="border-t pt-10">
                 <h4 className="font-bold text-xl">성수기 / 비수기 설정</h4>
