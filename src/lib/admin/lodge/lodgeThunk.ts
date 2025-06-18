@@ -44,6 +44,7 @@ export const createLodge = createAsyncThunk<
   try {
     const formData = new FormData();
 
+    console.log("Creating FormData")
     formData.append("name", newLodgeData.name);
     formData.append("address", newLodgeData.address);
     formData.append("latitude", newLodgeData.latitude.toString());
@@ -52,16 +53,19 @@ export const createLodge = createAsyncThunk<
     formData.append("accommodationType", newLodgeData.accommodationType);
     formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
+    console.log("Appending lodge images to FormData");
     newLodgeData.lodgeImageFile.forEach((file: File) => {
       formData.append("hotSpringLodgeImages", file);
     });
 
+    console.log("Appending room type images to FormData");
     newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
       roomFiles.forEach((file: File, i) => {
         formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
       });
     });
 
+    console.log("Sending request to create lodge",Array.from(formData.entries()));
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
       formData,
