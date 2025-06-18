@@ -27,6 +27,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [roomTypeImages, setRoomTypeImages] = useState<File[][]>([]);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -43,6 +44,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         roomTypeImage: [],
       },
     ]);
+    setRoomTypeImages((prev) => [...prev, []]);
   };
 
   const handleRoomTypeChange = (idx: number, key: string, value: any) => {
@@ -202,6 +204,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
+            roomTypeImages
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
@@ -337,6 +340,45 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                 placeholder="총 객실 수"
                 className="input border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
               />
+
+              <p className="font-semibold text-lg">방 이미지 업로드</p>
+<div className="flex flex-wrap gap-2">
+  {roomTypeImages[idx]?.map((file, imgIdx) => (
+    <div key={imgIdx} className="relative w-24 h-24">
+      <Image
+        src={URL.createObjectURL(file)}
+        alt="preview"
+        fill
+        className="object-cover rounded"
+      />
+      <button
+        type="button"
+        className="absolute top-0 right-0 bg-black text-white text-xs p-1"
+        onClick={() => {
+          const copy = [...roomTypeImages];
+          copy[idx] = copy[idx].filter((_, i) => i !== imgIdx);
+          setRoomTypeImages(copy);
+        }}
+      >
+        X
+      </button>
+    </div>
+  ))}
+  {roomTypeImages[idx]?.length < 5 && (
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => {
+        if (e.target.files?.[0]) {
+          const copy = [...roomTypeImages];
+          copy[idx] = [...(copy[idx] || []), e.target.files[0]];
+          setRoomTypeImages(copy);
+        }
+      }}
+    />
+  )}
+</div>
+
               <div className="border-t pt-10">
                 <h4 className="font-bold text-xl">성수기 / 비수기 설정</h4>
                 {room.seasonalPricing?.map((sp, spIdx) => (
