@@ -70,7 +70,7 @@ const LodgeDetailPage = () => {
       <div className=" relative flex-row items-center justify-between mb-6">
         <div
           className="cursor-pointer absolute left-0"
-          onClick={() => router.back()}
+          onClick={() => router.push("/admin/lodge")}
         >
           <ArrowLeft />
         </div>
