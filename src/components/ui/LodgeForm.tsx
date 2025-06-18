@@ -68,7 +68,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
       setLodgeImages(initialData.images ?? []);
-      console.log("Initial Image Data:",initialData.images);
     }
   }, [mode, initialData]);
 
@@ -76,7 +75,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0 ) {
       setUploadedImages((prev) => [...prev, ...files]);
-      console.log("Uploaded Images:", files);
     }
   };
 
@@ -86,7 +84,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleRemoveLodgeImage = (index: number) => {
     setLodgeImages((prev) => prev.filter((_, idx) => idx !== index));
-    console.log("Remaining Lodge Image :", lodgeImages);
   };
 
   return (
