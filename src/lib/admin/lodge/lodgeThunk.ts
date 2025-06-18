@@ -53,7 +53,11 @@ export const createLodge = createAsyncThunk<
     formData.append("accommodationType", newLodgeData.accommodationType);
     formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
-    console.log("Appending lodge images to FormData");
+    console.log("Appending lodge images to FormData", newLodgeData.lodgeImageFile);
+    if(!Array.isArray(newLodgeData.lodgeImageFile) || newLodgeData.lodgeImageFile.length === 0) {
+      console.error("lodgeImageFile is not an array or is empty", newLodgeData.lodgeImageFile);
+      throw new Error("lodgeImageFile must be an array of File objects");
+    }
     newLodgeData.lodgeImageFile.forEach((file: File) => {
       formData.append("hotSpringLodgeImages", file);
     });
