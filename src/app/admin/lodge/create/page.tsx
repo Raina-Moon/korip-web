@@ -30,8 +30,9 @@ const CreateLodgePage = () => {
     const lodgeData = await dispatch(
       createLodge({
         ...dataWithoutImages,
-        roomTypes: dataWithoutImages.roomTypes.map((room) => {
-          const {seasonalPricing, ...roomWithoutSeasonal} = room;
+        description: dataWithoutImages.description ?? null,
+        roomTypes: dataWithoutImages.roomTypes.map((room): Omit<RoomType, "seasonalPricing"> & { seasonalPricing?: SeasonalPricing[] } => {
+          const { seasonalPricing, ...roomWithoutSeasonal } = room;
           return {
             ...roomWithoutSeasonal,
             seasonalPricing: seasonalPricing ?? [],
