@@ -130,7 +130,7 @@ const LodgeDetailPage = () => {
                 <Image
                   src={lodge.images[currentImage].imageUrl}
                   alt={lodge.name}
-                  className="w-full h-auto rounded-lg shadow-md"
+                  className="w-full h-auto rounded-lg shadow-md cursor-pointer"
                   width={500}
                   height={300}
                   onClick={() =>
@@ -202,7 +202,7 @@ const LodgeDetailPage = () => {
                       key={index}
                       src={image.imageUrl}
                       alt={`${roomType.name} 이미지 ${index + 1}`}
-                      className="rounded-md shadow-md object-cover w-full h-32"
+                      className="rounded-md shadow-md object-cover w-full h-32 cursor-pointer"
                       width={300}
                       height={200}
                       onClick={() => openImageModal(image.imageUrl)}
