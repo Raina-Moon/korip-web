@@ -177,6 +177,19 @@ const LodgeDetailPage = () => {
                 </p>
               </div>
 
+              {roomType.images && roomType.images.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                  {roomType.images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image.imageUrl}
+                      alt={`${roomType.name} 이미지 ${index + 1}`}
+                      className="rounded-md shadow-md object-cover w-full h-32"
+                    />
+                  ))}
+                </div>
+              )}
+
               {roomType.seasonalPricing &&
                 roomType.seasonalPricing.length > 0 && (
                   <div className="mt-4">
