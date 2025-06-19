@@ -14,6 +14,8 @@ import Image from "next/image";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState("");
 
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
@@ -64,6 +66,16 @@ const LodgeDetailPage = () => {
     setCurrentImage((prev) =>
       prev === lodge.images.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const openImageModal = (url: string) => {
+    setModalImageUrl(url);
+    setIsOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsOpen(false);
+    setModalImageUrl("");
   };
 
   return (
@@ -121,6 +133,9 @@ const LodgeDetailPage = () => {
                   className="w-full h-auto rounded-lg shadow-md"
                   width={500}
                   height={300}
+                  onClick={() =>
+                    openImageModal(lodge.images[currentImage].imageUrl)
+                  }
                 />
 
                 <button
@@ -190,6 +205,7 @@ const LodgeDetailPage = () => {
                       className="rounded-md shadow-md object-cover w-full h-32"
                       width={300}
                       height={200}
+                      onClick={() => openImageModal(image.imageUrl)}
                     />
                   ))}
                 </div>
@@ -260,6 +276,21 @@ const LodgeDetailPage = () => {
           />
         </div>
       </section>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeImageModal}
+        >
+          <Image
+            src={modalImageUrl}
+            alt="Enlarged image"
+            className="max-w-full max-h-full"
+            width={800}
+            height={600}
+          />
+        </div>
+      )}
     </div>
   );
 };
