@@ -26,13 +26,13 @@ export const fetchLodges = createAsyncThunk<
 
 type CreateLodgePayload = Omit<
   Lodge,
-  "id" | "roomTypes" | "hotSpringLodgeImage"
+  "id" | "roomTypes" | "hotSpringLodgeImage" | "images"
 > & {
   lodgeImageFile: File[];
-  roomTypes: Omit<RoomType, "seasonalPricing"> &
+  roomTypes: (Omit<RoomType, "seasonalPricing"> &
     {
       seasonalPricing?: SeasonalPricing[];
-    }[];
+    })[];
     roomTypeImages: File[][];
 };
 
