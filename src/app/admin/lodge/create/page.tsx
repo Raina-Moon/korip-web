@@ -6,23 +6,39 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
-import { RoomType } from "@/types/lodge";
+import { RoomType, SeasonalPricing } from "@/types/lodge";
+
+interface CreateLodgeFormData {
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  description?: string | null;
+  accommodationType: string;
+  roomTypes: RoomType[];
+  newImageFiles: File[];
+  roomTypeImages: File[][];
+}
 
 const CreateLodgePage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const handleCreateLodge = async (data: any) => {
+  const handleCreateLodge = async (data: CreateLodgeFormData) => {
     console.log("Creating lodge with data:", data);
-    const {lodgeImageFile, ...dataWithoutImages} = data;
+    const {newImageFiles, roomTypeImages, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({
         ...dataWithoutImages,
-        roomTypes: dataWithoutImages.roomTypes.map((room: RoomType) => ({
-          ...room,
-          seasonalPricing: room.seasonalPricing ?? [],
-        })),
-        lodgeImageFile,
+        roomTypes: dataWithoutImages.roomTypes.map((room) => {
+          const {seasonalPricing, ...roomWithoutSeasonal} = room;
+          return {
+            ...roomWithoutSeasonal,
+            seasonalPricing: seasonalPricing ?? [],
+          };
+        }),
+        lodgeImageFile: newImageFiles,
+        roomTypeImages,
       })
     );
 
