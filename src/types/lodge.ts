@@ -14,6 +14,7 @@ export interface LodgeImage {
   id: number;
   lodgeId: number;
   imageUrl: string;
+  publicId: string;
 }
 
 export interface RoomType {
@@ -33,6 +34,7 @@ export interface RoomTypeImage {
   id: number;
   roomTypeId: number;
   imageUrl: string;
+  publicId: string;
 }
 
 export interface SeasonalPricing {
