@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useParams, useRouter } from "next/navigation";
 import KakaoMap from "@/components/KakaoMap";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -114,10 +115,12 @@ const LodgeDetailPage = () => {
           <div className="flex-1">
             {lodge.images && lodge.images.length > 0 ? (
               <div className="relative">
-                <img
+                <Image
                   src={lodge.images[currentImage].imageUrl}
                   alt={lodge.name}
                   className="w-full h-auto rounded-lg shadow-md"
+                  width={500}
+                  height={300}
                 />
 
                 <button
@@ -180,11 +183,13 @@ const LodgeDetailPage = () => {
               {roomType.images && roomType.images.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
                   {roomType.images.map((image, index) => (
-                    <img
+                    <Image
                       key={index}
                       src={image.imageUrl}
                       alt={`${roomType.name} 이미지 ${index + 1}`}
                       className="rounded-md shadow-md object-cover w-full h-32"
+                      width={300}
+                      height={200}
                     />
                   ))}
                 </div>
