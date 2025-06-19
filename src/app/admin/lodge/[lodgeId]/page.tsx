@@ -15,7 +15,8 @@ import Image from "next/image";
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [modalImageUrl, setModalImageUrl] = useState("");
+  const [modalImage, setModalImage] = useState<string[]>([]);
+  const [currentModalImage, setCurrentModalImage] = useState(0);
 
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
@@ -68,14 +69,28 @@ const LodgeDetailPage = () => {
     );
   };
 
-  const openImageModal = (url: string) => {
-    setModalImageUrl(url);
+  const openImageModal = (images: string[], selected: number) => {
+    setModalImage(images);
+    setCurrentModalImage(selected);
     setIsOpen(true);
   };
 
   const closeImageModal = () => {
     setIsOpen(false);
-    setModalImageUrl("");
+    setModalImage([]);
+    setCurrentModalImage(0);
+  };
+
+  const handlePrevModal = () => {
+    setCurrentModalImage((prev) =>
+      prev === 0 ? modalImage.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextModal = () => {
+    setCurrentModalImage((prev) =>
+      prev === modalImage.length - 1 ? 0 : prev + 1
+    );
   };
 
   return (
@@ -134,7 +149,10 @@ const LodgeDetailPage = () => {
                   width={500}
                   height={300}
                   onClick={() =>
-                    openImageModal(lodge.images[currentImage].imageUrl)
+                    openImageModal(
+                      lodge.images.map((img) => img.imageUrl),
+                      currentImage
+                    )
                   }
                 />
 
@@ -205,7 +223,12 @@ const LodgeDetailPage = () => {
                       className="rounded-md shadow-md object-cover w-full h-32 cursor-pointer"
                       width={300}
                       height={200}
-                      onClick={() => openImageModal(image.imageUrl)}
+                      onClick={() =>
+                        openImageModal(
+                          roomType.images?.map((img) => img.imageUrl) ?? [],
+                          index
+                        )
+                      }
                     />
                   ))}
                 </div>
@@ -278,17 +301,57 @@ const LodgeDetailPage = () => {
       </section>
 
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={closeImageModal}
-        >
-          <Image
-            src={modalImageUrl}
-            alt="Enlarged image"
-            className="max-w-full max-h-full"
-            width={800}
-            height={600}
-          />
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4">
+          <div className="relative w-full max-w-5xl h-[70vh] flex items-center justify-center">
+            <button
+              onClick={handlePrevModal}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white rounded-full p-2 z-10 hover:bg-gray-600"
+            >
+              <ArrowLeft />
+            </button>
+
+            <Image
+              src={modalImage[currentModalImage]}
+              alt="modal preview"
+              layout="fill"
+              objectFit="contain"
+              className="rounded-md"
+              priority
+            />
+            <button
+              onClick={handleNextModal}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white rounded-full p-2 z-10 hover:bg-gray-600"
+            >
+              <ArrowRight />
+            </button>
+
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 text-white text-3xl font-bold z-20"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="flex gap-2 mt-6 overflow-x-auto max-w-full px-4">
+            {modalImage.map((url, idx) => (
+              <div
+                key={idx}
+                className={`w-24 h-16 relative cursor-pointer ${
+                  idx === currentModalImage ? "ring-4 ring-blue-400" : ""
+                }`}
+                onClick={() => setCurrentModalImage(idx)}
+              >
+                <Image
+                  src={url}
+                  alt={`thumbnail-${idx}`}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
