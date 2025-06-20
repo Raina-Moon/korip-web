@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import KakaoMap from "../KakaoMap";
 import PriceInput from "./PriceInput";
-import { Lodge, LodgeImage, RoomType } from "@/types/lodge";
+import { Lodge, LodgeImage, RoomType, RoomTypeImage } from "@/types/lodge";
 import Image from "next/image";
 
 type LodgeFormProps = {
@@ -27,7 +27,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [roomTypeImages, setRoomTypeImages] = useState<File[][]>([]);
+  const [roomTypeImages, setRoomTypeImages] = useState<Array<File | RoomTypeImage>[]>([]);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -58,6 +58,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleRemoveRoomType = (idx: number) => {
     setRoomTypes((prev) => prev.filter((_, index) => index !== idx));
+    setRoomTypeImages((prev) => prev.filter((_, index) => index !== idx));
   };
 
   useEffect(() => {
@@ -70,6 +71,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
       setLodgeImages(initialData.images ?? []);
+      setRoomTypeImages(initialData.roomTypes.map((roomType) => roomType.images ? [...roomType.images] :[]));
     }
   }, [mode, initialData]);
 
@@ -95,6 +97,14 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     const day = `${d.getDate()}`.padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const newRoomTypeImageFiles = roomTypeImages.map((images) =>
+    images.filter((image) => image instanceof File)
+  );
+
+  const keepRoomTypeImageIds = roomTypeImages.map((images) =>
+    images.filter((image): image is RoomTypeImage => !(image instanceof File)).map((img) => img.id)
+  );
 
   return (
     <div className="my-20 flex flex-row items-start justify-center">
@@ -202,7 +212,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             lodgeImages,
             uploadedImages,
             roomTypeImages,
-          })
+          });
           onSubmit({
             id: initialData?.id,
             name,
@@ -217,7 +227,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
-            roomTypeImages,
+            newRoomTypeImageFiles,
+            keepRoomTypeImageIds,
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
@@ -356,10 +367,16 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
               <p className="font-semibold text-lg">방 이미지 업로드</p>
               <div className="flex flex-wrap gap-2">
-                {roomTypeImages[idx]?.map((file, imgIdx) => (
+                {roomTypeImages[idx]?.map((file, imgIdx) => {
+                  const imageUrl = 
+                  file instanceof File
+                    ? URL.createObjectURL(file)
+                    : file.imageUrl;
+
+                    return(
                   <div key={imgIdx} className="relative w-24 h-24">
                     <Image
-                      src={URL.createObjectURL(file)}
+                      src={imageUrl}
                       alt="preview"
                       fill
                       className="object-cover rounded"
@@ -375,8 +392,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                     >
                       X
                     </button>
-                  </div>
-                ))}
+                  </div>)
+})}
                 {roomTypeImages[idx]?.length < 5 && (
                   <input
                     type="file"
