@@ -3,9 +3,9 @@ import {
   createRoomInventory,
   deleteRoomInventory,
   fetchRoomInventory,
-  RoomInventory,
   updateRoomInventory,
 } from "./roomInventoryThunk";
+import { RoomInventory } from "@/types/lodge";
 
 interface RoomInventoryState {
   list: RoomInventory[];

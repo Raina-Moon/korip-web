@@ -3,9 +3,9 @@ import {
   createRoomPrice,
   deleteRoomPrice,
   fetchRoomPrice,
-  RoomPricing,
   updateRoomPrice,
 } from "./roomPricingThunk";
+import { RoomPricing } from "@/types/lodge";
 
 interface RoomPricingState {
   list: RoomPricing[];

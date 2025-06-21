@@ -3,8 +3,8 @@
 import {
   updatePassword,
   verifyCode,
-} from "@/app/lib/reset-password/resetPasswordThunk";
-import { useAppDispatch } from "@/app/lib/store/hooks";
+} from "@/lib/reset-password/resetPasswordThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 

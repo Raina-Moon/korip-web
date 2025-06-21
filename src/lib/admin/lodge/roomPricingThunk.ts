@@ -1,14 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
-
-export interface RoomPricing {
-  id: number;
-  roomTypeId: number;
-  date: string;
-  price: number;
-  priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
-}
+import { RoomPricing } from "@/types/lodge";
 
 export const fetchRoomPrice = createAsyncThunk<
   RoomPricing[],

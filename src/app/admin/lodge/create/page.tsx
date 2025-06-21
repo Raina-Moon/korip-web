@@ -1,35 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
-import { createLodge } from "@/app/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch } from "@/app/lib/store/hooks";
+import React from "react";
+import { createLodge } from "@/lib/admin/lodge/lodgeThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
-import KakaoMap from "@/app/components/KakaoMap";
+import LodgeForm from "@/components/ui/LodgeForm";
+import { ArrowLeft } from "lucide-react";
+import { RoomType, SeasonalPricing } from "@/types/lodge";
+
+interface CreateLodgeFormData {
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  description?: string | null;
+  accommodationType: string;
+  roomTypes: RoomType[];
+  newImageFiles: File[];
+  roomTypeImages: File[][];
+}
 
 const CreateLodgePage = () => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [description, setDescription] = useState("");
-  const [accommodationType, setAccommodationType] = useState("호텔");
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const handleCreateLodge = async () => {
+  const handleCreateLodge = async (data: CreateLodgeFormData) => {
+    console.log("Creating lodge with data:", data);
+    const {newImageFiles, roomTypeImages, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({
-        name,
-        address,
-        latitude,
-        longitude,
-        description,
-        accommodationType,
+        ...dataWithoutImages,
+        description: dataWithoutImages.description ?? null,
+        roomTypes: dataWithoutImages.roomTypes.map((room): Omit<RoomType, "seasonalPricing"> & { seasonalPricing?: SeasonalPricing[] } => {
+          const { seasonalPricing, ...roomWithoutSeasonal } = room;
+          return {
+            ...roomWithoutSeasonal,
+            seasonalPricing: seasonalPricing ?? [],
+          };
+        }),
+        lodgeImageFile: newImageFiles,
+        roomTypeImages,
       })
     );
 
-    console.log("Lodge creation response:", lodgeData);
 
     if (createLodge.fulfilled.match(lodgeData)) {
       alert("숙소가 성공적으로 등록되었습니다.");
@@ -40,60 +53,18 @@ const CreateLodgePage = () => {
   };
 
   return (
-    <div>
-      <KakaoMap
-        onLocationChange={(lat, lng, addr) => {
-          setLatitude(lat);
-          setLongitude(lng);
-          setAddress(addr);
-        }}
+    <div className="flex flex-col">
+      <div className="relative flex items-center justify-center mx-24 mt-10">
+        <div className="absolute left-0 p-2 cursor-pointer" onClick={() => router.push("/admin/lodge")}>
+          <ArrowLeft />
+        </div>
+        <h1 className="text-2xl font-bold text-center">숙소 등록</h1>
+      </div>
+      <LodgeForm
+        mode="create"
+        onSubmit={handleCreateLodge}
       />
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleCreateLodge();
-        }}
-        className="space-y-4"
-      >
-        <p>숙소명</p>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-        <p>숙소 주소</p>
-        <input value={address} onChange={(e) => setAddress(e.target.value)} />
-        <p>숙소 좌표</p>
-        <input
-          value={latitude}
-          onChange={(e) => setLatitude(Number(e.target.value))}
-        />
-        <input
-          value={longitude}
-          onChange={(e) => setLongitude(Number(e.target.value))}
-        />
-        <p>숙소 설명</p>
-        <input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <p>숙소 유형</p>
-        <select
-          value={accommodationType}
-          onChange={(e) => setAccommodationType(e.target.value)}
-        >
-          <option value="hotel">호텔</option>
-          <option value="motel">모텔</option>
-          <option value="resort">리조트</option>
-          <option value="pension">펜션</option>
-          <option value="other">기타</option>
-        </select>
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        숙소 등록하기
-      </button>
-      </form>
-
-    </div>
+      </div>
   );
 };
 

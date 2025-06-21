@@ -2,19 +2,22 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createLodge,
   deleteLodge,
+  fetchLodgeById,
   fetchLodges,
-  Lodge,
   updateLodge,
 } from "./lodgeThunk";
+import { Lodge } from "@/types/lodge";
 
 interface LodgeState {
   list: Lodge[];
+  detail: Lodge | null;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: LodgeState = {
   list: [],
+  detail: null,
   state: "idle",
   error: null,
 };
@@ -34,6 +37,20 @@ const lodgeSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(fetchLodges.rejected, (state, action) => {
+        state.state = "failed";
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(fetchLodgeById.pending, (state) => {
+        state.state = "loading";
+        state.error = null;
+      })
+      .addCase(fetchLodgeById.fulfilled, (state, action) => {
+        state.state = "succeeded";
+        state.detail = action.payload;
+      })
+      .addCase(fetchLodgeById.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
       });

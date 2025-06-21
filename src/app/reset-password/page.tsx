@@ -2,8 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import { useAppDispatch } from "../lib/store/hooks";
-import { sendResetCode } from "../lib/reset-password/resetPasswordThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { sendResetCode } from "@/lib/reset-password/resetPasswordThunk";
 
 const ResetPwdPage = () => {
   const [email, setEmail] = useState("");

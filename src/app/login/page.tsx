@@ -2,10 +2,10 @@
 
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React, { useEffect, useState } from "react";
-import { loginUser } from "../lib/auth/loginThunk";
+import { loginUser } from "@/lib/auth/loginThunk";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "../lib/store/hooks";
-import { socialLoginThunk } from "../lib/auth/socialLoginThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
