@@ -7,9 +7,16 @@ export const hotspringApi = createApi({
   }),
   endpoints: (builder) => ({
     getHotspringBySido: builder.query({
-      query: () => '/'
+      query: () => "/",
+    }),
+    getAvailableLodge: builder.query({
+      query: (params) => {
+        const query = new URLSearchParams(params).toString();
+        return `/search?${query}`;
+      },
     }),
   }),
 });
 
-export const { useGetHotspringBySidoQuery } = hotspringApi;
+export const { useGetHotspringBySidoQuery, useGetAvailableLodgeQuery } =
+  hotspringApi;
