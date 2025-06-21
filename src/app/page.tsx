@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 const page = () => {
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
-  const [region, setRegion] = useState("All");
+  const [region, setRegion] = useState("전체");
   const [room, setRoom] = useState(1);
   const [adult, setAdult] = useState(1);
   const [children, setChildren] = useState(0);
