@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useGetHotspringBySidoQuery } from "@/lib/hotspring/hotspringApi";
 
 
 const HotspringListPage = () => {
