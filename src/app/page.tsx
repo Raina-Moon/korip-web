@@ -115,6 +115,23 @@ const page = () => {
           value={formatDate(range?.[1] ?? null)}
           placeholder="Check-out Date"
         />
+          {calendar && (
+            <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+              <Calendar
+                calendarType="gregory"
+                onChange={(value) => {
+                  if (Array.isArray(value) && value.length === 2) {
+                    setRange(value as [Date, Date]);
+                    setCalendar(false);
+                  }
+                }}
+                selectRange
+                showDoubleView
+                value={range}
+                minDate={new Date()}
+              />
+            </div>
+          )}
         <div
           onClick={() => setIsActive(!isActive)}
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
@@ -145,23 +162,6 @@ const page = () => {
         <p>page</p>
       </div>
 
-      {calendar && (
-        <>
-          <Calendar
-            calendarType="gregory"
-            onChange={(value) => {
-              if (Array.isArray(value) && value.length === 2) {
-                setRange(value as [Date, Date]);
-                setCalendar(false);
-              }
-            }}
-            selectRange
-            showDoubleView
-            value={range}
-            minDate={new Date()}
-          />
-        </>
-      )}
 
       {isActive && (
         <>
