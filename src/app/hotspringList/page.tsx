@@ -6,9 +6,8 @@ import { useGetHotspringBySidoQuery } from "@/lib/hotspring/hotspringApi";
 
 const HotspringListPage = () => {
   const [selectedSido, setSelectedSido] = useState("서울특별시");
-  const { data, error } = useGetHotspringBySidoQuery();
 
-  console.log("HotspringListPage data:", data);
+  console.log("HotspringListPage data:");
 
   return (
     <div>
@@ -22,15 +21,7 @@ const HotspringListPage = () => {
           </option>
         ))}
       </select> */}
-      <ul>
-        {data?.map((spring, idx) => (
-          <li key={idx}>
-            {spring.properties.uname} ({spring.properties.sido_name}{" "}
-            {spring.properties.sigg_name})
-            {spring.properties.remark}
-          </li>
-        ))}
-      </ul>
+      
     </div>
   );
 };
