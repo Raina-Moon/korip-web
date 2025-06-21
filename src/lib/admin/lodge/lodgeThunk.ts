@@ -153,8 +153,8 @@ type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
     }[];
   keepImgIds?: number[];
   newImageFiles: File[];
-  newRoomTypeImageFiles?: File[];
-  keepRoomTypeImgIds?: number[];
+  newRoomTypeImageFiles?: File[][];
+  keepRoomTypeImgIds?: number[][];
 };
 
 export const updateLodge = createAsyncThunk<
@@ -188,8 +188,10 @@ export const updateLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       });
 
-      updatedLodgeData.newRoomTypeImageFiles?.forEach((file) => {
-        formData.append("roomTypeImages", file);
+      updatedLodgeData.newRoomTypeImageFiles?.forEach((fileArray, idx) => {
+        fileArray.forEach((file, i) => {
+          formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+        });
       });
 
       const res = await axios.patch(
