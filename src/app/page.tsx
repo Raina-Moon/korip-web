@@ -12,7 +12,7 @@ const page = () => {
   const [region, setRegion] = useState("전체");
   const [accommodationType, setAccommodationType] = useState("전체");
   const [room, setRoom] = useState(1);
-  const [adult, setAdult] = useState(1);
+  const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const page = () => {
   };
 
   const handleAdultChange = (delta: number) => {
-    setAdult((prev) => Math.max(1, prev + delta));
+    setAdults((prev) => Math.max(1, prev + delta));
   };
 
   const handleChildrenChange = (delta: number) => {
@@ -51,8 +51,9 @@ const page = () => {
       checkIn: formatDate(range[0]),
       checkOut: formatDate(range[1]),
       room: room.toString(),
-      adult: adult.toString(),
+      adult: adults.toString(),
       children: children.toString(),
+      accommodationType,
     });
 
     router.push(`/list?${query.toString()}`);
@@ -82,7 +83,7 @@ const page = () => {
 
       <div
         className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[300px] bg-white rounded-lg shadow-lg 
+                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
                 flex flex-col items-center justify-center gap-5 px-5"
       >
         <select
@@ -152,7 +153,7 @@ const page = () => {
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
         >
           <p>Room : {room}</p>
-          <p>Adult : {adult}</p>
+          <p>Adult : {adults}</p>
           <p>Children : {children}</p>
         </div>
         <button
@@ -212,7 +213,7 @@ const page = () => {
               >
                 -
               </button>
-              <p className="text-lg text-primary-900 font-semibold"> {adult}</p>
+              <p className="text-lg text-primary-900 font-semibold"> {adults}</p>
               <button
                 className="border border-primary-800 p-3 rounded-full text-2xl"
                 onClick={() => handleAdultChange(1)}
