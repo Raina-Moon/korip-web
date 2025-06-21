@@ -104,7 +104,6 @@ const page = () => {
           readOnly
           onClick={() => {
             setCalendar(true);
-            setRange(null);
           }}
           value={formatDate(range?.[0] ?? null)}
           placeholder="Check-in Date"
@@ -114,7 +113,6 @@ const page = () => {
           readOnly
           onClick={() => {
             setCalendar(true);
-            setRange(null);
           }}
           value={formatDate(range?.[1] ?? null)}
           placeholder="Check-out Date"
