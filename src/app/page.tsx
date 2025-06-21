@@ -37,21 +37,21 @@ const page = () => {
 
   const handleSearch = () => {
     if (!range || !range[0] || !range[1]) {
-            alert("Please select a check-in and check-out date.");
-            return;
-          }
+      alert("Please select a check-in and check-out date.");
+      return;
+    }
 
-          const query = new URLSearchParams({
-            region,
-            checkIn: formatDate(range[0]),
-            checkOut: formatDate(range[1]),
-            room: room.toString(),
-            adult: adult.toString(),
-            children: children.toString(),
-          })
+    const query = new URLSearchParams({
+      region: region.slice(0, 2),
+      checkIn: formatDate(range[0]),
+      checkOut: formatDate(range[1]),
+      room: room.toString(),
+      adult: adult.toString(),
+      children: children.toString(),
+    });
 
-          router.push(`/list?${query.toString()}`);
-  }
+    router.push(`/list?${query.toString()}`);
+  };
 
   return (
     <div className="h-screen">
@@ -85,15 +85,15 @@ const page = () => {
           onChange={(e) => setRegion(e.target.value)}
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
         >
-          <option value="All">All Regions</option>
-          <option value="Seoul">Seoul</option>
-          <option value="Busan">Busan</option>
-          <option value="Gyeonggi-do">Gyeonggi-do</option>
-          <option value="Chungcheong-do">Chungcheong-do</option>
-          <option value="Jeolla-do">Jeolla-do</option>
-          <option value="Gyeongsang-do">Gyeongsang-do</option>
-          <option value="Jeju-do">Jeju-do</option>
-          <option value="Gangwon-do">Gangwon-do</option>
+          <option value="전체">전체</option>
+          <option value="서울">서울</option>
+          <option value="부산">부산</option>
+          <option value="경기">경기도</option>
+          <option value="충청">충청도</option>
+          <option value="전라">전라도</option>
+          <option value="경상">경상도</option>
+          <option value="제주">제주도</option>
+          <option value="강원">강원도</option>
         </select>
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
@@ -123,9 +123,10 @@ const page = () => {
           <p>Adult : {adult}</p>
           <p>Children : {children}</p>
         </div>
-        <button 
-        onClick={handleSearch}
-        className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300">
+        <button
+          onClick={handleSearch}
+          className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300"
+        >
           Search
         </button>
       </div>
