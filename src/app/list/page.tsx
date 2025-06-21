@@ -1,17 +1,17 @@
 "use client";
 
-import { useGetAvailableLodgeQuery } from "@/lib/hotspring/hotspringApi";
+import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 const ListPage = () => {
   const searchParams = useSearchParams();
 
   const region = searchParams.get("region") || "전체";
-  const checkin = searchParams.get("checkIn") || "Not specified";
-  const checkout = searchParams.get("checkOut") || "Not specified";
+  const checkIn = searchParams.get("checkIn") || "Not specified";
+  const checkOut = searchParams.get("checkOut") || "Not specified";
   const room = searchParams.get("room") || "1";
-  const adult = searchParams.get("adult") || "1";
+  const adults = searchParams.get("adult") || "1";
   const children = searchParams.get("children") || "0";
 
   const {
@@ -20,9 +20,9 @@ const ListPage = () => {
     isError,
   } = useGetAvailableLodgeQuery({
     region,
-    checkin,
-    checkout,
-    adult,
+    checkIn,
+    checkOut,
+    adults,
     children,
     room,
   });
