@@ -9,14 +9,7 @@ export const hotspringApi = createApi({
     getHotspringBySido: builder.query({
       query: () => "/",
     }),
-    getAvailableLodge: builder.query({
-      query: (params) => {
-        const query = new URLSearchParams(params).toString();
-        return `/search?${query}`;
-      },
-    }),
   }),
 });
 
-export const { useGetHotspringBySidoQuery, useGetAvailableLodgeQuery } =
-  hotspringApi;
+export const { useGetHotspringBySidoQuery } = hotspringApi;
