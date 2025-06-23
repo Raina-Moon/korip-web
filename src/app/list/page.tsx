@@ -1,11 +1,12 @@
 "use client";
 
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const ListPage = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const region = searchParams.get("region") || "전체";
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -29,12 +30,16 @@ const ListPage = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-semibold text-primary-900">검색 결과</h1>
+      <h1 className="text-xl font-semibold text-primary-900">검색 결과 {lodges ? lodges.length : 0}</h1>
       {lodges?.length === 0 ? (
         <p className="text-lg text-gray-600">검색 결과가 없습니다.</p>
       ) : (
         lodges?.map((lodge: any) => (
-          <div key={lodge.id} className="border p-4 mb-4 rounded-lg flex gap-4">
+          <div
+            key={lodge.id}
+            className="border p-4 mb-4 rounded-lg flex gap-4 hover:shadow cursor-pointer transition"
+            onClick={() => router.push(`/lodge/${lodge.id}`)}
+          >
             <div className="w-1/3 h-40 relative rounded overflow-hidden">
               {lodge.images?.[0]?.imageUrl ? (
                 <img
