@@ -227,7 +227,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
-            newRoomTypeImageFiles,
+            roomTypeImages : newRoomTypeImageFiles,
             keepRoomTypeImageIds,
           });
         }}

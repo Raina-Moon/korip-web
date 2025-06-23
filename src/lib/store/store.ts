@@ -9,6 +9,7 @@ import roomTypeReducer from "../admin/lodge/roomTypeSlice";
 import reportsReducer from "../admin/reports/reportsSlice";
 import roomInventoryReducer from "../admin/lodge/roomInventorySlice";
 import roomPricingReducer from "../admin/lodge/roomPricingSlice";
+import { lodgeApi } from "../lodge/lodgeApi";
 
 export const store = configureStore({
   reducer: {
@@ -22,9 +23,14 @@ export const store = configureStore({
     "admin/reports": reportsReducer,
     "admin/roomInventory": roomInventoryReducer,
     "admin/roomPricing": roomPricingReducer,
+    [lodgeApi.reducerPath]: lodgeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, hotspringApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      hotspringApi.middleware,
+      lodgeApi.middleware
+    ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

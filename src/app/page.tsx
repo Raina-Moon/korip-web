@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 const page = () => {
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
-  const [region, setRegion] = useState("All");
+  const [region, setRegion] = useState("전체");
+  const [accommodationType, setAccommodationType] = useState("전체");
   const [room, setRoom] = useState(1);
   const [adult, setAdult] = useState(1);
   const [children, setChildren] = useState(0);
@@ -20,7 +21,7 @@ const page = () => {
   const router = useRouter();
 
   const formatDate = (date: Date | null) => {
-    if(!date) return "";
+    if (!date) return "";
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -50,8 +51,9 @@ const page = () => {
       checkIn: formatDate(range[0]),
       checkOut: formatDate(range[1]),
       room: room.toString(),
-      adult: adult.toString(),
+      adults: adult.toString(),
       children: children.toString(),
+      accommodationType,
     });
 
     router.push(`/list?${query.toString()}`);
@@ -81,7 +83,7 @@ const page = () => {
 
       <div
         className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[300px] bg-white rounded-lg shadow-lg 
+                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
                 flex flex-col items-center justify-center gap-5 px-5"
       >
         <select
@@ -98,6 +100,18 @@ const page = () => {
           <option value="경상">경상도</option>
           <option value="제주">제주도</option>
           <option value="강원">강원도</option>
+        </select>
+        <select
+          value={accommodationType}
+          onChange={(e) => setAccommodationType(e.target.value)}
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+        >
+          <option value="All">숙소 유형 전체</option>
+          <option value="호텔">호텔</option>
+          <option value="모텔">모텔</option>
+          <option value="리조트">리조트</option>
+          <option value="펜션">펜션</option>
+          <option value="기타">기타</option>
         </select>
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
@@ -117,23 +131,23 @@ const page = () => {
           value={formatDate(range?.[1] ?? null)}
           placeholder="Check-out Date"
         />
-          {calendar && (
-            <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
-              <Calendar
-                calendarType="gregory"
-                onChange={(value) => {
-                  if (Array.isArray(value) && value.length === 2) {
-                    setRange(value as [Date, Date]);
-                    setCalendar(false);
-                  }
-                }}
-                selectRange
-                showDoubleView
-                value={range}
-                minDate={new Date()}
-              />
-            </div>
-          )}
+        {calendar && (
+          <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+            <Calendar
+              calendarType="gregory"
+              onChange={(value) => {
+                if (Array.isArray(value) && value.length === 2) {
+                  setRange(value as [Date, Date]);
+                  setCalendar(false);
+                }
+              }}
+              selectRange
+              showDoubleView
+              value={range}
+              minDate={new Date()}
+            />
+          </div>
+        )}
         <div
           onClick={() => setIsActive(!isActive)}
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
@@ -163,7 +177,6 @@ const page = () => {
       <div>
         <p>page</p>
       </div>
-
 
       {isActive && (
         <>

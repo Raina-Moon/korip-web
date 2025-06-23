@@ -7,7 +7,7 @@ export const hotspringApi = createApi({
   }),
   endpoints: (builder) => ({
     getHotspringBySido: builder.query({
-      query: () => '/'
+      query: () => "/",
     }),
   }),
 });

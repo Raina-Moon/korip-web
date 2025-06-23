@@ -194,6 +194,8 @@ export const updateLodge = createAsyncThunk<
         });
       });
 
+      console.log("newRoomTypeImageFiles:", updatedLodgeData.newRoomTypeImageFiles);
+
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
         formData,
