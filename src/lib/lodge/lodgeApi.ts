@@ -1,3 +1,4 @@
+import { Lodge } from "@/types/lodge";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const lodgeApi = createApi({
@@ -12,7 +13,10 @@ export const lodgeApi = createApi({
         return `/search?${query}`;
       },
     }),
+    getLodgeById: builder.query<Lodge, number | string>({
+      query: (lodgeId) => `/${lodgeId}`,
+    }),
   }),
 });
 
-export const { useGetAvailableLodgeQuery } = lodgeApi;
+export const { useGetAvailableLodgeQuery,useGetLodgeByIdQuery } = lodgeApi;
