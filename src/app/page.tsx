@@ -12,7 +12,7 @@ const page = () => {
   const [region, setRegion] = useState("전체");
   const [accommodationType, setAccommodationType] = useState("전체");
   const [room, setRoom] = useState(1);
-  const [adults, setAdults] = useState(1);
+  const [adult, setAdult] = useState(1);
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const page = () => {
   };
 
   const handleAdultChange = (delta: number) => {
-    setAdults((prev) => Math.max(1, prev + delta));
+    setAdult((prev) => Math.max(1, prev + delta));
   };
 
   const handleChildrenChange = (delta: number) => {
@@ -51,7 +51,7 @@ const page = () => {
       checkIn: formatDate(range[0]),
       checkOut: formatDate(range[1]),
       room: room.toString(),
-      adult: adults.toString(),
+      adults: adult.toString(),
       children: children.toString(),
       accommodationType,
     });
@@ -153,7 +153,7 @@ const page = () => {
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
         >
           <p>Room : {room}</p>
-          <p>Adult : {adults}</p>
+          <p>Adult : {adult}</p>
           <p>Children : {children}</p>
         </div>
         <button
@@ -213,7 +213,7 @@ const page = () => {
               >
                 -
               </button>
-              <p className="text-lg text-primary-900 font-semibold"> {adults}</p>
+              <p className="text-lg text-primary-900 font-semibold"> {adult}</p>
               <button
                 className="border border-primary-800 p-3 rounded-full text-2xl"
                 onClick={() => handleAdultChange(1)}
