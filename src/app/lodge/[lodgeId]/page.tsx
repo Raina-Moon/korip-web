@@ -100,7 +100,7 @@ const LodgeDetailPage = () => {
                   alt={room.name}
                   width={400}
                   height={200}
-                  className="rounded object-cover w-full h-48 mt-2"
+                  className="rounded object-cover w-full h-48 mt-2 hover:cursor-pointer"
                   onClick={() =>
                     openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)
                   }
@@ -123,7 +123,7 @@ const LodgeDetailPage = () => {
             </button>
 
             <Image
-              src={imageUrl[currentModalImage]}
+              src={modalImages[currentModalImage]}
               alt="modal preview"
               layout="fill"
               objectFit="contain"
@@ -148,7 +148,7 @@ const LodgeDetailPage = () => {
 
           {/* 썸네일 */}
           <div className="flex gap-2 mt-6 overflow-x-auto max-w-full px-4">
-            {imageUrl.map((url, idx) => (
+            {modalImages.map((url, idx) => (
               <div
                 key={idx}
                 className={`w-24 h-16 relative cursor-pointer ${
