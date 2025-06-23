@@ -9,30 +9,34 @@ import React, { useState } from "react";
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
+  const [modalImages, setModalImages] = useState<string[]>([]);
 
   const { lodgeId } = useParams() as { lodgeId: string };
-  
+
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
-  
-  const openModal = (index: number) => {
+
+  const openModal = (images: string[], index: number) => {
+    setModalImages(images);
     setCurrentModalImage(index);
     setIsOpen(true);
   };
 
   const closeModal = () => {
     setIsOpen(false);
+    setModalImages([]);
+    setCurrentModalImage(0);
   };
 
   const handlePrevImage = () => {
     setCurrentModalImage((prev) =>
-      prev === 0 ? imageUrl.length - 1 : prev - 1
+      prev === 0 ? modalImages.length - 1 : prev - 1
     );
   };
 
   const handleNextImage = () => {
     setCurrentModalImage((prev) =>
-      prev === imageUrl.length - 1 ? 0 : prev + 1
+      prev === modalImages.length - 1 ? 0 : prev + 1
     );
   };
 
@@ -50,7 +54,7 @@ const LodgeDetailPage = () => {
             width={1200}
             height={400}
             className="object-cover w-full h-full"
-            onClick={() => openModal(0)}
+            onClick={() => openModal(imageUrl, 0)}
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -75,11 +79,20 @@ const LodgeDetailPage = () => {
         <h2 className="text-2xl font-semibold mb-4">객실 정보</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {lodge.roomTypes?.map((room) => (
-            <div key={room.id} className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
+            <div
+              key={room.id}
+              className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+            >
               <h3 className="text-xl font-bold mb-2">{room.name}</h3>
-              <p className="text-gray-600 mb-1">성인 최대 인원: {room.maxAdults}</p>
-              <p className="text-gray-600 mb-1">어린이 최대 인원: {room.maxChildren}</p>
-              <p className="text-gray-600 mb-2">기본 가격: ₩{room.basePrice.toLocaleString()}</p>
+              <p className="text-gray-600 mb-1">
+                성인 최대 인원: {room.maxAdults}
+              </p>
+              <p className="text-gray-600 mb-1">
+                어린이 최대 인원: {room.maxChildren}
+              </p>
+              <p className="text-gray-600 mb-2">
+                기본 가격: ₩{room.basePrice.toLocaleString()}
+              </p>
 
               {room.images?.[0]?.imageUrl && (
                 <Image
@@ -88,6 +101,9 @@ const LodgeDetailPage = () => {
                   width={400}
                   height={200}
                   className="rounded object-cover w-full h-48 mt-2"
+                  onClick={() =>
+                    openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)
+                  }
                 />
               )}
             </div>
