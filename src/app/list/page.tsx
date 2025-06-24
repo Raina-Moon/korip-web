@@ -28,6 +28,17 @@ const ListPage = () => {
     room,
   });
 
+  const handleLodgeClick = (lodgeId: number) => {
+    const searchParams = new URLSearchParams({
+      checkIn,
+      checkOut,
+      adults,
+      children,
+      room,
+    });
+    router.push(`/lodge/${lodgeId}?${searchParams.toString()}`);
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold text-primary-900">검색 결과 {lodges ? lodges.length : 0}</h1>
@@ -38,7 +49,7 @@ const ListPage = () => {
           <div
             key={lodge.id}
             className="border p-4 mb-4 rounded-lg flex gap-4 hover:shadow cursor-pointer transition"
-            onClick={() => router.push(`/lodge/${lodge.id}`)}
+            onClick={() => handleLodgeClick(lodge.id)}
           >
             <div className="w-1/3 h-40 relative rounded overflow-hidden">
               {lodge.images?.[0]?.imageUrl ? (

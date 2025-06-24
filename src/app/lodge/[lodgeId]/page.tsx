@@ -1,20 +1,36 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { createReservation } from "@/lib/reservation/reservationThunk";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { ArrowLeft, ArrowRight, User } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
+  const [showingLoginModal, setShowingLoginModal] = useState(false);
+
+  const searchParams = useSearchParams();
+  const checkIn = searchParams.get("checkIn") || "Not specified";
+  const checkOut = searchParams.get("checkOut") || "Not specified";
+  const adults = Number(searchParams.get("adults")) || 1;
+  const children = Number(searchParams.get("children")) || 0;
+  const roomCount = Number(searchParams.get("roomCount")) || 1;
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
+
+  const user = useAppSelector((state) => state.auth.user);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -38,6 +54,42 @@ const LodgeDetailPage = () => {
     setCurrentModalImage((prev) =>
       prev === modalImages.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const handleReserve = async (roomTypeId: number) => {
+    if(!isAuthenticated) {
+      localStorage.setItem("pendingReservation", JSON.stringify({
+        lodgeId: Number(lodgeId),
+        roomTypeId,
+        checkIn,
+        checkOut,
+        adults,
+        children,
+        roomCount,
+      }));
+    }
+    if (!user) {
+      setShowingLoginModal(true);
+      return;
+    }
+    try {
+      await dispatch(
+        createReservation({
+          lodgeId: Number(lodgeId),
+          roomTypeId,
+          checkIn,
+          checkOut,
+          adults,
+          children,
+          roomCount,
+        })
+      );
+      alert("예약이 완료되었습니다.");
+      router.push("/reservations/success");
+    } catch (error) {
+      console.error("예약 실패:", error);
+      alert("예약에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -93,7 +145,12 @@ const LodgeDetailPage = () => {
               <p className="text-gray-600 mb-2">
                 기본 가격: ₩{room.basePrice.toLocaleString()}
               </p>
-
+              <button
+                onClick={() => room.id !== undefined && handleReserve(room.id)}
+                className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
+              >
+                이 객실 예약하기
+              </button>
               {room.images?.[0]?.imageUrl && (
                 <Image
                   src={room.images[0].imageUrl}
@@ -165,6 +222,19 @@ const LodgeDetailPage = () => {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {showingLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
+            <p className="text-primary-900 text-lg font-medium">
+              로그인 후 숙소 예약을 완료할 수 있어요.
+            </p>
+            <button className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 " onClick={() => router.push("/login")}>
+              로그인하러 가기
+            </button>
           </div>
         </div>
       )}
