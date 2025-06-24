@@ -24,6 +24,24 @@ const LoginPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const reservationData = localStorage.getItem("pendingReservation");
+    if(reservationData) {
+      const parsed = JSON.parse(reservationData);
+      localStorage.removeItem("pendingReservation");
+
+      const {lodgeId} = parsed;
+      const query = new URLSearchParams({
+        checkIn: parsed.checkIn,
+        checkOut: parsed.checkOut,
+        adults: parsed.adults.toString(),
+        children: parsed.children.toString(),
+        roomCount: parsed.roomCount.toString(),
+      })
+      router.push(`/lodge/${lodgeId}?${query.toString()}`);
+    }
+  },[])
+
   const handleLogin = async () => {
     if (!email || !password) {
       return alert("Please fill in all fields");
