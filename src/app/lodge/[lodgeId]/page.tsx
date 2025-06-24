@@ -2,8 +2,8 @@
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { createReservation } from "@/lib/reservation/reservationThunk";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { ArrowLeft, ArrowRight, User } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -12,6 +12,7 @@ const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
+  const [showingLoginModal, setShowingLoginModal] = useState(false);
 
   const searchParams = useSearchParams();
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -27,6 +28,9 @@ const LodgeDetailPage = () => {
 
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
+
+  const user = useAppSelector((state) => state.auth.user);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -52,30 +56,30 @@ const LodgeDetailPage = () => {
     );
   };
 
-  const handleReserve = async(roomTypeId: number) => {
-    if(!checkIn || !checkOut) {
-      alert("체크인과 체크아웃 날짜를 선택해주세요.");
+  const handleReserve = async (roomTypeId: number) => {
+    if (!user) {
+      setShowingLoginModal(true);
       return;
     }
     try {
-        await dispatch(
-            createReservation({
-                lodgeId: Number(lodgeId),
-                roomTypeId,
-                checkIn,
-                checkOut,
-                adults,
-                children,
-                roomCount,
-            })
-        )
-        alert("예약이 완료되었습니다.");
-        router.push("/reservations/success");
+      await dispatch(
+        createReservation({
+          lodgeId: Number(lodgeId),
+          roomTypeId,
+          checkIn,
+          checkOut,
+          adults,
+          children,
+          roomCount,
+        })
+      );
+      alert("예약이 완료되었습니다.");
+      router.push("/reservations/success");
     } catch (error) {
-        console.error("예약 실패:", error);
-        alert("예약에 실패했습니다. 다시 시도해주세요.");
+      console.error("예약 실패:", error);
+      alert("예약에 실패했습니다. 다시 시도해주세요.");
     }
-  }
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
@@ -207,6 +211,19 @@ const LodgeDetailPage = () => {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {showingLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
+            <p className="text-primary-900 text-lg font-medium">
+              로그인 후 숙소 예약을 완료할 수 있어요.
+            </p>
+            <button className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 " onClick={() => router.push("/login")}>
+              로그인하러 가기
+            </button>
           </div>
         </div>
       )}
