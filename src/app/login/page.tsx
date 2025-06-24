@@ -26,21 +26,21 @@ const LoginPage = () => {
 
   useEffect(() => {
     const reservationData = localStorage.getItem("pendingReservation");
-    if(reservationData) {
+    if (reservationData) {
       const parsed = JSON.parse(reservationData);
       localStorage.removeItem("pendingReservation");
 
-      const {lodgeId} = parsed;
+      const { lodgeId } = parsed;
       const query = new URLSearchParams({
         checkIn: parsed.checkIn,
         checkOut: parsed.checkOut,
         adults: parsed.adults.toString(),
         children: parsed.children.toString(),
         roomCount: parsed.roomCount.toString(),
-      })
+      });
       router.push(`/lodge/${lodgeId}?${query.toString()}`);
     }
-  },[])
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -69,7 +69,25 @@ const LoginPage = () => {
     }
     try {
       await dispatch(socialLoginThunk("google", credential));
-      router.push("/");
+
+      const reservationData = localStorage.getItem("pendingReservation");
+      if (reservationData) {
+        const parsed = JSON.parse(reservationData);
+        localStorage.removeItem("pendingReservation");
+
+        const { lodgeId } = parsed;
+        const query = new URLSearchParams({
+          checkIn: parsed.checkIn,
+          checkOut: parsed.checkOut,
+          adults: parsed.adults.toString(),
+          children: parsed.children.toString(),
+          roomCount: parsed.roomCount.toString(),
+        });
+        router.push(`/lodge/${lodgeId}?${query.toString()}`);
+        return;
+      } else {
+        router.push("/");
+      }
     } catch (err) {
       alert("Google login failed. Please try again.");
     }
