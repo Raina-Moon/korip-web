@@ -57,6 +57,17 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number) => {
+    if(!isAuthenticated) {
+      localStorage.setItem("pendingReservation", JSON.stringify({
+        lodgeId: Number(lodgeId),
+        roomTypeId,
+        checkIn,
+        checkOut,
+        adults,
+        children,
+        roomCount,
+      }));
+    }
     if (!user) {
       setShowingLoginModal(true);
       return;
