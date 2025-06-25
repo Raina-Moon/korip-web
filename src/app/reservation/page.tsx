@@ -1,5 +1,6 @@
 "use client";
 
+import { usePriceCalcQuery } from "@/lib/price/priceApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
@@ -14,7 +15,7 @@ const ReservationPage = () => {
   const adults = searchParams.get("adults");
   const children = searchParams.get("children");
   const roomCount = searchParams.get("roomCount");
-  
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [nationality, setNationality] = useState("");
@@ -23,14 +24,24 @@ const ReservationPage = () => {
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
 
+  const {
+    data: priceData,
+    isLoading: isPriceLoading,
+    error: priceError,
+  } = usePriceCalcQuery({
+    checkIn,
+    checkOut,
+    roomTypeId,
+    roomCount,
+  });
 
   const handleCheckBoxChange = (request: string) => {
-    if(specialRequests.includes(request)) {
-      setSpecialRequests(specialRequests.filter(req => req !== request));
+    if (specialRequests.includes(request)) {
+      setSpecialRequests(specialRequests.filter((req) => req !== request));
     } else {
       setSpecialRequests([...specialRequests, request]);
     }
-  }
+  };
 
   const handleNext = () => {
     const query = new URLSearchParams({
@@ -46,13 +57,15 @@ const ReservationPage = () => {
       nationality,
       phoneNumber,
       email,
-      specialRequests: JSON.stringify([...specialRequests, customRequest].filter(Boolean)),
+      specialRequests: JSON.stringify(
+        [...specialRequests, customRequest].filter(Boolean)
+      ),
     }).toString();
 
     router.push(`/reservation/confirm?${query}`);
-  }
+  };
   return (
-        <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <h1 className="text-2xl font-bold">예약자 정보 입력</h1>
 
       <div className="grid grid-cols-2 gap-4">
@@ -141,6 +154,15 @@ const ReservationPage = () => {
         />
       </div>
 
+      {isPriceLoading ? (
+        <p>가격 계산 중...</p>
+      ) : priceError ? (
+        <p className="text-red-500">가격 정보를 불러오는 데 실패했습니다.</p>
+      ) : (
+        <p className="text-lg font-semibold text-primary-700">
+          총 가격: {priceData?.totalPrice.toLocaleString()}원
+        </p>
+      )}
       <button
         onClick={handleNext}
         className="bg-primary-700 text-white px-6 py-2 rounded hover:bg-primary-500"
