@@ -1,9 +1,8 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { createReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { ArrowLeft, ArrowRight, User } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -57,39 +56,19 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number) => {
-    if(!isAuthenticated) {
-      localStorage.setItem("pendingReservation", JSON.stringify({
-        lodgeId: Number(lodgeId),
-        roomTypeId,
-        checkIn,
-        checkOut,
-        adults,
-        children,
-        roomCount,
-      }));
+    const reservationData = {
+      lodgeId: Number(lodgeId),
+      roomTypeId,
+      checkIn,
+      checkOut,
+      adults,
+      children,
+      roomCount,
     }
-    if (!user) {
-      setShowingLoginModal(true);
-      return;
-    }
-    try {
-      await dispatch(
-        createReservation({
-          lodgeId: Number(lodgeId),
-          roomTypeId,
-          checkIn,
-          checkOut,
-          adults,
-          children,
-          roomCount,
-        })
-      );
-      router.push("/reservation");
-    } catch (error) {
-      console.error("예약 실패:", error);
-      alert("다시 시도해주세요.");
-    }
-  };
+
+    localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
+    router.push(`/reservation/confirm?lodgeId=${lodgeId}&roomTypeId=${roomTypeId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&children=${children}&roomCount=${roomCount}`);
+  }
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
