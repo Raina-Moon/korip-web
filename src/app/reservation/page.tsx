@@ -37,7 +37,10 @@ const ReservationPage = () => {
         checkOut,
         roomTypeId: Number(roomTypeId),
         roomCount: Number(roomCount),
-      });
+      })
+      .unwrap()
+      .then((res) => console.log("Price calculated:", res))
+      .catch((err) => console.error("Price calculation error:", err));
     }
   },[roomTypeId, checkIn, checkOut, roomCount]);
 
