@@ -1,6 +1,7 @@
 "use client";
 
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -24,26 +25,27 @@ const ReservationPage = () => {
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
 
-  const [triggerPriceCalc, {
-    data: priceData,
-    isLoading: isPriceLoading,
-    error: priceError,
-  }] = usePriceCalcMutation();
+  const dispatch = useAppDispatch();
+
+  const [
+    triggerPriceCalc,
+    { data: priceData, isLoading: isPriceLoading, error: priceError },
+  ] = usePriceCalcMutation();
 
   useEffect(() => {
     if (lodgeId && roomTypeId && checkIn && checkOut && roomCount) {
-      console.log("Triggering price calculation")
+      console.log("Triggering price calculation");
       triggerPriceCalc({
         checkIn,
         checkOut,
         roomTypeId: Number(roomTypeId),
         roomCount: Number(roomCount),
       })
-      .unwrap()
-      .then((res) => console.log("Price calculated:", res))
-      .catch((err) => console.error("Price calculation error:", err));
+        .unwrap()
+        .then((res) => console.log("Price calculated:", res))
+        .catch((err) => console.error("Price calculation error:", err));
     }
-  },[roomTypeId, checkIn, checkOut, roomCount]);
+  }, [roomTypeId, checkIn, checkOut, roomCount]);
 
   const handleCheckBoxChange = (request: string) => {
     if (specialRequests.includes(request)) {
@@ -54,26 +56,31 @@ const ReservationPage = () => {
   };
 
   const handleNext = () => {
+    const updatedPending = {
+      lodgeId: String(lodgeId),
+      roomTypeId: String(roomTypeId),
+      checkIn : checkIn || "",
+      checkOut : checkOut || "",
+      adults: String(adults),
+      children: String(children),
+      roomCount: String(roomCount),
+    }
+
+    localStorage.setItem("pendingReservation", JSON.stringify(updatedPending));
+
     const query = new URLSearchParams({
-      lodgeId: lodgeId || "",
-      roomTypeId: roomTypeId || "",
-      checkIn: checkIn || "",
-      checkOut: checkOut || "",
-      adults: adults || "1",
-      children: children || "0",
-      roomCount: roomCount || "1",
+      ...updatedPending,
       firstName,
       lastName,
       nationality,
       phoneNumber,
       email,
-      specialRequests: JSON.stringify(
-        [...specialRequests, customRequest].filter(Boolean)
-      ),
+      specialRequests : JSON.stringify([...specialRequests, customRequest].filter(Boolean)),
     }).toString();
 
     router.push(`/reservation/confirm?${query}`);
   };
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <h1 className="text-2xl font-bold">예약자 정보 입력</h1>
