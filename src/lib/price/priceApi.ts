@@ -6,7 +6,7 @@ export const priceApi = createApi({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/v1`,
   }),
   endpoints: (builder) => ({
-    priceCalc: builder.query({
+    priceCalc: builder.mutation({
       query: ({ checkIn, checkOut, roomTypeId, roomCount }) => ({
         url: "/price/calculate",
         method: "POST",
@@ -21,4 +21,4 @@ export const priceApi = createApi({
   }),
 });
 
-export const { usePriceCalcQuery } = priceApi;
+export const { usePriceCalcMutation } = priceApi;

@@ -1,8 +1,8 @@
 "use client";
 
-import { usePriceCalcQuery } from "@/lib/price/priceApi";
+import { usePriceCalcMutation } from "@/lib/price/priceApi";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ReservationPage = () => {
   const searchParams = useSearchParams();
@@ -24,16 +24,22 @@ const ReservationPage = () => {
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
 
-  const {
+  const [triggerPriceCalc, {
     data: priceData,
     isLoading: isPriceLoading,
     error: priceError,
-  } = usePriceCalcQuery({
-    checkIn,
-    checkOut,
-    roomTypeId,
-    roomCount,
-  });
+  }] = usePriceCalcMutation();
+
+  useEffect(() => {
+    if (lodgeId && roomTypeId && checkIn && checkOut && roomCount) {
+      triggerPriceCalc({
+        checkIn,
+        checkOut,
+        roomTypeId,
+        roomCount,
+      });
+    }
+  },[roomTypeId, checkIn, checkOut, roomCount]);
 
   const handleCheckBoxChange = (request: string) => {
     if (specialRequests.includes(request)) {
