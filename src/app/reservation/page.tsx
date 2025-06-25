@@ -35,8 +35,8 @@ const ReservationPage = () => {
       triggerPriceCalc({
         checkIn,
         checkOut,
-        roomTypeId,
-        roomCount,
+        roomTypeId: Number(roomTypeId),
+        roomCount: Number(roomCount),
       });
     }
   },[roomTypeId, checkIn, checkOut, roomCount]);
