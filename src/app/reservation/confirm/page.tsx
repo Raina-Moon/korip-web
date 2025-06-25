@@ -6,6 +6,7 @@ import React from "react";
 const ReservationConfirmPage = () => {
   const searchParams = useSearchParams();
   const totalPrice = searchParams.get("totalPrice");
+  const lodgeId = searchParams.get("lodgeId");
 
   const handleTossPayment = async () => {
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
@@ -18,7 +19,7 @@ const ReservationConfirmPage = () => {
         orderName: "온천 숙소 예약",
         customerName: searchParams.get("userName"),
         successUrl: `${window.location.origin}/reservation/success`,
-        failUrl: `${window.location.origin}/reservation/fail`,
+        failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
     } catch (error) {
       alert("결제에 실패했습니다. 다시 시도해주세요.");
