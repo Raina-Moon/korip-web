@@ -8,7 +8,7 @@ export const priceApi = createApi({
   endpoints: (builder) => ({
     priceCalc: builder.query({
       query: ({ checkIn, checkOut, roomTypeId, roomCount }) => ({
-        url: "/price//calculate",
+        url: "/price/calculate",
         method: "POST",
         body: {
           checkIn,
