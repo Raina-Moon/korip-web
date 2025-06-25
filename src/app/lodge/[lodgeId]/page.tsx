@@ -56,6 +56,10 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number) => {
+    if (!isAuthenticated) {
+      setShowingLoginModal(true);
+      return;
+    }
     const reservationData = {
       lodgeId: Number(lodgeId),
       roomTypeId,
