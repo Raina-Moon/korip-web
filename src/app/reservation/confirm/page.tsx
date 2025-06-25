@@ -1,12 +1,26 @@
 "use client";
 
+import { createReservation } from "@/lib/reservation/reservationThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ReservationConfirmPage = () => {
   const searchParams = useSearchParams();
   const totalPrice = searchParams.get("totalPrice");
   const lodgeId = searchParams.get("lodgeId");
+
+  const firstName = searchParams.get("firstName") || "";
+  const lastName = searchParams.get("lastName") || "";
+  const nationality = searchParams.get("nationality") || "";
+  const phoneNumber = searchParams.get("phoneNumber") || "";
+  const email = searchParams.get("email") || "";
+  const specialRequests = JSON.parse(
+    searchParams.get("specialRequests") || "[]"
+  );
+  const customRequest = searchParams.get("customRequest") || "";
+
+  const dispatch = useAppDispatch();
 
   const handleTossPayment = async () => {
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
@@ -25,6 +39,25 @@ const ReservationConfirmPage = () => {
       alert("결제에 실패했습니다. 다시 시도해주세요.");
     }
   };
+
+  useEffect(() => {
+    const pending = JSON.parse(
+      localStorage.getItem("pendingReservation") || "[]"
+    );
+
+    const fullReservationData = {
+      ...pending,
+      firstName,
+      lastName,
+      nationality,
+      phoneNumber,
+      email,
+      specialRequests: [...specialRequests, customRequest].filter(Boolean),
+    };
+
+    dispatch(createReservation(fullReservationData));
+  }, []);
+
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">예약 최종 확인</h1>
