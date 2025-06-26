@@ -39,7 +39,7 @@ const ReservationConfirmPage = () => {
     try {
       await tossPayments.requestPayment("카드", {
         amount: Number(totalPrice),
-        orderId: `order-${Date.now()}`,
+        orderId: `order-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
         orderName: "온천 숙소 예약",
         customerName: customName,
         successUrl: `${window.location.origin}/reservation/success`,
