@@ -31,10 +31,17 @@ const ReservationConfirmPage = () => {
         amount: Number(totalPrice),
         orderId: `order-${Date.now()}`,
         orderName: "온천 숙소 예약",
-        customerName: `${searchParams.get("firstName") || ""} ${searchParams.get("lastName") || ""}`.trim() || "고객",
+        customerName:
+          `${searchParams.get("firstName") || ""} ${
+            searchParams.get("lastName") || ""
+          }`.trim() || "고객",
         successUrl: `${window.location.origin}/reservation/success`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
+
+      console.log("amount", Number(totalPrice));
+      console.log("customerName", `${searchParams.get("firstName") || ""} ${searchParams.get("lastName") || ""}`.trim() || "고객");
+      console.log("orderId", `order-${Date.now()}`);
     } catch (error) {
       alert("결제에 실패했습니다. 다시 시도해주세요.");
     }
