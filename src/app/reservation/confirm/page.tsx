@@ -30,6 +30,11 @@ const ReservationConfirmPage = () => {
     const payLastName = searchParams.get("lastName") || "";
 
     const customName = `${payFirstName} ${payLastName}`.trim() || "고객";
+ 
+    console.log("amount", Number(totalPrice));
+    console.log("customerName", customName);
+    console.log("orderId", `order-${Date.now()}`);
+    console.log("Client Key : ", clientKey);
 
     try {
       await tossPayments.requestPayment("카드", {
@@ -41,9 +46,6 @@ const ReservationConfirmPage = () => {
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
 
-      console.log("amount", Number(totalPrice));
-      console.log("customerName", customName);
-      console.log("orderId", `order-${Date.now()}`);
     } catch (error) {
       alert("결제에 실패했습니다. 다시 시도해주세요.");
     }
