@@ -71,7 +71,18 @@ const LodgeDetailPage = () => {
     }
 
     localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
-    router.push(`/reservation/confirm?lodgeId=${lodgeId}&roomTypeId=${roomTypeId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&children=${children}&roomCount=${roomCount}`);
+
+    const query = new URLSearchParams({
+      lodgeId: String(lodgeId),
+      roomTypeId: String(roomTypeId),
+      checkIn,
+      checkOut,
+      adults: String(adults),
+      children: String(children),
+      roomCount: String(roomCount),
+    }).toString();
+
+    router.push(`/reservation?${query}`);
   }
 
   if (isLoading) return <div>Loading...</div>;
@@ -126,6 +137,9 @@ const LodgeDetailPage = () => {
               </p>
               <p className="text-gray-600 mb-2">
                 기본 가격: ₩{room.basePrice.toLocaleString()}
+              </p>
+              <p className="text-gray-600 mb-2">
+                주말 가격: ₩{room.weekendPrice !== undefined ? room.weekendPrice.toLocaleString() : room.basePrice.toLocaleString()}
               </p>
               <button
                 onClick={() => room.id !== undefined && handleReserve(room.id)}
