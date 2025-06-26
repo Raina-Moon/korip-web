@@ -26,21 +26,23 @@ const ReservationConfirmPage = () => {
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
     const tossPayments = (window as any).TossPayments(clientKey);
 
+    const payFirstName = searchParams.get("firstName") || "";
+    const payLastName = searchParams.get("lastName") || "";
+
+    const customName = `${payFirstName} ${payLastName}`.trim() || "고객";
+
     try {
       await tossPayments.requestPayment("카드", {
         amount: Number(totalPrice),
         orderId: `order-${Date.now()}`,
         orderName: "온천 숙소 예약",
-        customerName:
-          `${searchParams.get("firstName") || ""} ${
-            searchParams.get("lastName") || ""
-          }`.trim() || "고객",
+        customerName: customName,
         successUrl: `${window.location.origin}/reservation/success`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
 
       console.log("amount", Number(totalPrice));
-      console.log("customerName", `${searchParams.get("firstName") || ""} ${searchParams.get("lastName") || ""}`.trim() || "고객");
+      console.log("customerName", customName);
       console.log("orderId", `order-${Date.now()}`);
     } catch (error) {
       alert("결제에 실패했습니다. 다시 시도해주세요.");
