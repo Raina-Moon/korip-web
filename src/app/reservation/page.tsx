@@ -75,6 +75,7 @@ const ReservationPage = () => {
       nationality,
       phoneNumber,
       email,
+      totalPrice: String(priceData?.totalPrice || 0),
       specialRequests : JSON.stringify([...specialRequests, customRequest].filter(Boolean)),
     }).toString();
 
