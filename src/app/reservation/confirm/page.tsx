@@ -55,6 +55,8 @@ const ReservationConfirmPage = () => {
       specialRequests: [...specialRequests, customRequest].filter(Boolean),
     };
 
+    console.log("Creating reservation with data:", fullReservationData);
+
     dispatch(createReservation(fullReservationData));
   }, []);
 
