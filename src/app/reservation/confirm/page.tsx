@@ -28,10 +28,10 @@ const ReservationConfirmPage = () => {
 
     try {
       await tossPayments.requestPayment("카드", {
-        amount: totalPrice,
+        amount: Number(totalPrice),
         orderId: `order-${Date.now()}`,
         orderName: "온천 숙소 예약",
-        customerName: searchParams.get("userName"),
+        customerName: `${searchParams.get("firstName") || ""} ${searchParams.get("lastName") || ""}`.trim() || "고객",
         successUrl: `${window.location.origin}/reservation/success`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
