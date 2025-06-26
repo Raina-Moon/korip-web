@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://js.tosspayments.com/v1"></script>
+        <script src="https://js.tosspayments.com/v2/standard"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
