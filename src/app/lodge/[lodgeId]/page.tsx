@@ -1,9 +1,8 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { createReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { ArrowLeft, ArrowRight, User } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -57,40 +56,34 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number) => {
-    if(!isAuthenticated) {
-      localStorage.setItem("pendingReservation", JSON.stringify({
-        lodgeId: Number(lodgeId),
-        roomTypeId,
-        checkIn,
-        checkOut,
-        adults,
-        children,
-        roomCount,
-      }));
-    }
-    if (!user) {
+    if (!isAuthenticated) {
       setShowingLoginModal(true);
       return;
     }
-    try {
-      await dispatch(
-        createReservation({
-          lodgeId: Number(lodgeId),
-          roomTypeId,
-          checkIn,
-          checkOut,
-          adults,
-          children,
-          roomCount,
-        })
-      );
-      alert("예약이 완료되었습니다.");
-      router.push("/reservations/success");
-    } catch (error) {
-      console.error("예약 실패:", error);
-      alert("예약에 실패했습니다. 다시 시도해주세요.");
+    const reservationData = {
+      lodgeId: Number(lodgeId),
+      roomTypeId,
+      checkIn,
+      checkOut,
+      adults,
+      children,
+      roomCount,
     }
-  };
+
+    localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
+
+    const query = new URLSearchParams({
+      lodgeId: String(lodgeId),
+      roomTypeId: String(roomTypeId),
+      checkIn,
+      checkOut,
+      adults: String(adults),
+      children: String(children),
+      roomCount: String(roomCount),
+    }).toString();
+
+    router.push(`/reservation?${query}`);
+  }
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
@@ -144,6 +137,9 @@ const LodgeDetailPage = () => {
               </p>
               <p className="text-gray-600 mb-2">
                 기본 가격: ₩{room.basePrice.toLocaleString()}
+              </p>
+              <p className="text-gray-600 mb-2">
+                주말 가격: ₩{room.weekendPrice !== undefined ? room.weekendPrice.toLocaleString() : room.basePrice.toLocaleString()}
               </p>
               <button
                 onClick={() => room.id !== undefined && handleReserve(room.id)}

@@ -10,6 +10,12 @@ interface CreateReservationPayload {
   adults: number;
   children: number;
   roomCount: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email?: string;
+  nationality: string;
+  specialRequests?: string[];
 }
 
 export const fetchReservation = createAsyncThunk<
