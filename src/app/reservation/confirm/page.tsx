@@ -18,7 +18,6 @@ const ReservationConfirmPage = () => {
   const lodgeId = searchParams.get("lodgeId");
 
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
-  const customerKey = process.env.NEXT_PUBLIC_TOSS_CUSTOMER_KEY ?? "";
 
   const firstName = searchParams.get("firstName") || "";
   const lastName = searchParams.get("lastName") || "";
@@ -97,7 +96,7 @@ const ReservationConfirmPage = () => {
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
         customerMobilePhone: phoneNumber,
-        successUrl: `${window.location.origin}/reservation/success`,
+        successUrl: `${window.location.origin}/reservation/success?`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
 

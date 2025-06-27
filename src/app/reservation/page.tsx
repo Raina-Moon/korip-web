@@ -1,7 +1,6 @@
 "use client";
 
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
-import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -24,8 +23,6 @@ const ReservationPage = () => {
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
-
-  const dispatch = useAppDispatch();
 
   const [
     triggerPriceCalc,
