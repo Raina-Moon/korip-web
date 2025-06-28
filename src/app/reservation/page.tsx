@@ -1,7 +1,6 @@
 "use client";
 
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
-import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -16,6 +15,8 @@ const ReservationPage = () => {
   const adults = searchParams.get("adults");
   const children = searchParams.get("children");
   const roomCount = searchParams.get("roomCount");
+  const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
+  const roomName = searchParams.get("roomName") || "Unknown Room";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,8 +25,6 @@ const ReservationPage = () => {
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
-
-  const dispatch = useAppDispatch();
 
   const [
     triggerPriceCalc,
@@ -59,12 +58,20 @@ const ReservationPage = () => {
     const updatedPending = {
       lodgeId: String(lodgeId),
       roomTypeId: String(roomTypeId),
-      checkIn : checkIn || "",
-      checkOut : checkOut || "",
+      checkIn: checkIn || "",
+      checkOut: checkOut || "",
       adults: String(adults),
       children: String(children),
       roomCount: String(roomCount),
-    }
+      lodgeName,
+      roomName,
+      firstName,
+      lastName,
+      nationality,
+      phoneNumber,
+      email,
+      specialRequests: [...specialRequests, customRequest].filter(Boolean),
+    };
 
     localStorage.setItem("pendingReservation", JSON.stringify(updatedPending));
 
@@ -76,7 +83,9 @@ const ReservationPage = () => {
       phoneNumber,
       email,
       totalPrice: String(priceData?.totalPrice || 0),
-      specialRequests : JSON.stringify([...specialRequests, customRequest].filter(Boolean)),
+      specialRequests: JSON.stringify(
+        [...specialRequests, customRequest].filter(Boolean)
+      ),
     }).toString();
 
     router.push(`/reservation/confirm?${query}`);

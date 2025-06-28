@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useAppSelector } from "@/lib/store/hooks";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -19,16 +19,14 @@ const LodgeDetailPage = () => {
   const adults = Number(searchParams.get("adults")) || 1;
   const children = Number(searchParams.get("children")) || 0;
   const roomCount = Number(searchParams.get("roomCount")) || 1;
-
+ 
   const { lodgeId } = useParams() as { lodgeId: string };
 
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
 
-  const user = useAppSelector((state) => state.auth.user);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   const openModal = (images: string[], index: number) => {
@@ -55,7 +53,7 @@ const LodgeDetailPage = () => {
     );
   };
 
-  const handleReserve = async (roomTypeId: number) => {
+  const handleReserve = async (roomTypeId: number, roomName: string) => {
     if (!isAuthenticated) {
       setShowingLoginModal(true);
       return;
@@ -68,7 +66,9 @@ const LodgeDetailPage = () => {
       adults,
       children,
       roomCount,
-    }
+      lodgeName: lodge?.name || "Unknown Lodge",
+      roomName,
+    };
 
     localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
 
@@ -80,10 +80,12 @@ const LodgeDetailPage = () => {
       adults: String(adults),
       children: String(children),
       roomCount: String(roomCount),
+      lodgeName: lodge?.name || "Unknown Lodge",
+      roomName,
     }).toString();
 
     router.push(`/reservation?${query}`);
-  }
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
@@ -139,10 +141,13 @@ const LodgeDetailPage = () => {
                 기본 가격: ₩{room.basePrice.toLocaleString()}
               </p>
               <p className="text-gray-600 mb-2">
-                주말 가격: ₩{room.weekendPrice !== undefined ? room.weekendPrice.toLocaleString() : room.basePrice.toLocaleString()}
+                주말 가격: ₩
+                {room.weekendPrice !== undefined
+                  ? room.weekendPrice.toLocaleString()
+                  : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() => room.id !== undefined && handleReserve(room.id)}
+                onClick={() => room.id !== undefined && handleReserve(room.id, room.name)}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
@@ -228,7 +233,10 @@ const LodgeDetailPage = () => {
             <p className="text-primary-900 text-lg font-medium">
               로그인 후 숙소 예약을 완료할 수 있어요.
             </p>
-            <button className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 " onClick={() => router.push("/login")}>
+            <button
+              className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
+              onClick={() => router.push("/login")}
+            >
               로그인하러 가기
             </button>
           </div>
