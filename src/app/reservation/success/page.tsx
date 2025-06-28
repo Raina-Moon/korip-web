@@ -135,7 +135,7 @@ const ReservationSuccessPage = () => {
           홈으로 가기
         </button>
         <button
-          onClick={() => router.push("/reservations")}
+          onClick={() => router.push("/profile/reservations")}
           className="border border-primary-700 text-primary-800 px-4 py-2 rounded hover:bg-primary-700 hover:text-white cursor-pointer"
         >
           예약 리스트 보러가기

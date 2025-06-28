@@ -35,9 +35,6 @@ const reservationSlice = createSlice({
 
     builder
       .addCase(createReservation.fulfilled, (state, action) => {
-        state.list.unshift(action.payload);
-      })
-      .addCase(createReservation.fulfilled, (state, action) => {
         const index = state.list.findIndex(
           (reservation) => reservation.id === action.payload.id
         );
