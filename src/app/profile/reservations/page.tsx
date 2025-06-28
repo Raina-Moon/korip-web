@@ -19,7 +19,8 @@ export default function ReservationListPage() {
   const openModal = (reservation: any) => {
     setShowingModal(true);
     setPending(reservation);
-  }
+    console.log("예약 정보:", reservation);
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -100,10 +101,15 @@ export default function ReservationListPage() {
               <strong>객실 수:</strong> {pending.roomCount}개
             </p>
             <p className="mb-2">
-              <strong>예약일:</strong> {new Date(pending.createdAt).toLocaleString()}
+              <strong>예약일:</strong>{" "}
+              {new Date(pending.createdAt).toLocaleString()}
             </p>
             <p className="mb-2">
-              <strong>특별 요청:</strong> {pending.specialRequests?.join(", ") || "없음"}
+              <strong>특별 요청:</strong>{" "}
+              {Array.isArray(pending.specialRequests) &&
+              pending.specialRequests.length > 0
+                ? pending.specialRequests.join(", ")
+                : "없음"}
             </p>
             <div className="mt-4">
               <button
