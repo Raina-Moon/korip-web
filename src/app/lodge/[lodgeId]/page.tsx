@@ -19,9 +19,7 @@ const LodgeDetailPage = () => {
   const adults = Number(searchParams.get("adults")) || 1;
   const children = Number(searchParams.get("children")) || 0;
   const roomCount = Number(searchParams.get("roomCount")) || 1;
-  const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
-  const roomName = searchParams.get("roomName") || "Unknown Room";
-
+ 
   const { lodgeId } = useParams() as { lodgeId: string };
 
   const router = useRouter();
@@ -55,7 +53,7 @@ const LodgeDetailPage = () => {
     );
   };
 
-  const handleReserve = async (roomTypeId: number) => {
+  const handleReserve = async (roomTypeId: number, roomName: string) => {
     if (!isAuthenticated) {
       setShowingLoginModal(true);
       return;
@@ -68,7 +66,7 @@ const LodgeDetailPage = () => {
       adults,
       children,
       roomCount,
-      lodgeName,
+      lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
 
@@ -82,7 +80,7 @@ const LodgeDetailPage = () => {
       adults: String(adults),
       children: String(children),
       roomCount: String(roomCount),
-      lodgeName,
+      lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     }).toString();
 
@@ -149,7 +147,7 @@ const LodgeDetailPage = () => {
                   : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() => room.id !== undefined && handleReserve(room.id)}
+                onClick={() => room.id !== undefined && handleReserve(room.id, room.name)}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
