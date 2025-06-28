@@ -78,7 +78,7 @@ export default function ReservationListPage() {
 
       <div className="mt-6">
         <Link
-          href="/"
+          href="/profile"
           className="inline-block border border-primary-700 text-primary-800 px-4 py-2 rounded hover:bg-primary-700 hover:text-white"
         >
           메인으로 돌아가기
