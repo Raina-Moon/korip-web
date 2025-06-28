@@ -19,7 +19,6 @@ export default function ReservationListPage() {
   const openModal = (reservation: any) => {
     setShowingModal(true);
     setPending(reservation);
-    console.log("예약 정보:", reservation);
   };
 
   const parsedSpecialRequests = (input: any): string[] => {
