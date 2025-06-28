@@ -22,6 +22,17 @@ export default function ReservationListPage() {
     console.log("예약 정보:", reservation);
   };
 
+  const parsedSpecialRequests = (input: any): string[] => {
+    if (!input) return [];
+    if (Array.isArray(input)) return input;
+    try {
+      const parsed = JSON.parse(input);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">내 예약 목록</h1>
@@ -106,9 +117,8 @@ export default function ReservationListPage() {
             </p>
             <p className="mb-2">
               <strong>특별 요청:</strong>{" "}
-              {Array.isArray(pending.specialRequests) &&
-              pending.specialRequests.length > 0
-                ? pending.specialRequests.join(", ")
+              {parsedSpecialRequests(pending.specialRequests).length > 0
+                ? parsedSpecialRequests(pending.specialRequests).join(", ")
                 : "없음"}
             </p>
             <div className="mt-4">
