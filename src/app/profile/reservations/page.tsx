@@ -38,10 +38,10 @@ export default function ReservationListPage() {
               방 타입: {reservation.roomType?.name || "정보 없음"}
             </p>
             <p className="text-sm text-gray-700 mb-1">
-              체크인: {reservation.checkIn}
+              체크인: {reservation.checkIn.slice(0, 10)}
             </p>
             <p className="text-sm text-gray-700 mb-1">
-              체크아웃: {reservation.checkOut}
+              체크아웃: {reservation.checkOut.slice(0, 10)}
             </p>
             <p className="text-sm text-gray-700 mb-1">
               성인 {reservation.adults}명, 어린이 {reservation.children}명
