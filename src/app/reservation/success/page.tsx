@@ -26,7 +26,7 @@ const ReservationSuccessPage = () => {
       <h1 className="text-3xl font-bold text-primary-800">예약 확정 🎉</h1>
       <p className="text-lg text-gray-700 mb-6">아래 내용을 확인해주세요.</p>
 
-      <div className="overflow-x-auto border rounded-lg shadow bg-white">
+      <div className="w-full max-w-3xl border rounded-lg shadow bg-white">
         <table className="min-w-full border-collapse">
           <tbody>
             <tr className="bg-gray-100">
@@ -35,11 +35,11 @@ const ReservationSuccessPage = () => {
               </td>
             </tr>
             <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">숙소 ID</td>
+              <td className="py-2 px-4 font-medium bg-gray-50">숙소</td>
               <td className="py-2 px-4">{pending.lodgeName}</td>
             </tr>
             <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">방 ID</td>
+              <td className="py-2 px-4 font-medium bg-gray-50">룸 타입</td>
               <td className="py-2 px-4">{pending.roomName}</td>
             </tr>
 
