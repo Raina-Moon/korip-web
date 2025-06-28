@@ -11,6 +11,7 @@ import roomInventoryReducer from "../admin/lodge/roomInventorySlice";
 import roomPricingReducer from "../admin/lodge/roomPricingSlice";
 import { lodgeApi } from "../lodge/lodgeApi";
 import { priceApi } from "../price/priceApi";
+import reservationReducer from "../reservation/reservationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     "admin/roomPricing": roomPricingReducer,
     [lodgeApi.reducerPath]: lodgeApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
+    reservation: reservationReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
