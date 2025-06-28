@@ -71,19 +71,7 @@ const ReservationConfirmPage = () => {
       localStorage.getItem("pendingReservation") || "[]"
     );
 
-    const reservationData = {
-      ...pending,
-      firstName,
-      lastName,
-      nationality,
-      phoneNumber,
-      email,
-      specialRequests: [...specialRequests, customRequest].filter(Boolean),
-    };
-
-    console.log("Creating reservation with data:", reservationData);
-
-    dispatch(createReservation(reservationData));
+    dispatch(createReservation(pending));
   }, []);
 
   const handleTossPayment = async () => {

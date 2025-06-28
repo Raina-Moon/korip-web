@@ -65,6 +65,12 @@ const ReservationPage = () => {
       roomCount: String(roomCount),
       lodgeName,
       roomName,
+      firstName,
+      lastName,
+      nationality,
+      phoneNumber,
+      email,
+      specialRequests: [...specialRequests, customRequest].filter(Boolean),
     };
 
     localStorage.setItem("pendingReservation", JSON.stringify(updatedPending));
