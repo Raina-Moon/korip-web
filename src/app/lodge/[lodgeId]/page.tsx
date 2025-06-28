@@ -19,6 +19,8 @@ const LodgeDetailPage = () => {
   const adults = Number(searchParams.get("adults")) || 1;
   const children = Number(searchParams.get("children")) || 0;
   const roomCount = Number(searchParams.get("roomCount")) || 1;
+  const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
+  const roomName = searchParams.get("roomName") || "Unknown Room";
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
@@ -66,6 +68,8 @@ const LodgeDetailPage = () => {
       adults,
       children,
       roomCount,
+      lodgeName,
+      roomName,
     };
 
     localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
@@ -78,6 +82,8 @@ const LodgeDetailPage = () => {
       adults: String(adults),
       children: String(children),
       roomCount: String(roomCount),
+      lodgeName,
+      roomName,
     }).toString();
 
     router.push(`/reservation?${query}`);

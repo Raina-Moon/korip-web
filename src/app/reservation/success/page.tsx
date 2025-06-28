@@ -36,11 +36,11 @@ const ReservationSuccessPage = () => {
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">숙소 ID</td>
-              <td className="py-2 px-4">{pending.lodgeId}</td>
+              <td className="py-2 px-4">{pending.lodgeName}</td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">방 ID</td>
-              <td className="py-2 px-4">{pending.roomTypeId}</td>
+              <td className="py-2 px-4">{pending.roomName}</td>
             </tr>
 
             <tr className="bg-gray-100">

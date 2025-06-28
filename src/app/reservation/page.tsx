@@ -15,6 +15,8 @@ const ReservationPage = () => {
   const adults = searchParams.get("adults");
   const children = searchParams.get("children");
   const roomCount = searchParams.get("roomCount");
+  const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
+  const roomName = searchParams.get("roomName") || "Unknown Room";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -56,12 +58,14 @@ const ReservationPage = () => {
     const updatedPending = {
       lodgeId: String(lodgeId),
       roomTypeId: String(roomTypeId),
-      checkIn : checkIn || "",
-      checkOut : checkOut || "",
+      checkIn: checkIn || "",
+      checkOut: checkOut || "",
       adults: String(adults),
       children: String(children),
       roomCount: String(roomCount),
-    }
+      lodgeName,
+      roomName,
+    };
 
     localStorage.setItem("pendingReservation", JSON.stringify(updatedPending));
 
@@ -73,7 +77,9 @@ const ReservationPage = () => {
       phoneNumber,
       email,
       totalPrice: String(priceData?.totalPrice || 0),
-      specialRequests : JSON.stringify([...specialRequests, customRequest].filter(Boolean)),
+      specialRequests: JSON.stringify(
+        [...specialRequests, customRequest].filter(Boolean)
+      ),
     }).toString();
 
     router.push(`/reservation/confirm?${query}`);
