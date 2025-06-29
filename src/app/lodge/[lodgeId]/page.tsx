@@ -1,7 +1,9 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
+import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
+import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -19,7 +21,7 @@ const LodgeDetailPage = () => {
   const adults = Number(searchParams.get("adults")) || 1;
   const children = Number(searchParams.get("children")) || 0;
   const roomCount = Number(searchParams.get("roomCount")) || 1;
- 
+
   const { lodgeId } = useParams() as { lodgeId: string };
 
   const router = useRouter();
@@ -87,6 +89,32 @@ const LodgeDetailPage = () => {
     router.push(`/reservation?${query}`);
   };
 
+  const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
+    const {
+      data: reviews,
+      isLoading,
+      isError,
+    } = useGetReviewsByLodgeIdQuery(lodgeId);
+
+    if (isLoading) return <div>Loading reviews...</div>;
+    if (isError) return <div>Error loading reviews.</div>;
+
+    if (!reviews || reviews.length === 0) {
+      return <div>아직 리뷰가 없습니다.</div>;
+    }
+
+    return (
+      <div>
+        {reviews.map((review: Review) => (
+          <div key={review.id}>
+            <p>{review.rating} / 5</p>
+            <p>{review.content}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
   if (!lodge) return <div>No lodge data found.</div>;
@@ -147,7 +175,9 @@ const LodgeDetailPage = () => {
                   : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() => room.id !== undefined && handleReserve(room.id, room.name)}
+                onClick={() =>
+                  room.id !== undefined && handleReserve(room.id, room.name)
+                }
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
@@ -167,6 +197,11 @@ const LodgeDetailPage = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-12 border-t pt-6">
+        <h2 className="text-2xl font-semibold mb-4">리뷰</h2>
+        <FetchReviews lodgeId={lodgeId} />
       </div>
 
       {/* ✅ 모달 */}
