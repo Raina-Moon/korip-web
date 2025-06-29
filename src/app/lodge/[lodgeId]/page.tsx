@@ -163,36 +163,23 @@ const LodgeDetailPage = () => {
             </select>
           </div>
         </div>
-        {sortedReviews.map((review: Review) => {
-          console.log(
-            "createdAt:",
-            review.createdAt,
-            "parsedDate:",
-            new Date(review.createdAt.replace(" ", "T")),
-            "now:",
-            new Date(),
-            "diffMs:",
-            new Date().getTime() -
-              new Date(review.createdAt.replace(" ", "T")).getTime()
-          );
-          return (
-            <div
-              key={review.id}
-              className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
-            >
-              <div className="flex items-center mb-2">
-                <span className="text-sm text-gray-600 mr-2">
-                  {review.user?.nickname}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {formattedDate(review.createdAt.replace(" ", "T"))}
-                </span>
-              </div>
-              <p>{review.rating} / 5</p>
-              <p>{review.comment}</p>
+        {sortedReviews.map((review: Review) => (
+          <div
+            key={review.id}
+            className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+          >
+            <div className="flex items-center mb-2">
+              <span className="text-sm text-gray-600 mr-2">
+                {review.user?.nickname}
+              </span>
+              <span className="text-sm text-gray-500">
+                {formattedDate(review.createdAt)}
+              </span>
             </div>
-          );
-        })}
+            <p>{review.rating} / 5</p>
+            <p>{review.comment}</p>
+          </div>
+        ))}
       </div>
     );
   };
