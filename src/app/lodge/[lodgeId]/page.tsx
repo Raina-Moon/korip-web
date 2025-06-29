@@ -90,6 +90,10 @@ const LodgeDetailPage = () => {
   };
 
   const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
+    const [sortOption, setSortOption] = useState<
+      "latest" | "oldest" | "highest" | "lowest"
+    >("latest");
+
     const {
       data: reviews,
       isLoading,
@@ -103,10 +107,74 @@ const LodgeDetailPage = () => {
       return <div>아직 리뷰가 없습니다.</div>;
     }
 
+    const typesReviews = reviews as Review[];
+    const totalReviews = typesReviews.length;
+    const averageRating = (
+      typesReviews.reduce((sum, review) => sum + review.rating, 0) /
+      totalReviews
+    ).toFixed(1);
+
+    const sortedReviews = [...typesReviews].sort((a, b) => {
+      switch (sortOption) {
+        case "latest":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "oldest":
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        case "highest":
+          return b.rating - a.rating;
+        case "lowest":
+          return a.rating - b.rating;
+        default:
+          return 0;
+      }
+    });
+
     return (
-      <div>
-        {reviews.map((review: Review) => (
-          <div key={review.id}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-lg font-semibold text-primary-900">
+            총 {totalReviews}개의 리뷰{" "}
+            <span className="font-bold">{averageRating}</span> / 5
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label htmlFor="sort" className="text-sm font-medium text-gray-700">
+              정렬 기준:
+            </label>
+            <select
+              id="sort"
+              value={sortOption}
+              onChange={(e) =>
+                setSortOption(
+                  e.target.value as "latest" | "oldest" | "highest" | "lowest"
+                )
+              }
+              className="border border-gray-300 rounded-md p-2"
+            >
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된순</option>
+              <option value="highest">높은 평점순</option>
+              <option value="lowest">낮은 평점순</option>
+            </select>
+          </div>
+        </div>
+        {sortedReviews.map((review: Review) => (
+          <div
+            key={review.id}
+            className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+          >
+            <div className="flex items-center mb-2">
+              <span className="text-sm text-gray-600 mr-2">
+                {review.user?.nickname}
+              </span>
+              <span className="text-sm text-gray-500">
+                {new Date(review.createdAt).toLocaleDateString()}
+              </span>
+            </div>
             <p>{review.rating} / 5</p>
             <p>{review.comment}</p>
           </div>
@@ -200,7 +268,6 @@ const LodgeDetailPage = () => {
       </div>
 
       <div className="mt-12 border-t pt-6">
-        <h2 className="text-2xl font-semibold mb-4">리뷰</h2>
         <FetchReviews lodgeId={lodgeId} />
       </div>
 
