@@ -3,9 +3,13 @@ export interface Review {
   lodgeId: number;
   userId: number;
   rating: number;
-  content: string;
+  comment?: string | null;
   createdAt: string;
   lodge: LodgeSummary;
+  user?:{
+    id: number;
+    nickname: string;
+  }
 }
 
 export interface LodgeSummary {
