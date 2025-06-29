@@ -1,7 +1,10 @@
 export const formattedDate = (dateString: string): string => {
+    const utcDate = new Date(dateString);
+
+    const kstDate = new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
+    
     const now = new Date();
-    const date = new Date(dateString);
-    const diff = now.getTime() - date.getTime();
+    const diff = now.getTime() - kstDate.getTime();
     const diffMins = Math.floor(diff / (1000 * 60));
     const diffHrs = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHrs / 24);
@@ -13,7 +16,7 @@ export const formattedDate = (dateString: string): string => {
     if(diffDays < 7) return `${diffDays}일 전`;
     if(diffWeeks < 4) return `${diffWeeks}주 전`;
 
-    return date.toLocaleDateString("ko-KR", {
+    return kstDate.toLocaleDateString("ko-KR", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
