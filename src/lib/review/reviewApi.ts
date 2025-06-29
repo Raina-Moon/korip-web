@@ -13,6 +13,10 @@ export const reviewApi = createApi({
         { type: "Reviews", id: lodgeId },
       ],
     }),
+    getReviewsByUserId: builder.query<any,void>({
+      query: () => `review/my`,
+      providesTags: ["Reviews"],
+    }),
     createReview: builder.mutation({
       query: (body) => ({
         url: `review`,
@@ -29,20 +33,21 @@ export const reviewApi = createApi({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Reviews"]
+      invalidatesTags: ["Reviews"],
     }),
     deleteReview: builder.mutation({
       query: (id) => ({
         url: `review/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Reviews"]
+      invalidatesTags: ["Reviews"],
     }),
   }),
 });
 
 export const {
   useGetReviewsByLodgeIdQuery,
+  useGetReviewsByUserIdQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
