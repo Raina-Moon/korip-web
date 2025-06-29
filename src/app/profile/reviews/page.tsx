@@ -16,6 +16,7 @@ const ReviewsPage = () => {
         <ul>
           {reviews.map((review: Review) => (
             <li key={review.id}>
+              <span>{review.user?.nickname}</span>
               <p>{review.rating} / 5</p>
               <p>{review.comment}</p>
             </li>
