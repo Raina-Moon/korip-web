@@ -4,6 +4,7 @@ import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
 import { Review } from "@/types/reivew";
+import { formattedDate } from "@/utils/date";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -172,7 +173,7 @@ const LodgeDetailPage = () => {
                 {review.user?.nickname}
               </span>
               <span className="text-sm text-gray-500">
-                {new Date(review.createdAt).toLocaleDateString()}
+                {formattedDate(review.createdAt)}
               </span>
             </div>
             <p>{review.rating} / 5</p>
