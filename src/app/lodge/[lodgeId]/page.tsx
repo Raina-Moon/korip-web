@@ -108,7 +108,7 @@ const LodgeDetailPage = () => {
         {reviews.map((review: Review) => (
           <div key={review.id}>
             <p>{review.rating} / 5</p>
-            <p>{review.content}</p>
+            <p>{review.comment}</p>
           </div>
         ))}
       </div>
