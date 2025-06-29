@@ -9,6 +9,9 @@ export const reviewApi = createApi({
   endpoints: (builder) => ({
     getReviewsByLodgeId: builder.query({
       query: (lodgeId) => `review/lodge/${lodgeId}`,
+      providesTags: (result, error, lodgeId) => [
+        { type: "Reviews", id: lodgeId },
+      ],
     }),
     createReview: builder.mutation({
       query: (body) => ({
@@ -16,6 +19,9 @@ export const reviewApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: (result, error, { lodgeId }) => [
+        { type: "Reviews", id: lodgeId },
+      ],
     }),
     updateReview: builder.mutation({
       query: ({ id, ...body }) => ({
@@ -23,12 +29,14 @@ export const reviewApi = createApi({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Reviews"]
     }),
     deleteReview: builder.mutation({
       query: (id) => ({
         url: `review/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Reviews"]
     }),
   }),
 });
