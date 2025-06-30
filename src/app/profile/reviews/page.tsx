@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { fetchReservation } from "@/lib/reservation/reservationThunk";
+import { comment } from "postcss";
 
 const ReviewsPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -106,6 +107,12 @@ const ReviewsPage = () => {
       setNewComment("");
       setNewRating(0);
       setSelectedReservationId("");
+
+      console.log({
+        comment: newComment,
+        rating: newRating,
+        reservationId: selectedReservationId,
+      });
     } catch (error) {
       console.error("Failed to create review:", error);
       alert("Failed to create review");
