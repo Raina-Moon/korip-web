@@ -2,18 +2,23 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
 import { RoomType } from "@/types/lodge";
+import { RootState } from "@/lib/store/store";
 
 export const fetchRoomTypes = createAsyncThunk<
   RoomType[],
   { lodgeId: number },
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "admin/fetchRoomTypes",
-  async ({ lodgeId }, { dispatch, rejectWithValue }) => {
+  async ({ lodgeId }, { dispatch, rejectWithValue, getState }) => {
     try {
+      const token = getState().auth.accessToken;
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}/room-types`,
         {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           withCredentials: true,
         }
       );
@@ -38,15 +43,21 @@ export const createRoomType = createAsyncThunk<
     maxChildren: number;
     totalRooms: number;
   },
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "admin/createRoomType",
-  async (newRoomTypeData, { dispatch, rejectWithValue }) => {
+  async (newRoomTypeData, { dispatch, rejectWithValue, getState }) => {
     try {
+      const token = getState().auth.accessToken;
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/room-type`,
         newRoomTypeData,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
       return res.data as { message: string; roomType: RoomType };
     } catch (err: any) {
@@ -69,39 +80,57 @@ export const updateRoomType = createAsyncThunk<
     maxChildren: number;
     totalRooms: number;
   },
-  { rejectValue: string }
->("admin/updateRoomType", async (payload, { dispatch, rejectWithValue }) => {
-  const { id, ...patch } = payload;
-  try {
-    const res = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/room-type/${id}`,
-      patch,
-      { withCredentials: true }
-    );
-    return res.data as { message: string; roomType: RoomType };
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+  { rejectValue: string; state: RootState }
+>(
+  "admin/updateRoomType",
+  async (payload, { dispatch, rejectWithValue, getState }) => {
+    const { id, ...patch } = payload;
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/room-type/${id}`,
+        patch,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data as { message: string; roomType: RoomType };
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to update room type");
     }
-    return rejectWithValue("Failed to update room type");
   }
-});
+);
 
 export const deleteRoomType = createAsyncThunk<
   { message: string },
   number,
-  { rejectValue: string }
->("admin/deleteRoomType", async (roomTypeId, { dispatch, rejectWithValue }) => {
-  try {
-    const res = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/room-type/${roomTypeId}`,
-      { withCredentials: true }
-    );
-    return res.data as { message: string };
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+  { rejectValue: string; state: RootState }
+>(
+  "admin/deleteRoomType",
+  async (roomTypeId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/room-type/${roomTypeId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data as { message: string };
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to delete room type");
     }
-    return rejectWithValue("Failed to delete room type");
   }
-});
+);

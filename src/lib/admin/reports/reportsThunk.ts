@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
+import { RootState } from "@/lib/store/store";
 
 export interface ReportReviews {
   id: number;
@@ -36,12 +37,16 @@ export interface ReportReviews {
 export const fetchReports = createAsyncThunk<
   ReportReviews[],
   void,
-  { rejectValue: string }
->("admin/fetchReports", async (_, { dispatch, rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>("admin/fetchReports", async (_, { dispatch, rejectWithValue, getState }) => {
   try {
+    const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports`,
       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -57,14 +62,20 @@ export const fetchReports = createAsyncThunk<
 export const deleteReportedReview = createAsyncThunk<
   { message: string; reviewId: number },
   number,
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "admin/deleteReportedReview",
-  async (reviewId, { dispatch, rejectWithValue }) => {
+  async (reviewId, { dispatch, rejectWithValue, getState }) => {
     try {
+      const token = getState().auth.accessToken;
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review/${reviewId}`,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
       return res.data as { message: string; reviewId: number };
     } catch (err: any) {
@@ -79,26 +90,35 @@ export const deleteReportedReview = createAsyncThunk<
 export const hideReportReview = createAsyncThunk<
   { message: string; updated: { id: number; isHidden: boolean } },
   number,
-  { rejectValue: string }
->("admin/hideReportReview", async (reviewId, { dispatch, rejectWithValue }) => {
-  try {
-    const res = await axios.patch(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review/${reviewId}/hide`,
-      {},
-      { withCredentials: true }
-    );
-    const data = res.data as {
-      message: string;
-      updated: { id: number; isHidden: boolean };
-    };
-    return {
-      message: data.message,
-      updated: { id: data.updated.id, isHidden: data.updated.isHidden },
-    };
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+  { rejectValue: string; state: RootState }
+>(
+  "admin/hideReportReview",
+  async (reviewId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review/${reviewId}/hide`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      const data = res.data as {
+        message: string;
+        updated: { id: number; isHidden: boolean };
+      };
+      return {
+        message: data.message,
+        updated: { id: data.updated.id, isHidden: data.updated.isHidden },
+      };
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to hide reported review");
     }
-    return rejectWithValue("Failed to hide reported review");
   }
-});
+);
