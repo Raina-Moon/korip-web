@@ -1,15 +1,19 @@
 "use client";
 
+import { setAccessToken } from "@/lib/auth/authSlice";
 import { fetchCurrentUser } from "@/lib/auth/authThunk";
-import axios from "axios";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 export default function AuthLoader() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    fetchCurrentUser()
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken) {
+      dispatch(setAccessToken(storedToken));
+      dispatch(fetchCurrentUser());
+    }
   }, [dispatch]);
 
   return null;
