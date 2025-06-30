@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { setUserOnly } from "./authSlice";
+import { logout, setAccessToken, setUserOnly } from "./authSlice";
+import { RootState } from "../store/store";
 
 export interface User {
   id: number;
@@ -13,22 +14,50 @@ export interface User {
 export const fetchCurrentUser = createAsyncThunk<
   User,
   void,
+  { rejectValue: string; state: RootState }
+>(
+  "auth/fetchCurrentUser",
+  async (_, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${getState().auth.accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+      const user = res.data as User;
+      dispatch(setUserOnly(user));
+      return user;
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(setUserOnly(null));
+      }
+      return rejectWithValue("Failed to fetch current user");
+    }
+  }
+);
+
+export const tryRefreshSession = createAsyncThunk<
+  string,
+  void,
   { rejectValue: string }
->("auth/fetchCurrentUser", async (_, { dispatch, rejectWithValue }) => {
+>("auth/tryRefreshSession", async (_, { rejectWithValue, dispatch }) => {
   try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/me`,
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh`,
+      {},
       {
         withCredentials: true,
       }
     );
-    const user = res.data as User;
-    dispatch(setUserOnly(user));
-    return user;
+    const newToken = res.data.accessToken;
+    dispatch(setAccessToken(newToken));
+    return newToken;
   } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(setUserOnly(null));
-    }
-    return rejectWithValue("Failed to fetch current user");
+    dispatch(logout());
+    return rejectWithValue("Failed to refresh session");
   }
 });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AppDispatch } from "../../store/store";
+import { RootState } from "../../store/store";
 import { logout } from "../../auth/authSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -14,12 +14,16 @@ export interface User {
 export const fetchAllUsers = createAsyncThunk<
   User[],
   void,
-  { rejectValue: string }
->("/admin/fetchAllUsers", async (_, { dispatch, rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>("/admin/fetchAllUsers", async (_, { dispatch, rejectWithValue, getState }) => {
   try {
+    const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/users`,
       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -35,14 +39,18 @@ export const fetchAllUsers = createAsyncThunk<
 export const deleteUser = createAsyncThunk<
   { message: string; user: User },
   number,
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "/admin/deleteUser",
-  async (userId: number, { dispatch, rejectWithValue }) => {
+  async (userId: number, { dispatch, rejectWithValue, getState }) => {
     try {
+      const token = getState().auth.accessToken;
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/users/${userId}`,
         {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           withCredentials: true,
         }
       );

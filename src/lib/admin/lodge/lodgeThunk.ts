@@ -2,16 +2,21 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
 import { Lodge, RoomType, SeasonalPricing } from "@/types/lodge";
+import { RootState } from "@/lib/store/store";
 
 export const fetchLodges = createAsyncThunk<
   Lodge[],
   void,
-  { rejectValue: string }
->("admin/fetchLodges", async (_, { dispatch, rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>("admin/fetchLodges", async (_, { dispatch, rejectWithValue, getState }) => {
   try {
+    const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -38,113 +43,132 @@ type CreateLodgePayload = Omit<
 export const createLodge = createAsyncThunk<
   { message: string; lodge: Lodge },
   CreateLodgePayload,
-  { rejectValue: string }
->("admin/createLodge", async (newLodgeData, { dispatch, rejectWithValue }) => {
-  try {
-    const formData = new FormData();
+  { rejectValue: string; state: RootState }
+>(
+  "admin/createLodge",
+  async (newLodgeData, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const formData = new FormData();
 
-    console.log("Creating FormData");
-    formData.append("name", newLodgeData.name);
-    formData.append("address", newLodgeData.address);
-    formData.append("latitude", newLodgeData.latitude.toString());
-    formData.append("longitude", newLodgeData.longitude.toString());
-    formData.append("description", newLodgeData.description || "");
-    formData.append("accommodationType", newLodgeData.accommodationType);
-    formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
+      console.log("Creating FormData");
+      formData.append("name", newLodgeData.name);
+      formData.append("address", newLodgeData.address);
+      formData.append("latitude", newLodgeData.latitude.toString());
+      formData.append("longitude", newLodgeData.longitude.toString());
+      formData.append("description", newLodgeData.description || "");
+      formData.append("accommodationType", newLodgeData.accommodationType);
+      formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
-    console.log(
-      "Appending lodge images to FormData",
-      newLodgeData.lodgeImageFile
-    );
-    if (
-      !Array.isArray(newLodgeData.lodgeImageFile) ||
-      newLodgeData.lodgeImageFile.length === 0
-    ) {
-      console.error(
-        "lodgeImageFile is not an array or is empty",
+      console.log(
+        "Appending lodge images to FormData",
         newLodgeData.lodgeImageFile
       );
-      throw new Error("lodgeImageFile must be an array of File objects");
-    }
-    newLodgeData.lodgeImageFile.forEach((file: File) => {
-      formData.append("hotSpringLodgeImages", file);
-    });
+      if (
+        !Array.isArray(newLodgeData.lodgeImageFile) ||
+        newLodgeData.lodgeImageFile.length === 0
+      ) {
+        console.error(
+          "lodgeImageFile is not an array or is empty",
+          newLodgeData.lodgeImageFile
+        );
+        throw new Error("lodgeImageFile must be an array of File objects");
+      }
+      newLodgeData.lodgeImageFile.forEach((file: File) => {
+        formData.append("hotSpringLodgeImages", file);
+      });
 
-    console.log(
-      "Appending room type images to FormData",
-      newLodgeData.roomTypeImages
-    );
-    if (
-      !Array.isArray(newLodgeData.roomTypeImages) ||
-      newLodgeData.roomTypeImages.length === 0
-    ) {
-      console.error(
-        "roomTypeImages is not an array or is empty",
+      console.log(
+        "Appending room type images to FormData",
         newLodgeData.roomTypeImages
       );
-      throw new Error("roomTypeImages must be an array of File arrays");
-    }
-    newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-      console.log(`Appending images for room type ${idx}`, roomFiles);
-      if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
+      if (
+        !Array.isArray(newLodgeData.roomTypeImages) ||
+        newLodgeData.roomTypeImages.length === 0
+      ) {
         console.error(
-          `roomTypeImages[${idx}] is not an array or is empty`,
-          roomFiles
+          "roomTypeImages is not an array or is empty",
+          newLodgeData.roomTypeImages
         );
-        throw new Error(
-          `roomTypeImages[${idx}] must be an array of File objects`
-        );
+        throw new Error("roomTypeImages must be an array of File arrays");
       }
-      roomFiles.forEach((file: File, i: number) => {
-        if (!(file instanceof File)) {
-          console.error(`roomTypeImages[${idx}][${i}] is not a File`, file);
-          throw new Error(`roomTypeImages[${idx}][${i}] must be a File object`);
+      newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
+        console.log(`Appending images for room type ${idx}`, roomFiles);
+        if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
+          console.error(
+            `roomTypeImages[${idx}] is not an array or is empty`,
+            roomFiles
+          );
+          throw new Error(
+            `roomTypeImages[${idx}] must be an array of File objects`
+          );
         }
-        console.log(`Appending file for room type ${idx}, image ${i}`, file);
-        formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+        roomFiles.forEach((file: File, i: number) => {
+          if (!(file instanceof File)) {
+            console.error(`roomTypeImages[${idx}][${i}] is not a File`, file);
+            throw new Error(
+              `roomTypeImages[${idx}][${i}] must be a File object`
+            );
+          }
+          console.log(`Appending file for room type ${idx}, image ${i}`, file);
+          formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+        });
       });
-    });
 
-    console.log(
-      "Sending request to create lodge",
-      Array.from(formData.entries())
-    );
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
+      console.log(
+        "Sending request to create lodge",
+        Array.from(formData.entries())
+      );
+
+      const token = getState().auth.accessToken;
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("Lodge created successfully", res.data);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
       }
-    );
-    console.log("Lodge created successfully", res.data);
-    return res.data;
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+      return rejectWithValue("Failed to create lodge");
     }
-    return rejectWithValue("Failed to create lodge");
   }
-});
+);
 
 export const fetchLodgeById = createAsyncThunk<
   Lodge,
   number,
-  { rejectValue: string }
->("admin/fetchLodgeById", async (lodgeId, { dispatch, rejectWithValue }) => {
-  try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}`,
-      { withCredentials: true }
-    );
-    return res.data as Lodge;
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+  { rejectValue: string; state: RootState }
+>(
+  "admin/fetchLodgeById",
+  async (lodgeId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data as Lodge;
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to fetch lodge by ID");
     }
-    return rejectWithValue("Failed to fetch lodge by ID");
   }
-});
+);
 
 type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   roomTypes: Omit<RoomType, "seasonalPricing"> &
@@ -160,10 +184,10 @@ type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
 export const updateLodge = createAsyncThunk<
   { message: string; lodge: Lodge },
   UpdateLodgePayload,
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "admin/updateLodge",
-  async (updatedLodgeData, { dispatch, rejectWithValue }) => {
+  async (updatedLodgeData, { dispatch, rejectWithValue, getState }) => {
     try {
       const formData = new FormData();
 
@@ -194,14 +218,21 @@ export const updateLodge = createAsyncThunk<
         });
       });
 
-      console.log("newRoomTypeImageFiles:", updatedLodgeData.newRoomTypeImageFiles);
+      console.log(
+        "newRoomTypeImageFiles:",
+        updatedLodgeData.newRoomTypeImageFiles
+      );
 
+      const token = getState().auth.accessToken;
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${updatedLodgeData.id}`,
         formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       return res.data as { message: string; lodge: Lodge };
@@ -217,14 +248,20 @@ export const updateLodge = createAsyncThunk<
 export const deleteLodge = createAsyncThunk<
   { message: string; lodge: Lodge },
   number,
-  { rejectValue: string }
+  { rejectValue: string; state: RootState }
 >(
   "admin/deleteLodge",
-  async (lodgeId: number, { dispatch, rejectWithValue }) => {
+  async (lodgeId: number, { dispatch, rejectWithValue, getState }) => {
     try {
+      const token = getState().auth.accessToken;
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}`,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
       return res.data as { message: string; lodge: Lodge };
     } catch (err: any) {
