@@ -1,7 +1,10 @@
 "use client";
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
+import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
+import { Review } from "@/types/reivew";
+import { formattedDate } from "@/utils/date";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -19,7 +22,7 @@ const LodgeDetailPage = () => {
   const adults = Number(searchParams.get("adults")) || 1;
   const children = Number(searchParams.get("children")) || 0;
   const roomCount = Number(searchParams.get("roomCount")) || 1;
- 
+
   const { lodgeId } = useParams() as { lodgeId: string };
 
   const router = useRouter();
@@ -87,6 +90,100 @@ const LodgeDetailPage = () => {
     router.push(`/reservation?${query}`);
   };
 
+  const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
+    const [sortOption, setSortOption] = useState<
+      "latest" | "oldest" | "highest" | "lowest"
+    >("latest");
+
+    const {
+      data: reviews,
+      isLoading,
+      isError,
+    } = useGetReviewsByLodgeIdQuery(lodgeId);
+
+    if (isLoading) return <div>Loading reviews...</div>;
+    if (isError) return <div>Error loading reviews.</div>;
+
+    if (!reviews || reviews.length === 0) {
+      return <div>아직 리뷰가 없습니다.</div>;
+    }
+
+    const typesReviews = reviews as Review[];
+    const totalReviews = typesReviews.length;
+    const averageRating = (
+      typesReviews.reduce((sum, review) => sum + review.rating, 0) /
+      totalReviews
+    ).toFixed(1);
+
+    const sortedReviews = [...typesReviews].sort((a, b) => {
+      switch (sortOption) {
+        case "latest":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "oldest":
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        case "highest":
+          return b.rating - a.rating;
+        case "lowest":
+          return a.rating - b.rating;
+        default:
+          return 0;
+      }
+    });
+
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-lg font-semibold text-primary-900">
+            총 {totalReviews}개의 리뷰{" "}
+            <span className="font-bold">{averageRating}</span> / 5
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label htmlFor="sort" className="text-sm font-medium text-gray-700">
+              정렬 기준:
+            </label>
+            <select
+              id="sort"
+              value={sortOption}
+              onChange={(e) =>
+                setSortOption(
+                  e.target.value as "latest" | "oldest" | "highest" | "lowest"
+                )
+              }
+              className="border border-gray-300 rounded-md p-2"
+            >
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된순</option>
+              <option value="highest">높은 평점순</option>
+              <option value="lowest">낮은 평점순</option>
+            </select>
+          </div>
+        </div>
+        {sortedReviews.map((review: Review) => (
+          <div
+            key={review.id}
+            className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+          >
+            <div className="flex items-center mb-2">
+              <span className="text-sm text-gray-600 mr-2">
+                {review.user?.nickname}
+              </span>
+              <span className="text-sm text-gray-500">
+                {formattedDate(review.createdAt)}
+              </span>
+            </div>
+            <p>{review.rating} / 5</p>
+            <p>{review.comment}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
   if (!lodge) return <div>No lodge data found.</div>;
@@ -147,7 +244,9 @@ const LodgeDetailPage = () => {
                   : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() => room.id !== undefined && handleReserve(room.id, room.name)}
+                onClick={() =>
+                  room.id !== undefined && handleReserve(room.id, room.name)
+                }
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
@@ -167,6 +266,10 @@ const LodgeDetailPage = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-12 border-t pt-6">
+        <FetchReviews lodgeId={lodgeId} />
       </div>
 
       {/* ✅ 모달 */}
