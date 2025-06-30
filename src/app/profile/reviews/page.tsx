@@ -89,12 +89,6 @@ const ReviewsPage = () => {
     (res) => new Date(res.checkOut) < today
   );
 
-  console.log("reservation list:", reservation);
-  console.log("today:", today);
-  reservation.forEach((res) => {
-    console.log("res.checkOut:", res.checkOut, "Date:", new Date(res.checkOut));
-  });
-
   const handleSubmitReview = async () => {
     try {
       await createReview({
