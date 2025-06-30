@@ -77,9 +77,9 @@ const ReviewsPage = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const pastReservations = reservation.filter((res) => {
-    new Date(res.checkOut) < today;
-  });
+  const pastReservations = reservation.filter(
+    (res) => new Date(res.checkOut) < today
+  );
 
   const handleSubmitReview = async () => {
     try {
