@@ -6,12 +6,13 @@ import {
   useGetReviewsByUserIdQuery,
   useUpdateReviewMutation,
 } from "@/lib/review/reviewApi";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Review } from "@/types/reivew";
-import { MoreVertical, Star } from "lucide-react";
-import React, { useState } from "react";
+import { MoreVertical } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
+import { fetchReservation } from "@/lib/reservation/reservationThunk";
 
 const ReviewsPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -31,6 +32,12 @@ const ReviewsPage = () => {
 
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
   const reservation = useAppSelector((state) => state.reservation.list);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchReservation());
+  }, [dispatch]);
 
   const toggleMenu = (id: string) => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
