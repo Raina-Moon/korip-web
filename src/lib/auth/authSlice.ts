@@ -34,13 +34,25 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isAuthenticated = action.payload !== null;
     },
-    setCredential : (state,action:PayloadAction<{ user: User; token: string }>) => {
+    setCredential: (
+      state,
+      action: PayloadAction<{ user: User; token: string }>
+    ) => {
       state.user = action.payload.user;
       state.accessToken = action.payload.token;
       state.isAuthenticated = true;
     },
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload;
+      if (action.payload) {
+        localStorage.setItem("accessToken", action.payload);
+      } else {
+        localStorage.removeItem("accessToken");
+      }
+    },
   },
 });
 
-export const { logout, setUserOnly, setCredential } = authSlice.actions;
+export const { logout, setUserOnly, setCredential, setAccessToken } =
+  authSlice.actions;
 export default authSlice.reducer;
