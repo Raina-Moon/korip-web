@@ -1,3 +1,5 @@
+"use client";
+
 import { useGetReviewsByUserIdQuery } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
 import { Review } from "@/types/reivew";
