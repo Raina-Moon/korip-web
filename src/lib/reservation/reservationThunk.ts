@@ -1,6 +1,7 @@
 import { Reservation } from "@/types/reservation";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { RootState } from "../store/store";
 
 interface CreateReservationPayload {
   lodgeId: number;
@@ -21,12 +22,16 @@ interface CreateReservationPayload {
 export const fetchReservation = createAsyncThunk<
   Reservation[],
   void,
-  { rejectValue: string }
->("reservation/fetchReservation", async (_, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>("reservation/fetchReservation", async (_, { getState, rejectWithValue }) => {
   try {
+    const token = getState().auth.accessToken;
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation`,
       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -39,36 +44,51 @@ export const fetchReservation = createAsyncThunk<
 export const createReservation = createAsyncThunk<
   Reservation,
   CreateReservationPayload,
-  { rejectValue: string }
->("reservation/createReservation", async (data, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation`,
-      data,
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data as Reservation;
-  } catch (error) {
-    return rejectWithValue("Failed to create reservation");
+  { rejectValue: string; state: RootState }
+>(
+  "reservation/createReservation",
+  async (data, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return response.data as Reservation;
+    } catch (error) {
+      return rejectWithValue("Failed to create reservation");
+    }
   }
-});
+);
 
 export const confirmReservation = createAsyncThunk<
   Reservation,
-    { reservationId: number },
-    { rejectValue: string }
->("reservation/confirmReservation", async ({ reservationId }, { rejectWithValue }) => {
+  { reservationId: number },
+  { rejectValue: string; state: RootState }
+>(
+  "reservation/confirmReservation",
+  async ({ reservationId }, { getState, rejectWithValue }) => {
     try {
-        const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation/confirm`,
-      { reservationId },
-        {withCredentials: true,}
-    );
-        return response.data as Reservation;
+      const token = getState().auth.accessToken;
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation/confirm`,
+        { reservationId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return response.data as Reservation;
     } catch (error) {
-        return rejectWithValue("Failed to confirm reservation")
-        
+      return rejectWithValue("Failed to confirm reservation");
     }
-})
+  }
+);
