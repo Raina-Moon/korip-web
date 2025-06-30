@@ -96,11 +96,11 @@ const ReviewsPage = () => {
         rating: newRating,
         reservationId: selectedReservationId,
       });
-      
+
       await createReview({
         comment: newComment,
         rating: newRating,
-        reservationId: selectedReservationId,
+        reservationId: Number(selectedReservationId),
       }).unwrap();
       alert("Review created successfully");
       setShowCreateModal(false);
