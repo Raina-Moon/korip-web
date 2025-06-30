@@ -1,9 +1,12 @@
+import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/v1`,
+    credentials: "include",
+    prepareHeaders: prepareAuthHeaders,
   }),
   tagTypes: ["Reviews"],
   endpoints: (builder) => ({
@@ -13,7 +16,7 @@ export const reviewApi = createApi({
         { type: "Reviews", id: lodgeId },
       ],
     }),
-    getReviewsByUserId: builder.query<any,void>({
+    getReviewsByUserId: builder.query<any, void>({
       query: () => `review/my`,
       providesTags: ["Reviews"],
     }),

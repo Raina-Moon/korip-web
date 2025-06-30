@@ -1,6 +1,8 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { User } from "./authThunk";
+import { RootState } from "../store/store";
+import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/v1/auth";
 
@@ -22,6 +24,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     credentials: "include",
+    prepareHeaders: prepareAuthHeaders,
   }),
   endpoints: (builder) => ({
     requestVerification: builder.mutation<
