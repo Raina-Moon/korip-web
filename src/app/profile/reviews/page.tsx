@@ -91,6 +91,12 @@ const ReviewsPage = () => {
 
   const handleSubmitReview = async () => {
     try {
+      console.log({
+        comment: newComment,
+        rating: newRating,
+        reservationId: selectedReservationId,
+      });
+      
       await createReview({
         comment: newComment,
         rating: newRating,
@@ -102,11 +108,6 @@ const ReviewsPage = () => {
       setNewRating(0);
       setSelectedReservationId("");
 
-      console.log({
-        comment: newComment,
-        rating: newRating,
-        reservationId: selectedReservationId,
-      });
     } catch (error) {
       console.error("Failed to create review:", error);
       alert("Failed to create review");
