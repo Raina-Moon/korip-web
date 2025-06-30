@@ -10,7 +10,8 @@ import { useAppSelector } from "@/lib/store/hooks";
 import { Review } from "@/types/reivew";
 import { MoreVertical, Star } from "lucide-react";
 import React, { useState } from "react";
-import Rating from "react-rating";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 const ReviewsPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -219,11 +220,11 @@ const ReviewsPage = () => {
 
             <label className="block mb-2 text-sm font-medium">별점</label>
             <Rating
-              fractions={2}
-              initialRating={newRating}
-              onChange={(value) => setNewRating(value)}
-              emptySymbol={<Star className="text-gray-300 w-6 h-6" />}
-              fullSymbol={<Star className="text-yellow-400 w-6 h-6" />}
+              value={newRating}
+              onChange={setNewRating}
+              items={5}
+              halfFillMode="svg"
+              style={{ maxWidth: 200 }}
             />
 
             <div className="mt-4 flex gap-2">
