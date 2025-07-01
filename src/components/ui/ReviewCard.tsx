@@ -1,7 +1,7 @@
 import { Review } from "@/types/reivew";
 import { formattedDate } from "@/utils/date";
 import { MoreVertical } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ReviewCardProps {
   review: Review;
@@ -39,22 +39,33 @@ const ReviewCard = ({
   const isOwner = myUserId === review.userId;
   const isEditing = editingId === String(review.id);
   const [closeDropDown, setCloseDropDown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleCloseDropDown = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCloseDropDown(true);
-  }
+  useEffect(() => {
+    const clickOutsideHandler = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setCloseDropDown(true);
+      }
+    };
+    document.addEventListener("click", clickOutsideHandler);
+    return () => {
+      document.removeEventListener("click", clickOutsideHandler);
+    };
+  }, []);
 
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
       <div className="flex justify-between items-center mb-2 relative">
         <div className="flex items-center">
-        <span className="text-sm text-gray-600 mr-2">
-          {review.user?.nickname}
-        </span>
-        <span className="text-sm text-gray-500">
-          {formattedDate(review.createdAt)}
-        </span>
+          <span className="text-sm text-gray-600 mr-2">
+            {review.user?.nickname}
+          </span>
+          <span className="text-sm text-gray-500">
+            {formattedDate(review.createdAt)}
+          </span>
         </div>
 
         {isOwner ? (
@@ -67,9 +78,11 @@ const ReviewCard = ({
               <MoreVertical />
             </button>
             {openMenuId === String(review.id) && (
-              <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10"
-                onClick={handleCloseDropDown}
-                onMouseLeave={() => setCloseDropDown(false)}
+              <div
+                className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10"
+                ref={dropdownRef}
+                onMouseEnter={() => setCloseDropDown(false)}
+                onMouseLeave={() => setCloseDropDown(true)}
               >
                 <button
                   onClick={() => startEditing(review)}
