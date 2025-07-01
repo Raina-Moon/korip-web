@@ -12,7 +12,7 @@ export const bookmarkApi = createApi({
     tagTypes: ["Bookmarks"],
     endpoints: (builder) => ({
         getMyBookmarks: builder.query<any,void>({
-            query: () => `bookmarks`,
+            query: () => `bookmark`,
             providesTags: ["Bookmarks"],
         }),
         createBookmark: builder.mutation<any,{lodgeId:number}>({
@@ -23,7 +23,7 @@ export const bookmarkApi = createApi({
             }),
             invalidatesTags: ["Bookmarks"],
         }),
-        deleteBookmark: builder.mutation<any,{lodgeId:number}>({
+        deleteBookmark: builder.mutation<any, number>({
             query: (lodgeId) => ({
                 url: `bookmark/${lodgeId}`,
                 method: "DELETE",
