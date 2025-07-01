@@ -1,17 +1,29 @@
 "use client";
 
+import ReviewCard from "@/components/ui/ReviewCard";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
   useGetMyBookmarksQuery,
 } from "@/lib/bookmark/bookmarkApi";
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
+import { useCreateReportReviewMutation } from "@/lib/report-review/reportReviewApi";
+import {
+  useDeleteReviewMutation,
+  useGetReviewsByLodgeIdQuery,
+  useUpdateReviewMutation,
+} from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
 import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
 import { formattedDate } from "@/utils/date";
-import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Heart,
+  HeartOff,
+  MoreVertical,
+} from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -21,6 +33,10 @@ const LodgeDetailPage = () => {
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
   const [showingLoginModal, setShowingLoginModal] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingComment, setEditingComment] = useState<string>("");
+  const [editingRating, setEditingRating] = useState<number | null>(null);
 
   const searchParams = useSearchParams();
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -47,8 +63,13 @@ const LodgeDetailPage = () => {
     (b: Bookmark) => b.lodgeId === Number(lodgeId)
   );
 
+  const myUserId = useAppSelector((state) => state.auth.user?.id);
+
   const [createBookmark] = useCreateBookmarkMutation();
   const [deleteBookmark] = useDeleteBookmarkMutation();
+  const [createReportReview] = useCreateReportReviewMutation();
+  const [deleteReview] = useDeleteReviewMutation();
+  const [updateReview] = useUpdateReviewMutation();
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -122,6 +143,48 @@ const LodgeDetailPage = () => {
     } catch (error) {
       console.error("Error toggling bookmark:", error);
     }
+  };
+
+  const toggleMenu = (id: string) => {
+    setOpenMenuId((prevId) => (prevId === id ? null : id));
+  };
+
+  const startEditing = (review: Review) => {
+    setEditingId(String(review.id));
+    setEditingComment(review.comment || "");
+    setEditingRating(review.rating || null);
+    setOpenMenuId(null);
+  };
+
+  const saveEdit = async (review: Review) => {
+    try {
+      await updateReview({
+        id: review.id,
+        comment: editingComment,
+        rating: editingRating,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to update review:", error);
+      alert("Failed to update review");
+    }
+  };
+
+  const handleDelete = async (review: Review) => {
+    if (confirm("Are you sure you want to delete this review?")) {
+      try {
+        await deleteReview(review.id).unwrap();
+        alert("Review deleted successfully");
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        alert("Failed to delete review");
+      }
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingComment("");
+    setEditingRating(null);
   };
 
   const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
@@ -198,24 +261,36 @@ const LodgeDetailPage = () => {
           </div>
         </div>
         {sortedReviews.map((review: Review) => (
-          <div
+          <ReviewCard
             key={review.id}
-            className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
-          >
-            <div className="flex items-center mb-2">
-              <span className="text-sm text-gray-600 mr-2">
-                {review.user?.nickname}
-              </span>
-              <span className="text-sm text-gray-500">
-                {formattedDate(review.createdAt)}
-              </span>
-            </div>
-            <p>{review.rating} / 5</p>
-            <p>{review.comment}</p>
-          </div>
+            review={review}
+            myUserId={myUserId}
+            openMenuId={openMenuId}
+            editingId={editingId}
+            toggleMenu={toggleMenu}
+            startEditing={startEditing}
+            saveEdit={saveEdit}
+            cancelEditing={cancelEditing}
+            handleDelete={handleDelete}
+            handleReport={handleReport}
+            editingComment={editingComment}
+            setEditingComment={setEditingComment}
+            editingRating={editingRating}
+            setEditingRating={setEditingRating}
+          />
         ))}
       </div>
     );
+  };
+
+  const handleReport = async (reviewId: number) => {
+    try {
+      await createReportReview({ reviewId: Number(reviewId), reason }).unwrap();
+      alert("리뷰가 신고되었습니다.");
+    } catch (error) {
+      console.error("Failed to report review:", error);
+      alert("리뷰 신고에 실패했습니다.");
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
