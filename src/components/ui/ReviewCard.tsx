@@ -113,39 +113,47 @@ const ReviewCard = ({
         )}
       </div>
 
-      <p>{review.rating} / 5</p>
-
-      {isEditing && isOwner ? (
-        <div className="mt-2 flex flex-col gap-2">
-          <input
-            type="text"
-            className="border rounded px-3 py-2 w-full"
-            value={editingComment}
-            onChange={(e) => setEditingComment(e.target.value)}
-          />
-          <input
-            type="number"
-            className="border rounded px-3 py-2 w-full"
-            value={editingRating ?? ""}
-            onChange={(e) => setEditingRating(Number(e.target.value))}
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={() => saveEdit(review)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Save
-            </button>
-            <button
-              onClick={cancelEditing}
-              className="px-4 py-2 border rounded hover:bg-gray-100"
-            >
-              Cancel
-            </button>
-          </div>
+      {review.isHidden ? (
+        <div className="text-gray-400 italic mt-2">
+          관리자에 의해 가려진 댓글입니다.
         </div>
       ) : (
-        <p className="mt-2 text-gray-700">{review.comment}</p>
+        <>
+          {!isEditing && <p>{review.rating} / 5</p>}
+
+          {isEditing && isOwner ? (
+            <div className="mt-2 flex flex-col gap-2">
+              <input
+                type="text"
+                className="border rounded px-3 py-2 w-full"
+                value={editingComment}
+                onChange={(e) => setEditingComment(e.target.value)}
+              />
+              <input
+                type="number"
+                className="border rounded px-3 py-2 w-full"
+                value={editingRating ?? ""}
+                onChange={(e) => setEditingRating(Number(e.target.value))}
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => saveEdit(review)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="px-4 py-2 border rounded hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="mt-2 text-gray-700">{review.comment}</p>
+          )}
+        </>
       )}
     </div>
   );
