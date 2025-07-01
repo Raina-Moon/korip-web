@@ -19,7 +19,7 @@ import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +33,10 @@ const LodgeDetailPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reason, setReason] = useState<string>("");
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const [loginModalContext, setLoginModalContext] = useState<
+    "reserve" | "bookmark" | null
+  >(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -67,6 +71,21 @@ const LodgeDetailPage = () => {
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        closeLoginModal();
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
     setCurrentModalImage(index);
@@ -93,6 +112,7 @@ const LodgeDetailPage = () => {
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
     if (!isAuthenticated) {
+      setLoginModalContext("reserve");
       setShowingLoginModal(true);
       return;
     }
@@ -127,6 +147,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
+      setLoginModalContext("bookmark");
       setShowingLoginModal(true);
       return;
     }
@@ -278,6 +299,7 @@ const LodgeDetailPage = () => {
             editingRating={editingRating}
             setEditingRating={setEditingRating}
             handleReport={handleOpenReportModal}
+            isLoggedIn={isAuthenticated}
           />
         ))}
       </div>
@@ -304,6 +326,11 @@ const LodgeDetailPage = () => {
       console.error("Failed to report review:", error);
       alert("리뷰 신고에 실패했습니다.");
     }
+  };
+
+  const closeLoginModal = () => {
+    setShowingLoginModal(false);
+    setLoginModalContext(null);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -470,14 +497,23 @@ const LodgeDetailPage = () => {
       )}
 
       {showingLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          ref={modalRef}
+        >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
             <p className="text-primary-900 text-lg font-medium">
-              로그인 후 숙소 예약을 완료할 수 있어요.
+              {loginModalContext === "reserve" &&
+                "로그인 후 숙소 예약을 완료할 수 있어요."}
+              {loginModalContext === "bookmark" &&
+                "로그인 후 이 숙소를 찜할 수 있어요."}
             </p>
             <button
               className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
-              onClick={() => router.push("/login")}
+              onClick={() => {
+                closeLoginModal();
+                router.push("/login");
+              }}
             >
               로그인하러 가기
             </button>
