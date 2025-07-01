@@ -1,11 +1,17 @@
 "use client";
 
+import {
+  useCreateBookmarkMutation,
+  useDeleteBookmarkMutation,
+  useGetMyBookmarksQuery,
+} from "@/lib/bookmark/bookmarkApi";
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
+import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
 import { formattedDate } from "@/utils/date";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
@@ -28,9 +34,21 @@ const LodgeDetailPage = () => {
   const router = useRouter();
 
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
+
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  const { data: myBookmarks } = useGetMyBookmarksQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+
+  const isBookmarked = myBookmarks?.some(
+    (b: Bookmark) => b.lodgeId === Number(lodgeId)
+  );
+
+  const [createBookmark] = useCreateBookmarkMutation();
+  const [deleteBookmark] = useDeleteBookmarkMutation();
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -88,6 +106,22 @@ const LodgeDetailPage = () => {
     }).toString();
 
     router.push(`/reservation?${query}`);
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (!isAuthenticated) {
+      setShowingLoginModal(true);
+      return;
+    }
+    try {
+      if (isBookmarked) {
+        await deleteBookmark(Number(lodgeId)).unwrap();
+      } else {
+        await createBookmark({ lodgeId: Number(lodgeId) }).unwrap();
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
   const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
@@ -207,7 +241,24 @@ const LodgeDetailPage = () => {
         )}
       </div>
 
-      <h1 className="text-3xl font-bold text-primary-900 mb-2">{lodge.name}</h1>
+      <div className="flex items-center gap-2 mb-4">
+        <h1 className="text-3xl font-bold text-primary-900">{lodge.name}</h1>
+        <button
+          onClick={handleBookmarkToggle}
+          className={`text-2xl ${
+            isBookmarked ? "text-red-500" : "text-gray-400"
+          } hover:text-red-600`}
+          aria-label={
+            isBookmarked ? "Remove from favorites" : "Add to favorites"
+          }
+        >
+          {isBookmarked ? (
+            <Heart fill="red" stroke="red" className="w-6 h-6" />
+          ) : (
+            <HeartOff className="w-6 h-6 text-gray-400" />
+          )}
+        </button>
+      </div>
       <p className="text-gray-600 mb-4">{lodge.address}</p>
 
       {/* 설명 */}
