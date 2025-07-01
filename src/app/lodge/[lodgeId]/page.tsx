@@ -228,9 +228,10 @@ const LodgeDetailPage = () => {
     }
 
     const typesReviews = reviews as Review[];
-    const totalReviews = typesReviews.length;
+    const visibleReviews = typesReviews.filter(r => !r.isHidden);
+    const totalReviews = visibleReviews.length;
     const averageRating = (
-      typesReviews.reduce((sum, review) => sum + review.rating, 0) /
+      visibleReviews.reduce((sum, review) => sum + review.rating, 0) /
       totalReviews
     ).toFixed(1);
 

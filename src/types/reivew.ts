@@ -5,6 +5,7 @@ export interface Review {
   rating: number;
   comment?: string | null;
   createdAt: string;
+  isHidden: boolean;
   lodge: LodgeSummary;
   user?:{
     id: number;
