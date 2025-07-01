@@ -14,6 +14,7 @@ import { priceApi } from "../price/priceApi";
 import reservationReducer from "../reservation/reservationSlice";
 import { reviewApi } from "../review/reviewApi";
 import { bookmarkApi } from "../bookmark/bookmarkApi";
+import { reportReviewApi } from "../report-review/reportReviewApi";
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     reservation: reservationReducer,
     [reviewApi.reducerPath]: reviewApi.reducer,
     [bookmarkApi.reducerPath]: bookmarkApi.reducer,
+    [reportReviewApi.reducerPath]: reportReviewApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -40,7 +42,8 @@ export const store = configureStore({
       lodgeApi.middleware,
       priceApi.middleware,
       reviewApi.middleware,
-      bookmarkApi.middleware
+      bookmarkApi.middleware,
+      reportReviewApi.middleware
     ),
 });
 

@@ -1,26 +1,42 @@
 "use client";
 
+import ReviewCard from "@/components/ui/ReviewCard";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
   useGetMyBookmarksQuery,
 } from "@/lib/bookmark/bookmarkApi";
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
-import { useGetReviewsByLodgeIdQuery } from "@/lib/review/reviewApi";
+import { useCreateReportReviewMutation } from "@/lib/report-review/reportReviewApi";
+import {
+  useDeleteReviewMutation,
+  useGetReviewsByLodgeIdQuery,
+  useUpdateReviewMutation,
+} from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
 import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
-import { formattedDate } from "@/utils/date";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
   const [showingLoginModal, setShowingLoginModal] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingComment, setEditingComment] = useState<string>("");
+  const [editingRating, setEditingRating] = useState<number | null>(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reason, setReason] = useState<string>("");
+  const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const [loginModalContext, setLoginModalContext] = useState<
+    "reserve" | "bookmark" | null
+  >(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -47,8 +63,28 @@ const LodgeDetailPage = () => {
     (b: Bookmark) => b.lodgeId === Number(lodgeId)
   );
 
+  const myUserId = useAppSelector((state) => state.auth.user?.id);
+
   const [createBookmark] = useCreateBookmarkMutation();
   const [deleteBookmark] = useDeleteBookmarkMutation();
+  const [createReportReview] = useCreateReportReviewMutation();
+  const [deleteReview] = useDeleteReviewMutation();
+  const [updateReview] = useUpdateReviewMutation();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        closeLoginModal();
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -76,6 +112,7 @@ const LodgeDetailPage = () => {
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
     if (!isAuthenticated) {
+      setLoginModalContext("reserve");
       setShowingLoginModal(true);
       return;
     }
@@ -110,6 +147,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
+      setLoginModalContext("bookmark");
       setShowingLoginModal(true);
       return;
     }
@@ -122,6 +160,53 @@ const LodgeDetailPage = () => {
     } catch (error) {
       console.error("Error toggling bookmark:", error);
     }
+  };
+
+  const toggleMenu = (id: string) => {
+    setOpenMenuId((prevId) => (prevId === id ? null : id));
+  };
+
+  const startEditing = (review: Review) => {
+    setEditingId(String(review.id));
+    setEditingComment(review.comment || "");
+    setEditingRating(review.rating || null);
+    setOpenMenuId(null);
+  };
+
+  const saveEdit = async (review: Review) => {
+    try {
+      await updateReview({
+        id: review.id,
+        comment: editingComment,
+        rating: editingRating,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to update review:", error);
+      alert("Failed to update review");
+    }
+  };
+
+  const handleDelete = async (review: Review) => {
+    if (confirm("Are you sure you want to delete this review?")) {
+      try {
+        await deleteReview(review.id).unwrap();
+        alert("Review deleted successfully");
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        alert("Failed to delete review");
+      }
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingComment("");
+    setEditingRating(null);
+  };
+
+  const handleOpenReportModal = (reviewId: number) => {
+    setSelectedReviewId(reviewId);
+    setIsReportModalOpen(true);
   };
 
   const FetchReviews = ({ lodgeId }: { lodgeId: string }) => {
@@ -198,24 +283,54 @@ const LodgeDetailPage = () => {
           </div>
         </div>
         {sortedReviews.map((review: Review) => (
-          <div
+          <ReviewCard
             key={review.id}
-            className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
-          >
-            <div className="flex items-center mb-2">
-              <span className="text-sm text-gray-600 mr-2">
-                {review.user?.nickname}
-              </span>
-              <span className="text-sm text-gray-500">
-                {formattedDate(review.createdAt)}
-              </span>
-            </div>
-            <p>{review.rating} / 5</p>
-            <p>{review.comment}</p>
-          </div>
+            review={review}
+            myUserId={myUserId}
+            openMenuId={openMenuId}
+            editingId={editingId}
+            toggleMenu={toggleMenu}
+            startEditing={startEditing}
+            saveEdit={saveEdit}
+            cancelEditing={cancelEditing}
+            handleDelete={handleDelete}
+            editingComment={editingComment}
+            setEditingComment={setEditingComment}
+            editingRating={editingRating}
+            setEditingRating={setEditingRating}
+            handleReport={handleOpenReportModal}
+            isLoggedIn={isAuthenticated}
+          />
         ))}
       </div>
     );
+  };
+
+  const submitReport = async () => {
+    if (!selectedReviewId || !reason.trim()) {
+      alert("신고 사유를 입력해주세요.");
+      return;
+    }
+
+    try {
+      await createReportReview({
+        reviewId: selectedReviewId,
+        reason: reason.trim(),
+      }).unwrap();
+
+      alert("리뷰가 신고되었습니다.");
+      setIsReportModalOpen(false);
+      setReason("");
+      setSelectedReviewId(null);
+    } catch (error) {
+      console.error("Failed to report review:", error);
+      alert("리뷰 신고에 실패했습니다.");
+    }
+  };
+
+  const closeLoginModal = () => {
+    setShowingLoginModal(false);
+    setLoginModalContext(null);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -382,17 +497,57 @@ const LodgeDetailPage = () => {
       )}
 
       {showingLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          ref={modalRef}
+        >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
             <p className="text-primary-900 text-lg font-medium">
-              로그인 후 숙소 예약을 완료할 수 있어요.
+              {loginModalContext === "reserve" &&
+                "로그인 후 숙소 예약을 완료할 수 있어요."}
+              {loginModalContext === "bookmark" &&
+                "로그인 후 이 숙소를 찜할 수 있어요."}
             </p>
             <button
               className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
-              onClick={() => router.push("/login")}
+              onClick={() => {
+                closeLoginModal();
+                router.push("/login");
+              }}
             >
               로그인하러 가기
             </button>
+          </div>
+        </div>
+      )}
+
+      {isReportModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col">
+            <h2 className="text-lg font-semibold text-primary-900">
+              리뷰 신고하기
+            </h2>
+            <p className="text-sm text-gray-600">신고 사유를 작성해주세요.</p>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="border rounded p-2 w-full min-h-[100px]"
+              placeholder="신고 사유를 입력하세요."
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setIsReportModalOpen(false)}
+                className="px-4 py-2 border rounded hover:bg-gray-100"
+              >
+                취소
+              </button>
+              <button
+                onClick={submitReport}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                신고하기
+              </button>
+            </div>
           </div>
         </div>
       )}
