@@ -82,7 +82,7 @@ const reportsSlice = createSlice({
           const updatedReport = state.list.findIndex(
             (item) => item.review.id === hiddenReviewId
           );
-          if (updatedReport !== 1) {
+          if (updatedReport !== -1) {
             state.list[updatedReport].review.isHidden = true;
           }
         }
