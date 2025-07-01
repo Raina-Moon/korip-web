@@ -36,7 +36,7 @@ const ReviewCard = ({
   editingRating,
   setEditingRating,
 }: ReviewCardProps) => {
-  const isOwner = myUserId === review.userId;
+  const isOwner = myUserId !== undefined && myUserId === review.userId;
   const isEditing = editingId === String(review.id);
   const [closeDropDown, setCloseDropDown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -111,7 +111,7 @@ const ReviewCard = ({
 
       <p>{review.rating} / 5</p>
 
-      {isEditing ? (
+      {isEditing && isOwner ? (
         <div className="mt-2 flex flex-col gap-2">
           <input
             type="text"
