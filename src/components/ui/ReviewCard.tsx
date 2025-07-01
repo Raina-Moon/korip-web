@@ -18,6 +18,7 @@ interface ReviewCardProps {
   setEditingComment: (comment: string) => void;
   editingRating: number | null;
   setEditingRating: (rating: number | null) => void;
+  isLoggedIn: boolean;
 }
 
 const ReviewCard = ({
@@ -35,6 +36,7 @@ const ReviewCard = ({
   setEditingComment,
   editingRating,
   setEditingRating,
+  isLoggedIn,
 }: ReviewCardProps) => {
   const isOwner = myUserId !== undefined && myUserId === review.userId;
   const isEditing = editingId === String(review.id);
@@ -100,12 +102,14 @@ const ReviewCard = ({
             )}
           </div>
         ) : (
-          <button
-            onClick={() => handleReport(review.id)}
-            className="text-sm text-red-500 hover:underline ml-2"
-          >
-            신고하기
-          </button>
+          isLoggedIn && (
+            <button
+              onClick={() => handleReport(review.id)}
+              className="text-sm text-red-500 hover:underline ml-2"
+            >
+              신고하기
+            </button>
+          )
         )}
       </div>
 
