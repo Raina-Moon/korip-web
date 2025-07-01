@@ -89,16 +89,16 @@ export const deleteReportedReview = createAsyncThunk<
 
 export const hideReportReview = createAsyncThunk<
   { message: string; updated: { id: number; isHidden: boolean } },
-  number,
+  {reviewId: number; isHidden: boolean},
   { rejectValue: string; state: RootState }
 >(
   "admin/hideReportReview",
-  async (reviewId, { dispatch, rejectWithValue, getState }) => {
+  async ({reviewId, isHidden}, { dispatch, rejectWithValue, getState }) => {
     try {
       const token = getState().auth.accessToken;
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review/${reviewId}/hide`,
-        {},
+        { isHidden },
         {
           headers: {
             Authorization: `Bearer ${token}`,
