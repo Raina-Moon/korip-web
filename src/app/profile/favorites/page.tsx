@@ -14,7 +14,7 @@ const FavoritesPage = () => {
 
   const handleDeleteBookmark = async (lodgeId: number) => {
     try {
-      await deleteBookmark({ lodgeId }).unwrap();
+      await deleteBookmark(Number(lodgeId)).unwrap();
     } catch (error) {
       console.error("Failed to delete bookmark:", error);
     }
@@ -53,7 +53,7 @@ const FavoritesPage = () => {
                 onClick={() => handleDeleteBookmark(bookmark.lodgeId)}
                 className="text-red-500 hover:text-red-700 ml-4"
               >
-                <HeartIcon className="w-6 h-6" />
+                <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
               </button>
             </li>
           ))}
