@@ -20,6 +20,7 @@ import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import Calendar from "react-calendar";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +37,13 @@ const LodgeDetailPage = () => {
   const [loginModalContext, setLoginModalContext] = useState<
     "reserve" | "bookmark" | null
   >(null);
+  const [calendar, setCalendar] = useState(false);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  const [roomNum, setRoomNum] = useState(1);
+  const [adultNum, setAdultNum] = useState(1);
+  const [childrenNum, setChildrenNum] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
@@ -228,7 +236,7 @@ const LodgeDetailPage = () => {
     }
 
     const typesReviews = reviews as Review[];
-    const visibleReviews = typesReviews.filter(r => !r.isHidden);
+    const visibleReviews = typesReviews.filter((r) => !r.isHidden);
     const totalReviews = visibleReviews.length;
     const averageRating = (
       visibleReviews.reduce((sum, review) => sum + review.rating, 0) /
@@ -334,6 +342,26 @@ const LodgeDetailPage = () => {
     setLoginModalContext(null);
   };
 
+  const formatDate = (date: Date | null) => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleRoomChange = (delta: number) => {
+    setRoomNum((prev) => Math.max(1, prev + delta));
+  };
+
+  const handleAdultChange = (delta: number) => {
+    setAdultNum((prev) => Math.max(1, prev + delta));
+  };
+
+  const handleChildrenChange = (delta: number) => {
+    setChildrenNum((prev) => Math.max(0, prev + delta));
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
   if (!lodge) return <div>No lodge data found.</div>;
@@ -356,6 +384,129 @@ const LodgeDetailPage = () => {
           </div>
         )}
       </div>
+
+      <div
+        className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
+                flex flex-col items-center justify-center gap-5 px-5"
+      >
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          readOnly
+          onClick={() => {
+            setCalendar(true);
+          }}
+          value={formatDate(dateRange?.[0] ?? null)}
+          placeholder="Check-in Date"
+        />
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          readOnly
+          onClick={() => {
+            setCalendar(true);
+          }}
+          value={formatDate(dateRange?.[1] ?? null)}
+          placeholder="Check-out Date"
+        />
+        {calendar && (
+          <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+            <Calendar
+              calendarType="gregory"
+              onChange={(value) => {
+                if (Array.isArray(value) && value.length === 2) {
+                  setDateRange(value as [Date, Date]);
+                  setCalendar(false);
+                }
+              }}
+              selectRange
+              showDoubleView
+              value={dateRange}
+              minDate={new Date()}
+            />
+          </div>
+        )}
+        <div
+          onClick={() => setIsActive(!isActive)}
+          className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
+        >
+          <p>Room : {roomNum}</p>
+          <p>Adult : {adultNum}</p>
+          <p>Children : {childrenNum}</p>
+        </div>
+      </div>
+
+      {isActive && (
+        <>
+          <div className="absolute mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+            <div className="flex justify-end mb-3">
+              <button
+                onClick={() => setIsActive(false)}
+                className="text-primary-900 font-bold text-xl hover:text-primary-500"
+              >
+                X
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">Room </p>
+              <button
+                onClick={() => handleRoomChange(-1)}
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold">
+                {roomNum}
+              </p>
+              <button
+                onClick={() => handleRoomChange(1)}
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+              >
+                +
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">Adult</p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleAdultChange(-1)}
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold">
+                {" "}
+                {adultNum}
+              </p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleAdultChange(1)}
+              >
+                +
+              </button>
+            </div>
+            <div className="flex flex-row items-center justify-center p-5 gap-4">
+              <p className="text-lg font-semibold text-primary-900">
+                Children{" "}
+              </p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleChildrenChange(-1)}
+              >
+                -
+              </button>
+              <p className="text-lg text-primary-900 font-semibold">
+                {" "}
+                {childrenNum}
+              </p>
+              <button
+                className="border border-primary-800 p-3 rounded-full text-2xl"
+                onClick={() => handleChildrenChange(1)}
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="flex items-center gap-2 mb-4">
         <h1 className="text-3xl font-bold text-primary-900">{lodge.name}</h1>
