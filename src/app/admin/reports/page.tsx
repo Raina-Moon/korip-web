@@ -84,7 +84,13 @@ export default function ReportReviewsPage() {
               </button>
               <button 
                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                onClick={() => handleDeleteReview(report.review.id)}
+                onClick={() => {
+                  if(report?.review?.id !== null) {
+                  handleDeleteReview(report.review.id)
+                } else {
+                  alert("리뷰 ID가 없습니다.");
+                }
+              }}
               >
                 리뷰 삭제
               </button>
