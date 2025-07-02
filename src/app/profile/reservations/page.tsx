@@ -16,6 +16,10 @@ export default function ReservationListPage() {
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
 
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
   useEffect(() => {
     dispatch(fetchReservation());
   }, [dispatch]);
@@ -38,6 +42,8 @@ export default function ReservationListPage() {
 
   const filteredList =
     filter === "ALL" ? list : list.filter((r) => r.status === filter);
+
+  const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -138,7 +144,17 @@ export default function ReservationListPage() {
                 <strong>숙소:</strong>{" "}
                 {pending.lodge?.id ? (
                   <Link
-                    href={`/lodge/${pending.lodge.id}`}
+                    href={{
+                      pathname: `/lodge/${pending.lodge.id}`,
+                      query: {
+                        roomTypeId: pending.roomType.id,
+                        checkIn: formatDate(today),
+                        checkOut: formatDate(tomorrow),
+                        adults: 1,
+                        children: 0,
+                        roomCount: 1,
+                      },
+                    }}
                     className="text-primary-700 underline hover:text-primary-900"
                     onClick={() => setShowingModal(false)}
                   >
