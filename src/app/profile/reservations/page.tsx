@@ -40,6 +40,9 @@ export default function ReservationListPage() {
     }
   };
 
+  const filteredList =
+    filter === "ALL" ? list : list.filter((r) => r.status === filter);
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">내 예약 목록</h1>
@@ -95,58 +98,15 @@ export default function ReservationListPage() {
       </div>
 
       {!loading && !error && (
-        <>
-          {confirmedList.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-3 text-green-700">
-                ✅ 예약 확정
-              </h2>
-              <div className="space-y-4">
-                {confirmedList.map((reservation) => (
-                  <ReservationCard
-                    key={reservation.id}
-                    reservation={reservation}
-                    onClick={openModal}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {pendingList.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-3 text-yellow-700">
-                ⏳ 진행중
-              </h2>
-              <div className="space-y-4">
-                {pendingList.map((reservation) => (
-                  <ReservationCard
-                    key={reservation.id}
-                    reservation={reservation}
-                    onClick={openModal}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {cancelledList.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-3 text-red-700">
-                ❌ 취소됨
-              </h2>
-              <div className="space-y-4">
-                {cancelledList.map((reservation) => (
-                  <ReservationCard
-                    key={reservation.id}
-                    reservation={reservation}
-                    onClick={openModal}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </>
+        <div className="space-y-4">
+          {filteredList.map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              onClick={openModal}
+            />
+          ))}
+        </div>
       )}
 
       <div className="mt-6">
