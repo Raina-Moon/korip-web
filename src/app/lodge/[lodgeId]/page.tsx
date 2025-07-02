@@ -21,6 +21,7 @@ import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -386,9 +387,9 @@ const LodgeDetailPage = () => {
       </div>
 
       <div
-        className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
-                flex flex-col items-center justify-center gap-5 px-5"
+        className="
+                w-full bg-white rounded-lg shadow-lg relative
+                flex flex-row items-center justify-center gap-5 px-5 py-5 mt-5 mb-8"
       >
         <input
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
@@ -408,8 +409,9 @@ const LodgeDetailPage = () => {
           value={formatDate(dateRange?.[1] ?? null)}
           placeholder="Check-out Date"
         />
+
         {calendar && (
-          <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
             <Calendar
               calendarType="gregory"
               onChange={(value) => {
@@ -425,6 +427,7 @@ const LodgeDetailPage = () => {
             />
           </div>
         )}
+
         <div
           onClick={() => setIsActive(!isActive)}
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
@@ -433,80 +436,84 @@ const LodgeDetailPage = () => {
           <p>Adult : {adultNum}</p>
           <p>Children : {childrenNum}</p>
         </div>
-      </div>
+        <button className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500">
+          {" "}
+          검색
+        </button>
 
-      {isActive && (
-        <>
-          <div className="absolute mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-            <div className="flex justify-end mb-3">
-              <button
-                onClick={() => setIsActive(false)}
-                className="text-primary-900 font-bold text-xl hover:text-primary-500"
-              >
-                X
-              </button>
+        {isActive && (
+          <>
+            <div className="absolute left-2/3 top-14 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={() => setIsActive(false)}
+                  className="text-primary-900 font-bold text-xl hover:text-primary-500"
+                >
+                  X
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Room </p>
+                <button
+                  onClick={() => handleRoomChange(-1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {roomNum}
+                </p>
+                <button
+                  onClick={() => handleRoomChange(1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Adult</p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {adultNum}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(1)}
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">
+                  Children{" "}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {childrenNum}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(1)}
+                >
+                  +
+                </button>
+              </div>
             </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">Room </p>
-              <button
-                onClick={() => handleRoomChange(-1)}
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">
-                {roomNum}
-              </p>
-              <button
-                onClick={() => handleRoomChange(1)}
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-              >
-                +
-              </button>
-            </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">Adult</p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleAdultChange(-1)}
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">
-                {" "}
-                {adultNum}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleAdultChange(1)}
-              >
-                +
-              </button>
-            </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">
-                Children{" "}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleChildrenChange(-1)}
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">
-                {" "}
-                {childrenNum}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleChildrenChange(1)}
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
 
       <div className="flex items-center gap-2 mb-4">
         <h1 className="text-3xl font-bold text-primary-900">{lodge.name}</h1>
