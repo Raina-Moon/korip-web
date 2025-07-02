@@ -1,12 +1,19 @@
 "use client";
 
+import { confirmReservation } from "@/lib/reservation/reservationThunk";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { getNights } from "@/utils/getNights";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ReservationSuccessPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [pending, setPending] = useState<any>(null);
+
+  const reservationId = searchParams.get("reservationId")
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const data = localStorage.getItem("pendingReservation") || "{}";
@@ -14,6 +21,12 @@ const ReservationSuccessPage = () => {
       setPending(JSON.parse(data));
     }
   }, []);
+
+  useEffect(() => {
+    if(reservationId) {
+      dispatch(confirmReservation({ reservationId:Number(reservationId) }))
+    }
+  },[reservationId])
 
   if (!pending) {
     return <div>Loading...</div>;
