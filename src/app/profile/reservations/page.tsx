@@ -16,10 +16,6 @@ export default function ReservationListPage() {
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
 
-  const confirmedList = list.filter((r) => r.status === "CONFIRMED");
-  const pendingList = list.filter((r) => r.status === "PENDING");
-  const cancelledList = list.filter((r) => r.status === "CANCELLED");
-
   useEffect(() => {
     dispatch(fetchReservation());
   }, [dispatch]);
@@ -119,50 +115,80 @@ export default function ReservationListPage() {
       </div>
 
       {showingModal && pending && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
-            <h2 className="text-lg font-semibold mb-4">예약 상세 정보</h2>
-            <p className="mb-2">
-              <strong>숙소:</strong> {pending.lodge?.name || "이름 없는 숙소"}
-            </p>
-            <p className="mb-2">
-              <strong>방 타입:</strong> {pending.roomType?.name || "정보 없음"}
-            </p>
-            <p className="mb-2">
-              <strong>체크인:</strong> {pending.checkIn.slice(0, 10)}
-            </p>
-            <p className="mb-2">
-              <strong>체크아웃:</strong> {pending.checkOut.slice(0, 10)}
-            </p>
-            <p className="mb-2">
-              <strong>성인:</strong> {pending.adults}명
-            </p>
-            <p className="mb-2">
-              <strong>어린이:</strong> {pending.children}명
-            </p>
-            <p className="mb-2">
-              <strong>객실 수:</strong> {pending.roomCount}개
-            </p>
-            <p className="mb-2">
-              <strong>예약일:</strong>{" "}
-              {new Date(pending.createdAt).toLocaleString()}
-            </p>
-            <p className="mb-2">
-              <strong>특별 요청:</strong>{" "}
-              {parsedSpecialRequests(pending.specialRequests).length > 0
-                ? parsedSpecialRequests(pending.specialRequests).join(", ")
-                : "없음"}
-            </p>
-            <div className="mt-4">
-              <button
-                className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
-                onClick={() => setShowingModal(false)}
-              >
-                닫기
-              </button>
+        <>
+          {console.log("pending.roomType.images:", pending.roomType?.images)}
+
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
+              <h2 className="text-lg font-semibold mb-4">예약 상세 정보</h2>
+
+              {pending.roomType?.images?.[0] && (
+                <img
+                  src={
+                    typeof pending.roomType.images[0] === "string"
+                      ? pending.roomType.images[0]
+                      : pending.roomType.images[0]?.imageUrl
+                  }
+                  alt="Room Image"
+                  className="w-full h-48 object-cover rounded mb-4"
+                />
+              )}
+
+              <p className="mb-2">
+                <strong>숙소:</strong>{" "}
+                {pending.lodge?.id ? (
+                  <Link
+                    href={`/lodge/${pending.lodge.id}`}
+                    className="text-primary-700 underline hover:text-primary-900"
+                    onClick={() => setShowingModal(false)}
+                  >
+                    {pending.lodge?.name || "이름 없는 숙소"}
+                  </Link>
+                ) : (
+                  pending.lodge?.name || "이름 없는 숙소"
+                )}
+              </p>
+
+              <p className="mb-2">
+                <strong>방 타입:</strong>{" "}
+                {pending.roomType?.name || "정보 없음"}
+              </p>
+              <p className="mb-2">
+                <strong>체크인:</strong> {pending.checkIn.slice(0, 10)}
+              </p>
+              <p className="mb-2">
+                <strong>체크아웃:</strong> {pending.checkOut.slice(0, 10)}
+              </p>
+              <p className="mb-2">
+                <strong>성인:</strong> {pending.adults}명
+              </p>
+              <p className="mb-2">
+                <strong>어린이:</strong> {pending.children}명
+              </p>
+              <p className="mb-2">
+                <strong>객실 수:</strong> {pending.roomCount}개
+              </p>
+              <p className="mb-2">
+                <strong>예약일:</strong>{" "}
+                {new Date(pending.createdAt).toLocaleString()}
+              </p>
+              <p className="mb-2">
+                <strong>특별 요청:</strong>{" "}
+                {parsedSpecialRequests(pending.specialRequests).length > 0
+                  ? parsedSpecialRequests(pending.specialRequests).join(", ")
+                  : "없음"}
+              </p>
+              <div className="mt-4">
+                <button
+                  className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
+                  onClick={() => setShowingModal(false)}
+                >
+                  닫기
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
