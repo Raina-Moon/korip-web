@@ -69,7 +69,7 @@ export const deleteReportedReview = createAsyncThunk<
     try {
       const token = getState().auth.accessToken;
       const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review/${reviewId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/report-only/${reviewId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -89,11 +89,11 @@ export const deleteReportedReview = createAsyncThunk<
 
 export const hideReportReview = createAsyncThunk<
   { message: string; updated: { id: number; isHidden: boolean } },
-  {reviewId: number; isHidden: boolean},
+  { reviewId: number; isHidden: boolean },
   { rejectValue: string; state: RootState }
 >(
   "admin/hideReportReview",
-  async ({reviewId, isHidden}, { dispatch, rejectWithValue, getState }) => {
+  async ({ reviewId, isHidden }, { dispatch, rejectWithValue, getState }) => {
     try {
       const token = getState().auth.accessToken;
       const res = await axios.patch(
@@ -119,6 +119,34 @@ export const hideReportReview = createAsyncThunk<
         dispatch(logout());
       }
       return rejectWithValue("Failed to hide reported review");
+    }
+  }
+);
+
+export const deleteReviewOnly = createAsyncThunk<
+  { message: string; reviewId: number },
+  number,
+  { rejectValue: string; state: RootState }
+>(
+  "admin/deleteReviewOnly",
+  async (reviewId, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports/review-only/${reviewId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data as { message: string; reviewId: number };
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to delete review");
     }
   }
 );
