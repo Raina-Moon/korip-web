@@ -4,13 +4,21 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchReservation } from "@/lib/reservation/reservationThunk";
 import Link from "next/link";
+import ReservationCard from "./ReservationCard";
 
 export default function ReservationListPage() {
   const [showingModal, setShowingModal] = useState(false);
   const [pending, setPending] = useState<any | null>(null);
+  const [filter, setFilter] = useState<
+    "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED"
+  >("ALL");
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
+
+  const confirmedList = list.filter((r) => r.status === "CONFIRMED");
+  const pendingList = list.filter((r) => r.status === "PENDING");
+  const cancelledList = list.filter((r) => r.status === "CANCELLED");
 
   useEffect(() => {
     dispatch(fetchReservation());
@@ -43,38 +51,103 @@ export default function ReservationListPage() {
         <p className="text-gray-700">예약 내역이 없습니다.</p>
       )}
 
-      <div className="space-y-4">
-        {list.map((reservation) => (
-          <div
-            key={reservation.id}
-            className="border rounded p-4 shadow hover:shadow-lg transition"
-            onClick={() => openModal(reservation)}
-          >
-            <h2 className="text-lg font-semibold mb-2">
-              {reservation.lodge?.name || "이름 없는 숙소"}
-            </h2>
-
-            <p className="text-sm text-gray-700 mb-1">
-              방 타입: {reservation.roomType?.name || "정보 없음"}
-            </p>
-            <p className="text-sm text-gray-700 mb-1">
-              체크인: {reservation.checkIn.slice(0, 10)}
-            </p>
-            <p className="text-sm text-gray-700 mb-1">
-              체크아웃: {reservation.checkOut.slice(0, 10)}
-            </p>
-            <p className="text-sm text-gray-700 mb-1">
-              성인 {reservation.adults}명, 어린이 {reservation.children}명
-            </p>
-            <p className="text-sm text-gray-700 mb-1">
-              객실 수: {reservation.roomCount}
-            </p>
-            <p className="text-sm text-gray-500">
-              예약일: {new Date(reservation.createdAt).toLocaleString()}
-            </p>
-          </div>
-        ))}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <button
+          onClick={() => setFilter("ALL")}
+          className={`px-3 py-1 rounded border ${
+            filter === "ALL"
+              ? "bg-primary-700 text-white"
+              : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
+          }`}
+        >
+          전체
+        </button>
+        <button
+          onClick={() => setFilter("PENDING")}
+          className={`px-3 py-1 rounded border ${
+            filter === "PENDING"
+              ? "bg-yellow-500 text-white"
+              : "text-yellow-700 border-yellow-700 hover:bg-yellow-700 hover:text-white"
+          }`}
+        >
+          진행중
+        </button>
+        <button
+          onClick={() => setFilter("CONFIRMED")}
+          className={`px-3 py-1 rounded border ${
+            filter === "CONFIRMED"
+              ? "bg-green-600 text-white"
+              : "text-green-700 border-green-700 hover:bg-green-700 hover:text-white"
+          }`}
+        >
+          예약확정
+        </button>
+        <button
+          onClick={() => setFilter("CANCELLED")}
+          className={`px-3 py-1 rounded border ${
+            filter === "CANCELLED"
+              ? "bg-red-600 text-white"
+              : "text-red-700 border-red-700 hover:bg-red-700 hover:text-white"
+          }`}
+        >
+          예약취소
+        </button>
       </div>
+
+      {!loading && !error && (
+        <>
+          {confirmedList.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3 text-green-700">
+                ✅ 예약 확정
+              </h2>
+              <div className="space-y-4">
+                {confirmedList.map((reservation) => (
+                  <ReservationCard
+                    key={reservation.id}
+                    reservation={reservation}
+                    onClick={openModal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pendingList.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3 text-yellow-700">
+                ⏳ 진행중
+              </h2>
+              <div className="space-y-4">
+                {pendingList.map((reservation) => (
+                  <ReservationCard
+                    key={reservation.id}
+                    reservation={reservation}
+                    onClick={openModal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {cancelledList.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3 text-red-700">
+                ❌ 취소됨
+              </h2>
+              <div className="space-y-4">
+                {cancelledList.map((reservation) => (
+                  <ReservationCard
+                    key={reservation.id}
+                    reservation={reservation}
+                    onClick={openModal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       <div className="mt-6">
         <Link
