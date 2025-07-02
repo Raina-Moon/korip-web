@@ -67,24 +67,29 @@ const ReservationConfirmPage = () => {
   }, [widgets]);
 
   useEffect(() => {
-    const pending = JSON.parse(
-      localStorage.getItem("pendingReservation") || "[]"
-    );
+    // const pending = JSON.parse(
+    //   localStorage.getItem("pendingReservation") || "[]"
+    // );
 
-    dispatch(createReservation(pending));
+    // dispatch(createReservation(pending));
   }, []);
 
   const handleTossPayment = async () => {
     if (!widgets || !ready) return;
 
     try {
+      const pending = JSON.parse(localStorage.getItem("pendingReservation") || "[]");
+      const created = await dispatch(createReservation(pending)).unwrap();
+
+      const reservationId = created.id
+      
       const paymentResult = await widgets.requestPayment({
         orderId: `reservation-${Date.now()}`,
         orderName: "숙소 예약",
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
         customerMobilePhone: phoneNumber,
-        successUrl: `${window.location.origin}/reservation/success?`,
+        successUrl: `${window.location.origin}/reservation/success?reservationId=${reservationId}`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
 
