@@ -139,6 +139,9 @@ const ReviewsPage = () => {
                 <div>
                   <span className="font-semibold">{review.user?.nickname}</span>
                   <p className="text-yellow-500">{review.rating} / 5</p>
+                  {review.isHidden && (
+                    <p className="text-white bg-red-500 px-2 py-1 rounded-sm">가려진 리뷰입니다.</p>
+                  )}
                 </div>
 
                 <div className="relative">
