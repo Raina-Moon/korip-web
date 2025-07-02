@@ -7,14 +7,46 @@ function ReservationCard({
   reservation: any;
   onClick: (r: any) => void;
 }) {
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "CONFIRMED":
+        return (
+          <span className="px-3 py-1 rounded border bg-green-600 text-white text-xs font-semibold">
+            예약확정
+          </span>
+        );
+      case "PENDING":
+        return (
+          <span className="px-3 py-1 rounded border bg-yellow-500 text-white text-xs font-semibold">
+            진행중
+          </span>
+        );
+      case "CANCELLED":
+        return (
+          <span className="px-3 py-1 rounded border bg-red-600 text-white text-xs font-semibold">
+            예약취소
+          </span>
+        );
+      default:
+        return (
+          <span className="px-3 py-1 rounded border text-gray-700 border-gray-700 text-xs font-semibold">
+            상태 없음
+          </span>
+        );
+    }
+  };
+
   return (
     <div
       className="border rounded p-4 shadow hover:shadow-lg transition cursor-pointer"
       onClick={() => onClick(reservation)}
     >
-      <h2 className="text-lg font-semibold mb-2">
-        {reservation.lodge?.name || "이름 없는 숙소"}
-      </h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg font-semibold mb-2">
+          {reservation.lodge?.name || "이름 없는 숙소"}
+        </h2>
+        {getStatusBadge(reservation.status)}
+      </div>
       <p className="text-sm text-gray-700 mb-1">
         방 타입: {reservation.roomType?.name || "정보 없음"}
       </p>
