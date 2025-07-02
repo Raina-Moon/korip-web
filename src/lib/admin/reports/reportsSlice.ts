@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   deleteReportedReview,
+  deleteReviewOnly,
   fetchReports,
   hideReportReview,
   ReportReviews,
@@ -88,6 +89,19 @@ const reportsSlice = createSlice({
         }
       )
       .addCase(hideReportReview.rejected, (state, action) => {
+        state.state = "failed";
+        state.error = action.payload as string;
+      })
+      .addCase(deleteReviewOnly.pending, (state) => {
+        state.state = "loading";
+        state.error = null;
+      })
+      .addCase(deleteReviewOnly.fulfilled, (state, action) => {
+        state.state = "succeeded";
+        const deletedId = action.payload.reviewId;
+        state.list = state.list.filter((report) => report.review.id !== deletedId);
+      })
+      .addCase(deleteReviewOnly.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
       });

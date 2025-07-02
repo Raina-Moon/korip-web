@@ -4,10 +4,11 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   deleteReportedReview,
+  deleteReviewOnly,
   fetchReports,
   hideReportReview,
 } from "@/lib/admin/reports/reportsThunk";
-import { useDeleteReviewMutation } from "@/lib/review/reviewApi";
+// import { useDeleteReviewMutation } from "@/lib/review/reviewApi";
 
 export default function ReportReviewsPage() {
   const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ export default function ReportReviewsPage() {
     (state) => state["admin/reports"]
   );
 
-  const [deleteReview] = useDeleteReviewMutation()
+  // const [deleteReview] = useDeleteReviewMutation()
 
   useEffect(() => {
     dispatch(fetchReports());
@@ -33,7 +34,7 @@ export default function ReportReviewsPage() {
 
   const handleDeleteReview = async (reviewId: number) => {
     try {
-      await deleteReview(reviewId).unwrap();
+      dispatch(deleteReviewOnly(reviewId));
       alert("리뷰가 성공적으로 삭제되었습니다.");
       dispatch(fetchReports());
     } catch (error) {
@@ -83,7 +84,13 @@ export default function ReportReviewsPage() {
               </button>
               <button 
                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                onClick={() => handleDeleteReview(report.review.id)}
+                onClick={() => {
+                  if(report?.review?.id !== null) {
+                  handleDeleteReview(report.review.id)
+                } else {
+                  alert("리뷰 ID가 없습니다.");
+                }
+              }}
               >
                 리뷰 삭제
               </button>
