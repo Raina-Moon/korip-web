@@ -45,15 +45,11 @@ const LodgeDetailPage = () => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
-  const [checkIn, setCheckIn] = useState(searchParams.get("checkIn") ?? "");
-  const [checkOut, setCheckOut] = useState(searchParams.get("checkOut") ?? "");
-  const [adult, setAdult] = useState(Number(searchParams.get("adult")) || 1);
-  const [children, setChildren] = useState(
-    Number(searchParams.get("children")) || 0
-  );
-  const [room, setRoom] = useState(
-    Number(searchParams.get("room")) || 1
-  );
+  const [checkIn, setCheckIn] = useState("")
+  const [checkOut, setCheckOut] = useState("");
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [room, setRoom] = useState(1);
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
@@ -96,11 +92,53 @@ const LodgeDetailPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if(checkIn && checkOut) {
-      setDateRange([new Date(checkIn), new Date(checkOut)]);
+useEffect(() => {
+  const paramsCheckIn = searchParams.get("checkIn");
+  const paramsCheckOut = searchParams.get("checkOut");
+  const paramsAdult = searchParams.get("adults");
+  const paramsChildren = searchParams.get("children");
+  const paramsRoom = searchParams.get("room");
+
+  let initialized = false
+
+  if (paramsCheckIn && paramsCheckOut) {
+    setCheckIn(paramsCheckIn);
+    setCheckOut(paramsCheckOut);
+    setDateRange([new Date(paramsCheckIn), new Date(paramsCheckOut)]);
+    initialized = true;
+  }
+  if(paramsAdult) {
+    setAdults(Number(paramsAdult));
+    initialized = true;
+  }
+if(paramsChildren) {
+    setChildren(Number(paramsChildren));
+    initialized = true;
+  }
+  if(paramsRoom) {
+    setRoom(Number(paramsRoom));
+    initialized = true;
+  }
+
+  if(!initialized) {
+    const pending = localStorage.getItem("pendingReservation");
+    if(pending) {
+      try {
+      const parsed = JSON.parse(pending);
+      if(parsed.checkIn && parsed.checkOut) {
+        setCheckIn(parsed.checkIn);
+        setCheckOut(parsed.checkOut);
+        setDateRange([new Date(parsed.checkIn), new Date(parsed.checkOut)]);
+      }
+      if(parsed.adults) setAdults(parsed.adults);
+      if(parsed.children) setChildren(parsed.children);
+      if(parsed.room) setRoom(parsed.room);
+      } catch {}
     }
-  },[checkIn, checkOut])
+  }
+
+}, [searchParams]);
+
 
   useEffect(() => {
     if(dateRange && dateRange.length === 2) {
@@ -144,7 +182,7 @@ const LodgeDetailPage = () => {
       roomTypeId,
       checkIn,
       checkOut,
-      adult,
+      adults,
       children,
       room,
       lodgeName: lodge?.name || "Unknown Lodge",
@@ -158,7 +196,7 @@ const LodgeDetailPage = () => {
       roomTypeId: String(roomTypeId),
       checkIn,
       checkOut,
-      adult: String(adult),
+      adults: String(adults),
       children: String(children),
       room: String(room),
       lodgeName: lodge?.name || "Unknown Lodge",
@@ -370,7 +408,7 @@ const LodgeDetailPage = () => {
   };
 
   const handleAdultChange = (delta: number) => {
-    setAdult((prev) => Math.max(1, prev + delta));
+    setAdults((prev) => Math.max(1, prev + delta));
   };
 
   const handleChildrenChange = (delta: number) => {
@@ -381,7 +419,7 @@ const LodgeDetailPage = () => {
     const query = new URLSearchParams({
       checkIn,
       checkOut,
-      adult: String(adult),
+      adults: String(adults),
       children: String(children),
       room: String(room),
     }).toString();
@@ -461,7 +499,7 @@ const LodgeDetailPage = () => {
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
         >
           <p>Room : {room}</p>
-          <p>Adult : {adult}</p>
+          <p>Adult : {adults}</p>
           <p>Children : {children}</p>
         </div>
         <button
@@ -511,7 +549,7 @@ const LodgeDetailPage = () => {
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
                   {" "}
-                  {adult}
+                  {adults}
                 </p>
                 <button
                   className="border border-primary-800 p-3 rounded-full text-2xl"
