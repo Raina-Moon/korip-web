@@ -102,6 +102,13 @@ const LodgeDetailPage = () => {
     }
   },[checkIn, checkOut])
 
+  useEffect(() => {
+    if(dateRange && dateRange.length === 2) {
+      setCheckIn(formatDate(dateRange[0]));
+      setCheckOut(formatDate(dateRange[1]));
+    }
+  },[dateRange])
+
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
     setCurrentModalImage(index);
@@ -356,11 +363,6 @@ const LodgeDetailPage = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
-  };
-
-  const handleDateRangeChange = (range: [Date, Date]) => {
-    setCheckIn(formatDate(range[0]));
-    setCheckOut(formatDate(range[1]));
   };
 
   const handleRoomChange = (delta: number) => {
