@@ -48,11 +48,15 @@ const LodgeDetailPage = () => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
-  const checkIn = searchParams.get("checkIn") || "Not specified";
-  const checkOut = searchParams.get("checkOut") || "Not specified";
-  const adults = Number(searchParams.get("adults")) || 1;
-  const children = Number(searchParams.get("children")) || 0;
-  const roomCount = Number(searchParams.get("roomCount")) || 1;
+  const [checkIn, setCheckIn] = useState(searchParams.get("checkIn") ?? "");
+  const [checkOut, setCheckOut] = useState(searchParams.get("checkOut") ?? "");
+  const [adults, setAdults] = useState(Number(searchParams.get("adults")) || 1);
+  const [children, setChildren] = useState(
+    Number(searchParams.get("children")) || 0
+  );
+  const [roomCount, setRoomCount] = useState(
+    Number(searchParams.get("roomCount")) || 1
+  );
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
@@ -351,16 +355,33 @@ const LodgeDetailPage = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const handleDateRangeChange = (range: [Date, Date]) => {
+    setCheckIn(formatDate(range[0]));
+    setCheckOut(formatDate(range[1]));
+  };
+
   const handleRoomChange = (delta: number) => {
-    setRoomNum((prev) => Math.max(1, prev + delta));
+    setRoomCount((prev) => Math.max(1, prev + delta));
   };
 
   const handleAdultChange = (delta: number) => {
-    setAdultNum((prev) => Math.max(1, prev + delta));
+    setAdults((prev) => Math.max(1, prev + delta));
   };
 
   const handleChildrenChange = (delta: number) => {
-    setChildrenNum((prev) => Math.max(0, prev + delta));
+    setChildren((prev) => Math.max(0, prev + delta));
+  };
+
+  const handleSearch = () => {
+    const query = new URLSearchParams({
+      checkIn,
+      checkOut,
+      adults: String(adults),
+      children: String(children),
+      roomCount: String(roomCount),
+    }).toString();
+
+    router.push(`/lodge/${lodgeId}?${query}`);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -436,7 +457,8 @@ const LodgeDetailPage = () => {
           <p>Adult : {adultNum}</p>
           <p>Children : {childrenNum}</p>
         </div>
-        <button className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500">
+        <button className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
+        onClick={handleSearch}>
           {" "}
           검색
         </button>
