@@ -61,6 +61,7 @@ const LodgeDetailPage = () => {
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  console.log("isAuthenticated", isAuthenticated);
 
   const { data: myBookmarks } = useGetMyBookmarksQuery(undefined, {
     skip: !isAuthenticated,
@@ -634,9 +635,11 @@ const LodgeDetailPage = () => {
                   : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() =>
-                  room.id !== undefined && handleReserve(room.id, room.name)
-                }
+                onClick={() => {
+                  if (room.id !== undefined) {
+                    handleReserve(room.id, room.name);
+                  }
+                }}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
