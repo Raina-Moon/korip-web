@@ -40,9 +40,6 @@ const LodgeDetailPage = () => {
   >(null);
   const [calendar, setCalendar] = useState(false);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
-  const [roomNum, setRoomNum] = useState(1);
-  const [adultNum, setAdultNum] = useState(1);
-  const [childrenNum, setChildrenNum] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -98,6 +95,12 @@ const LodgeDetailPage = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if(checkIn && checkOut) {
+      setDateRange([new Date(checkIn), new Date(checkOut)]);
+    }
+  },[checkIn, checkOut])
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -436,8 +439,10 @@ const LodgeDetailPage = () => {
             <Calendar
               calendarType="gregory"
               onChange={(value) => {
-                if (Array.isArray(value) && value.length === 2) {
-                  setDateRange(value as [Date, Date]);
+                if(Array.isArray(value) && value.length === 2) {
+                  setDateRange(value as [Date,Date])
+                  setCheckIn(formatDate(value[0]));
+                  setCheckOut(formatDate(value[1]));
                   setCalendar(false);
                 }
               }}
@@ -453,12 +458,14 @@ const LodgeDetailPage = () => {
           onClick={() => setIsActive(!isActive)}
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
         >
-          <p>Room : {roomNum}</p>
-          <p>Adult : {adultNum}</p>
-          <p>Children : {childrenNum}</p>
+          <p>Room : {roomCount}</p>
+          <p>Adult : {adults}</p>
+          <p>Children : {children}</p>
         </div>
-        <button className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
-        onClick={handleSearch}>
+        <button
+          className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
+          onClick={handleSearch}
+        >
           {" "}
           검색
         </button>
@@ -483,7 +490,7 @@ const LodgeDetailPage = () => {
                   -
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
-                  {roomNum}
+                  {roomCount}
                 </p>
                 <button
                   onClick={() => handleRoomChange(1)}
@@ -502,7 +509,7 @@ const LodgeDetailPage = () => {
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
                   {" "}
-                  {adultNum}
+                  {adults}
                 </p>
                 <button
                   className="border border-primary-800 p-3 rounded-full text-2xl"
@@ -523,7 +530,7 @@ const LodgeDetailPage = () => {
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
                   {" "}
-                  {childrenNum}
+                  {children}
                 </p>
                 <button
                   className="border border-primary-800 p-3 rounded-full text-2xl"
