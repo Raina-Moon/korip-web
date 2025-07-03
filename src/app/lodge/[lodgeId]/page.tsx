@@ -158,7 +158,7 @@ const LodgeDetailPage = () => {
       roomTypeId: String(roomTypeId),
       checkIn,
       checkOut,
-      adults: String(adult),
+      adult: String(adult),
       children: String(children),
       room: String(room),
       lodgeName: lodge?.name || "Unknown Lodge",
@@ -381,7 +381,7 @@ const LodgeDetailPage = () => {
     const query = new URLSearchParams({
       checkIn,
       checkOut,
-      adults: String(adult),
+      adult: String(adult),
       children: String(children),
       room: String(room),
     }).toString();
