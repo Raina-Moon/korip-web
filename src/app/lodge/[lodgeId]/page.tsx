@@ -19,7 +19,7 @@ import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -39,17 +39,18 @@ const LodgeDetailPage = () => {
     "reserve" | "bookmark" | null
   >(null);
   const [calendar, setCalendar] = useState(false);
-  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [isActive, setIsActive] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
-  const [checkIn, setCheckIn] = useState("")
+
+  const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
   const [room, setRoom] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
@@ -92,60 +93,56 @@ const LodgeDetailPage = () => {
     };
   }, []);
 
-useEffect(() => {
-  const paramsCheckIn = searchParams.get("checkIn");
-  const paramsCheckOut = searchParams.get("checkOut");
-  const paramsAdult = searchParams.get("adults");
-  const paramsChildren = searchParams.get("children");
-  const paramsRoom = searchParams.get("room");
-
-  let initialized = false
-
-  if (paramsCheckIn && paramsCheckOut) {
-    setCheckIn(paramsCheckIn);
-    setCheckOut(paramsCheckOut);
-    setDateRange([new Date(paramsCheckIn), new Date(paramsCheckOut)]);
-    initialized = true;
-  }
-  if(paramsAdult) {
-    setAdults(Number(paramsAdult));
-    initialized = true;
-  }
-if(paramsChildren) {
-    setChildren(Number(paramsChildren));
-    initialized = true;
-  }
-  if(paramsRoom) {
-    setRoom(Number(paramsRoom));
-    initialized = true;
-  }
-
-  if(!initialized) {
-    const pending = localStorage.getItem("pendingReservation");
-    if(pending) {
-      try {
-      const parsed = JSON.parse(pending);
-      if(parsed.checkIn && parsed.checkOut) {
-        setCheckIn(parsed.checkIn);
-        setCheckOut(parsed.checkOut);
-        setDateRange([new Date(parsed.checkIn), new Date(parsed.checkOut)]);
-      }
-      if(parsed.adults) setAdults(parsed.adults);
-      if(parsed.children) setChildren(parsed.children);
-      if(parsed.room) setRoom(parsed.room);
-      } catch {}
-    }
-  }
-
-}, [searchParams]);
-
+  const handleAdultChange = (delta: number) => {
+    const newAdults = Math.max(1, adults + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("adults", String(newAdults));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+  };
 
   useEffect(() => {
-    if(dateRange && dateRange.length === 2) {
-      setCheckIn(formatDate(dateRange[0]));
-      setCheckOut(formatDate(dateRange[1]));
+    let checkInStr = searchParams.get("checkIn") ?? "";
+    let checkOutStr = searchParams.get("checkOut") ?? "";
+    let adultsNum = Number(searchParams.get("adults") ?? "1");
+    let roomNum = Number(searchParams.get("room") ?? "1");
+    let childrenNum = Number(searchParams.get("children") ?? "0");
+
+    // ✅ 만약 쿼리가 없다면 localStorage에서
+    if (!checkInStr || !checkOutStr) {
+      try {
+        const pending = localStorage.getItem("pendingReservation");
+        if (pending) {
+          const parsed = JSON.parse(pending);
+          checkInStr = parsed.checkIn ?? checkInStr;
+          checkOutStr = parsed.checkOut ?? checkOutStr;
+          adultsNum = Number(parsed.adults ?? adultsNum);
+          roomNum = Number(parsed.room ?? roomNum);
+          childrenNum = Number(parsed.children ?? childrenNum);
+        }
+      } catch (err) {
+        console.error("Failed to parse localStorage pendingReservation", err);
+      }
     }
-  },[dateRange])
+
+    setCheckIn(checkInStr);
+    setCheckOut(checkOutStr);
+    setAdults(adultsNum);
+    setRoom(roomNum);
+    setChildren(childrenNum);
+
+    const parseDate = (dateStr: string) => {
+      if (!dateStr) return null;
+      const [year, month, day] = dateStr.split("-").map(Number);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+      return new Date(year, month - 1, day);
+    };
+
+    const parsedCheckIn = parseDate(checkInStr);
+    const parsedCheckOut = parseDate(checkOutStr);
+    setDateRange(
+      parsedCheckIn && parsedCheckOut ? [parsedCheckIn, parsedCheckOut] : null
+    );
+  }, [searchParams]);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -404,15 +401,17 @@ if(paramsChildren) {
   };
 
   const handleRoomChange = (delta: number) => {
-    setRoom((prev) => Math.max(1, prev + delta));
-  };
-
-  const handleAdultChange = (delta: number) => {
-    setAdults((prev) => Math.max(1, prev + delta));
+    const newRoom = Math.max(1, room + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("room", String(newRoom));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
   };
 
   const handleChildrenChange = (delta: number) => {
-    setChildren((prev) => Math.max(0, prev + delta));
+    const newChildren = Math.max(0, children + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("children", String(newChildren));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
   };
 
   const handleSearch = () => {
@@ -479,8 +478,8 @@ if(paramsChildren) {
             <Calendar
               calendarType="gregory"
               onChange={(value) => {
-                if(Array.isArray(value) && value.length === 2) {
-                  setDateRange(value as [Date,Date])
+                if (Array.isArray(value) && value.length === 2) {
+                  setDateRange(value as [Date, Date]);
                   setCheckIn(formatDate(value[0]));
                   setCheckOut(formatDate(value[1]));
                   setCalendar(false);
@@ -529,9 +528,7 @@ if(paramsChildren) {
                 >
                   -
                 </button>
-                <p className="text-lg text-primary-900 font-semibold">
-                  {room}
-                </p>
+                <p className="text-lg text-primary-900 font-semibold">{room}</p>
                 <button
                   onClick={() => handleRoomChange(1)}
                   className="border border-primary-800 p-3 rounded-full text-2xl"
