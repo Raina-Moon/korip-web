@@ -47,12 +47,12 @@ const LodgeDetailPage = () => {
   const searchParams = useSearchParams();
   const [checkIn, setCheckIn] = useState(searchParams.get("checkIn") ?? "");
   const [checkOut, setCheckOut] = useState(searchParams.get("checkOut") ?? "");
-  const [adults, setAdults] = useState(Number(searchParams.get("adults")) || 1);
+  const [adult, setAdult] = useState(Number(searchParams.get("adult")) || 1);
   const [children, setChildren] = useState(
     Number(searchParams.get("children")) || 0
   );
-  const [roomCount, setRoomCount] = useState(
-    Number(searchParams.get("roomCount")) || 1
+  const [room, setRoom] = useState(
+    Number(searchParams.get("room")) || 1
   );
 
   const { lodgeId } = useParams() as { lodgeId: string };
@@ -144,9 +144,9 @@ const LodgeDetailPage = () => {
       roomTypeId,
       checkIn,
       checkOut,
-      adults,
+      adult,
       children,
-      roomCount,
+      room,
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
@@ -158,9 +158,9 @@ const LodgeDetailPage = () => {
       roomTypeId: String(roomTypeId),
       checkIn,
       checkOut,
-      adults: String(adults),
+      adults: String(adult),
       children: String(children),
-      roomCount: String(roomCount),
+      room: String(room),
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     }).toString();
@@ -366,11 +366,11 @@ const LodgeDetailPage = () => {
   };
 
   const handleRoomChange = (delta: number) => {
-    setRoomCount((prev) => Math.max(1, prev + delta));
+    setRoom((prev) => Math.max(1, prev + delta));
   };
 
   const handleAdultChange = (delta: number) => {
-    setAdults((prev) => Math.max(1, prev + delta));
+    setAdult((prev) => Math.max(1, prev + delta));
   };
 
   const handleChildrenChange = (delta: number) => {
@@ -381,9 +381,9 @@ const LodgeDetailPage = () => {
     const query = new URLSearchParams({
       checkIn,
       checkOut,
-      adults: String(adults),
+      adults: String(adult),
       children: String(children),
-      roomCount: String(roomCount),
+      room: String(room),
     }).toString();
 
     router.push(`/lodge/${lodgeId}?${query}`);
@@ -460,8 +460,8 @@ const LodgeDetailPage = () => {
           onClick={() => setIsActive(!isActive)}
           className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
         >
-          <p>Room : {roomCount}</p>
-          <p>Adult : {adults}</p>
+          <p>Room : {room}</p>
+          <p>Adult : {adult}</p>
           <p>Children : {children}</p>
         </div>
         <button
@@ -492,7 +492,7 @@ const LodgeDetailPage = () => {
                   -
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
-                  {roomCount}
+                  {room}
                 </p>
                 <button
                   onClick={() => handleRoomChange(1)}
@@ -511,7 +511,7 @@ const LodgeDetailPage = () => {
                 </button>
                 <p className="text-lg text-primary-900 font-semibold">
                   {" "}
-                  {adults}
+                  {adult}
                 </p>
                 <button
                   className="border border-primary-800 p-3 rounded-full text-2xl"

@@ -51,7 +51,7 @@ const page = () => {
       checkIn: formatDate(range[0]),
       checkOut: formatDate(range[1]),
       room: room.toString(),
-      adults: adult.toString(),
+      adult: adult.toString(),
       children: children.toString(),
       accommodationType,
     });

@@ -12,7 +12,7 @@ const ListPage = () => {
   const checkIn = searchParams.get("checkIn") || "Not specified";
   const checkOut = searchParams.get("checkOut") || "Not specified";
   const room = searchParams.get("room") || "1";
-  const adults = searchParams.get("adult") || "1";
+  const adult = searchParams.get("adult") || "1";
   const children = searchParams.get("children") || "0";
 
   const {
@@ -23,7 +23,7 @@ const ListPage = () => {
     region,
     checkIn,
     checkOut,
-    adults,
+    adult,
     children,
     room,
   });
@@ -32,7 +32,7 @@ const ListPage = () => {
     const searchParams = new URLSearchParams({
       checkIn,
       checkOut,
-      adults,
+      adult,
       children,
       room,
     });
