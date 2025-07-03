@@ -19,7 +19,7 @@ import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -107,7 +107,6 @@ const LodgeDetailPage = () => {
     let roomNum = Number(searchParams.get("room") ?? "1");
     let childrenNum = Number(searchParams.get("children") ?? "0");
 
-    // ✅ 만약 쿼리가 없다면 localStorage에서
     if (!checkInStr || !checkOutStr) {
       try {
         const pending = localStorage.getItem("pendingReservation");
