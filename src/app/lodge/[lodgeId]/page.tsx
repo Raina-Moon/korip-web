@@ -174,6 +174,7 @@ const LodgeDetailPage = () => {
       setShowingLoginModal(true);
       return;
     }
+
     const reservationData = {
       lodgeId: Number(lodgeId),
       roomTypeId,
@@ -636,9 +637,10 @@ const LodgeDetailPage = () => {
               </p>
               <button
                 onClick={() => {
-                  if (room.id !== undefined) {
-                    handleReserve(room.id, room.name);
-                  }
+                  console.log("BEFORE", showingLoginModal);
+                  setLoginModalContext("reserve");
+                  setShowingLoginModal(true);
+                  console.log("AFTER", showingLoginModal);
                 }}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
