@@ -1,6 +1,7 @@
 "use client";
 
 import ReviewCard from "@/components/ui/ReviewCard";
+import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -13,19 +14,20 @@ import {
   useGetReviewsByLodgeIdQuery,
   useUpdateReviewMutation,
 } from "@/lib/review/reviewApi";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
-  const [showingLoginModal, setShowingLoginModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
@@ -33,17 +35,21 @@ const LodgeDetailPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reason, setReason] = useState<string>("");
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
-  const [loginModalContext, setLoginModalContext] = useState<
-    "reserve" | "bookmark" | null
-  >(null);
+  const [calendar, setCalendar] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
-  const checkIn = searchParams.get("checkIn") || "Not specified";
-  const checkOut = searchParams.get("checkOut") || "Not specified";
-  const adults = Number(searchParams.get("adults")) || 1;
-  const children = Number(searchParams.get("children")) || 0;
-  const roomCount = Number(searchParams.get("roomCount")) || 1;
+
+  const dispatch = useAppDispatch();
+
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [adults, setAdults] = useState(1);
+  const [room, setRoom] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
 
   const { lodgeId } = useParams() as { lodgeId: string };
 
@@ -71,6 +77,12 @@ const LodgeDetailPage = () => {
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
 
+  const showingLoginModal = useAppSelector(
+    (state) => state.auth.showingLoginModal
+  );
+  const loginModalContext = useAppSelector(
+    (state) => state.auth.loginModalContext
+  );
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -85,6 +97,56 @@ const LodgeDetailPage = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const handleAdultChange = (delta: number) => {
+    const newAdults = Math.max(1, adults + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("adults", String(newAdults));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+  };
+
+  useEffect(() => {
+    let checkInStr = searchParams.get("checkIn") ?? "";
+    let checkOutStr = searchParams.get("checkOut") ?? "";
+    let adultsNum = Number(searchParams.get("adults") ?? "1");
+    let roomNum = Number(searchParams.get("room") ?? "1");
+    let childrenNum = Number(searchParams.get("children") ?? "0");
+
+    if (!checkInStr || !checkOutStr) {
+      try {
+        const pending = localStorage.getItem("pendingReservation");
+        if (pending) {
+          const parsed = JSON.parse(pending);
+          checkInStr = parsed.checkIn ?? checkInStr;
+          checkOutStr = parsed.checkOut ?? checkOutStr;
+          adultsNum = Number(parsed.adults ?? adultsNum);
+          roomNum = Number(parsed.room ?? roomNum);
+          childrenNum = Number(parsed.children ?? childrenNum);
+        }
+      } catch (err) {
+        console.error("Failed to parse localStorage pendingReservation", err);
+      }
+    }
+
+    setCheckIn(checkInStr);
+    setCheckOut(checkOutStr);
+    setAdults(adultsNum);
+    setRoom(roomNum);
+    setChildren(childrenNum);
+
+    const parseDate = (dateStr: string) => {
+      if (!dateStr) return null;
+      const [year, month, day] = dateStr.split("-").map(Number);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+      return new Date(year, month - 1, day);
+    };
+
+    const parsedCheckIn = parseDate(checkInStr);
+    const parsedCheckOut = parseDate(checkOutStr);
+    setDateRange(
+      parsedCheckIn && parsedCheckOut ? [parsedCheckIn, parsedCheckOut] : null
+    );
+  }, [searchParams]);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -111,11 +173,6 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
-    if (!isAuthenticated) {
-      setLoginModalContext("reserve");
-      setShowingLoginModal(true);
-      return;
-    }
     const reservationData = {
       lodgeId: Number(lodgeId),
       roomTypeId,
@@ -123,7 +180,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults,
       children,
-      roomCount,
+      room,
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
@@ -137,7 +194,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults: String(adults),
       children: String(children),
-      roomCount: String(roomCount),
+      room: String(room),
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     }).toString();
@@ -147,8 +204,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
-      setLoginModalContext("bookmark");
-      setShowingLoginModal(true);
+      dispatch(openLoginModal("bookmark"));
       return;
     }
     try {
@@ -228,7 +284,7 @@ const LodgeDetailPage = () => {
     }
 
     const typesReviews = reviews as Review[];
-    const visibleReviews = typesReviews.filter(r => !r.isHidden);
+    const visibleReviews = typesReviews.filter((r) => !r.isHidden);
     const totalReviews = visibleReviews.length;
     const averageRating = (
       visibleReviews.reduce((sum, review) => sum + review.rating, 0) /
@@ -329,9 +385,38 @@ const LodgeDetailPage = () => {
     }
   };
 
-  const closeLoginModal = () => {
-    setShowingLoginModal(false);
-    setLoginModalContext(null);
+  const formatDate = (date: Date | null) => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleRoomChange = (delta: number) => {
+    const newRoom = Math.max(1, room + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("room", String(newRoom));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+  };
+
+  const handleChildrenChange = (delta: number) => {
+    const newChildren = Math.max(0, children + delta);
+    const query = new URLSearchParams(searchParams);
+    query.set("children", String(newChildren));
+    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+  };
+
+  const handleSearch = () => {
+    const query = new URLSearchParams({
+      checkIn,
+      checkOut,
+      adults: String(adults),
+      children: String(children),
+      room: String(room),
+    }).toString();
+
+    router.push(`/lodge/${lodgeId}?${query}`);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -354,6 +439,138 @@ const LodgeDetailPage = () => {
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
             No image available
           </div>
+        )}
+      </div>
+
+      <div
+        className="
+                w-full bg-white rounded-lg shadow-lg relative
+                flex flex-row items-center justify-center gap-5 px-5 py-5 mt-5 mb-8"
+      >
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          readOnly
+          onClick={() => {
+            setCalendar(true);
+          }}
+          value={formatDate(dateRange?.[0] ?? null)}
+          placeholder="Check-in Date"
+        />
+        <input
+          className="border border-primary-800 rounded-md outline-none px-3 py-1"
+          readOnly
+          onClick={() => {
+            setCalendar(true);
+          }}
+          value={formatDate(dateRange?.[1] ?? null)}
+          placeholder="Check-out Date"
+        />
+
+        {calendar && (
+          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+            <Calendar
+              calendarType="gregory"
+              onChange={(value) => {
+                if (Array.isArray(value) && value.length === 2) {
+                  setDateRange(value as [Date, Date]);
+                  setCheckIn(formatDate(value[0]));
+                  setCheckOut(formatDate(value[1]));
+                  setCalendar(false);
+                }
+              }}
+              selectRange
+              showDoubleView
+              value={dateRange}
+              minDate={new Date()}
+            />
+          </div>
+        )}
+
+        <div
+          onClick={() => setIsActive(!isActive)}
+          className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
+        >
+          <p>Room : {room}</p>
+          <p>Adult : {adults}</p>
+          <p>Children : {children}</p>
+        </div>
+        <button
+          className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
+          onClick={handleSearch}
+        >
+          {" "}
+          검색
+        </button>
+
+        {isActive && (
+          <>
+            <div className="absolute left-2/3 top-14 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={() => setIsActive(false)}
+                  className="text-primary-900 font-bold text-xl hover:text-primary-500"
+                >
+                  X
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Room </p>
+                <button
+                  onClick={() => handleRoomChange(-1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">{room}</p>
+                <button
+                  onClick={() => handleRoomChange(1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Adult</p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {adults}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(1)}
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">
+                  Children{" "}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {children}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
@@ -411,9 +628,9 @@ const LodgeDetailPage = () => {
                   : room.basePrice.toLocaleString()}
               </p>
               <button
-                onClick={() =>
-                  room.id !== undefined && handleReserve(room.id, room.name)
-                }
+                onClick={() => {
+                  dispatch(openLoginModal("reserve"));
+                }}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
                 이 객실 예약하기
@@ -512,7 +729,7 @@ const LodgeDetailPage = () => {
             <button
               className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
               onClick={() => {
-                closeLoginModal();
+                dispatch(closeLoginModal());
                 router.push("/login");
               }}
             >

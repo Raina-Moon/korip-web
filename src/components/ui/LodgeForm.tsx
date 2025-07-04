@@ -200,19 +200,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("Submitting form...");
-          console.log("Submitted Data : ", {
-            name,
-            address,
-            latitude,
-            longitude,
-            description,
-            accommodationType,
-            roomTypes,
-            lodgeImages,
-            uploadedImages,
-            roomTypeImages,
-          });
+          
           onSubmit({
             id: initialData?.id,
             name,

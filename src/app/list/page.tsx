@@ -12,7 +12,7 @@ const ListPage = () => {
   const checkIn = searchParams.get("checkIn") || "Not specified";
   const checkOut = searchParams.get("checkOut") || "Not specified";
   const room = searchParams.get("room") || "1";
-  const adults = searchParams.get("adult") || "1";
+  const adults = searchParams.get("adults") || "1";
   const children = searchParams.get("children") || "0";
 
   const {
@@ -29,14 +29,17 @@ const ListPage = () => {
   });
 
   const handleLodgeClick = (lodgeId: number) => {
-    const searchParams = new URLSearchParams({
+    const query = {
       checkIn,
       checkOut,
       adults,
       children,
       room,
-    });
-    router.push(`/lodge/${lodgeId}?${searchParams.toString()}`);
+    }
+
+    localStorage.setItem("pendingReservation", JSON.stringify(query));
+    const search = new URLSearchParams(query).toString();
+    router.push(`/lodge/${lodgeId}?${search}`);
   };
 
   return (

@@ -13,12 +13,16 @@ interface AuthState {
   user: User | null | undefined;
   isAuthenticated: boolean;
   accessToken: string | null;
+  showingLoginModal: boolean;
+  loginModalContext: string | null;
 }
 
 const initialState: AuthState = {
   user: undefined,
   isAuthenticated: false,
   accessToken: null,
+  showingLoginModal:false,
+  loginModalContext:null
 };
 
 const authSlice = createSlice({
@@ -56,9 +60,17 @@ const authSlice = createSlice({
         localStorage.removeItem("accessToken");
       }
     },
+    openLoginModal: (state, action: PayloadAction<string | null>) => {
+      state.showingLoginModal = true;
+      state.loginModalContext = action.payload;
+    },
+    closeLoginModal: (state) => {
+      state.showingLoginModal = false;
+      state.loginModalContext = null;
+    }
   },
 });
 
-export const { logout, setUserOnly, setCredential, setAccessToken } =
+export const { logout, setUserOnly, setCredential, setAccessToken, openLoginModal, closeLoginModal } =
   authSlice.actions;
 export default authSlice.reducer;

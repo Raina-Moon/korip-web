@@ -50,7 +50,6 @@ export const createLodge = createAsyncThunk<
     try {
       const formData = new FormData();
 
-      console.log("Creating FormData");
       formData.append("name", newLodgeData.name);
       formData.append("address", newLodgeData.address);
       formData.append("latitude", newLodgeData.latitude.toString());
@@ -59,10 +58,6 @@ export const createLodge = createAsyncThunk<
       formData.append("accommodationType", newLodgeData.accommodationType);
       formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
 
-      console.log(
-        "Appending lodge images to FormData",
-        newLodgeData.lodgeImageFile
-      );
       if (
         !Array.isArray(newLodgeData.lodgeImageFile) ||
         newLodgeData.lodgeImageFile.length === 0
@@ -77,10 +72,7 @@ export const createLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       });
 
-      console.log(
-        "Appending room type images to FormData",
-        newLodgeData.roomTypeImages
-      );
+      
       if (
         !Array.isArray(newLodgeData.roomTypeImages) ||
         newLodgeData.roomTypeImages.length === 0
@@ -92,7 +84,6 @@ export const createLodge = createAsyncThunk<
         throw new Error("roomTypeImages must be an array of File arrays");
       }
       newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-        console.log(`Appending images for room type ${idx}`, roomFiles);
         if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
           console.error(
             `roomTypeImages[${idx}] is not an array or is empty`,
@@ -109,15 +100,9 @@ export const createLodge = createAsyncThunk<
               `roomTypeImages[${idx}][${i}] must be a File object`
             );
           }
-          console.log(`Appending file for room type ${idx}, image ${i}`, file);
           formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
         });
       });
-
-      console.log(
-        "Sending request to create lodge",
-        Array.from(formData.entries())
-      );
 
       const token = getState().auth.accessToken;
       const res = await axios.post(
@@ -131,7 +116,6 @@ export const createLodge = createAsyncThunk<
           withCredentials: true,
         }
       );
-      console.log("Lodge created successfully", res.data);
       return res.data;
     } catch (err: any) {
       if (err.response?.status === 401 || err.response?.status === 403) {
@@ -217,11 +201,6 @@ export const updateLodge = createAsyncThunk<
           formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
         });
       });
-
-      console.log(
-        "newRoomTypeImageFiles:",
-        updatedLodgeData.newRoomTypeImageFiles
-      );
 
       const token = getState().auth.accessToken;
       const res = await axios.patch(

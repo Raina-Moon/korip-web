@@ -6,7 +6,6 @@ import React, { useState } from "react";
 const HotspringListPage = () => {
   const [selectedSido, setSelectedSido] = useState("서울특별시");
 
-  console.log("HotspringListPage data:");
 
   return (
     <div>
