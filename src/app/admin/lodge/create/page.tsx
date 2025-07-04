@@ -25,7 +25,6 @@ const CreateLodgePage = () => {
   const router = useRouter();
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
-    console.log("Creating lodge with data:", data);
     const {newImageFiles, roomTypeImages, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({

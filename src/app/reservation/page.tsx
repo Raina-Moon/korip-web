@@ -33,7 +33,6 @@ const ReservationPage = () => {
 
   useEffect(() => {
     if (lodgeId && roomTypeId && checkIn && checkOut && roomCount) {
-      console.log("Triggering price calculation");
       triggerPriceCalc({
         checkIn,
         checkOut,

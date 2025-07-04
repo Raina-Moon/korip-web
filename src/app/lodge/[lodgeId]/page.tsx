@@ -60,7 +60,6 @@ const LodgeDetailPage = () => {
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  console.log("isAuthenticated", isAuthenticated);
 
   const { data: myBookmarks } = useGetMyBookmarksQuery(undefined, {
     skip: !isAuthenticated,
