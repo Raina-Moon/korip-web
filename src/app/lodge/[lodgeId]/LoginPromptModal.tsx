@@ -17,7 +17,6 @@ export default function LoginPromptModal({
   modalref,
 }: LoginPromptModalProps & { modalref: React.RefObject<HTMLDivElement | null> }) {
   if (!isOpen) return null;
-  console.log("showingLoginModal:", isOpen, "context:", context);
 
   return (
     <div
