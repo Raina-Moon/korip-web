@@ -5,14 +5,12 @@ import React from "react";
 interface LoginPromptModalProps {
   isOpen: boolean;
   context: string | null;
-  onClose: () => void;
   onLogin: () => void;
 }
 
 export default function LoginPromptModal({
   isOpen,
   context,
-  onClose,
   onLogin,
   modalref,
 }: LoginPromptModalProps & { modalref: React.RefObject<HTMLDivElement | null> }) {

@@ -538,7 +538,6 @@ const LodgeDetailPage = () => {
           <LoginPromptModal
             isOpen={showingLoginModal}
             context={loginModalContext}
-            onClose={() => dispatch(closeLoginModal())}
             onLogin={() => router.push("/login")}
             modalref={modalRef}
           />
