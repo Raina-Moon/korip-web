@@ -16,6 +16,7 @@ export default function LoginPromptModal({
   onLogin,
 }: LoginPromptModalProps) {
   if (!isOpen) return null;
+  console.log("showingLoginModal:", isOpen, "context:", context);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
