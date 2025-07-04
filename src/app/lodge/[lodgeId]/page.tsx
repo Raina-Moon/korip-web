@@ -629,7 +629,13 @@ const LodgeDetailPage = () => {
               </p>
               <button
                 onClick={() => {
-                  dispatch(openLoginModal("reserve"));
+                  if(!isAuthenticated) {
+                    dispatch(openLoginModal("reserve"));
+                  } else {
+                    if (room.id !== undefined) {
+                      handleReserve(room.id, room.name);
+                    }
+                  }
                 }}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
