@@ -90,6 +90,7 @@ const LodgeDetailPage = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
+        showingLoginModal &&
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
@@ -100,7 +101,7 @@ const LodgeDetailPage = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [dispatch]);
+  }, [dispatch,showingLoginModal]);
 
   const handleAdultChange = (delta: number) => {
     const newAdults = Math.max(1, adults + delta);
@@ -532,7 +533,6 @@ const LodgeDetailPage = () => {
 
       {showingLoginModal && (
         <div
-          ref={modalRef}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
           <LoginPromptModal
@@ -540,6 +540,7 @@ const LodgeDetailPage = () => {
             context={loginModalContext}
             onClose={() => dispatch(closeLoginModal())}
             onLogin={() => router.push("/login")}
+            modalref={modalRef}
           />
         </div>
       )}

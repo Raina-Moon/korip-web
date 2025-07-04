@@ -14,12 +14,15 @@ export default function LoginPromptModal({
   context,
   onClose,
   onLogin,
-}: LoginPromptModalProps) {
+  modalref,
+}: LoginPromptModalProps & { modalref: React.RefObject<HTMLDivElement | null> }) {
   if (!isOpen) return null;
   console.log("showingLoginModal:", isOpen, "context:", context);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
+    <div
+    ref={modalref}
+    className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
       <p className="text-primary-900 text-lg font-medium">
         {context === "reserve" && "로그인 후 숙소 예약을 완료할 수 있어요."}
         {context === "bookmark" && "로그인 후 이 숙소를 찜할 수 있어요."}
