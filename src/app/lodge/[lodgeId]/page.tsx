@@ -725,32 +725,33 @@ const LodgeDetailPage = () => {
         </div>
       )}
 
-      {showingLoginModal &&
-        (console.log("### Rendering Login Modal ###"),
-        (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            ref={modalRef}
-          >
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
-              <p className="text-primary-900 text-lg font-medium">
-                {loginModalContext === "reserve" &&
-                  "로그인 후 숙소 예약을 완료할 수 있어요."}
-                {loginModalContext === "bookmark" &&
-                  "로그인 후 이 숙소를 찜할 수 있어요."}
-              </p>
-              <button
-                className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
-                onClick={() => {
-                  closeLoginModal();
-                  router.push("/login");
-                }}
-              >
-                로그인하러 가기
-              </button>
-            </div>
+      {showingLoginModal && (
+        <>
+        
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          ref={modalRef}
+        >
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
+            <p className="text-primary-900 text-lg font-medium">
+              {loginModalContext === "reserve" &&
+                "로그인 후 숙소 예약을 완료할 수 있어요."}
+              {loginModalContext === "bookmark" &&
+                "로그인 후 이 숙소를 찜할 수 있어요."}
+            </p>
+            <button
+              className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
+              onClick={() => {
+                closeLoginModal();
+                router.push("/login");
+              }}
+            >
+              로그인하러 가기
+            </button>
           </div>
-        ))}
+        </div>
+        </>
+      )}
 
       {isReportModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
