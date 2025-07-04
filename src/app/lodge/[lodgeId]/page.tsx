@@ -1,6 +1,7 @@
 "use client";
 
 import ReviewCard from "@/components/ui/ReviewCard";
+import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -13,7 +14,7 @@ import {
   useGetReviewsByLodgeIdQuery,
   useUpdateReviewMutation,
 } from "@/lib/review/reviewApi";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
 import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
@@ -27,7 +28,6 @@ const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
-  const [showingLoginModal, setShowingLoginModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
@@ -35,15 +35,14 @@ const LodgeDetailPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reason, setReason] = useState<string>("");
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
-  const [loginModalContext, setLoginModalContext] = useState<
-    "reserve" | "bookmark" | null
-  >(null);
   const [calendar, setCalendar] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
+
+  const dispatch = useAppDispatch();
 
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -79,6 +78,12 @@ const LodgeDetailPage = () => {
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
 
+  const showingLoginModal = useAppSelector(
+    (state) => state.auth.showingLoginModal
+  );
+  const loginModalContext = useAppSelector(
+    (state) => state.auth.loginModalContext
+  );
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -169,12 +174,6 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
-    if (!isAuthenticated) {
-      setLoginModalContext("reserve");
-      setShowingLoginModal(true);
-      return;
-    }
-
     const reservationData = {
       lodgeId: Number(lodgeId),
       roomTypeId,
@@ -206,8 +205,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
-      setLoginModalContext("bookmark");
-      setShowingLoginModal(true);
+      dispatch(openLoginModal("bookmark"));
       return;
     }
     try {
@@ -386,11 +384,6 @@ const LodgeDetailPage = () => {
       console.error("Failed to report review:", error);
       alert("리뷰 신고에 실패했습니다.");
     }
-  };
-
-  const closeLoginModal = () => {
-    setShowingLoginModal(false);
-    setLoginModalContext(null);
   };
 
   const formatDate = (date: Date | null) => {
@@ -637,10 +630,7 @@ const LodgeDetailPage = () => {
               </p>
               <button
                 onClick={() => {
-                  console.log("BEFORE", showingLoginModal);
-                  setLoginModalContext("reserve");
-                  setShowingLoginModal(true);
-                  console.log("AFTER", showingLoginModal);
+                  dispatch(openLoginModal("reserve"));
                 }}
                 className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
               >
@@ -726,8 +716,6 @@ const LodgeDetailPage = () => {
       )}
 
       {showingLoginModal && (
-        <>
-        
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           ref={modalRef}
@@ -742,7 +730,7 @@ const LodgeDetailPage = () => {
             <button
               className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
               onClick={() => {
-                closeLoginModal();
+                dispatch(closeLoginModal());
                 router.push("/login");
               }}
             >
@@ -750,7 +738,6 @@ const LodgeDetailPage = () => {
             </button>
           </div>
         </div>
-        </>
       )}
 
       {isReportModalOpen && (
