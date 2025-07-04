@@ -17,12 +17,16 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Bookmark } from "@/types/bookmark";
 import { Review } from "@/types/reivew";
-import { ArrowLeft, ArrowRight, Heart, HeartOff } from "lucide-react";
+import { Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import ReservationSearchBox from "./ReservationSearchBox";
+import RoomCard from "./RoomCard";
+import LoginPromptModal from "./LoginPromptModal";
+import ReportModal from "./ReportModal";
+import ImageModal from "./ImageModal";
+import { RoomType } from "@/types/lodge";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,14 +93,14 @@ const LodgeDetailPage = () => {
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        closeLoginModal();
+        dispatch(closeLoginModal());
       }
     };
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [dispatch]);
 
   const handleAdultChange = (delta: number) => {
     const newAdults = Math.max(1, adults + delta);
@@ -442,137 +446,28 @@ const LodgeDetailPage = () => {
         )}
       </div>
 
-      <div
-        className="
-                w-full bg-white rounded-lg shadow-lg relative
-                flex flex-row items-center justify-center gap-5 px-5 py-5 mt-5 mb-8"
-      >
-        <input
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          readOnly
-          onClick={() => {
-            setCalendar(true);
-          }}
-          value={formatDate(dateRange?.[0] ?? null)}
-          placeholder="Check-in Date"
-        />
-        <input
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          readOnly
-          onClick={() => {
-            setCalendar(true);
-          }}
-          value={formatDate(dateRange?.[1] ?? null)}
-          placeholder="Check-out Date"
-        />
-
-        {calendar && (
-          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
-            <Calendar
-              calendarType="gregory"
-              onChange={(value) => {
-                if (Array.isArray(value) && value.length === 2) {
-                  setDateRange(value as [Date, Date]);
-                  setCheckIn(formatDate(value[0]));
-                  setCheckOut(formatDate(value[1]));
-                  setCalendar(false);
-                }
-              }}
-              selectRange
-              showDoubleView
-              value={dateRange}
-              minDate={new Date()}
-            />
-          </div>
-        )}
-
-        <div
-          onClick={() => setIsActive(!isActive)}
-          className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
-        >
-          <p>Room : {room}</p>
-          <p>Adult : {adults}</p>
-          <p>Children : {children}</p>
-        </div>
-        <button
-          className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
-          onClick={handleSearch}
-        >
-          {" "}
-          검색
-        </button>
-
-        {isActive && (
-          <>
-            <div className="absolute left-2/3 top-14 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-              <div className="flex justify-end mb-3">
-                <button
-                  onClick={() => setIsActive(false)}
-                  className="text-primary-900 font-bold text-xl hover:text-primary-500"
-                >
-                  X
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">Room </p>
-                <button
-                  onClick={() => handleRoomChange(-1)}
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">{room}</p>
-                <button
-                  onClick={() => handleRoomChange(1)}
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                >
-                  +
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">Adult</p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleAdultChange(-1)}
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">
-                  {" "}
-                  {adults}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleAdultChange(1)}
-                >
-                  +
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">
-                  Children{" "}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleChildrenChange(-1)}
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">
-                  {" "}
-                  {children}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleChildrenChange(1)}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      <ReservationSearchBox
+        checkIn={checkIn}
+        setCheckIn={setCheckIn}
+        checkOut={checkOut}
+        setCheckOut={setCheckOut}
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+        calendar={calendar}
+        setCalendar={setCalendar}
+        isActive={isActive}
+        setIsActive={setIsActive}
+        adults={adults}
+        setAdults={setAdults}
+        room={room}
+        setRoom={setRoom}
+        children={children}
+        setChildren={setChildren}
+        handleAdultChange={handleAdultChange}
+        handleRoomChange={handleRoomChange}
+        handleChildrenChange={handleChildrenChange}
+        handleSearch={handleSearch}
+      />
 
       <div className="flex items-center gap-2 mb-4">
         <h1 className="text-3xl font-bold text-primary-900">{lodge.name}</h1>
@@ -606,55 +501,17 @@ const LodgeDetailPage = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">객실 정보</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          {lodge.roomTypes?.map((room) => (
-            <div
-              key={room.id}
-              className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
-            >
-              <h3 className="text-xl font-bold mb-2">{room.name}</h3>
-              <p className="text-gray-600 mb-1">
-                성인 최대 인원: {room.maxAdults}
-              </p>
-              <p className="text-gray-600 mb-1">
-                어린이 최대 인원: {room.maxChildren}
-              </p>
-              <p className="text-gray-600 mb-2">
-                기본 가격: ₩{room.basePrice.toLocaleString()}
-              </p>
-              <p className="text-gray-600 mb-2">
-                주말 가격: ₩
-                {room.weekendPrice !== undefined
-                  ? room.weekendPrice.toLocaleString()
-                  : room.basePrice.toLocaleString()}
-              </p>
-              <button
-                onClick={() => {
-                  if(!isAuthenticated) {
-                    dispatch(openLoginModal("reserve"));
-                  } else {
-                    if (room.id !== undefined) {
-                      handleReserve(room.id, room.name);
-                    }
-                  }
-                }}
-                className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
-              >
-                이 객실 예약하기
-              </button>
-              {room.images?.[0]?.imageUrl && (
-                <Image
-                  src={room.images[0].imageUrl}
-                  alt={room.name}
-                  width={400}
-                  height={200}
-                  className="rounded object-cover w-full h-48 mt-2 hover:cursor-pointer"
-                  onClick={() =>
-                    openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)
-                  }
-                />
-              )}
-            </div>
-          ))}
+          {lodge.roomTypes
+            ?.filter((room) => room.id !== undefined)
+            .map((room) => (
+              <RoomCard
+                key={room.id}
+                room={room as RoomType & { id: number }}
+                isAuthenticated={isAuthenticated}
+                handleReserve={handleReserve}
+                openModal={openModal}
+              />
+            ))}
         </div>
       </div>
 
@@ -663,118 +520,38 @@ const LodgeDetailPage = () => {
       </div>
 
       {/* ✅ 모달 */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4">
-          <div className="relative w-full max-w-5xl h-[70vh] flex items-center justify-center">
-            <button
-              onClick={handlePrevImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white rounded-full p-2 z-10 hover:bg-gray-600"
-            >
-              <ArrowLeft />
-            </button>
-
-            <Image
-              src={modalImages[currentModalImage]}
-              alt="modal preview"
-              layout="fill"
-              objectFit="contain"
-              className="rounded-md"
-              priority
-            />
-
-            <button
-              onClick={handleNextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white rounded-full p-2 z-10 hover:bg-gray-600"
-            >
-              <ArrowRight />
-            </button>
-
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-white text-3xl font-bold z-20"
-            >
-              ×
-            </button>
-          </div>
-
-          {/* 썸네일 */}
-          <div className="flex gap-2 mt-6 overflow-x-auto max-w-full px-4">
-            {modalImages.map((url, idx) => (
-              <div
-                key={idx}
-                className={`w-24 h-16 relative cursor-pointer ${
-                  idx === currentModalImage ? "ring-4 ring-blue-400" : ""
-                }`}
-                onClick={() => setCurrentModalImage(idx)}
-              >
-                <Image
-                  src={url}
-                  alt={`thumbnail-${idx}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <ImageModal
+        isOpen={isOpen}
+        images={modalImages}
+        currentIndex={currentModalImage}
+        onPrev={handlePrevImage}
+        onNext={handleNextImage}
+        onClose={closeModal}
+        setCurrentIndex={setCurrentModalImage}
+      />
 
       {showingLoginModal && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           ref={modalRef}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col items-center">
-            <p className="text-primary-900 text-lg font-medium">
-              {loginModalContext === "reserve" &&
-                "로그인 후 숙소 예약을 완료할 수 있어요."}
-              {loginModalContext === "bookmark" &&
-                "로그인 후 이 숙소를 찜할 수 있어요."}
-            </p>
-            <button
-              className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500 "
-              onClick={() => {
-                dispatch(closeLoginModal());
-                router.push("/login");
-              }}
-            >
-              로그인하러 가기
-            </button>
-          </div>
+          <LoginPromptModal
+            isOpen={showingLoginModal}
+            context={loginModalContext}
+            onClose={() => dispatch(closeLoginModal())}
+            onLogin={() => router.push("/login")}
+          />
         </div>
       )}
 
-      {isReportModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full gap-5 flex flex-col">
-            <h2 className="text-lg font-semibold text-primary-900">
-              리뷰 신고하기
-            </h2>
-            <p className="text-sm text-gray-600">신고 사유를 작성해주세요.</p>
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="border rounded p-2 w-full min-h-[100px]"
-              placeholder="신고 사유를 입력하세요."
-            />
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setIsReportModalOpen(false)}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
-              >
-                취소
-              </button>
-              <button
-                onClick={submitReport}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                신고하기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        reason={reason}
+        setReason={setReason}
+        selectedReviewId={selectedReviewId}
+        onSubmit={submitReport}
+      />
     </div>
   );
 };
