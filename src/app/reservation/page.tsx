@@ -17,6 +17,7 @@ const ReservationPage = () => {
   const roomCount = searchParams.get("roomCount");
   const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
   const roomName = searchParams.get("roomName") || "Unknown Room";
+  const lodgeImage = searchParams.get("lodgeImage") || "";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -159,6 +160,35 @@ const ReservationPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+      <div className="border border-gray-300 rounded-lg p-4 space-y-3">
+        <h2 className="text-xl font-bold mb-2">예약 정보</h2>
+
+        <div className="flex gap-4 items-start">
+          {lodgeImage ? (
+            <img
+              src={lodgeImage}
+              alt={lodgeName}
+              className="w-32 h-24 object-cover rounded"
+            />
+          ) : (
+            <div className="w-32 h-24 bg-gray-200 flex items-center justify-center rounded">
+              No Image
+            </div>
+          )}
+
+          <div className="flex flex-col space-y-1">
+            <p className="font-semibold">{lodgeName}</p>
+            <p className="text-gray-700">룸 타입: {roomName}</p>
+            <p className="text-gray-700">
+              체크인: {checkIn} ~ 체크아웃: {checkOut}
+            </p>
+            <p className="text-gray-700">
+              성인: {adults} / 어린이: {children} / 방 수: {roomCount}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <h1 className="text-2xl font-bold">예약자 정보 입력</h1>
 
       <div className="grid grid-cols-2 gap-4">
