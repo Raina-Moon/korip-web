@@ -30,7 +30,7 @@ const ReservationPage = () => {
     null
   );
 
-    const [params, setParams] = useState<{
+  const [params, setParams] = useState<{
     lodgeId: string;
     roomTypeId: string;
     checkIn: string;
@@ -72,8 +72,7 @@ const ReservationPage = () => {
     { data: priceData, isLoading: isPriceLoading, error: priceError },
   ] = usePriceCalcMutation();
 
-  
-useEffect(() => {
+  useEffect(() => {
     const newParams = {
       lodgeId: searchParams.get("lodgeId") ?? "",
       roomTypeId: searchParams.get("roomTypeId") ?? "",
@@ -86,10 +85,17 @@ useEffect(() => {
       roomName: searchParams.get("roomName") ?? "Unknown Room",
     };
 
-    setParams(newParams);
+    setParams((prev) => {
+      const isSame = Object.keys(newParams).every(
+        (key) =>
+          prev[key as keyof typeof prev] ===
+          newParams[key as keyof typeof newParams]
+      );
+      return isSame ? prev : newParams;
+    });
   }, [searchParams]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (
       params.lodgeId &&
       params.roomTypeId &&
