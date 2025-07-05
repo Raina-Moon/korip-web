@@ -103,17 +103,12 @@ const ReservationPage = () => {
       params.checkOut &&
       params.roomCount
     ) {
-      console.log("✅ Ready to calculate price:", params);
-
       triggerPriceCalc({
         checkIn: params.checkIn,
         checkOut: params.checkOut,
         roomTypeId: Number(params.roomTypeId),
         roomCount: Number(params.roomCount),
-      })
-        .unwrap()
-        .then((res) => console.log("✅ Calculating price:", res))
-        .catch((err) => console.error("❌ Calculating price failed:", err));
+      }).unwrap();
     }
   }, [params, triggerPriceCalc]);
 
