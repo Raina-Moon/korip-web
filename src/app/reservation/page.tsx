@@ -26,24 +26,90 @@ const ReservationPage = () => {
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
 
+  const [resolvedRoomCount, setResolvedRoomCount] = useState<string | null>(
+    null
+  );
+
+    const [params, setParams] = useState<{
+    lodgeId: string;
+    roomTypeId: string;
+    checkIn: string;
+    checkOut: string;
+    adults: string;
+    children: string;
+    roomCount: string;
+    lodgeName: string;
+    roomName: string;
+  }>({
+    lodgeId: "",
+    roomTypeId: "",
+    checkIn: "",
+    checkOut: "",
+    adults: "",
+    children: "",
+    roomCount: "",
+    lodgeName: "Unknown Lodge",
+    roomName: "Unknown Room",
+  });
+
+  useEffect(() => {
+    const paramRoomCount = searchParams.get("roomCount");
+    if (paramRoomCount) {
+      setResolvedRoomCount(paramRoomCount);
+    } else {
+      const pending = localStorage.getItem("pendingReservation");
+      if (pending) {
+        try {
+          const parsed = JSON.parse(pending);
+          if (parsed.roomCount) setResolvedRoomCount(String(parsed.roomCount));
+        } catch {}
+      }
+    }
+  }, [searchParams]);
+
   const [
     triggerPriceCalc,
     { data: priceData, isLoading: isPriceLoading, error: priceError },
   ] = usePriceCalcMutation();
 
-  useEffect(() => {
-    if (lodgeId && roomTypeId && checkIn && checkOut && roomCount) {
+  
+useEffect(() => {
+    const newParams = {
+      lodgeId: searchParams.get("lodgeId") ?? "",
+      roomTypeId: searchParams.get("roomTypeId") ?? "",
+      checkIn: searchParams.get("checkIn") ?? "",
+      checkOut: searchParams.get("checkOut") ?? "",
+      adults: searchParams.get("adults") ?? "",
+      children: searchParams.get("children") ?? "",
+      roomCount: searchParams.get("roomCount") ?? "",
+      lodgeName: searchParams.get("lodgeName") ?? "Unknown Lodge",
+      roomName: searchParams.get("roomName") ?? "Unknown Room",
+    };
+
+    setParams(newParams);
+  }, [searchParams]);
+
+    useEffect(() => {
+    if (
+      params.lodgeId &&
+      params.roomTypeId &&
+      params.checkIn &&
+      params.checkOut &&
+      params.roomCount
+    ) {
+      console.log("✅ Ready to calculate price:", params);
+
       triggerPriceCalc({
-        checkIn,
-        checkOut,
-        roomTypeId: Number(roomTypeId),
-        roomCount: Number(roomCount),
+        checkIn: params.checkIn,
+        checkOut: params.checkOut,
+        roomTypeId: Number(params.roomTypeId),
+        roomCount: Number(params.roomCount),
       })
         .unwrap()
-        .then((res) => console.log("Price calculated:", res))
-        .catch((err) => console.error("Price calculation error:", err));
+        .then((res) => console.log("✅ Calculating price:", res))
+        .catch((err) => console.error("❌ Calculating price failed:", err));
     }
-  }, [roomTypeId, checkIn, checkOut, roomCount]);
+  }, [params, triggerPriceCalc]);
 
   const handleCheckBoxChange = (request: string) => {
     if (specialRequests.includes(request)) {
