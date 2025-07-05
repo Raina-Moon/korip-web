@@ -533,14 +533,16 @@ const LodgeDetailPage = () => {
 
       {showingLoginModal && (
         <div
+        onClick={() => dispatch(closeLoginModal())}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
-          <LoginPromptModal
-            isOpen={showingLoginModal}
-            context={loginModalContext}
+          <div onClick={(e) => e.stopPropagation()}>
+            <LoginPromptModal
+              isOpen={showingLoginModal}
+              context={loginModalContext}
             onLogin={() => router.push("/login")}
-            modalref={modalRef}
           />
+        </div>
         </div>
       )}
 
