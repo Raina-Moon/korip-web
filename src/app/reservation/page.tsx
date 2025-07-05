@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ const ReservationPage = () => {
   const roomCount = searchParams.get("roomCount");
   const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
   const roomName = searchParams.get("roomName") || "Unknown Room";
+  const lodgeImage = searchParams.get("lodgeImage") || "";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -26,24 +28,102 @@ const ReservationPage = () => {
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
 
+  const [resolvedRoomCount, setResolvedRoomCount] = useState<string | null>(
+    null
+  );
+
+  const { data: lodge, isLoading } = useGetLodgeByIdQuery(lodgeId ?? "", {
+    skip: !lodgeId,
+  });
+
+  const selectedRoomType = lodge?.roomTypes.find(
+    (room) => room.id === Number(roomTypeId)
+  );
+
+  const roomTypeImage = selectedRoomType?.images?.[0]?.imageUrl || "";
+  const roomTypeName = selectedRoomType?.name || "Unknown Room Type";
+
+  const [params, setParams] = useState<{
+    lodgeId: string;
+    roomTypeId: string;
+    checkIn: string;
+    checkOut: string;
+    adults: string;
+    children: string;
+    roomCount: string;
+    lodgeName: string;
+    roomName: string;
+  }>({
+    lodgeId: "",
+    roomTypeId: "",
+    checkIn: "",
+    checkOut: "",
+    adults: "",
+    children: "",
+    roomCount: "",
+    lodgeName: "Unknown Lodge",
+    roomName: "Unknown Room",
+  });
+
+  useEffect(() => {
+    const paramRoomCount = searchParams.get("roomCount");
+    if (paramRoomCount) {
+      setResolvedRoomCount(paramRoomCount);
+    } else {
+      const pending = localStorage.getItem("pendingReservation");
+      if (pending) {
+        try {
+          const parsed = JSON.parse(pending);
+          if (parsed.roomCount) setResolvedRoomCount(String(parsed.roomCount));
+        } catch {}
+      }
+    }
+  }, [searchParams]);
+
   const [
     triggerPriceCalc,
     { data: priceData, isLoading: isPriceLoading, error: priceError },
   ] = usePriceCalcMutation();
 
   useEffect(() => {
-    if (lodgeId && roomTypeId && checkIn && checkOut && roomCount) {
+    const newParams = {
+      lodgeId: searchParams.get("lodgeId") ?? "",
+      roomTypeId: searchParams.get("roomTypeId") ?? "",
+      checkIn: searchParams.get("checkIn") ?? "",
+      checkOut: searchParams.get("checkOut") ?? "",
+      adults: searchParams.get("adults") ?? "",
+      children: searchParams.get("children") ?? "",
+      roomCount: searchParams.get("roomCount") ?? "",
+      lodgeName: searchParams.get("lodgeName") ?? "Unknown Lodge",
+      roomName: searchParams.get("roomName") ?? "Unknown Room",
+    };
+
+    setParams((prev) => {
+      const isSame = Object.keys(newParams).every(
+        (key) =>
+          prev[key as keyof typeof prev] ===
+          newParams[key as keyof typeof newParams]
+      );
+      return isSame ? prev : newParams;
+    });
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (
+      params.lodgeId &&
+      params.roomTypeId &&
+      params.checkIn &&
+      params.checkOut &&
+      params.roomCount
+    ) {
       triggerPriceCalc({
-        checkIn,
-        checkOut,
-        roomTypeId: Number(roomTypeId),
-        roomCount: Number(roomCount),
-      })
-        .unwrap()
-        .then((res) => console.log("Price calculated:", res))
-        .catch((err) => console.error("Price calculation error:", err));
+        checkIn: params.checkIn,
+        checkOut: params.checkOut,
+        roomTypeId: Number(params.roomTypeId),
+        roomCount: Number(params.roomCount),
+      }).unwrap();
     }
-  }, [roomTypeId, checkIn, checkOut, roomCount]);
+  }, [params, triggerPriceCalc]);
 
   const handleCheckBoxChange = (request: string) => {
     if (specialRequests.includes(request)) {
@@ -92,6 +172,29 @@ const ReservationPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+      <div className="border border-gray-300 rounded-lg p-4 space-y-3">
+        <h2 className="text-xl font-bold mb-2">예약 정보</h2>
+
+        <div className="flex gap-4 items-start">
+          <img
+            src={roomTypeImage}
+            alt={roomTypeName}
+            className="w-32 h-24 object-cover rounded"
+          />
+
+          <div className="flex flex-col space-y-1">
+            <p className="font-semibold">{lodgeName}</p>
+            <p className="text-gray-700">룸 타입: {roomName}</p>
+            <p className="text-gray-700">
+              체크인: {checkIn} ~ 체크아웃: {checkOut}
+            </p>
+            <p className="text-gray-700">
+              성인: {adults} / 어린이: {children} / 방 수: {roomCount}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <h1 className="text-2xl font-bold">예약자 정보 입력</h1>
 
       <div className="grid grid-cols-2 gap-4">

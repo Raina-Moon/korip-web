@@ -50,7 +50,7 @@ const page = () => {
       region: region.slice(0, 2),
       checkIn: formatDate(range[0]),
       checkOut: formatDate(range[1]),
-      room: room.toString(),
+      roomCount: room.toString(),
       adults: adults.toString(),
       children: children.toString(),
       accommodationType,
