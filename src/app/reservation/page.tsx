@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -30,6 +31,17 @@ const ReservationPage = () => {
   const [resolvedRoomCount, setResolvedRoomCount] = useState<string | null>(
     null
   );
+
+  const { data: lodge, isLoading } = useGetLodgeByIdQuery(lodgeId ?? "", {
+    skip: !lodgeId,
+  });
+
+  const selectedRoomType = lodge?.roomTypes.find(
+    (room) => room.id === Number(roomTypeId)
+  );
+
+  const roomTypeImage = selectedRoomType?.images?.[0]?.imageUrl || "";
+  const roomTypeName = selectedRoomType?.name || "Unknown Room Type";
 
   const [params, setParams] = useState<{
     lodgeId: string;
@@ -164,17 +176,11 @@ const ReservationPage = () => {
         <h2 className="text-xl font-bold mb-2">예약 정보</h2>
 
         <div className="flex gap-4 items-start">
-          {lodgeImage ? (
-            <img
-              src={lodgeImage}
-              alt={lodgeName}
-              className="w-32 h-24 object-cover rounded"
-            />
-          ) : (
-            <div className="w-32 h-24 bg-gray-200 flex items-center justify-center rounded">
-              No Image
-            </div>
-          )}
+          <img
+            src={roomTypeImage}
+            alt={roomTypeName}
+            className="w-32 h-24 object-cover rounded"
+          />
 
           <div className="flex flex-col space-y-1">
             <p className="font-semibold">{lodgeName}</p>
