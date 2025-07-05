@@ -114,7 +114,7 @@ const LodgeDetailPage = () => {
     let checkInStr = searchParams.get("checkIn") ?? "";
     let checkOutStr = searchParams.get("checkOut") ?? "";
     let adultsNum = Number(searchParams.get("adults") ?? "1");
-    let roomNum = Number(searchParams.get("room") ?? "1");
+    let roomNum = Number(searchParams.get("roomCount") ?? "1");
     let childrenNum = Number(searchParams.get("children") ?? "0");
 
     if (!checkInStr || !checkOutStr) {
@@ -185,7 +185,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults,
       children,
-      room,
+      roomCount : room,
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
@@ -199,7 +199,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults: String(adults),
       children: String(children),
-      room: String(room),
+      roomCount: String(room),
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     }).toString();
@@ -390,18 +390,10 @@ const LodgeDetailPage = () => {
     }
   };
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
   const handleRoomChange = (delta: number) => {
     const newRoom = Math.max(1, room + delta);
     const query = new URLSearchParams(searchParams);
-    query.set("room", String(newRoom));
+    query.set("roomCount", String(newRoom));
     router.push(`/lodge/${lodgeId}?${query.toString()}`);
   };
 
@@ -418,7 +410,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults: String(adults),
       children: String(children),
-      room: String(room),
+      roomCount: String(room),
     }).toString();
 
     router.push(`/lodge/${lodgeId}?${query}`);
