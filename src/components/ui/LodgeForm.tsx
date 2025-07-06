@@ -142,10 +142,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                   <Image
                     src={image.imageUrl}
                     alt={`Lodge Image ${idx + 1}`}
-                    className="object-cover w-full h-full"
+                    className="object-cover rounded"
                     width={128}
                     height={128}
-                    style={{ width: "auto", height: "auto" }}
                   />
                   <button
                     type="button"
