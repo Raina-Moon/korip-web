@@ -1,9 +1,9 @@
 "use client"
 
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { store } from "../store/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { setupAxiosInterceptor } from "./axios/interceptor";
+import { setupAxiosInterceptor } from "../axios/interceptor";
 
 setupAxiosInterceptor();
 

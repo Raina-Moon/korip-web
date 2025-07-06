@@ -15,6 +15,7 @@ import reservationReducer from "../reservation/reservationSlice";
 import { reviewApi } from "../review/reviewApi";
 import { bookmarkApi } from "../bookmark/bookmarkApi";
 import { reportReviewApi } from "../report-review/reportReviewApi";
+import loadingReducer from "./loadingSlice";
 
 export const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
     [reviewApi.reducerPath]: reviewApi.reducer,
     [bookmarkApi.reducerPath]: bookmarkApi.reducer,
     [reportReviewApi.reducerPath]: reportReviewApi.reducer,
+    loading: loadingReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

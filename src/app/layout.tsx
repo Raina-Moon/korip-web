@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Providers } from "@/lib/providers";
+import { Providers } from "@/lib/providers/providers";
 import AuthLoader from "@/components/AuthLoader";
 import HeaderWrapper from "@/components/HeaderWrapper";
+import GlobalLoadingOverlay from "@/components/GlobalLoadingOverlay";
+import NavigationEvents from "@/lib/providers/NavigationEvents";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +39,8 @@ export default function RootLayout({
         <Providers>
           <AuthLoader />
           <HeaderWrapper />
+          <GlobalLoadingOverlay />
+          <NavigationEvents />
           {children}
         </Providers>
       </body>

@@ -1,12 +1,15 @@
 "use client";
 
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ListPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const region = searchParams.get("region") || "전체";
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -27,6 +30,14 @@ const ListPage = () => {
     children,
     room,
   });
+
+  useEffect(() => {
+    if(isLoading) {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [isLoading, dispatch]);
 
   const handleLodgeClick = (lodgeId: number) => {
     const query = {

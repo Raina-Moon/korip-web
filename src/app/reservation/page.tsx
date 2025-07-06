@@ -2,12 +2,15 @@
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const lodgeId = searchParams.get("lodgeId");
   const roomTypeId = searchParams.get("roomTypeId");
@@ -64,6 +67,14 @@ const ReservationPage = () => {
     lodgeName: "Unknown Lodge",
     roomName: "Unknown Room",
   });
+
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [isLoading, dispatch]);
 
   useEffect(() => {
     const paramRoomCount = searchParams.get("roomCount");
@@ -176,11 +187,17 @@ const ReservationPage = () => {
         <h2 className="text-xl font-bold mb-2">예약 정보</h2>
 
         <div className="flex gap-4 items-start">
-          <img
-            src={roomTypeImage}
-            alt={roomTypeName}
-            className="w-32 h-24 object-cover rounded"
-          />
+          {roomTypeImage ? (
+            <img
+              src={roomTypeImage}
+              alt={roomTypeName}
+              className="w-32 h-24 object-cover rounded"
+            />
+          ) : (
+            <div className="w-32 h-24 bg-gray-200 flex items-center justify-center text-gray-500 rounded">
+              No Image
+            </div>
+          )}
 
           <div className="flex flex-col space-y-1">
             <p className="font-semibold">{lodgeName}</p>
