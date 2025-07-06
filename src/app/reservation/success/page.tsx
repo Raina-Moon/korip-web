@@ -2,7 +2,6 @@
 
 import { confirmReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { getNights } from "@/utils/getNights";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -12,17 +11,9 @@ const ReservationSuccessPage = () => {
   const searchParams = useSearchParams();
   const [pending, setPending] = useState<any>(null);
 
-  const reservationId = searchParams.get("reservationId")
+  const reservationId = searchParams.get("reservationId");
 
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if(!pending) {
-      dispatch(showLoading())
-    } else {
-      dispatch(hideLoading())
-    }
-  },[pending, dispatch])
 
   useEffect(() => {
     const data = localStorage.getItem("pendingReservation") || "{}";
@@ -32,12 +23,21 @@ const ReservationSuccessPage = () => {
   }, []);
 
   useEffect(() => {
-    if(reservationId) {
-      dispatch(confirmReservation({ reservationId:Number(reservationId) }))
+    if (reservationId) {
+      dispatch(confirmReservation({ reservationId: Number(reservationId) }));
     }
-  },[reservationId])
+  }, [reservationId]);
 
   const nights = getNights(pending.checkIn, pending.checkOut);
+
+  if (!pending) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-6">
+        <h1 className="text-3xl font-bold text-primary-800">예약 처리 중...</h1>
+        <p className="text-lg text-gray-700 mb-6">잠시만 기다려주세요.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
