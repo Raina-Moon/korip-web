@@ -11,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import KakaoMap from "@/components/KakaoMap";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -34,8 +35,14 @@ const LodgeDetailPage = () => {
     }
   }, [dispatch, lodgeId]);
 
-  if (status === "loading")
-    return <p className="p-8 text-lg">Loading lodge details...</p>;
+  useEffect(() => {
+    if(status === "loading") {
+      dispatch(showLoading())
+    } else {
+      dispatch(hideLoading())
+    }
+  },[])
+
   if (status === "failed")
     return <p className="p-8 text-red-600">Error: {error}</p>;
   if (!lodge) return <p className="p-8">No lodge found with ID {lodgeId}</p>;
