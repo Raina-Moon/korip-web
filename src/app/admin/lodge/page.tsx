@@ -2,7 +2,7 @@
 
 import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { showLoading } from "@/lib/store/loadingSlice";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Lodge } from "@/types/lodge";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -47,10 +47,13 @@ const LodgePage = () => {
     }
   }, [dispatch, status]);
 
-  if (status === "loading") {
-    dispatch(showLoading())
-  }
-
+  useEffect(() => {
+    if (status === "loading") {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [status, dispatch]);
 
   if (status === "failed") {
     return (

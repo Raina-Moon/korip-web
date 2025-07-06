@@ -44,11 +44,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   }, [user, router]);
 
-  if (user === undefined && isLoading) {
-    dispatch(showLoading());
-  } else {
-    dispatch(hideLoading());
-  }
+  useEffect(() => {
+    if (user === undefined && isLoading) {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [user, isLoading, dispatch]);
 
   return <>{children}</>;
 }
