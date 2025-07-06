@@ -5,6 +5,8 @@ import Image from "next/image";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { showLoading } from "@/lib/store/loadingSlice";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -15,10 +17,9 @@ const page = () => {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -45,6 +46,8 @@ const page = () => {
       alert("Please select a check-in and check-out date.");
       return;
     }
+
+    dispatch(showLoading());
 
     const query = new URLSearchParams({
       region: region.slice(0, 2),
@@ -213,7 +216,10 @@ const page = () => {
               >
                 -
               </button>
-              <p className="text-lg text-primary-900 font-semibold"> {adults}</p>
+              <p className="text-lg text-primary-900 font-semibold">
+                {" "}
+                {adults}
+              </p>
               <button
                 className="border border-primary-800 p-3 rounded-full text-2xl"
                 onClick={() => handleAdultChange(1)}
