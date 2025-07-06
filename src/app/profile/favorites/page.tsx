@@ -4,13 +4,16 @@ import {
   useDeleteBookmarkMutation,
   useGetMyBookmarksQuery,
 } from "@/lib/bookmark/bookmarkApi";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Bookmark } from "@/types/bookmark";
 import { HeartIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 const FavoritesPage = () => {
   const { data: bookmarks, isLoading, isError } = useGetMyBookmarksQuery();
   const [deleteBookmark] = useDeleteBookmarkMutation();
+  const dispatch = useAppDispatch();
 
   const handleDeleteBookmark = async (lodgeId: number) => {
     try {
@@ -20,7 +23,14 @@ const FavoritesPage = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [isLoading, dispatch]);
+
   if (isError) return <div>Error loading bookmarks</div>;
 
   return (

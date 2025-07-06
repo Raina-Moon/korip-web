@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { fetchReservation } from "@/lib/reservation/reservationThunk";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 const ReviewsPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -38,6 +39,14 @@ const ReviewsPage = () => {
   useEffect(() => {
     dispatch(fetchReservation());
   }, [dispatch]);
+
+  useEffect(() => {
+    if(isLoading) {
+      dispatch(showLoading())
+    } else {
+      dispatch(hideLoading())
+    }
+  },[isLoading, dispatch]);
 
   const toggleMenu = (id: string) => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
@@ -110,7 +119,6 @@ const ReviewsPage = () => {
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">{nickname}'s Reviews</h1>
 
-      {isLoading && <p className="text-gray-500">Loading...</p>}
       {isError && <p className="text-red-500">Error loading reviews</p>}
       {reviews && reviews.length === 0 && (
         <p className="text-gray-500">No reviews found</p>

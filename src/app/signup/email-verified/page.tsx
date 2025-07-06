@@ -2,7 +2,7 @@
 
 import Modal from "@/components/ui/Modal";
 import { useSignUpMutation } from "@/lib/auth/authApi";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const EmailVerifPage = () => {
@@ -18,7 +18,6 @@ const EmailVerifPage = () => {
 
   const [signup, { isLoading }] = useSignUpMutation();
 
-  const params = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
