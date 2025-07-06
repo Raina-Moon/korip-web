@@ -2,6 +2,7 @@
 
 import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { showLoading } from "@/lib/store/loadingSlice";
 import { Lodge } from "@/types/lodge";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -47,12 +48,9 @@ const LodgePage = () => {
   }, [dispatch, status]);
 
   if (status === "loading") {
-    return (
-      <div className="flex justify-center items-center h-full p-8">
-        <p className="text-gray-600">Loading lodges...</p>
-      </div>
-    );
+    dispatch(showLoading())
   }
+
 
   if (status === "failed") {
     return (

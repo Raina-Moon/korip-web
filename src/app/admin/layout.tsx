@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { useGetCurrentUserQuery } from "@/lib/auth/authApi";
 import { setUserOnly } from "@/lib/auth/authSlice";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -44,7 +45,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, [user, router]);
 
   if (user === undefined && isLoading) {
-    return <div>Loading...</div>;
+    dispatch(showLoading());
+  } else {
+    dispatch(hideLoading());
   }
 
   return <>{children}</>;
