@@ -2,6 +2,7 @@
 
 import { confirmReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { getNights } from "@/utils/getNights";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -16,6 +17,14 @@ const ReservationSuccessPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if(!pending) {
+      dispatch(showLoading())
+    } else {
+      dispatch(hideLoading())
+    }
+  },[pending, dispatch])
+
+  useEffect(() => {
     const data = localStorage.getItem("pendingReservation") || "{}";
     if (data) {
       setPending(JSON.parse(data));
@@ -27,10 +36,6 @@ const ReservationSuccessPage = () => {
       dispatch(confirmReservation({ reservationId:Number(reservationId) }))
     }
   },[reservationId])
-
-  if (!pending) {
-    return <div>Loading...</div>;
-  }
 
   const nights = getNights(pending.checkIn, pending.checkOut);
 
