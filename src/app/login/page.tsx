@@ -6,6 +6,7 @@ import { loginUser } from "@/lib/auth/loginThunk";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -36,10 +37,13 @@ const LoginPage = () => {
     }
 
     try {
+      dispatch(showLoading());
       await dispatch(loginUser(email, password));
       router.push("/");
     } catch (err) {
       alert("Login failed. Please check your credentials and try again.");
+    } finally {
+      dispatch(hideLoading());
     }
   };
 
@@ -50,6 +54,7 @@ const LoginPage = () => {
       return;
     }
     try {
+      dispatch(showLoading());
       await dispatch(socialLoginThunk("google", credential));
 
       const reservationData = localStorage.getItem("pendingReservation");
@@ -71,6 +76,8 @@ const LoginPage = () => {
       }
     } catch (err) {
       alert("Google login failed. Please try again.");
+    } finally {
+      dispatch(hideLoading());
     }
   };
 

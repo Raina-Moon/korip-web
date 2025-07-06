@@ -2,12 +2,15 @@
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { usePriceCalcMutation } from "@/lib/price/priceApi";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const lodgeId = searchParams.get("lodgeId");
   const roomTypeId = searchParams.get("roomTypeId");
@@ -64,6 +67,14 @@ const ReservationPage = () => {
     lodgeName: "Unknown Lodge",
     roomName: "Unknown Room",
   });
+
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(showLoading());
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [isLoading, dispatch]);
 
   useEffect(() => {
     const paramRoomCount = searchParams.get("roomCount");

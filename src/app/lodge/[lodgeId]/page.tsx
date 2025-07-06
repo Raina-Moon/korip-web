@@ -27,6 +27,7 @@ import LoginPromptModal from "./LoginPromptModal";
 import ReportModal from "./ReportModal";
 import ImageModal from "./ImageModal";
 import { RoomType } from "@/types/lodge";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 const LodgeDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,6 +110,14 @@ const LodgeDetailPage = () => {
     query.set("adults", String(newAdults));
     router.push(`/lodge/${lodgeId}?${query.toString()}`);
   };
+
+  useEffect(() => {
+    if(isLoading) {
+      dispatch(showLoading())
+    } else {
+      dispatch(hideLoading());
+    }
+  }, [isLoading, dispatch])
 
   useEffect(() => {
     let checkInStr = searchParams.get("checkIn") ?? "";
@@ -416,7 +425,6 @@ const LodgeDetailPage = () => {
     router.push(`/lodge/${lodgeId}?${query}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading lodge details.</div>;
   if (!lodge) return <div>No lodge data found.</div>;
 
