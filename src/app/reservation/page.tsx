@@ -187,11 +187,17 @@ const ReservationPage = () => {
         <h2 className="text-xl font-bold mb-2">예약 정보</h2>
 
         <div className="flex gap-4 items-start">
-          <img
-            src={roomTypeImage}
-            alt={roomTypeName}
-            className="w-32 h-24 object-cover rounded"
-          />
+          {roomTypeImage ? (
+            <img
+              src={roomTypeImage}
+              alt={roomTypeName}
+              className="w-32 h-24 object-cover rounded"
+            />
+          ) : (
+            <div className="w-32 h-24 bg-gray-200 flex items-center justify-center text-gray-500 rounded">
+              No Image
+            </div>
+          )}
 
           <div className="flex flex-col space-y-1">
             <p className="font-semibold">{lodgeName}</p>
