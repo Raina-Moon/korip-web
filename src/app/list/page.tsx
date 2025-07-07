@@ -32,7 +32,7 @@ const ListPage = () => {
   });
 
   useEffect(() => {
-    if(isLoading) {
+    if (isLoading) {
       dispatch(showLoading());
     } else {
       dispatch(hideLoading());
@@ -46,7 +46,7 @@ const ListPage = () => {
       adults,
       children,
       room,
-    }
+    };
 
     localStorage.setItem("pendingReservation", JSON.stringify(query));
     const search = new URLSearchParams(query).toString();
@@ -55,7 +55,9 @@ const ListPage = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-semibold text-primary-900">검색 결과 {lodges ? lodges.length : 0}</h1>
+      <h1 className="text-xl font-semibold text-primary-900">
+        검색 결과 {lodges ? lodges.length : 0}
+      </h1>
       {lodges?.length === 0 ? (
         <p className="text-lg text-gray-600">검색 결과가 없습니다.</p>
       ) : (
@@ -96,6 +98,9 @@ const ListPage = () => {
                   </p>
                   <p className="text-gray-700">
                     최대 어린이 수: {room.maxChildren}
+                  </p>
+                  <p className="text-gray-700">
+                    1박당 평균 가격: {room.pricePerNight?.toLocaleString()}원
                   </p>
                 </div>
               ))}
