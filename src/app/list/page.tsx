@@ -4,9 +4,11 @@ import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ListPage = () => {
+  const [selectedSort, setSelectedSort] = useState<string>("popularity");
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -17,6 +19,7 @@ const ListPage = () => {
   const room = searchParams.get("room") || "1";
   const adults = searchParams.get("adults") || "1";
   const children = searchParams.get("children") || "0";
+  const sort = searchParams.get("sort") || "popularity";
 
   const {
     data: lodges,
@@ -29,10 +32,11 @@ const ListPage = () => {
     adults,
     children,
     room,
+    sort,
   });
 
   useEffect(() => {
-    if(isLoading) {
+    if (isLoading) {
       dispatch(showLoading());
     } else {
       dispatch(hideLoading());
@@ -46,16 +50,39 @@ const ListPage = () => {
       adults,
       children,
       room,
-    }
+    };
 
     localStorage.setItem("pendingReservation", JSON.stringify(query));
     const search = new URLSearchParams(query).toString();
     router.push(`/lodge/${lodgeId}?${search}`);
   };
 
+  const handleSortChange = (e: any) => {
+    setSelectedSort(e.target.value);
+    const newQuery = new URLSearchParams({
+      region,
+      checkIn,
+      checkOut,
+      adults,
+      children,
+      room,
+      sort: e.target.value,
+    }).toString();
+    router.push(`/list?${newQuery}`);
+  };
+
   return (
     <div className="p-6">
-      <h1 className="text-xl font-semibold text-primary-900">검색 결과 {lodges ? lodges.length : 0}</h1>
+      <h1 className="text-xl font-semibold text-primary-900">
+        검색 결과 {lodges ? lodges.length : 0}
+      </h1>
+      <select value={selectedSort} onChange={handleSortChange}>
+        <option value="popularity">인기순</option>
+        <option value="reviews">리뷰많은순</option>
+        <option value="price_asc">최저가순</option>
+        <option value="price_desc">최고가순</option>
+      </select>
+
       {lodges?.length === 0 ? (
         <p className="text-lg text-gray-600">검색 결과가 없습니다.</p>
       ) : (
@@ -96,6 +123,9 @@ const ListPage = () => {
                   </p>
                   <p className="text-gray-700">
                     최대 어린이 수: {room.maxChildren}
+                  </p>
+                  <p className="text-gray-700">
+                    1박당 평균 가격: {room.pricePerNight?.toLocaleString()}원
                   </p>
                 </div>
               ))}
