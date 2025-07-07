@@ -7,6 +7,18 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const countryOptions = [
+  "대한민국",
+  "미국",
+  "일본",
+  "중국",
+  "영국",
+  "독일",
+  "프랑스",
+  "호주",
+  "캐나다",
+];
+
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -21,11 +33,10 @@ const ReservationPage = () => {
   const roomCount = searchParams.get("roomCount");
   const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
   const roomName = searchParams.get("roomName") || "Unknown Room";
-  const lodgeImage = searchParams.get("lodgeImage") || "";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [nationality, setNationality] = useState("");
+  const [nationality, setNationality] = useState(countryOptions[0]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
@@ -229,13 +240,18 @@ const ReservationPage = () => {
           onChange={(e) => setLastName(e.target.value)}
           className="border p-2 rounded"
         />
-        <input
-          type="text"
-          placeholder="Nationality"
+        <select
           value={nationality}
           onChange={(e) => setNationality(e.target.value)}
           className="border p-2 rounded"
-        />
+        >
+          {countryOptions.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
+
         <input
           type="tel"
           placeholder="Phone Number"

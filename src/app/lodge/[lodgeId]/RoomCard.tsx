@@ -25,11 +25,7 @@ export default function RoomCard({
 }: RoomCardProps) {
   const dispatch = useAppDispatch();
 
-  const isWeekend = (date: Date) => {
-    return date.getDay() === 0 || date.getDay() === 6;
-  };
-
-  const calculatePrice = () => {
+  const calculateTotalPrice = () => {
     if (!checkIn || !checkOut) {
       return room.basePrice;
     }
@@ -37,21 +33,38 @@ export default function RoomCard({
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
 
-    const seasonal = room.seasonalPricing?.find((season: SeasonalPricing) => {
-      const fromDate = new Date(season.from);
-      const toDate = new Date(season.to);
-      return checkInDate >= fromDate && checkOutDate <= toDate;
-    });
-
-    let price = seasonal ? seasonal.basePrice : room.basePrice;
-
-    if (isWeekend(checkInDate) || isWeekend(checkOutDate)) {
-      price = seasonal
-        ? seasonal.weekendPrice
-        : room.weekendPrice ?? room.basePrice;
+    const dates: Date[] = [];
+    let current = new Date(checkInDate);
+    while (current < checkOutDate) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
     }
 
-    return price;
+    let total = 0;
+
+    dates.forEach((date) => {
+      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+      const seasonal = room.seasonalPricing?.find((season: SeasonalPricing) => {
+        const fromDate = new Date(season.from);
+        const toDate = new Date(season.to);
+        return date >= fromDate && date <= toDate;
+      });
+
+      let priceForDate: number;
+
+      if (seasonal) {
+        priceForDate = isWeekend ? seasonal.weekendPrice : seasonal.basePrice;
+      } else {
+        priceForDate = isWeekend
+          ? room.weekendPrice ?? room.basePrice
+          : room.basePrice;
+      }
+
+      total += priceForDate;
+    });
+
+    return total * 1;
   };
 
   return (
@@ -61,7 +74,7 @@ export default function RoomCard({
       <p className="text-gray-600 mb-1">성인 최대 인원: {room.maxAdults}</p>
       <p className="text-gray-600 mb-1">어린이 최대 인원: {room.maxChildren}</p>
       <p className="text-lg font-bold text-primary-900 mb-2">
-        예상 숙박 가격(1박 기준): ₩{calculatePrice().toLocaleString()}
+        총 예상 숙박 요금: ₩{calculateTotalPrice().toLocaleString()}
       </p>
       <button
         onClick={() => {
