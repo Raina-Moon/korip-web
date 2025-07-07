@@ -38,6 +38,7 @@ export interface RoomTypeImage {
 }
 
 export interface SeasonalPricing {
+  id: number;
   from: string;
   to: string;
   basePrice: number;

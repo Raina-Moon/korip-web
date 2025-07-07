@@ -511,6 +511,8 @@ const LodgeDetailPage = () => {
                 isAuthenticated={isAuthenticated}
                 handleReserve={handleReserve}
                 openModal={openModal}
+                checkIn={checkIn}
+                checkOut={checkOut}
               />
             ))}
         </div>

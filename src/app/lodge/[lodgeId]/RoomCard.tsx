@@ -4,21 +4,15 @@ import Image from "next/image";
 import { openLoginModal } from "@/lib/auth/authSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import React from "react";
+import { RoomType, SeasonalPricing } from "@/types/lodge";
 
 interface RoomCardProps {
-  room: {
-    id: number;
-    name: string;
-    description: string | null;
-    maxAdults: number;
-    maxChildren: number;
-    basePrice: number;
-    weekendPrice?: number;
-    images?: { imageUrl: string }[];
-  };
+  room: RoomType;
   isAuthenticated: boolean;
   handleReserve: (roomId: number, roomName: string) => void;
   openModal: (images: string[], index: number) => void;
+  checkIn?: string;
+  checkOut?: string;
 }
 
 export default function RoomCard({
@@ -26,8 +20,39 @@ export default function RoomCard({
   isAuthenticated,
   handleReserve,
   openModal,
+  checkIn,
+  checkOut,
 }: RoomCardProps) {
   const dispatch = useAppDispatch();
+
+  const isWeekend = (date: Date) => {
+    return date.getDay() === 0 || date.getDay() === 6;
+  };
+
+  const calculatePrice = () => {
+    if (!checkIn || !checkOut) {
+      return room.basePrice;
+    }
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    const seasonal = room.seasonalPricing?.find((season: SeasonalPricing) => {
+      const fromDate = new Date(season.from);
+      const toDate = new Date(season.to);
+      return checkInDate >= fromDate && checkOutDate <= toDate;
+    });
+
+    let price = seasonal ? seasonal.basePrice : room.basePrice;
+
+    if (isWeekend(checkInDate) || isWeekend(checkOutDate)) {
+      price = seasonal
+        ? seasonal.weekendPrice
+        : room.weekendPrice ?? room.basePrice;
+    }
+
+    return price;
+  };
 
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
@@ -35,21 +60,17 @@ export default function RoomCard({
       <p className="text-primary-700 mb-1">{room.description}</p>
       <p className="text-gray-600 mb-1">성인 최대 인원: {room.maxAdults}</p>
       <p className="text-gray-600 mb-1">어린이 최대 인원: {room.maxChildren}</p>
-      <p className="text-gray-600 mb-2">
-        기본 가격: ₩{room.basePrice.toLocaleString()}
-      </p>
-      <p className="text-gray-600 mb-2">
-        주말 가격: ₩
-        {room.weekendPrice !== undefined
-          ? room.weekendPrice.toLocaleString()
-          : room.basePrice.toLocaleString()}
+      <p className="text-lg font-bold text-primary-900 mb-2">
+        예상 숙박 가격(1박 기준): ₩{calculatePrice().toLocaleString()}
       </p>
       <button
         onClick={() => {
           if (!isAuthenticated) {
             dispatch(openLoginModal("reserve"));
           } else {
-            handleReserve(room.id, room.name);
+            if (room.id !== undefined) {
+              handleReserve(room.id, room.name);
+            }
           }
         }}
         className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
