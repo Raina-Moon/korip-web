@@ -215,7 +215,11 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
             roomTypeImages : newRoomTypeImageFiles,
-            keepRoomTypeImageIds,
+            keepRoomTypeImgIds : roomTypes.flatMap((room,idx) => (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
+              roomTypeId: room.id,
+              imageId,
+            })))
+            .filter((i) => i.roomTypeId !== undefined ),
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"

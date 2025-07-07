@@ -154,6 +154,11 @@ export const fetchLodgeById = createAsyncThunk<
   }
 );
 
+type KeepRoomTypeImage = {
+  roomTypeId : number;
+  imageId: number;
+}
+
 type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   roomTypes: Omit<RoomType, "seasonalPricing"> &
     {
@@ -162,7 +167,7 @@ type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   keepImgIds?: number[];
   newImageFiles: File[];
   newRoomTypeImageFiles?: File[][];
-  keepRoomTypeImgIds?: number[][];
+  keepRoomTypeImgIds?: KeepRoomTypeImage[];
 };
 
 export const updateLodge = createAsyncThunk<
