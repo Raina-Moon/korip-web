@@ -2,12 +2,9 @@
 
 import { createReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import {
-  ANONYMOUS,
-  loadTossPayments,
-} from "@tosspayments/tosspayments-sdk";
+import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
 
 const ReservationConfirmPage = () => {
   const [widgets, setWidgets] = useState<any>(null);
@@ -21,15 +18,12 @@ const ReservationConfirmPage = () => {
 
   const firstName = searchParams.get("firstName") || "";
   const lastName = searchParams.get("lastName") || "";
-  const nationality = searchParams.get("nationality") || "";
   const phoneNumber = searchParams.get("phoneNumber") || "";
   const email = searchParams.get("email") || "";
-  const specialRequests = JSON.parse(
-    searchParams.get("specialRequests") || "[]"
-  );
-  const customRequest = searchParams.get("customRequest") || "";
 
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   useEffect(() => {
     const initToss = async () => {
@@ -70,7 +64,6 @@ const ReservationConfirmPage = () => {
     // const pending = JSON.parse(
     //   localStorage.getItem("pendingReservation") || "[]"
     // );
-
     // dispatch(createReservation(pending));
   }, []);
 
@@ -78,11 +71,13 @@ const ReservationConfirmPage = () => {
     if (!widgets || !ready) return;
 
     try {
-      const pending = JSON.parse(localStorage.getItem("pendingReservation") || "[]");
+      const pending = JSON.parse(
+        localStorage.getItem("pendingReservation") || "[]"
+      );
       const created = await dispatch(createReservation(pending)).unwrap();
 
-      const reservationId = created.id
-      
+      const reservationId = created.id;
+
       const paymentResult = await widgets.requestPayment({
         orderId: `reservation-${Date.now()}`,
         orderName: "숙소 예약",
@@ -92,10 +87,10 @@ const ReservationConfirmPage = () => {
         successUrl: `${window.location.origin}/reservation/success?reservationId=${reservationId}`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
-
     } catch (error) {
       console.error("Payment failed:", error);
       alert("결제에 실패했습니다. 다시 시도해주세요.");
+      router.push("/reservation/fail");
     }
   };
 
