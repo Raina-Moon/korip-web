@@ -6,6 +6,8 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const countryOptions = [
   "대한민국",
@@ -256,13 +258,15 @@ const ReservationPage = () => {
           ))}
         </select>
 
-        <input
-          type="tel"
-          placeholder="Phone Number"
+        <PhoneInput
+          country={"kr"}
           value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className="border p-2 rounded"
+          onChange={(phone) => setPhoneNumber(phone)}
+          inputClass="!w-full !border !rounded !p-2"
+          containerClass="!w-full"
+          placeholder="전화번호를 입력하세요"
         />
+
         <input
           type="email"
           placeholder="Email (선택)"
@@ -376,9 +380,19 @@ const ReservationPage = () => {
 
       <button
         onClick={handleNext}
-        disabled={!agreeCancelPolicy || !agreePrivacy}
+        disabled={
+          !agreeCancelPolicy ||
+          !agreePrivacy ||
+          !firstName.trim() ||
+          !lastName.trim() ||
+          !phoneNumber.trim()
+        }
         className={`px-6 py-2 rounded ${
-          agreeCancelPolicy && agreePrivacy
+          agreeCancelPolicy &&
+          agreePrivacy &&
+          firstName.trim() &&
+          lastName.trim() &&
+          phoneNumber.trim()
             ? "bg-primary-700 text-white hover:bg-primary-500"
             : "bg-gray-300 text-gray-500 cursor-not-allowed"
         }`}
