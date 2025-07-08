@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchReservation } from "@/lib/reservation/reservationThunk";
+import {
+  cancelReservation,
+  fetchReservation,
+} from "@/lib/reservation/reservationThunk";
 import Link from "next/link";
 import ReservationCard from "./ReservationCard";
 
@@ -12,6 +15,9 @@ export default function ReservationListPage() {
   const [filter, setFilter] = useState<
     "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED"
   >("ALL");
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [agreeRefundPolicy, setAgreeRefundPolicy] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
@@ -37,6 +43,26 @@ export default function ReservationListPage() {
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
+    }
+  };
+
+  const handleReservationCancel = async () => {
+    if (!pending) return;
+    setIsCancelling(true);
+    try {
+      await dispatch(
+        cancelReservation({
+          reservationId: pending.id,
+          cancelReason: "USER_REQUESTED",
+        })
+      ).unwrap();
+      setShowCancelModal(false);
+      setShowingModal(false);
+      dispatch(fetchReservation());
+    } catch (err) {
+      alert("예약 취소 중 오류가 발생했습니다.");
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -122,7 +148,6 @@ export default function ReservationListPage() {
 
       {showingModal && pending && (
         <>
-
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
               <h2 className="text-lg font-semibold mb-4">예약 상세 정보</h2>
@@ -193,6 +218,14 @@ export default function ReservationListPage() {
                   ? parsedSpecialRequests(pending.specialRequests).join(", ")
                   : "없음"}
               </p>
+              {pending && pending.status === "CONFIRMED" && (
+                <button
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4"
+                  onClick={() => setShowCancelModal(true)}
+                >
+                  예약 취소
+                </button>
+              )}
               <div className="mt-4">
                 <button
                   className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
@@ -204,6 +237,52 @@ export default function ReservationListPage() {
             </div>
           </div>
         </>
+      )}
+
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">환불 규정 및 취소 동의</h2>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap mb-4">
+              {`■ 환불 규정
+- 체크인 7일 전 취소 시: 전액 환불
+- 체크인 24시간 초과 ~ 7일 이내 취소 시: 50% 환불
+- 체크인 24시간 이내 취소 시: 환불 불가
+`}
+            </p>
+
+            <label className="flex items-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                checked={agreeRefundPolicy}
+                onChange={(e) => setAgreeRefundPolicy(e.target.checked)}
+              />
+              <span className="text-sm text-gray-800">
+                위 환불 정책을 읽고 동의합니다.
+              </span>
+            </label>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 rounded border border-gray-400 text-gray-700 hover:bg-gray-100"
+              >
+                닫기
+              </button>
+              <button
+                disabled={!agreeRefundPolicy || isCancelling}
+                onClick={handleReservationCancel}
+                className={`px-4 py-2 rounded ${
+                  agreeRefundPolicy
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {isCancelling ? "취소 처리중..." : "예약 취소"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

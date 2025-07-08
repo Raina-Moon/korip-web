@@ -92,3 +92,29 @@ export const confirmReservation = createAsyncThunk<
     }
   }
 );
+
+export const cancelReservation = createAsyncThunk<
+  Reservation,
+  { reservationId: number; cancelReason: string },
+  { rejectValue: string; state: RootState }
+>(
+  "reservation/cancelReservation",
+  async ({ reservationId, cancelReason }, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation/${reservationId}/cancel`,
+        { cancelReason },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return response.data as Reservation;
+    } catch (error) {
+      return rejectWithValue("Failed to cancel reservation");
+    }
+  }
+);
