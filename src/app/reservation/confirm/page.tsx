@@ -14,8 +14,6 @@ const ReservationConfirmPage = () => {
   const totalPrice = searchParams.get("totalPrice");
   const lodgeId = searchParams.get("lodgeId");
 
-  console.log("totalPrcie", totalPrice);
-
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
 
   const firstName = searchParams.get("firstName") || "";
@@ -88,9 +86,6 @@ const ReservationConfirmPage = () => {
 
     return digitsOnly;
   };
-
-  console.log("Original Phone Number:", phoneNumber);
-  console.log("Phone Number:", normalizeKoreanPhone(phoneNumber));
 
   const handleTossPayment = async () => {
     if (!widgets || !ready) return;
