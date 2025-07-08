@@ -14,6 +14,8 @@ const ReservationConfirmPage = () => {
   const totalPrice = searchParams.get("totalPrice");
   const lodgeId = searchParams.get("lodgeId");
 
+  console.log("totalPrcie", totalPrice);
+
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
 
   const firstName = searchParams.get("firstName") || "";
