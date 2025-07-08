@@ -388,16 +388,24 @@ const ReservationPage = () => {
 
       {showCancelPolicyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
             <h2 className="text-xl font-bold mb-4">취소 및 환불 정책</h2>
-            <p className="mb-4 text-sm text-gray-700 whitespace-pre-line">
-              {`- 체크인 7일 전까지 취소 시: 전액(100%) 환불
-- 체크인 24시간 초과~7일 이내 취소 시: 50% 환불
-- 체크인 24시간 이내 취소 시: 환불 불가(0%)
-        
-* 예약 변경 및 취소 시점에 따라 환불 금액이 달라질 수 있습니다.
-* 환불 규정에 동의하지 않을 경우 예약 진행이 불가능합니다.`}
-            </p>
+            <pre className="mb-4 text-sm text-gray-700 whitespace-pre-wrap">
+              {`본 숙박 예약의 취소 및 환불 규정은 아래와 같습니다.
+
+- 체크인 기준 7일 전(168시간 전)까지 취소 시: 결제금액의 100% 전액 환불
+- 체크인 24시간 초과 ~ 7일 이내 취소 시: 결제금액의 50% 환불
+- 체크인 24시간 이내 취소 시 또는 노쇼(No-Show): 환불 불가 (0%)
+
+※ 예약 취소는 본 사이트 내 취소 요청 기능을 통해서만 접수되며, 접수 시점 기준으로 위 환불 규정이 적용됩니다.
+※ 환불 처리 시 결제 대행사 정책에 따라 결제 수수료 및 환불 처리 수수료가 차감될 수 있습니다.
+※ 환불은 결제 수단별로 영업일 기준 약 3~10일 정도 소요될 수 있습니다.
+※ 일부 프로모션, 할인 상품, 특가 상품, 제한적 환불 불가 조건이 명시된 상품은 별도의 환불 불가 규정이 우선 적용되며, 예약 화면 및 결제 단계에서 별도로 안내됩니다.
+※ 숙소의 불가피한 사정(자연재해, 정부 방침, 긴급 상황 등)으로 예약이 취소되는 경우에는 별도의 환불 정책이 적용될 수 있습니다.
+※ 자세한 내용은 고객센터 또는 사이트 내 '취소 및 환불 정책' 페이지를 통해 확인할 수 있습니다.
+
+본인은 위 내용을 충분히 읽고 이해하였으며, 본 취소 및 환불 정책에 동의합니다.`}
+            </pre>
             <button
               className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
               onClick={() => setShowCancelPolicyModal(false)}
@@ -410,15 +418,42 @@ const ReservationPage = () => {
 
       {showPrivacyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
             <h2 className="text-xl font-bold mb-4">개인정보 수집·이용 동의</h2>
-            <p className="mb-4 text-sm text-gray-700 whitespace-pre-line">
-              {`- 예약 서비스 제공을 위해 이름, 연락처, 이메일, 국적 등 개인정보를 수집·이용합니다.
-- 수집한 정보는 예약 관리 및 고객 응대 목적 외에는 사용되지 않습니다.
-- 관련 법령에 따라 안전하게 보관·폐기됩니다.
+            <pre className="mb-4 text-sm text-gray-700 whitespace-pre-wrap">
+              {`본인은 예약 서비스 이용을 위해 아래와 같은 개인정보 수집 및 이용에 동의합니다.
 
-* 개인정보 수집 및 이용에 동의하지 않을 경우 예약 진행이 불가능합니다.`}
-            </p>
+1. 수집 항목
+- 이름(First Name, Last Name)
+- 연락처(전화번호, 이메일)
+- 국적
+- 예약 정보(숙소명, 객실 타입, 인원수, 숙박일정)
+- 요청사항(특별 요청 등)
+
+2. 수집 및 이용 목적
+- 예약 처리 및 관리
+- 예약 확인 및 변경, 취소, 환불 등 고객 응대
+- 결제 처리 및 정산
+- 법령상 의무 이행 및 분쟁 해결
+- 서비스 품질 개선 및 고객 문의 대응
+- 마케팅 및 이벤트 정보 제공 (선택 동의 시 별도로 안내)
+
+3. 보유 및 이용 기간
+- 예약 이행 및 사후 처리 목적을 위해 예약 완료일로부터 5년간 보관
+- 전자상거래 등 소비자보호에 관한 법률 등 관련 법령에 따라 일정 기간 보존이 필요한 경우 해당 법령에서 정한 기간까지 보관
+
+4. 제3자 제공 및 처리 위탁
+- 결제 대행사, 예약 관리 시스템, 고객센터 위탁업체 등 서비스 제공에 필요한 범위 내에서 개인정보 처리 위탁이 이루어질 수 있습니다.
+- 위탁 및 제공 받는 자, 목적, 보유 기간 등은 개인정보처리방침에 명시되어 있습니다.
+
+5. 개인정보처리방침
+- 개인정보의 수집·이용, 제공, 보관 및 파기에 대한 자세한 내용은 본 사이트 하단의 [개인정보처리방침] 링크를 통해 상시 확인하실 수 있습니다.
+
+6. 동의 거부 권리 및 불이익
+- 이용자는 개인정보 수집 및 이용에 동의하지 않을 권리가 있으며, 동의 거부 시 서비스 이용(예약)이 제한될 수 있습니다.
+
+본인은 위 내용을 충분히 읽고 이해하였으며, 개인정보 수집 및 이용에 동의합니다.`}
+            </pre>
             <button
               className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
               onClick={() => setShowPrivacyModal(false)}
