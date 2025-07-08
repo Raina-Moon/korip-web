@@ -1,6 +1,10 @@
 import { Reservation } from "@/types/reservation";
 import { createSlice } from "@reduxjs/toolkit";
-import { createReservation, fetchReservation } from "./reservationThunk";
+import {
+  cancelReservation,
+  createReservation,
+  fetchReservation,
+} from "./reservationThunk";
 
 interface ReservationState {
   list: Reservation[];
@@ -42,6 +46,12 @@ const reservationSlice = createSlice({
           state.list[index] = action.payload;
         } else {
           state.list.unshift(action.payload);
+        }
+      })
+      .addCase(cancelReservation.fulfilled, (state, action) => {
+        const index = state.list.findIndex((r) => r.id === action.payload.id);
+        if (index !== -1) {
+          state.list[index] = action.payload;
         }
       });
   },
