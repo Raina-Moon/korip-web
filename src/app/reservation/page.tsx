@@ -41,6 +41,10 @@ const ReservationPage = () => {
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
   const [customRequest, setCustomRequest] = useState("");
+  const [agreeCancelPolicy, setAgreeCancelPolicy] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [showCancelPolicyModal, setShowCancelPolicyModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const [resolvedRoomCount, setResolvedRoomCount] = useState<string | null>(
     null
@@ -325,12 +329,105 @@ const ReservationPage = () => {
           총 가격: {priceData?.totalPrice.toLocaleString()}원
         </p>
       )}
+
+      <div className="border border-gray-300 rounded-lg p-4 space-y-3">
+        <h2 className="text-lg font-bold">약관 동의</h2>
+
+        <label className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            checked={agreeCancelPolicy}
+            onChange={(e) => setAgreeCancelPolicy(e.target.checked)}
+            className="mt-1"
+          />
+          <span className="text-sm text-gray-800">
+            아래{" "}
+            <button
+              type="button"
+              className="text-primary-700 underline"
+              onClick={() => setShowCancelPolicyModal(true)}
+            >
+              취소 및 환불 정책
+            </button>
+            을 읽고 동의합니다.
+          </span>
+        </label>
+
+        <label className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            checked={agreePrivacy}
+            onChange={(e) => setAgreePrivacy(e.target.checked)}
+            className="mt-1"
+          />
+          <span className="text-sm text-gray-800">
+            아래{" "}
+            <button
+              type="button"
+              className="text-primary-700 underline"
+              onClick={() => setShowPrivacyModal(true)}
+            >
+              개인정보 수집·이용
+            </button>
+            에 동의합니다.
+          </span>
+        </label>
+      </div>
+
       <button
         onClick={handleNext}
-        className="bg-primary-700 text-white px-6 py-2 rounded hover:bg-primary-500"
+        disabled={!agreeCancelPolicy || !agreePrivacy}
+        className={`px-6 py-2 rounded ${
+          agreeCancelPolicy && agreePrivacy
+            ? "bg-primary-700 text-white hover:bg-primary-500"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }`}
       >
         다음 → 결제 페이지로
       </button>
+
+      {showCancelPolicyModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">취소 및 환불 정책</h2>
+            <p className="mb-4 text-sm text-gray-700 whitespace-pre-line">
+              {`- 체크인 7일 전까지 취소 시: 전액(100%) 환불
+- 체크인 24시간 초과~7일 이내 취소 시: 50% 환불
+- 체크인 24시간 이내 취소 시: 환불 불가(0%)
+        
+* 예약 변경 및 취소 시점에 따라 환불 금액이 달라질 수 있습니다.
+* 환불 규정에 동의하지 않을 경우 예약 진행이 불가능합니다.`}
+            </p>
+            <button
+              className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
+              onClick={() => setShowCancelPolicyModal(false)}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showPrivacyModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">개인정보 수집·이용 동의</h2>
+            <p className="mb-4 text-sm text-gray-700 whitespace-pre-line">
+              {`- 예약 서비스 제공을 위해 이름, 연락처, 이메일, 국적 등 개인정보를 수집·이용합니다.
+- 수집한 정보는 예약 관리 및 고객 응대 목적 외에는 사용되지 않습니다.
+- 관련 법령에 따라 안전하게 보관·폐기됩니다.
+
+* 개인정보 수집 및 이용에 동의하지 않을 경우 예약 진행이 불가능합니다.`}
+            </p>
+            <button
+              className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
+              onClick={() => setShowPrivacyModal(false)}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
