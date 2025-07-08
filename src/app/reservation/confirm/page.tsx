@@ -69,6 +69,29 @@ const ReservationConfirmPage = () => {
     // dispatch(createReservation(pending));
   }, []);
 
+  const normalizeKoreanPhone = (phone: string) => {
+    if (!phone) return "";
+
+    let digitsOnly = phone.replace(/\D/g, "");
+
+    if (digitsOnly.startsWith("82")) {
+      digitsOnly = digitsOnly.slice(2);
+    }
+
+    if (digitsOnly.startsWith("10")) {
+      digitsOnly = "0" + digitsOnly;
+    }
+
+    if (!/^010\d{7,8}$/.test(digitsOnly)) {
+      return "";
+    }
+
+    return digitsOnly;
+  };
+
+  console.log("Original Phone Number:", phoneNumber);
+  console.log("Phone Number:", normalizeKoreanPhone(phoneNumber));
+
   const handleTossPayment = async () => {
     if (!widgets || !ready) return;
 
@@ -80,12 +103,21 @@ const ReservationConfirmPage = () => {
 
       const reservationId = created.id;
 
-      const paymentResult = await widgets.requestPayment({
+      const customerMobilePhone = normalizeKoreanPhone(phoneNumber);
+
+      if (!customerMobilePhone || !/^010\d{7,8}$/.test(customerMobilePhone)) {
+        alert(
+          "휴대폰 번호를 정확히 입력해주세요. (010으로 시작하는 10~11자리 숫자)"
+        );
+        return;
+      }
+
+      await widgets.requestPayment({
         orderId: `reservation-${Date.now()}`,
         orderName: "숙소 예약",
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
-        customerMobilePhone: phoneNumber,
+        customerMobilePhone: customerMobilePhone,
         successUrl: `${window.location.origin}/reservation/success?reservationId=${reservationId}`,
         failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
       });
