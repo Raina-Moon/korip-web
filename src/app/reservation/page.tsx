@@ -195,6 +195,8 @@ const ReservationPage = () => {
       ),
     }).toString();
 
+    console.log("Pending Reservation:", updatedPending);
+
     router.push(`/reservation/confirm?${query}`);
   };
 
