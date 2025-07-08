@@ -262,9 +262,24 @@ const ReservationPage = () => {
           country={"kr"}
           value={phoneNumber}
           onChange={(phone) => setPhoneNumber(phone)}
-          inputClass="!w-full !border !rounded !p-2"
-          containerClass="!w-full"
           placeholder="전화번호를 입력하세요"
+          inputStyle={{
+            width: "100%",
+            height: "42px",
+            borderRadius: "0.375rem",
+            border: "1px solid #d1d5db", 
+            paddingLeft: "48px",
+            fontSize: "0.875rem", 
+          }}
+          buttonStyle={{
+            borderTopLeftRadius: "0.375rem",
+            borderBottomLeftRadius: "0.375rem",
+            border: "1px solid #d1d5db",
+            backgroundColor: "#f9fafb", 
+          }}
+          containerStyle={{
+            width: "100%",
+          }}
         />
 
         <input
