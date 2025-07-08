@@ -28,9 +28,8 @@ const ReservationSuccessPage = () => {
     }
   }, [reservationId]);
 
-  const nights = getNights(pending.checkIn, pending.checkOut);
-
-  if (!pending) {
+  
+  if (!pending || !pending.checkIn || !pending.checkOut) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-6">
         <h1 className="text-3xl font-bold text-primary-800">예약 처리 중...</h1>
@@ -38,6 +37,8 @@ const ReservationSuccessPage = () => {
       </div>
     );
   }
+  
+  const nights = getNights(pending.checkIn, pending.checkOut);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
