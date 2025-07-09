@@ -38,12 +38,6 @@ export const fetchAllUsers = createAsyncThunk<
         }
       );
 
-      console.log("Server raw res.data:", res.data);
-
-      if (!res.data || !Array.isArray(res.data.data)) {
-        return rejectWithValue("Invalid server response");
-      }
-
       return {
         list: res.data.data,
         total: res.data.total,
