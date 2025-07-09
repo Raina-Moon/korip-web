@@ -2,32 +2,20 @@
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import {
-  fetchAllUsers,
-  deleteUser,
-  updateUserRole,
-} from "@/lib/admin/user/adminUserThunk";
+import { fetchAllUsers, deleteUser } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
-  const pathname = usePathname();
 
   const { list, state, error, total, page, limit } = useAppSelector(
     (state: RootState) => state["admin/user"]
   );
 
   useEffect(() => {
-  console.log("list in page:", list);
-}, [list]);
-
-
-  useEffect(() => {
-    if(pathname === "/admin/users") {
     dispatch(fetchAllUsers({ page, limit }));
-    }
   }, [dispatch]);
 
   const handleDelete = (userId: number) => {
@@ -55,7 +43,6 @@ export default function AdminUsersPage() {
               <th className="p-2 border">닉네임</th>
               <th className="p-2 border">권한</th>
               <th className="p-2 border">가입일</th>
-              <th className="p-2 border">관리</th>
             </tr>
           </thead>
           <tbody>
@@ -71,14 +58,6 @@ export default function AdminUsersPage() {
                 <td className="p-2 border text-center">{user.role}</td>
                 <td className="p-2 border text-center">
                   {new Date(user.createdAt).toLocaleDateString()}
-                </td>
-                <td className="p-2 border text-center">
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    삭제
-                  </button>
                 </td>
               </tr>
             ))}
