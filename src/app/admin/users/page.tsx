@@ -19,6 +19,11 @@ export default function AdminUsersPage() {
   );
 
   useEffect(() => {
+  console.log("list in page:", list);
+}, [list]);
+
+
+  useEffect(() => {
     dispatch(fetchAllUsers({ page, limit }));
   }, [dispatch]);
 
