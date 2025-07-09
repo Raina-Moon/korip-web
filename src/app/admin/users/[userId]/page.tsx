@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   updateUserRole,
@@ -12,6 +12,9 @@ import {
 import { AppDispatch, RootState } from "@/lib/store/store";
 
 export default function UserDetailPage() {
+  const [reservationPage, setReservationPage] = useState(1);
+  const [reviewPage, setReviewPage] = useState(1);
+
   const { userId } = useParams<{ userId: string }>();
   const dispatch: AppDispatch = useAppDispatch();
   const id = Number(userId);
@@ -20,14 +23,22 @@ export default function UserDetailPage() {
     (state: RootState) => state["admin/user"]
   );
 
+  const { reservationTotal, reservationLimit, reviewTotal, reviewLimit } =
+    useAppSelector((state: RootState) => state["admin/user"]);
+
+  const totalReservationPages = Math.ceil(reservationTotal / reservationLimit);
+  const totalReviewPages = Math.ceil(reviewTotal / reviewLimit);
+
   const user = list.find((u) => u.id === id);
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchUserReservations(id));
-      dispatch(fetchUserReviews(id));
+      dispatch(
+        fetchUserReservations({ userId: id, page: reservationPage, limit: 10 })
+      );
+      dispatch(fetchUserReviews({ userId: id, page: reviewPage, limit: 10 }));
     }
-  }, [dispatch, id, user]);
+  }, [dispatch, id, user, reservationPage, reviewPage]);
 
   const handleRoleChange = (role: "USER" | "ADMIN") => {
     dispatch(updateUserRole({ userId: id, role }));
@@ -122,6 +133,22 @@ export default function UserDetailPage() {
                 <p className="text-gray-500 text-sm">예약ID: {r.id}</p>
               </div>
             ))}
+            <div className="flex justify-center mt-4 space-x-2">
+              <button
+                disabled={reservationPage === 1}
+                onClick={() => setReservationPage(reservationPage - 1)}
+                className="px-3 py-1 rounded border bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              >
+                이전
+              </button>
+              <button
+                disabled={reservationPage >= totalReservationPages}
+                onClick={() => setReservationPage(reservationPage + 1)}
+                className="px-3 py-1 rounded border bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              >
+                다음
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -153,6 +180,22 @@ export default function UserDetailPage() {
                 </p>
               </div>
             ))}
+            <div className="flex justify-center mt-4 space-x-2">
+              <button
+                disabled={reviewPage === 1}
+                onClick={() => setReviewPage(reviewPage - 1)}
+                className="px-3 py-1 rounded border bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              >
+                이전
+              </button>
+              <button
+                disabled={reviewPage >= totalReviewPages}
+                onClick={() => setReviewPage(reviewPage + 1)}
+                className="px-3 py-1 rounded border bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              >
+                다음
+              </button>
+            </div>
           </div>
         )}
       </div>
