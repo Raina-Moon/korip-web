@@ -2,7 +2,11 @@
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchAllUsers, deleteUser, updateUserRole } from "@/lib/admin/user/adminUserThunk";
+import {
+  fetchAllUsers,
+  deleteUser,
+  updateUserRole,
+} from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
 
 export default function AdminUsersPage() {
@@ -17,18 +21,15 @@ export default function AdminUsersPage() {
   }, [dispatch]);
 
   const handleDelete = (userId: number) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (window.confirm("정말 이 사용자를 삭제하시겠습니까?")) {
       dispatch(deleteUser(userId));
     }
   };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Admin - User Management</h1>
+      <h1 className="text-2xl font-bold mb-4">관리자 - 사용자 관리</h1>
 
-      {state === "loading" && (
-        <div className="text-gray-500">Loading users...</div>
-      )}
       {state === "failed" && <div className="text-red-500">Error: {error}</div>}
 
       {state === "succeeded" && list.length === 0 && (
@@ -40,11 +41,11 @@ export default function AdminUsersPage() {
           <thead>
             <tr className="bg-gray-100">
               <th className="p-2 border">ID</th>
-              <th className="p-2 border">Email</th>
-              <th className="p-2 border">Nickname</th>
-              <th className="p-2 border">Role</th>
-              <th className="p-2 border">Created At</th>
-              <th className="p-2 border">Actions</th>
+              <th className="p-2 border">이메일</th>
+              <th className="p-2 border">닉네임</th>
+              <th className="p-2 border">권한</th>
+              <th className="p-2 border">가입일</th>
+              <th className="p-2 border">관리</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +79,7 @@ export default function AdminUsersPage() {
                     onClick={() => handleDelete(user.id)}
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
-                    Delete
+                    삭제
                   </button>
                 </td>
               </tr>
