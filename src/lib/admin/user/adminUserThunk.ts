@@ -63,3 +63,32 @@ export const deleteUser = createAsyncThunk<
     }
   }
 );
+
+export const updateUserRole = createAsyncThunk<
+  { message: string; user: User },
+  { userId: number; role: "USER" | "ADMIN" },
+  { rejectValue: string; state: RootState }
+>(
+  "/admin/updateUserRole",
+  async ({ userId, role }, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user/${userId}/role`,
+        { role },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
+      return rejectWithValue("Failed to update user role");
+    }
+  }
+);
