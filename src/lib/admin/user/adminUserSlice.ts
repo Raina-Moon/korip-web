@@ -2,18 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   deleteUser,
   fetchAllUsers,
+  fetchUserReservations,
+  fetchUserReviews,
   updateUserRole,
   User,
 } from "./adminUserThunk";
+import { Reservation } from "@/types/reservation";
+import { Review } from "@/types/reivew";
 
 interface UserState {
   list: User[];
+  reservations: Reservation[];
+  reviews: Review[];
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: UserState = {
   list: [],
+  reservations: [],
+  reviews: [],
   state: "idle",
   error: null,
 };
@@ -79,6 +87,12 @@ const adminUserSlice = createSlice({
       .addCase(updateUserRole.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
+      })
+      .addCase(fetchUserReservations.fulfilled, (state, action) => {
+        state.reservations = action.payload;
+      })
+      .addCase(fetchUserReviews.fulfilled, (state, action) => {
+        state.reviews = action.payload;
       });
   },
 });
