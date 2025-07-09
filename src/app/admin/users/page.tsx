@@ -18,10 +18,10 @@ export default function AdminUsersPage() {
     dispatch(fetchAllUsers({ page, limit }));
   }, [dispatch]);
 
-  const handleDelete = (userId: number) => {
-    if (window.confirm("정말 이 사용자를 삭제하시겠습니까?")) {
-      dispatch(deleteUser(userId));
-    }
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1) return;
+    if (newPage > Math.ceil(total / limit)) return;
+    dispatch(fetchAllUsers({ page: newPage, limit }));
   };
 
   return (
@@ -35,6 +35,7 @@ export default function AdminUsersPage() {
       )}
 
       {state === "succeeded" && Array.isArray(list) && list.length > 0 && (
+        <>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
@@ -63,6 +64,34 @@ export default function AdminUsersPage() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+              className={`px-4 py-2 rounded ${
+                page <= 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              이전
+            </button>
+            <span className="text-gray-700">
+              Page {page} of {Math.ceil(total / limit)}
+            </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page * limit >= total}
+              className={`px-4 py-2 rounded ${
+                page * limit >= total
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              다음
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
