@@ -44,86 +44,118 @@ export default function UserDetailPage() {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">사용자 상세 관리</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        사용자 상세 관리
+      </h1>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">기본 정보</h2>
-        <p>
-          <strong>ID:</strong> {user.id}
-        </p>
-        <p>
-          <strong>이메일:</strong> {user.email}
-        </p>
-        <p>
-          <strong>닉네임:</strong> {user.nickname}
-        </p>
-        <p>
-          <strong>가입일:</strong>{" "}
-          {new Date(user.createdAt).toLocaleDateString()}
-        </p>
-        <div className="mt-2">
-          <label className="mr-2">권한 변경:</label>
-          <select
-            value={user.role}
-            onChange={(e) =>
-              handleRoleChange(e.target.value as "USER" | "ADMIN")
-            }
-            className="border rounded px-2 py-1"
-          >
-            <option value="USER">USER</option>
-            <option value="ADMIN">ADMIN</option>
-          </select>
+      <div className="bg-white shadow rounded-lg p-6 mb-8">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+          기본 정보
+        </h2>
+        <div className="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <p className="text-gray-600">
+              <strong>ID:</strong> {user.id}
+            </p>
+            <p className="text-gray-600">
+              <strong>이메일:</strong> {user.email}
+            </p>
+            <p className="text-gray-600">
+              <strong>닉네임:</strong> {user.nickname}
+            </p>
+            <p className="text-gray-600">
+              <strong>가입일:</strong>{" "}
+              {new Date(user.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              권한 변경:
+            </label>
+            <select
+              value={user.role}
+              onChange={(e) =>
+                handleRoleChange(e.target.value as "USER" | "ADMIN")
+              }
+              className="border rounded px-3 py-2 w-full"
+            >
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
         </div>
         <button
           onClick={handleDelete}
-          className="mt-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
         >
           삭제
         </button>
-      </section>
+      </div>
 
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">예약 내역</h2>
-        {state === "loading" && <p>불러오는 중...</p>}
+      <div className="bg-white shadow rounded-lg p-6 mb-8">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+          예약 내역
+        </h2>
+        {state === "loading" && <p className="text-gray-500">불러오는 중...</p>}
         {reservations.length === 0 && (
           <p className="text-gray-500">예약이 없습니다.</p>
         )}
         {reservations.length > 0 && (
-          <ul className="list-disc pl-6">
+          <div className="space-y-4">
             {reservations.map((r) => (
-              <li key={r.id}>
-                {r.lodge?.name ?? "알 수 없는 숙소"} -{" "}
-                {new Date(r.checkIn).toLocaleDateString()}
-              </li>
+              <div
+                key={r.id}
+                className="border rounded p-4 hover:shadow transition"
+              >
+                <p>
+                  <strong>숙소:</strong> {r.lodge?.name ?? "알 수 없는 숙소"}
+                </p>
+                <p>
+                  <strong>체크인:</strong>{" "}
+                  {new Date(r.checkIn).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>체크아웃:</strong>{" "}
+                  {new Date(r.checkOut).toLocaleDateString()}
+                </p>
+                <p className="text-gray-500 text-sm">예약ID: {r.id}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
-      </section>
+      </div>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-2">작성 리뷰</h2>
-        {state === "loading" && <p>불러오는 중...</p>}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+          작성 리뷰
+        </h2>
+        {state === "loading" && <p className="text-gray-500">불러오는 중...</p>}
         {reviews.length === 0 && (
           <p className="text-gray-500">작성한 리뷰가 없습니다.</p>
         )}
         {reviews.length > 0 && (
-          <ul className="list-disc pl-6">
+          <div className="space-y-4">
             {reviews.map((review) => (
-              <li key={review.id}>
-                <p>
-                  <strong>{review.rating} / 5</strong>
-                  <strong>리뷰 내용:</strong> {review.comment}
-                </p>
-                <p>
-                  <strong>숙소 이름:</strong>{" "}
+              <div
+                key={review.id}
+                className="border rounded p-4 hover:shadow transition"
+              >
+                <p className="font-medium text-gray-800">
+                  <strong>숙소:</strong>{" "}
                   {review.lodge?.name ?? "알 수 없는 숙소"}
                 </p>
-              </li>
+                <p>
+                  <strong>평점:</strong> {review.rating} / 5
+                </p>
+                <p className="mt-2 text-gray-700">
+                  <strong>리뷰 내용:</strong> {review.comment}
+                </p>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
-      </section>
+      </div>
     </div>
   );
 }
