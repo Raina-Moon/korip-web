@@ -103,18 +103,22 @@ export const updateUserRole = createAsyncThunk<
 );
 
 export const fetchUserReservations = createAsyncThunk<
-  Reservation[],
-  number,
+  {data:Reservation[]; total:number; page:number;limit:number},
+  {userId:number;page:number;limit:number},
   { rejectValue: string; state: RootState }
 >(
   "/admin/fetchUserReservations",
-  async (userId, { dispatch, rejectWithValue, getState }) => {
+  async ({userId,page,limit}, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(showLoading());
       const token = getState().auth.accessToken;
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user/${userId}/reservations`,
         {
+          params: {
+            page,
+            limit,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -134,18 +138,22 @@ export const fetchUserReservations = createAsyncThunk<
 );
 
 export const fetchUserReviews = createAsyncThunk<
-  Review[],
-  number,
+  {data:Review[]; total:number; page:number; limit:number},
+  {userId:number; page:number; limit:number},
   { rejectValue: string; state: RootState }
 >(
   "/admin/fetchUserReviews",
-  async (userId, { dispatch, rejectWithValue, getState }) => {
+  async ({userId, page, limit}, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(showLoading());
       const token = getState().auth.accessToken;
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user/${userId}/reviews`,
         {
+          params: {
+            page,
+            limit,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -163,3 +171,4 @@ export const fetchUserReviews = createAsyncThunk<
     }
   }
 );
+
