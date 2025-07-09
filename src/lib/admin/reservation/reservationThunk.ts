@@ -5,16 +5,20 @@ import { RootState } from "@/lib/store/store";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 export const getAllReservations = createAsyncThunk<
-  Reservation[],
-  void,
+  {data:Reservation[]; total:number;page:number;limit:number},
+  {page?: number; limit?: number},
   { rejectValue: string; state: RootState }
 >(
   `/admin/reservation`,
-  async (_, { rejectWithValue, getState,dispatch }) => {
+  async ({page, limit}, { rejectWithValue, getState,dispatch }) => {
     try {
       dispatch(showLoading())
       const token = getState().auth.accessToken;
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reservation`, {
+        params: {
+          page,
+          limit,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
