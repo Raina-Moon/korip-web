@@ -67,7 +67,7 @@ const adminUserSlice = createSlice({
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.state = "succeeded";
-        state.list = action.payload.data;
+        state.list = action.payload.list;
         state.total = action.payload.total;
         state.page = action.payload.page;
         state.limit = action.payload.limit;
