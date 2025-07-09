@@ -64,7 +64,7 @@ export default function AdminUsersPage() {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-center items-center mt-4 gap-5">
             <button
               onClick={() => handlePageChange(page - 1)}
               disabled={page <= 1}
