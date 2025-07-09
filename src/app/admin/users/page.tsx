@@ -8,9 +8,11 @@ import {
   updateUserRole,
 } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
+import { useRouter } from "next/navigation";
 
 export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
+  const router = useRouter();
 
   const { list, state, error } = useAppSelector(
     (state: RootState) => state["admin/user"]
@@ -50,27 +52,15 @@ export default function AdminUsersPage() {
           </thead>
           <tbody>
             {list.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr
+                key={user.id}
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => router.push(`/admin/users/${user.id}`)}
+              >
                 <td className="p-2 border text-center">{user.id}</td>
                 <td className="p-2 border">{user.email}</td>
                 <td className="p-2 border">{user.nickname}</td>
-                <td className="p-2 border text-center">
-                  <select
-                    value={user.role}
-                    onChange={(e) =>
-                      dispatch(
-                        updateUserRole({
-                          userId: user.id,
-                          role: e.target.value as "USER" | "ADMIN",
-                        })
-                      )
-                    }
-                    className="border rounded px-2 py-1"
-                  >
-                    <option value="USER">USER</option>
-                    <option value="ADMIN">ADMIN</option>
-                  </select>
-                </td>
+                <td className="p-2 border text-center">{user.role}</td>
                 <td className="p-2 border text-center">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
