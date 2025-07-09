@@ -19,7 +19,7 @@ export const fetchAllUsers = createAsyncThunk<
   try {
     const token = getState().auth.accessToken;
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/users`,
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ export const deleteUser = createAsyncThunk<
     try {
       const token = getState().auth.accessToken;
       const res = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/users/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
