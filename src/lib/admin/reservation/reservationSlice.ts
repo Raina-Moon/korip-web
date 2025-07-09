@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Reservation } from "@/types/reservation";
-import { getAllReservations, getReservationById, updateReservationStatus } from "./reservationThunk";
-
+import {
+  getAllReservations,
+  getReservationById,
+  updateReservationStatus,
+} from "./reservationThunk";
 
 interface AdminReservationState {
   list: Reservation[];
+  total: number;
+  page: number;
+  limit: number;
   selected: Reservation | null;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
@@ -12,6 +18,9 @@ interface AdminReservationState {
 
 const initialState: AdminReservationState = {
   list: [],
+  total: 0,
+  page: 1,
+  limit: 10,
   selected: null,
   state: "idle",
   error: null,
@@ -31,10 +40,24 @@ const adminReservationSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(getAllReservations.fulfilled, (state, action: PayloadAction<Reservation[]>) => {
-        state.state = "succeeded";
-        state.list = action.payload;
-      })
+      .addCase(
+        getAllReservations.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            data: Reservation[];
+            total: number;
+            page: number;
+            limit: number;
+          }>
+        ) => {
+          state.state = "succeeded";
+          state.list = action.payload.data;
+          state.total = action.payload.total;
+          state.page = action.payload.page;
+          state.limit = action.payload.limit;
+        }
+      )
       .addCase(getAllReservations.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload ?? "Failed to fetch reservations";
@@ -46,10 +69,13 @@ const adminReservationSlice = createSlice({
         state.error = null;
         state.selected = null;
       })
-      .addCase(getReservationById.fulfilled, (state, action: PayloadAction<Reservation>) => {
-        state.state = "succeeded";
-        state.selected = action.payload;
-      })
+      .addCase(
+        getReservationById.fulfilled,
+        (state, action: PayloadAction<Reservation>) => {
+          state.state = "succeeded";
+          state.selected = action.payload;
+        }
+      )
       .addCase(getReservationById.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload ?? "Failed to fetch reservation";
@@ -60,18 +86,21 @@ const adminReservationSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(updateReservationStatus.fulfilled, (state, action: PayloadAction<Reservation>) => {
-        state.state = "succeeded";
+      .addCase(
+        updateReservationStatus.fulfilled,
+        (state, action: PayloadAction<Reservation>) => {
+          state.state = "succeeded";
 
-        const updated = action.payload;
-        const index = state.list.findIndex((r) => r.id === updated.id);
-        if (index !== -1) {
-          state.list[index] = updated;
+          const updated = action.payload;
+          const index = state.list.findIndex((r) => r.id === updated.id);
+          if (index !== -1) {
+            state.list[index] = updated;
+          }
+          if (state.selected?.id === updated.id) {
+            state.selected = updated;
+          }
         }
-        if (state.selected?.id === updated.id) {
-          state.selected = updated;
-        }
-      })
+      )
       .addCase(updateReservationStatus.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload ?? "Failed to update reservation";

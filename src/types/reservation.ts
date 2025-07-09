@@ -28,4 +28,6 @@ export interface Reservation {
   lastName: string;
   phoneNumber: string;
   email?: string | null;
+  totalPrice: number;
+  specialRequests?: string | null;
 }

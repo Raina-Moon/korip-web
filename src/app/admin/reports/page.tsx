@@ -12,15 +12,15 @@ import {
 
 export default function ReportReviewsPage() {
   const dispatch = useAppDispatch();
-  const { list, state, error } = useAppSelector(
+  const { list, state, error, total, page, limit } = useAppSelector(
     (state) => state["admin/reports"]
   );
 
   // const [deleteReview] = useDeleteReviewMutation()
 
   useEffect(() => {
-    dispatch(fetchReports());
-  }, [dispatch]);
+    dispatch(fetchReports({ page, limit }));
+  }, [dispatch, page, limit]);
 
   const handleDeleteFromReports = (reviewId: number) => {
     dispatch(deleteReportedReview(reviewId));
@@ -36,7 +36,7 @@ export default function ReportReviewsPage() {
     try {
       dispatch(deleteReviewOnly(reviewId));
       alert("리뷰가 성공적으로 삭제되었습니다.");
-      dispatch(fetchReports());
+      dispatch(fetchReports({ page, limit }));
     } catch (error) {
       alert("리뷰 삭제에 실패했습니다.");
     }
@@ -82,15 +82,15 @@ export default function ReportReviewsPage() {
               >
                 신고 해결
               </button>
-              <button 
+              <button
                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 onClick={() => {
-                  if(report?.review?.id !== null) {
-                  handleDeleteReview(report.review.id)
-                } else {
-                  alert("리뷰 ID가 없습니다.");
-                }
-              }}
+                  if (report?.review?.id !== null) {
+                    handleDeleteReview(report.review.id);
+                  } else {
+                    alert("리뷰 ID가 없습니다.");
+                  }
+                }}
               >
                 리뷰 삭제
               </button>
@@ -105,6 +105,38 @@ export default function ReportReviewsPage() {
             </div>
           </div>
         ))}
+
+        {state === "succeeded" && total > 0 && (
+          <div className="flex justify-center items-center space-x-4 mt-8">
+            <button
+              disabled={page <= 1}
+              onClick={() => dispatch(fetchReports({ page: page - 1, limit }))}
+              className={`px-4 py-2 rounded ${
+                page <= 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              } transition`}
+            >
+              ← 이전
+            </button>
+
+            <span className="text-gray-700 font-medium">
+              Page {page} / {Math.max(1, Math.ceil(total / limit))} ({total} 건)
+            </span>
+
+            <button
+              disabled={page >= Math.ceil(total / limit)}
+              onClick={() => dispatch(fetchReports({ page: page + 1, limit }))}
+              className={`px-4 py-2 rounded ${
+                page >= Math.ceil(total / limit)
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              } transition`}
+            >
+              다음 →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
