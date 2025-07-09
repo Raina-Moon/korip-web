@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
 import { RootState } from "@/lib/store/store";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 export interface ReportReviews {
   id: number;
@@ -49,6 +50,7 @@ export const fetchReports = createAsyncThunk<
   "admin/fetchReports",
   async ({ page = 1, limit = 10 }, { dispatch, rejectWithValue, getState }) => {
     try {
+      dispatch(showLoading());
       const token = getState().auth.accessToken;
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports`,
@@ -70,6 +72,8 @@ export const fetchReports = createAsyncThunk<
         dispatch(logout());
       }
       return rejectWithValue("Failed to fetch reports");
+    } finally {
+      dispatch(hideLoading());
     }
   }
 );
