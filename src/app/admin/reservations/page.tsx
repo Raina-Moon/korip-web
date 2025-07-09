@@ -28,13 +28,8 @@ const AdminReservationsPage = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Reservation Management</h1>
 
-      {/* 로딩 상태 */}
-      {state === "loading" && <p className="text-blue-500">Loading reservations...</p>}
-
-      {/* 에러 상태 */}
       {state === "failed" && <p className="text-red-500">Error: {error}</p>}
 
-      {/* 목록 */}
       {state === "succeeded" && (
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-300">
