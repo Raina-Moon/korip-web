@@ -7,9 +7,12 @@ import {
   updateReservationStatus,
 } from "@/lib/admin/reservation/reservationThunk";
 import { Reservation } from "@/types/reservation";
+import { useRouter } from "next/navigation";
 
 const AdminReservationsPage = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const { list, state, error, page, total, limit } = useAppSelector(
     (state) => state.adminReservation
   );
@@ -66,7 +69,8 @@ const AdminReservationsPage = () => {
 
               <tbody>
                 {list.map((reservation: Reservation) => (
-                  <tr key={reservation.id} className="hover:bg-gray-50">
+                  <tr key={reservation.id} className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => router.push(`/admin/reservations/${reservation.id}`)}>
                     <td className="px-4 py-2 border">{reservation.id}</td>
                     <td className="px-4 py-2 border">
                       {reservation.lastName} {reservation.firstName}
