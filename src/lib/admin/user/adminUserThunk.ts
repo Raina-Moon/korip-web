@@ -15,23 +15,27 @@ export interface User {
 }
 
 export const fetchAllUsers = createAsyncThunk<
-  User[],
-  void,
+  {data:User[]; total:number; page:number; limit:number},
+  {page?: number; limit?: number},
   { rejectValue: string; state: RootState }
->("/admin/fetchAllUsers", async (_, { dispatch, rejectWithValue, getState }) => {
+>("/admin/fetchAllUsers", async ({page, limit}, { dispatch, rejectWithValue, getState }) => {
   try {
     dispatch(showLoading())
     const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user`,
       {
+        params: {
+          page,
+          limit,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       }
     );
-    return res.data;
+    return res.data.data;
   } catch (err: any) {
     if (err.response?.status === 401 || err.response?.status === 403) {
       dispatch(logout());
