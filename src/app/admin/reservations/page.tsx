@@ -50,30 +50,37 @@ const AdminReservationsPage = () => {
           <table className="min-w-full border border-gray-300">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 border">ID</th>
-                <th className="px-4 py-2 border">User</th>
-                <th className="px-4 py-2 border">Lodge</th>
-                <th className="px-4 py-2 border">Room Type</th>
-                <th className="px-4 py-2 border">Check-In</th>
-                <th className="px-4 py-2 border">Check-Out</th>
-                <th className="px-4 py-2 border">Status</th>
-                <th className="px-4 py-2 border">Actions</th>
+                <th className="px-4 py-2 border">예약번호</th>
+                <th className="px-4 py-2 border">예약자명</th>
+                <th className="px-4 py-2 border">이메일</th>
+                <th className="px-4 py-2 border">전화번호</th>
+                <th className="px-4 py-2 border">온천장</th>
+                <th className="px-4 py-2 border">객실타입</th>
+                <th className="px-4 py-2 border">체크인</th>
+                <th className="px-4 py-2 border">체크아웃</th>
+                <th className="px-4 py-2 border">상태</th>
+                <th className="px-4 py-2 border">관리</th>
               </tr>
             </thead>
+
             <tbody>
               {list.map((reservation: Reservation) => (
                 <tr key={reservation.id} className="hover:bg-gray-50">
                   <td className="px-4 py-2 border">{reservation.id}</td>
                   <td className="px-4 py-2 border">
-                    {reservation.user?.nickname} ({reservation.user?.email})
+                    {reservation.lastName} {reservation.firstName}
                   </td>
-                  <td className="px-4 py-2 border">{reservation.lodgeId}</td>
-                  <td className="px-4 py-2 border">{reservation.roomTypeId}</td>
                   <td className="px-4 py-2 border">
-                    {reservation.firstName} {reservation.lastName}
+                    {reservation.email ?? "-"}
                   </td>
                   <td className="px-4 py-2 border">
                     {reservation.phoneNumber}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {reservation.lodge?.name}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {reservation.roomType?.name}
                   </td>
                   <td className="px-4 py-2 border">
                     {reservation.checkIn.slice(0, 10)}
@@ -90,7 +97,7 @@ const AdminReservationsPage = () => {
                           handleUpdateStatus(reservation.id, "CONFIRMED")
                         }
                       >
-                        Confirm
+                        승인
                       </button>
                     )}
                     {reservation.status !== "CANCELLED" && (
@@ -104,7 +111,7 @@ const AdminReservationsPage = () => {
                           )
                         }
                       >
-                        Cancel
+                        취소
                       </button>
                     )}
                   </td>
