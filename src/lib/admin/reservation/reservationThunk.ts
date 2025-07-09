@@ -2,6 +2,7 @@ import axios from "axios";
 import { Reservation } from "@/types/reservation";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/lib/store/store";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 export const getAllReservations = createAsyncThunk<
   Reservation[],
@@ -9,8 +10,9 @@ export const getAllReservations = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >(
   `/admin/reservation`,
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState,dispatch }) => {
     try {
+      dispatch(showLoading())
       const token = getState().auth.accessToken;
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reservation`, {
         headers: {
@@ -21,6 +23,8 @@ export const getAllReservations = createAsyncThunk<
       return response.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch reservations");
+    } finally {
+      dispatch(hideLoading());
     }
   }
 );
@@ -53,8 +57,9 @@ export const updateReservationStatus = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >(
   `/admin/reservation/:id/`,
-  async ({ id, status, cancelReason }, { rejectWithValue, getState }) => {
+  async ({ id, status, cancelReason }, { rejectWithValue, getState, dispatch }) => {
     try {
+      dispatch(showLoading());
       const token = getState().auth.accessToken;
       const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reservation/${id}`, {
         status,
@@ -68,6 +73,8 @@ export const updateReservationStatus = createAsyncThunk<
       return response.data;
     } catch (error) {
       return rejectWithValue("Failed to update reservation status");
+    } finally {
+      dispatch(hideLoading());
     }
   }
 );
