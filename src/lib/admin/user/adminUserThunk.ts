@@ -2,6 +2,7 @@ import axios from "axios";
 import { RootState } from "../../store/store";
 import { logout } from "../../auth/authSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 export interface User {
   id: number;
@@ -17,6 +18,7 @@ export const fetchAllUsers = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >("/admin/fetchAllUsers", async (_, { dispatch, rejectWithValue, getState }) => {
   try {
+    dispatch(showLoading())
     const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user`,
@@ -33,6 +35,8 @@ export const fetchAllUsers = createAsyncThunk<
       dispatch(logout());
     }
     return rejectWithValue("Failed to fetch users");
+  } finally {
+    dispatch(hideLoading());
   }
 });
 
@@ -44,6 +48,7 @@ export const deleteUser = createAsyncThunk<
   "/admin/deleteUser",
   async (userId: number, { dispatch, rejectWithValue, getState }) => {
     try {
+      dispatch(showLoading());
       const token = getState().auth.accessToken;
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/user/${userId}`,
@@ -60,6 +65,8 @@ export const deleteUser = createAsyncThunk<
         dispatch(logout());
       }
       return rejectWithValue("Failed to delete user");
+    } finally {
+      dispatch(hideLoading());
     }
   }
 );
