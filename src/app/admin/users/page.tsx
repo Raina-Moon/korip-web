@@ -8,11 +8,12 @@ import {
   updateUserRole,
 } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname();
 
   const { list, state, error, total, page, limit } = useAppSelector(
     (state: RootState) => state["admin/user"]
@@ -24,7 +25,9 @@ export default function AdminUsersPage() {
 
 
   useEffect(() => {
+    if(pathname === "/admin/users") {
     dispatch(fetchAllUsers({ page, limit }));
+    }
   }, [dispatch]);
 
   const handleDelete = (userId: number) => {
