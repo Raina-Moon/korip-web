@@ -13,7 +13,13 @@ import { Review } from "@/types/reivew";
 interface UserState {
   list: User[];
   reservations: Reservation[];
+  reservationTotal: number;
+  reservationPage: number;
+  reservationLimit: number;
   reviews: Review[];
+  reviewTotal: number;
+  reviewPage: number;
+  reviewLimit: number;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -21,7 +27,13 @@ interface UserState {
 const initialState: UserState = {
   list: [],
   reservations: [],
+  reservationTotal: 0,
+  reservationPage: 1,
+  reservationLimit: 10,
   reviews: [],
+  reviewTotal: 0,
+  reviewPage: 1,
+  reviewLimit: 10,
   state: "idle",
   error: null,
 };
@@ -89,10 +101,16 @@ const adminUserSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(fetchUserReservations.fulfilled, (state, action) => {
-        state.reservations = action.payload;
+        state.reservations = action.payload.data;
+        state.reservationTotal = action.payload.total;
+        state.reservationPage = action.payload.page;
+        state.reservationLimit = action.payload.limit;
       })
       .addCase(fetchUserReviews.fulfilled, (state, action) => {
-        state.reviews = action.payload;
+        state.reviews = action.payload.data;
+        state.reviewTotal = action.payload.total;
+        state.reviewPage = action.payload.page;
+        state.reviewLimit = action.payload.limit;
       });
   },
 });
