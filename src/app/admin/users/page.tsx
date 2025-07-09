@@ -2,11 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import {
-  fetchAllUsers,
-  deleteUser,
-  updateUserRole,
-} from "@/lib/admin/user/adminUserThunk";
+import { fetchAllUsers, deleteUser } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { useRouter } from "next/navigation";
 
@@ -14,18 +10,18 @@ export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
 
-  const { list, state, error } = useAppSelector(
+  const { list, state, error, total, page, limit } = useAppSelector(
     (state: RootState) => state["admin/user"]
   );
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
+    dispatch(fetchAllUsers({ page, limit }));
   }, [dispatch]);
 
-  const handleDelete = (userId: number) => {
-    if (window.confirm("정말 이 사용자를 삭제하시겠습니까?")) {
-      dispatch(deleteUser(userId));
-    }
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1) return;
+    if (newPage > Math.ceil(total / limit)) return;
+    dispatch(fetchAllUsers({ page: newPage, limit }));
   };
 
   return (
@@ -34,11 +30,12 @@ export default function AdminUsersPage() {
 
       {state === "failed" && <div className="text-red-500">Error: {error}</div>}
 
-      {state === "succeeded" && list.length === 0 && (
+      {state === "succeeded" && Array.isArray(list) && list.length === 0 && (
         <div className="text-gray-500">No users found.</div>
       )}
 
-      {state === "succeeded" && list.length > 0 && (
+      {state === "succeeded" && Array.isArray(list) && list.length > 0 && (
+        <>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
@@ -47,7 +44,6 @@ export default function AdminUsersPage() {
               <th className="p-2 border">닉네임</th>
               <th className="p-2 border">권한</th>
               <th className="p-2 border">가입일</th>
-              <th className="p-2 border">관리</th>
             </tr>
           </thead>
           <tbody>
@@ -64,18 +60,38 @@ export default function AdminUsersPage() {
                 <td className="p-2 border text-center">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
-                <td className="p-2 border text-center">
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    삭제
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center items-center mt-4 gap-5">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+              className={`px-4 py-2 rounded ${
+                page <= 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              이전
+            </button>
+            <span className="text-gray-700">
+              Page {page} of {Math.ceil(total / limit)}
+            </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page * limit >= total}
+              className={`px-4 py-2 rounded ${
+                page * limit >= total
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              다음
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
