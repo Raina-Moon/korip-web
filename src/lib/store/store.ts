@@ -30,7 +30,7 @@ export const store = configureStore({
     "admin/reports": reportsReducer,
     "admin/roomInventory": roomInventoryReducer,
     "admin/roomPricing": roomPricingReducer,
-    "admin/reservation": adminReservationReducer,
+    adminReservation : adminReservationReducer,
     [lodgeApi.reducerPath]: lodgeApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
     reservation: reservationReducer,

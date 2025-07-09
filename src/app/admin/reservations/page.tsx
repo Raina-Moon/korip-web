@@ -7,7 +7,7 @@ import { Reservation } from "@/types/reservation";
 
 const AdminReservationsPage = () => {
   const dispatch = useAppDispatch();
-  const { list, state, error } = useAppSelector((state) => state["admin/reservation"]);
+  const { list, state, error } = useAppSelector((state) => state.adminReservation);
 
   useEffect(() => {
     dispatch(getAllReservations());
