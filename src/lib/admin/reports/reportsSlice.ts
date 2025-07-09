@@ -5,16 +5,23 @@ import {
   fetchReports,
   hideReportReview,
   ReportReviews,
+  ReportReviewsPagination,
 } from "./reportsThunk";
 
 interface ReportsState {
   list: ReportReviews[];
+  total: number;
+  page: number;
+  limit: number;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: ReportsState = {
   list: [],
+  total: 0,
+  page: 1,
+  limit: 10,
   state: "idle",
   error: null,
 };
@@ -31,9 +38,12 @@ const reportsSlice = createSlice({
       })
       .addCase(
         fetchReports.fulfilled,
-        (state, action: PayloadAction<ReportReviews[]>) => {
+        (state, action: PayloadAction<ReportReviewsPagination>) => {
           state.state = "succeeded";
-          state.list = action.payload;
+          state.list = action.payload.data;
+          state.total = action.payload.total;
+          state.page = action.payload.page;
+          state.limit = action.payload.limit;
         }
       )
       .addCase(fetchReports.rejected, (state, action) => {
@@ -99,7 +109,9 @@ const reportsSlice = createSlice({
       .addCase(deleteReviewOnly.fulfilled, (state, action) => {
         state.state = "succeeded";
         const deletedId = action.payload.reviewId;
-        state.list = state.list.filter((report) => report.review.id !== deletedId);
+        state.list = state.list.filter(
+          (report) => report.review.id !== deletedId
+        );
       })
       .addCase(deleteReviewOnly.rejected, (state, action) => {
         state.state = "failed";
