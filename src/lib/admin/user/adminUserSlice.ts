@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, fetchAllUsers, User } from "./adminThunk";
+import { deleteUser, fetchAllUsers, User } from "./adminUserThunk";
 
 interface UserState {
   list: User[];
@@ -13,7 +13,7 @@ const initialState: UserState = {
   error: null,
 };
 
-const userSlice = createSlice({
+const adminUserSlice = createSlice({
   name: "admin/user",
   initialState,
   reducers: {
@@ -60,4 +60,4 @@ const userSlice = createSlice({
   },
 });
 
-export default userSlice.reducer;
+export default adminUserSlice.reducer;
