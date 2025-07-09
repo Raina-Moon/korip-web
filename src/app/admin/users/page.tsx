@@ -14,12 +14,12 @@ export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
 
-  const { list, state, error } = useAppSelector(
+  const { list, state, error, total, page, limit } = useAppSelector(
     (state: RootState) => state["admin/user"]
   );
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
+    dispatch(fetchAllUsers({ page, limit }));
   }, [dispatch]);
 
   const handleDelete = (userId: number) => {
@@ -34,11 +34,11 @@ export default function AdminUsersPage() {
 
       {state === "failed" && <div className="text-red-500">Error: {error}</div>}
 
-      {state === "succeeded" && list.length === 0 && (
+      {state === "succeeded" && Array.isArray(list) && list.length === 0 && (
         <div className="text-gray-500">No users found.</div>
       )}
 
-      {state === "succeeded" && list.length > 0 && (
+      {state === "succeeded" && Array.isArray(list) && list.length > 0 && (
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
