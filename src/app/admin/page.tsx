@@ -21,6 +21,10 @@ const AdminPage = () => {
             <span className="font-semibold">신고된 리뷰 관리</span>: 사용자가
             신고한 리뷰 확인 및 처리
           </li>
+          <li>
+            <span className="font-semibold">예약 관리</span>: 예약 목록 조회 및
+            상태 변경
+          </li>
         </ul>
       </section>
 
@@ -67,6 +71,26 @@ const AdminPage = () => {
               신고된 리뷰 관리
             </h2>
             <p className="text-gray-500 mt-2">신고된 리뷰 확인 및 숨김·삭제</p>
+          </div>
+        </Link>
+        <Link href="/admin/reservations">
+          <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-green-500 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <h2 className="text-xl font-medium text-gray-800">예약 관리</h2>
+            <p className="text-gray-500 mt-2">예약 목록 조회 및 상태 변경</p>
           </div>
         </Link>
       </section>

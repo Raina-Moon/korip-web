@@ -19,4 +19,13 @@ export interface Reservation {
     id: number;
     name: string;
   };
+  user: {
+    id: number;
+    nickname: string;
+    email: string;
+  } | null;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email?: string | null;
 }

@@ -16,6 +16,7 @@ import { reviewApi } from "../review/reviewApi";
 import { bookmarkApi } from "../bookmark/bookmarkApi";
 import { reportReviewApi } from "../report-review/reportReviewApi";
 import loadingReducer from "./loadingSlice";
+import adminReservationReducer from "../admin/reservation/reservationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     "admin/reports": reportsReducer,
     "admin/roomInventory": roomInventoryReducer,
     "admin/roomPricing": roomPricingReducer,
+    adminReservation : adminReservationReducer,
     [lodgeApi.reducerPath]: lodgeApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
     reservation: reservationReducer,
@@ -45,7 +47,7 @@ export const store = configureStore({
       priceApi.middleware,
       reviewApi.middleware,
       bookmarkApi.middleware,
-      reportReviewApi.middleware
+      reportReviewApi.middleware,
     ),
 });
 
