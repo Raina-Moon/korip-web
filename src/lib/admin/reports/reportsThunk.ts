@@ -34,30 +34,45 @@ export interface ReportReviews {
   };
 }
 
+export interface ReportReviewsPagination {
+  data: ReportReviews[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export const fetchReports = createAsyncThunk<
-  ReportReviews[],
-  void,
+  ReportReviewsPagination,
+  { page?: number; limit?: number },
   { rejectValue: string; state: RootState }
->("admin/fetchReports", async (_, { dispatch, rejectWithValue, getState }) => {
-  try {
-    const token = getState().auth.accessToken;
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
+>(
+  "admin/fetchReports",
+  async ({ page = 1, limit = 10 }, { dispatch, rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/reports`,
+        {
+          params: {
+            page,
+            limit,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      return res.data as ReportReviewsPagination;
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
       }
-    );
-    return res.data as ReportReviews[];
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+      return rejectWithValue("Failed to fetch reports");
     }
-    return rejectWithValue("Failed to fetch reports");
   }
-});
+);
 
 export const deleteReportedReview = createAsyncThunk<
   { message: string; reviewId: number },
