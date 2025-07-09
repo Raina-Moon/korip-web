@@ -22,6 +22,9 @@ interface UserState {
   reviewLimit: number;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  total: number;
+  page: number;
+  limit: number;
 }
 
 const initialState: UserState = {
@@ -36,6 +39,9 @@ const initialState: UserState = {
   reviewLimit: 10,
   state: "idle",
   error: null,
+  total: 0,
+  page: 1,
+  limit: 10,
 };
 
 const adminUserSlice = createSlice({
@@ -61,7 +67,10 @@ const adminUserSlice = createSlice({
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.state = "succeeded";
-        state.list = action.payload;
+        state.list = action.payload.data;
+        state.total = action.payload.total;
+        state.page = action.payload.page;
+        state.limit = action.payload.limit;
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.state = "failed";
