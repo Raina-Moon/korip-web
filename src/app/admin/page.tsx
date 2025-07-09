@@ -14,6 +14,10 @@ const AdminPage = () => {
         </p>
         <ul className="list-disc list-inside text-gray-600 space-y-2">
           <li>
+            <span className="font-semibold">사용자 관리</span>: 사용자 계정 목록
+            조회 및 삭제
+          </li>
+          <li>
             <span className="font-semibold">온천장 관리</span>: 온천장(Lodge)
             생성 및 목록 관리
           </li>
@@ -29,6 +33,27 @@ const AdminPage = () => {
       </section>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <Link href="/admin/users">
+          <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-purple-500 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5-2.24M9 20H4v-2a3 3 0 015-2.24M12 12a4 4 0 100-8 4 4 0 000 8z"
+              />
+            </svg>
+            <h2 className="text-xl font-medium text-gray-800">사용자 관리</h2>
+            <p className="text-gray-500 mt-2">사용자 계정 목록 조회 및 삭제</p>
+          </div>
+        </Link>
+
         <Link href="/admin/lodge">
           <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <svg

@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, fetchAllUsers, User } from "./adminThunk";
+import {
+  deleteUser,
+  fetchAllUsers,
+  updateUserRole,
+  User,
+} from "./adminUserThunk";
 
 interface UserState {
   list: User[];
@@ -13,7 +18,7 @@ const initialState: UserState = {
   error: null,
 };
 
-const userSlice = createSlice({
+const adminUserSlice = createSlice({
   name: "admin/user",
   initialState,
   reducers: {
@@ -57,7 +62,25 @@ const userSlice = createSlice({
         state.state = "failed";
         state.error = action.payload as string;
       });
+
+    builder
+      .addCase(updateUserRole.pending, (state) => {
+        state.state = "loading";
+        state.error = null;
+      })
+      .addCase(updateUserRole.fulfilled, (state, action) => {
+        state.state = "succeeded";
+        const updatedUser = action.payload.user;
+        const index = state.list.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          state.list[index] = updatedUser;
+        }
+      })
+      .addCase(updateUserRole.rejected, (state, action) => {
+        state.state = "failed";
+        state.error = action.payload as string;
+      });
   },
 });
 
-export default userSlice.reducer;
+export default adminUserSlice.reducer;

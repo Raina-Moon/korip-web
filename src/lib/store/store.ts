@@ -3,7 +3,7 @@ import { authApi } from "../auth/authApi";
 import authReducer from "../auth/authSlice";
 import resetPasswordReducer from "../reset-password/resetPasswordSlice";
 import { hotspringApi } from "../hotspring/hotspringApi";
-import userReducer from "../admin/user/userSlice";
+import adminUserReducer from "../admin/user/adminUserSlice";
 import lodgeReducer from "../admin/lodge/lodgeSlice";
 import roomTypeReducer from "../admin/lodge/roomTypeSlice";
 import reportsReducer from "../admin/reports/reportsSlice";
@@ -24,7 +24,7 @@ export const store = configureStore({
     resetPassword: resetPasswordReducer,
     [authApi.reducerPath]: authApi.reducer,
     [hotspringApi.reducerPath]: hotspringApi.reducer,
-    "admin/user": userReducer,
+    "admin/user": adminUserReducer,
     "admin/lodge": lodgeReducer,
     "admin/roomType": roomTypeReducer,
     "admin/reports": reportsReducer,
