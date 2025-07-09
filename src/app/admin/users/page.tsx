@@ -2,13 +2,15 @@
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchAllUsers, deleteUser } from "@/lib/admin/user/adminUserThunk";
+import { fetchAllUsers, deleteUser, updateUserRole } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
 
 export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
 
-  const { list, state, error } = useAppSelector((state: RootState) => state["admin/user"]);
+  const { list, state, error } = useAppSelector(
+    (state: RootState) => state["admin/user"]
+  );
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -27,9 +29,7 @@ export default function AdminUsersPage() {
       {state === "loading" && (
         <div className="text-gray-500">Loading users...</div>
       )}
-      {state === "failed" && (
-        <div className="text-red-500">Error: {error}</div>
-      )}
+      {state === "failed" && <div className="text-red-500">Error: {error}</div>}
 
       {state === "succeeded" && list.length === 0 && (
         <div className="text-gray-500">No users found.</div>
@@ -53,7 +53,23 @@ export default function AdminUsersPage() {
                 <td className="p-2 border text-center">{user.id}</td>
                 <td className="p-2 border">{user.email}</td>
                 <td className="p-2 border">{user.nickname}</td>
-                <td className="p-2 border text-center">{user.role}</td>
+                <td className="p-2 border text-center">
+                  <select
+                    value={user.role}
+                    onChange={(e) =>
+                      dispatch(
+                        updateUserRole({
+                          userId: user.id,
+                          role: e.target.value as "USER" | "ADMIN",
+                        })
+                      )
+                    }
+                    className="border rounded px-2 py-1"
+                  >
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </select>
+                </td>
                 <td className="p-2 border text-center">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
