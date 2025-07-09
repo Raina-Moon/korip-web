@@ -15,12 +15,12 @@ export interface User {
 }
 
 export const fetchAllUsers = createAsyncThunk<
-  { data: User[]; total: number; page: number; limit: number },
+  { list: User[]; total: number; page: number; limit: number },
   { page?: number; limit?: number },
   { rejectValue: string; state: RootState }
 >(
   "/admin/fetchAllUsers",
-  async ({ page, limit }, { dispatch, rejectWithValue, getState }) => {
+  async ({ page = 1, limit = 10 }, { dispatch, rejectWithValue, getState }) => {
     try {
       dispatch(showLoading());
       const token = getState().auth.accessToken;
@@ -38,11 +38,18 @@ export const fetchAllUsers = createAsyncThunk<
         }
       );
 
+      console.log("Server raw res.data:", res.data);
+
       if (!res.data || !Array.isArray(res.data.data)) {
         return rejectWithValue("Invalid server response");
       }
 
-      return res.data;
+      return {
+        list: res.data.data,
+        total: res.data.total,
+        page: res.data.page,
+        limit: res.data.limit,
+      };
     } catch (err: any) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         dispatch(logout());
