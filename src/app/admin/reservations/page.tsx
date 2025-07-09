@@ -99,7 +99,7 @@ const AdminReservationsPage = () => {
                         onClick={() =>
                           handleUpdateStatus(
                             reservation.id,
-                            "CANCELED",
+                            "CANCELLED",
                             "ADMIN_FORCED"
                           )
                         }
