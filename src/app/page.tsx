@@ -86,9 +86,24 @@ const page = () => {
       </div>
 
       <div
-        className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[400px] bg-white rounded-lg shadow-lg 
-                flex flex-col items-center justify-center gap-5 px-5"
+        className="
+    absolute 
+    top-[58vh] 
+    left-1/2 
+    -translate-x-1/2 
+    w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] 
+    bg-white 
+    rounded-lg 
+    shadow-lg 
+    flex flex-col items-center justify-center 
+    gap-5 
+    px-5 
+    py-6 
+    min-h-[300px] 
+    sm:min-h-[320px] 
+    md:min-h-[340px] 
+    lg:min-h-[360px]
+  "
       >
         <div className="flex justify-center items-center mt-3 gap-4">
           <button
