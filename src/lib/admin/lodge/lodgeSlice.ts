@@ -88,6 +88,9 @@ const lodgeSlice = createSlice({
           if (index !== -1) {
             state.list[index] = updatedLodge;
           }
+          if (state.detail && state.detail.id === updatedLodge.id) {
+            state.detail = updatedLodge;
+          }
         }
       )
       .addCase(updateLodge.rejected, (state, action) => {
@@ -104,6 +107,9 @@ const lodgeSlice = createSlice({
         state.state = "succeeded";
         const deleteId = action.payload.lodge.id;
         state.list = state.list.filter((lodge) => lodge.id !== deleteId);
+        if (state.detail && state.detail.id === deleteId) {
+          state.detail = null;
+        }
       })
       .addCase(deleteLodge.rejected, (state, action) => {
         state.state = "failed";
