@@ -303,7 +303,7 @@ const page = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-56 mb-20 px-5 w-[60%] gap-10">
+      <div className="flex justify-between items-center mt-20 mb-20 px-5 w-[60%] gap-10">
         <div className="border-b border-primary-800 w-full">
           <p className="text-primary-800 font-bold text-3xl">News</p>
         </div>
