@@ -7,6 +7,7 @@ import "react-calendar/dist/Calendar.css";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
+import CheckinInput from "@/components/CheckInInput";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -168,18 +169,7 @@ const page = () => {
             </label>
           </div>
 
-          <label className="flex flex-col w-full text-primary-900 font-medium">
-            체크인 날짜
-            <input
-              className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
-              readOnly
-              onClick={() => {
-                setCalendar(true);
-              }}
-              value={formatDate(range?.[0] ?? null)}
-              placeholder="Check-in Date"
-            />
-          </label>
+          <CheckinInput range={range} setRange={setRange} />
 
           <label className="flex flex-col w-full text-primary-900 font-medium">
             체크아웃 날짜
