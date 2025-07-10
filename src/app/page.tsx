@@ -114,6 +114,7 @@ const page = () => {
                 : "bg-white text-primary-800"
             } transition-colors duration-300`}
           >
+            <i className="bi bi-building mr-2"></i>
             숙박
           </button>
           <button
@@ -124,6 +125,7 @@ const page = () => {
                 : "bg-white text-primary-800"
             } transition-colors duration-300`}
           >
+            <i className="bi bi-ticket-perforated-fill mr-2"></i>
             티켓
           </button>
         </div>
