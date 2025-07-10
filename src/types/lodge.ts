@@ -63,8 +63,8 @@ export interface RoomPricing {
 }
 
 export interface TicketType {
-  id: number;
-  lodgeId: number;
+  id?: number;
+  lodgeId?: number;
   name: string;
   description?: string;
   adultPrice: number;
