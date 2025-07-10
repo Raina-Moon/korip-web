@@ -6,7 +6,7 @@ import {
   useDeleteUserMutation,
 } from "@/lib/user/userApi";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { logout } from "@/lib/auth/authSlice";
+import { logout, updateNickname } from "@/lib/auth/authSlice";
 import { useRouter } from "next/navigation";
 
 const AccountPage = () => {
@@ -17,7 +17,7 @@ const AccountPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [updateNickname, { isLoading: isUpdating }] =
+  const [updateNicknameMutation, { isLoading: isUpdating }] =
     useUpdateUserNicknameMutation();
 
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
@@ -33,7 +33,8 @@ const AccountPage = () => {
     }
 
     try {
-      await updateNickname(nickname).unwrap();
+      await updateNicknameMutation(nickname).unwrap();
+      dispatch(updateNickname(nickname));
       setSuccessMessage("Nickname updated successfully!");
       setNickname("");
     } catch (err: any) {
