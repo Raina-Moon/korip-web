@@ -65,7 +65,7 @@ const page = () => {
 
   return (
     <div className="h-screen">
-      <div className="relative w-full h-[60vh]">
+      <div className="relative w-full h-[60vh] z-0">
         <Image
           src="/images/hero_section.jpg"
           alt="Hero Section"
@@ -73,7 +73,7 @@ const page = () => {
           style={{ objectFit: "cover" }}
           priority
         />
-        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center">
+        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center z-10">
           <div className="flex flex-col items-center gap-5">
             <p className="text-white font-semibold text-3xl">
               당신의 일상에 따뜻한 쉼표를
@@ -87,21 +87,21 @@ const page = () => {
 
       <div
         className="
-    absolute 
-    top-[58vh] 
-    left-1/2 
-    -translate-x-1/2 
-    w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] 
-    bg-white 
-    rounded-lg 
-    shadow-lg 
-    flex flex-col items-center justify-center 
-    gap-5 
-    px-5 
-    py-6 
-    min-h-[300px] 
-    sm:min-h-[320px] 
-    md:min-h-[340px] 
+   relative
+    z-50
+    mt-[-110px]
+    mx-auto
+    w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%]
+    bg-white
+    rounded-lg
+    shadow-lg
+    flex flex-col items-center justify-center
+    gap-5
+    px-5
+    py-6
+    min-h-[300px]
+    sm:min-h-[320px]
+    md:min-h-[340px]
     lg:min-h-[360px]
   "
       >
