@@ -183,14 +183,35 @@ const page = () => {
             />
           </label>
 
-          <div
+          <button
             onClick={() => setIsActive(!isActive)}
-            className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
+            className="
+    w-full
+    border border-primary-800
+    rounded-md
+    px-3
+    py-2
+    flex
+    justify-between
+    items-center
+    hover:bg-primary-50
+    transition-colors
+    duration-200
+  "
           >
-            <p>Room : {room}</p>
-            <p>Adult : {adults}</p>
-            <p>Children : {children}</p>
-          </div>
+            <span className="text-primary-900 font-medium">객실/인원 선택</span>
+            <span className="flex gap-2">
+              <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                방 {room}
+              </span>
+              <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                성인 {adults}
+              </span>
+              <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                아동 {children}
+              </span>
+            </span>
+          </button>
 
           <button
             onClick={handleSearch}
