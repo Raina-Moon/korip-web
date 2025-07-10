@@ -17,6 +17,7 @@ const page = () => {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const [productType, setProductType] = useState<"숙박" | "티켓">("숙박");
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -86,9 +87,32 @@ const page = () => {
 
       <div
         className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
+                w-[60%] h-[400px] bg-white rounded-lg shadow-lg 
                 flex flex-col items-center justify-center gap-5 px-5"
       >
+        <div className="flex justify-center items-center mt-3 gap-4">
+          <button
+            onClick={() => setProductType("숙박")}
+            className={`px-6 py-2 rounded-full border ${
+              productType === "숙박"
+                ? "bg-primary-800 text-white"
+                : "bg-white text-primary-800"
+            } transition-colors duration-300`}
+          >
+            숙박
+          </button>
+          <button
+            onClick={() => setProductType("티켓")}
+            className={`px-6 py-2 rounded-full border ${
+              productType === "티켓"
+                ? "bg-primary-800 text-white"
+                : "bg-white text-primary-800"
+            } transition-colors duration-300`}
+          >
+            티켓
+          </button>
+        </div>
+
         <select
           value={region}
           onChange={(e) => setRegion(e.target.value)}
