@@ -8,6 +8,7 @@ export interface Lodge {
   accommodationType: string;
   roomTypes: RoomType[];
   images: LodgeImage[];
+  ticketTypes?: TicketType[];
 }
 
 export interface LodgeImage {
@@ -59,4 +60,14 @@ export interface RoomPricing {
   date: string;
   price: number;
   priceType: "WEEKDAY" | "WEEKEND" | "PEAK" | "OFF";
+}
+
+export interface TicketType {
+  id: number;
+  lodgeId: number;
+  name: string;
+  description?: string;
+  adultPrice: number;
+  childPrice: number;
+  totalTickets: number;
 }
