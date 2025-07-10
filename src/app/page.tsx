@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
+import CheckinInput from "@/components/CheckInInput";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -168,18 +168,7 @@ const page = () => {
             </label>
           </div>
 
-          <label className="flex flex-col w-full text-primary-900 font-medium">
-            체크인 날짜
-            <input
-              className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
-              readOnly
-              onClick={() => {
-                setCalendar(true);
-              }}
-              value={formatDate(range?.[0] ?? null)}
-              placeholder="Check-in Date"
-            />
-          </label>
+          <CheckinInput range={range} setRange={setRange} />
 
           <label className="flex flex-col w-full text-primary-900 font-medium">
             체크아웃 날짜
@@ -194,109 +183,124 @@ const page = () => {
             />
           </label>
 
-          {calendar && (
-            <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
-              <Calendar
-                calendarType="gregory"
-                onChange={(value) => {
-                  if (Array.isArray(value) && value.length === 2) {
-                    setRange(value as [Date, Date]);
-                    setCalendar(false);
-                  }
-                }}
-                selectRange
-                showDoubleView
-                value={range}
-                minDate={new Date()}
-              />
-            </div>
-          )}
-          <div
-            onClick={() => setIsActive(!isActive)}
-            className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
-          >
-            <p>Room : {room}</p>
-            <p>Adult : {adults}</p>
-            <p>Children : {children}</p>
-          </div>
+          <div className="w-full relative">
+            <button
+              onClick={() => setIsActive(!isActive)}
+              className="
+    w-full
+    border border-primary-800
+    rounded-md
+    px-3
+    py-2
+    flex
+    justify-between
+    items-center
+    hover:bg-primary-50
+    transition-colors
+    duration-200
+    my-2
+  "
+            >
+              <span className="text-primary-900 font-medium">
+                객실/인원 선택
+              </span>
+              <span className="flex gap-2">
+                <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                  방 {room}
+                </span>
+                <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                  성인 {adults}
+                </span>
+                <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
+                  아동 {children}
+                </span>
+              </span>
+            </button>
 
+            {isActive && (
+              <>
+                <div className="absolute left-2/3 top-3/4 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+                  <div className="flex justify-end mb-3">
+                    <button
+                      onClick={() => setIsActive(false)}
+                      className="text-primary-900 font-bold text-xl hover:text-primary-500"
+                    >
+                      X
+                    </button>
+                  </div>
+                  <div className="flex flex-row items-center justify-center p-5 gap-4">
+                    <p className="text-lg font-semibold text-primary-900">
+                      방{" "}
+                    </p>
+                    <button
+                      onClick={() => handleRoomChange(-1)}
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                    >
+                      -
+                    </button>
+                    <p className="text-lg text-primary-900 font-semibold">
+                      {room}
+                    </p>
+                    <button
+                      onClick={() => handleRoomChange(1)}
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex flex-row items-center justify-center p-5 gap-4">
+                    <p className="text-lg font-semibold text-primary-900">
+                      성인
+                    </p>
+                    <button
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                      onClick={() => handleAdultChange(-1)}
+                    >
+                      -
+                    </button>
+                    <p className="text-lg text-primary-900 font-semibold">
+                      {" "}
+                      {adults}
+                    </p>
+                    <button
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                      onClick={() => handleAdultChange(1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex flex-row items-center justify-center p-5 gap-4">
+                    <p className="text-lg font-semibold text-primary-900">
+                      아동{" "}
+                    </p>
+                    <button
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                      onClick={() => handleChildrenChange(-1)}
+                    >
+                      -
+                    </button>
+                    <p className="text-lg text-primary-900 font-semibold">
+                      {" "}
+                      {children}
+                    </p>
+                    <button
+                      className="border border-primary-800 p-3 rounded-full text-2xl"
+                      onClick={() => handleChildrenChange(1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <button
             onClick={handleSearch}
             className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300"
           >
-            Search
+            <i className="bi bi-search mr-2"></i>Search
           </button>
         </div>
-        {isActive && (
-          <>
-            <div className="absolute top-64 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-              <div className="flex justify-end mb-3">
-                <button
-                  onClick={() => setIsActive(false)}
-                  className="text-primary-900 font-bold text-xl hover:text-primary-500"
-                >
-                  X
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">Room </p>
-                <button
-                  onClick={() => handleRoomChange(-1)}
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">{room}</p>
-                <button
-                  onClick={() => handleRoomChange(1)}
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                >
-                  +
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">Adult</p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleAdultChange(-1)}
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">
-                  {" "}
-                  {adults}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleAdultChange(1)}
-                >
-                  +
-                </button>
-              </div>
-              <div className="flex flex-row items-center justify-center p-5 gap-4">
-                <p className="text-lg font-semibold text-primary-900">
-                  Children{" "}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleChildrenChange(-1)}
-                >
-                  -
-                </button>
-                <p className="text-lg text-primary-900 font-semibold">
-                  {" "}
-                  {children}
-                </p>
-                <button
-                  className="border border-primary-800 p-3 rounded-full text-2xl"
-                  onClick={() => handleChildrenChange(1)}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </>
-        )}
       </div>
 
       <div className="flex justify-between items-center mt-56 mb-20 px-5 w-[60%] gap-10">
