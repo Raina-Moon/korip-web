@@ -67,10 +67,15 @@ const authSlice = createSlice({
     closeLoginModal: (state) => {
       state.showingLoginModal = false;
       state.loginModalContext = null;
+    },
+    updateNickname(state,action) {
+      if(state.user) {
+        state.user.nickname = action.payload;
+      }
     }
   },
 });
 
-export const { logout, setUserOnly, setCredential, setAccessToken, openLoginModal, closeLoginModal } =
+export const { logout, setUserOnly, setCredential, setAccessToken, openLoginModal, closeLoginModal, updateNickname } =
   authSlice.actions;
 export default authSlice.reducer;
