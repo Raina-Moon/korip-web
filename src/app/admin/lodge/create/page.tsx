@@ -6,7 +6,7 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
-import { RoomType, SeasonalPricing } from "@/types/lodge";
+import { RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
 
 interface CreateLodgeFormData {
   name: string;
@@ -18,6 +18,7 @@ interface CreateLodgeFormData {
   roomTypes: RoomType[];
   newImageFiles: File[];
   roomTypeImages: File[][];
+  ticketTypes: TicketType[]
 }
 
 const CreateLodgePage = () => {
@@ -25,7 +26,7 @@ const CreateLodgePage = () => {
   const router = useRouter();
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
-    const {newImageFiles, roomTypeImages, ...dataWithoutImages} = data;
+    const {newImageFiles, roomTypeImages, ticketTypes, ...dataWithoutImages} = data;
     const lodgeData = await dispatch(
       createLodge({
         ...dataWithoutImages,
@@ -39,6 +40,7 @@ const CreateLodgePage = () => {
         }),
         lodgeImageFile: newImageFiles,
         roomTypeImages,
+        ticketTypes: ticketTypes ?? [],
       })
     );
 
