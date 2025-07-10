@@ -285,32 +285,6 @@ const page = () => {
       <div>
         <p>page</p>
       </div>
-      {calendar && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
-          onClick={() => setCalendar(false)}
-        >
-          <div
-            className="bg-white shadow-lg rounded-lg p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {" "}
-            <Calendar
-              calendarType="gregory"
-              onChange={(value) => {
-                if (Array.isArray(value) && value.length === 2) {
-                  setRange(value as [Date, Date]);
-                  setCalendar(false);
-                }
-              }}
-              selectRange
-              showDoubleView
-              value={range}
-              minDate={new Date()}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
