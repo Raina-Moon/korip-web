@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
-import { Lodge, RoomType, SeasonalPricing } from "@/types/lodge";
+import { Lodge, RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
 import { RootState } from "@/lib/store/store";
 
 export const fetchLodges = createAsyncThunk<
@@ -38,6 +38,7 @@ type CreateLodgePayload = Omit<
     seasonalPricing?: SeasonalPricing[];
   })[];
   roomTypeImages: File[][];
+  ticketTypes: TicketType[];
 };
 
 export const createLodge = createAsyncThunk<
@@ -57,6 +58,10 @@ export const createLodge = createAsyncThunk<
       formData.append("description", newLodgeData.description || "");
       formData.append("accommodationType", newLodgeData.accommodationType);
       formData.append("roomTypes", JSON.stringify(newLodgeData.roomTypes));
+      formData.append(
+        "ticketTypes",
+        JSON.stringify(newLodgeData.ticketTypes || [])
+      );
 
       if (
         !Array.isArray(newLodgeData.lodgeImageFile) ||
@@ -72,7 +77,6 @@ export const createLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       });
 
-      
       if (
         !Array.isArray(newLodgeData.roomTypeImages) ||
         newLodgeData.roomTypeImages.length === 0
@@ -155,9 +159,9 @@ export const fetchLodgeById = createAsyncThunk<
 );
 
 type KeepRoomTypeImage = {
-  roomTypeId : number;
+  roomTypeId: number;
   imageId: number;
-}
+};
 
 type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   roomTypes: Omit<RoomType, "seasonalPricing"> &
@@ -168,6 +172,7 @@ type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   newImageFiles: File[];
   newRoomTypeImageFiles?: File[][];
   keepRoomTypeImgIds?: KeepRoomTypeImage[];
+  ticketTypes?: TicketType[];
 };
 
 export const updateLodge = createAsyncThunk<
@@ -187,6 +192,10 @@ export const updateLodge = createAsyncThunk<
       formData.append("description", updatedLodgeData.description || "");
       formData.append("accommodationType", updatedLodgeData.accommodationType);
       formData.append("roomTypes", JSON.stringify(updatedLodgeData.roomTypes));
+      formData.append(
+        "ticketTypes",
+        JSON.stringify(updatedLodgeData.ticketTypes || [])
+      );
 
       formData.append(
         "keepImgIds",
