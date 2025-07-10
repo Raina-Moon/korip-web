@@ -17,6 +17,7 @@ const page = () => {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const [productType, setProductType] = useState<"숙박" | "티켓">("숙박");
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -85,86 +86,217 @@ const page = () => {
       </div>
 
       <div
-        className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                w-[60%] h-[340px] bg-white rounded-lg shadow-lg 
-                flex flex-col items-center justify-center gap-5 px-5"
+        className="
+    absolute 
+    top-[58vh] 
+    left-1/2 
+    -translate-x-1/2 
+    w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] 
+    bg-white 
+    rounded-lg 
+    shadow-lg 
+    flex flex-col items-center justify-center 
+    gap-5 
+    px-5 
+    py-6 
+    min-h-[300px] 
+    sm:min-h-[320px] 
+    md:min-h-[340px] 
+    lg:min-h-[360px]
+  "
       >
-        <select
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        >
-          <option value="전체">전체</option>
-          <option value="서울">서울</option>
-          <option value="부산">부산</option>
-          <option value="경기">경기도</option>
-          <option value="충청">충청도</option>
-          <option value="전라">전라도</option>
-          <option value="경상">경상도</option>
-          <option value="제주">제주도</option>
-          <option value="강원">강원도</option>
-        </select>
-        <select
-          value={accommodationType}
-          onChange={(e) => setAccommodationType(e.target.value)}
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        >
-          <option value="All">숙소 유형 전체</option>
-          <option value="호텔">호텔</option>
-          <option value="모텔">모텔</option>
-          <option value="리조트">리조트</option>
-          <option value="펜션">펜션</option>
-          <option value="기타">기타</option>
-        </select>
-        <input
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          readOnly
-          onClick={() => {
-            setCalendar(true);
-          }}
-          value={formatDate(range?.[0] ?? null)}
-          placeholder="Check-in Date"
-        />
-        <input
-          className="border border-primary-800 rounded-md outline-none px-3 py-1"
-          readOnly
-          onClick={() => {
-            setCalendar(true);
-          }}
-          value={formatDate(range?.[1] ?? null)}
-          placeholder="Check-out Date"
-        />
-        {calendar && (
-          <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
-            <Calendar
-              calendarType="gregory"
-              onChange={(value) => {
-                if (Array.isArray(value) && value.length === 2) {
-                  setRange(value as [Date, Date]);
-                  setCalendar(false);
-                }
-              }}
-              selectRange
-              showDoubleView
-              value={range}
-              minDate={new Date()}
-            />
-          </div>
-        )}
-        <div
-          onClick={() => setIsActive(!isActive)}
-          className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
-        >
-          <p>Room : {room}</p>
-          <p>Adult : {adults}</p>
-          <p>Children : {children}</p>
+        <div className="flex justify-center items-center mt-3 gap-4">
+          <button
+            onClick={() => setProductType("숙박")}
+            className={`px-6 py-2 rounded-full border ${
+              productType === "숙박"
+                ? "bg-primary-800 text-white"
+                : "bg-white text-primary-800"
+            } transition-colors duration-300`}
+          >
+            <i className="bi bi-building mr-2"></i>
+            숙박
+          </button>
+          <button
+            onClick={() => setProductType("티켓")}
+            className={`px-6 py-2 rounded-full border ${
+              productType === "티켓"
+                ? "bg-primary-800 text-white"
+                : "bg-white text-primary-800"
+            } transition-colors duration-300`}
+          >
+            <i className="bi bi-ticket-perforated-fill mr-2"></i>
+            티켓
+          </button>
         </div>
-        <button
-          onClick={handleSearch}
-          className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300"
-        >
-          Search
-        </button>
+
+        <div className="flex flex-col items-center w-full max-w-2xl gap-4">
+          <div className="flex w-full gap-4">
+            <label className="flex flex-col flex-1 w-full max-w-xs text-primary-900 font-medium">
+              지역 선택
+              <select
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
+              >
+                <option value="전체">전체</option>
+                <option value="서울">서울</option>
+                <option value="부산">부산</option>
+                <option value="경기">경기도</option>
+                <option value="충청">충청도</option>
+                <option value="전라">전라도</option>
+                <option value="경상">경상도</option>
+                <option value="제주">제주도</option>
+                <option value="강원">강원도</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col flex-1 text-primary-900 font-medium">
+              숙소 유형
+              <select
+                value={accommodationType}
+                onChange={(e) => setAccommodationType(e.target.value)}
+                className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
+              >
+                <option value="All">숙소 유형 전체</option>
+                <option value="호텔">호텔</option>
+                <option value="모텔">모텔</option>
+                <option value="리조트">리조트</option>
+                <option value="펜션">펜션</option>
+                <option value="기타">기타</option>
+              </select>
+            </label>
+          </div>
+
+          <label className="flex flex-col w-full text-primary-900 font-medium">
+            체크인 날짜
+            <input
+              className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
+              readOnly
+              onClick={() => {
+                setCalendar(true);
+              }}
+              value={formatDate(range?.[0] ?? null)}
+              placeholder="Check-in Date"
+            />
+          </label>
+
+          <label className="flex flex-col w-full text-primary-900 font-medium">
+            체크아웃 날짜
+            <input
+              className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
+              readOnly
+              onClick={() => {
+                setCalendar(true);
+              }}
+              value={formatDate(range?.[1] ?? null)}
+              placeholder="Check-out Date"
+            />
+          </label>
+
+          {calendar && (
+            <div className="absolute top-44 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+              <Calendar
+                calendarType="gregory"
+                onChange={(value) => {
+                  if (Array.isArray(value) && value.length === 2) {
+                    setRange(value as [Date, Date]);
+                    setCalendar(false);
+                  }
+                }}
+                selectRange
+                showDoubleView
+                value={range}
+                minDate={new Date()}
+              />
+            </div>
+          )}
+          <div
+            onClick={() => setIsActive(!isActive)}
+            className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2"
+          >
+            <p>Room : {room}</p>
+            <p>Adult : {adults}</p>
+            <p>Children : {children}</p>
+          </div>
+
+          <button
+            onClick={handleSearch}
+            className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300"
+          >
+            Search
+          </button>
+        </div>
+        {isActive && (
+          <>
+            <div className="absolute top-64 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={() => setIsActive(false)}
+                  className="text-primary-900 font-bold text-xl hover:text-primary-500"
+                >
+                  X
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Room </p>
+                <button
+                  onClick={() => handleRoomChange(-1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">{room}</p>
+                <button
+                  onClick={() => handleRoomChange(1)}
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">Adult</p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {adults}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleAdultChange(1)}
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-row items-center justify-center p-5 gap-4">
+                <p className="text-lg font-semibold text-primary-900">
+                  Children{" "}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(-1)}
+                >
+                  -
+                </button>
+                <p className="text-lg text-primary-900 font-semibold">
+                  {" "}
+                  {children}
+                </p>
+                <button
+                  className="border border-primary-800 p-3 rounded-full text-2xl"
+                  onClick={() => handleChildrenChange(1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex justify-between items-center mt-56 mb-20 px-5 w-[60%] gap-10">
@@ -180,77 +312,6 @@ const page = () => {
       <div>
         <p>page</p>
       </div>
-
-      {isActive && (
-        <>
-          <div className="absolute mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-            <div className="flex justify-end mb-3">
-              <button
-                onClick={() => setIsActive(false)}
-                className="text-primary-900 font-bold text-xl hover:text-primary-500"
-              >
-                X
-              </button>
-            </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">Room </p>
-              <button
-                onClick={() => handleRoomChange(-1)}
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">{room}</p>
-              <button
-                onClick={() => handleRoomChange(1)}
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-              >
-                +
-              </button>
-            </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">Adult</p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleAdultChange(-1)}
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">
-                {" "}
-                {adults}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleAdultChange(1)}
-              >
-                +
-              </button>
-            </div>
-            <div className="flex flex-row items-center justify-center p-5 gap-4">
-              <p className="text-lg font-semibold text-primary-900">
-                Children{" "}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleChildrenChange(-1)}
-              >
-                -
-              </button>
-              <p className="text-lg text-primary-900 font-semibold">
-                {" "}
-                {children}
-              </p>
-              <button
-                className="border border-primary-800 p-3 rounded-full text-2xl"
-                onClick={() => handleChildrenChange(1)}
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 };
