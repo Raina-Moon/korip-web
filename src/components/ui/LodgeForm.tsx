@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import KakaoMap from "../KakaoMap";
 import PriceInput from "./PriceInput";
-import { Lodge, LodgeImage, RoomType, RoomTypeImage } from "@/types/lodge";
+import {
+  Lodge,
+  LodgeImage,
+  RoomType,
+  RoomTypeImage,
+  TicketType,
+} from "@/types/lodge";
 import Image from "next/image";
 
 type LodgeFormProps = {
@@ -27,7 +33,15 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [roomTypeTotalRooms, setRoomTypeTotalRooms] = useState(1);
   const [lodgeImages, setLodgeImages] = useState<LodgeImage[]>([]);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [roomTypeImages, setRoomTypeImages] = useState<Array<File | RoomTypeImage>[]>([]);
+  const [roomTypeImages, setRoomTypeImages] = useState<
+    Array<File | RoomTypeImage>[]
+  >([]);
+  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
+  const [ticketName, setTicketName] = useState("");
+  const [ticketDescription, setTicketDescription] = useState("");
+  const [ticketAdultPrice, setTicketAdultPrice] = useState(0);
+  const [ticketChildPrice, setTicketChildPrice] = useState(0);
+  const [ticketTotalTickets, setTicketTotalTickets] = useState(1);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -71,7 +85,11 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setAccommodationType(initialData.accommodationType);
       setRoomTypes(initialData.roomTypes);
       setLodgeImages(initialData.images ?? []);
-      setRoomTypeImages(initialData.roomTypes.map((roomType) => roomType.images ? [...roomType.images] :[]));
+      setRoomTypeImages(
+        initialData.roomTypes.map((roomType) =>
+          roomType.images ? [...roomType.images] : []
+        )
+      );
     }
   }, [mode, initialData]);
 
@@ -84,6 +102,38 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
 
   const handleImageRemove = (index: number) => {
     setUploadedImages((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleAddTicketType = () => {
+    setTicketTypes((prev) => [
+      ...prev,
+      {
+        name: ticketName,
+        description: ticketDescription,
+        adultPrice: ticketAdultPrice,
+        childPrice: ticketChildPrice,
+        totalTickets: ticketTotalTickets,
+      },
+    ]);
+
+    setTicketName("");
+    setTicketDescription("");
+    setTicketAdultPrice(0);
+    setTicketChildPrice(0);
+    setTicketTotalTickets(1);
+  };
+
+  const handleTicketTypeChange = (idx: number, key: string, value: any) => {
+    const updated = [...ticketTypes];
+    updated[idx] = {
+      ...updated[idx],
+      [key]: value,
+    };
+    setTicketTypes(updated);
+  };
+
+  const handleRemoveTicketType = (idx: number) => {
+    setTicketTypes((prev) => prev.filter((_, index) => index !== idx));
   };
 
   const handleRemoveLodgeImage = (index: number) => {
@@ -103,7 +153,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   );
 
   const keepRoomTypeImageIds = roomTypeImages.map((images) =>
-    images.filter((image): image is RoomTypeImage => !(image instanceof File)).map((img) => img.id)
+    images
+      .filter((image): image is RoomTypeImage => !(image instanceof File))
+      .map((img) => img.id)
   );
 
   return (
@@ -199,7 +251,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          
+
           onSubmit({
             id: initialData?.id,
             name,
@@ -214,12 +266,15 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             })),
             newImageFiles: uploadedImages,
             keepImgIds: lodgeImages.map((img) => img.id),
-            roomTypeImages : newRoomTypeImageFiles,
-            keepRoomTypeImgIds : roomTypes.flatMap((room,idx) => (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
-              roomTypeId: room.id,
-              imageId,
-            })))
-            .filter((i) => i.roomTypeId !== undefined ),
+            roomTypeImages: newRoomTypeImageFiles,
+            keepRoomTypeImgIds: roomTypes
+              .flatMap((room, idx) =>
+                (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
+                  roomTypeId: room.id,
+                  imageId,
+                }))
+              )
+              .filter((i) => i.roomTypeId !== undefined),
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
@@ -359,32 +414,33 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               <p className="font-semibold text-lg">방 이미지 업로드</p>
               <div className="flex flex-wrap gap-2">
                 {roomTypeImages[idx]?.map((file, imgIdx) => {
-                  const imageUrl = 
-                  file instanceof File
-                    ? URL.createObjectURL(file)
-                    : file.imageUrl;
+                  const imageUrl =
+                    file instanceof File
+                      ? URL.createObjectURL(file)
+                      : file.imageUrl;
 
-                    return(
-                  <div key={imgIdx} className="relative w-24 h-24">
-                    <Image
-                      src={imageUrl}
-                      alt="preview"
-                      fill
-                      className="object-cover rounded"
-                    />
-                    <button
-                      type="button"
-                      className="absolute top-0 right-0 bg-black text-white text-xs p-1"
-                      onClick={() => {
-                        const copy = [...roomTypeImages];
-                        copy[idx] = copy[idx].filter((_, i) => i !== imgIdx);
-                        setRoomTypeImages(copy);
-                      }}
-                    >
-                      X
-                    </button>
-                  </div>)
-})}
+                  return (
+                    <div key={imgIdx} className="relative w-24 h-24">
+                      <Image
+                        src={imageUrl}
+                        alt="preview"
+                        fill
+                        className="object-cover rounded"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-0 right-0 bg-black text-white text-xs p-1"
+                        onClick={() => {
+                          const copy = [...roomTypeImages];
+                          copy[idx] = copy[idx].filter((_, i) => i !== imgIdx);
+                          setRoomTypeImages(copy);
+                        }}
+                      >
+                        X
+                      </button>
+                    </div>
+                  );
+                })}
                 {roomTypeImages[idx]?.length < 5 && (
                   <input
                     type="file"
@@ -488,6 +544,139 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
           >
             + 방 유형 추가
           </button>
+        </div>
+
+        <div className="space-y-4 mt-10">
+          <h3 className="text-2xl font-bold">티켓 타입</h3>
+
+          {ticketTypes.map((ticket, idx) => (
+            <div
+              key={idx}
+              className="border p-4 rounded border-gray-400 space-y-2 shadow-md"
+            >
+              <div className="flex justify-between items-center">
+                <p className="font-semibold text-xl">티켓 {idx + 1}</p>
+                {ticketTypes.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTicketType(idx)}
+                    className="bg-red-600 text-white text-md px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    삭제
+                  </button>
+                )}
+              </div>
+              <p className="font-semibold text-lg">이름</p>
+              <input
+                value={ticket.name}
+                onChange={(e) =>
+                  handleTicketTypeChange(idx, "name", e.target.value)
+                }
+                className="input border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+              />
+              <p className="font-semibold text-lg">설명</p>
+              <textarea
+                value={ticket.description ?? ""}
+                onChange={(e) =>
+                  handleTicketTypeChange(idx, "description", e.target.value)
+                }
+                className="w-full border border-gray-400 px-4 py-3 rounded-md resize-y min-h-[80px] focus:border-blue-500 focus:outline-none"
+              />
+
+              <div className="flex gap-2">
+                <div className="flex flex-col flex-1">
+                  <p className="font-semibold text-lg">성인 가격</p>
+                  <input
+                    type="number"
+                    value={ticket.adultPrice}
+                    onChange={(e) =>
+                      handleTicketTypeChange(
+                        idx,
+                        "adultPrice",
+                        Number(e.target.value)
+                      )
+                    }
+                    className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <p className="font-semibold text-lg">어린이 가격</p>
+                  <input
+                    type="number"
+                    value={ticket.childPrice}
+                    onChange={(e) =>
+                      handleTicketTypeChange(
+                        idx,
+                        "childPrice",
+                        Number(e.target.value)
+                      )
+                    }
+                    className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <p className="font-semibold text-lg">총 티켓 수량</p>
+              <input
+                type="number"
+                value={ticket.totalTickets}
+                onChange={(e) =>
+                  handleTicketTypeChange(
+                    idx,
+                    "totalTickets",
+                    Number(e.target.value)
+                  )
+                }
+                className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+              />
+            </div>
+          ))}
+
+          <div className="mt-4 border p-4 rounded border-gray-300 shadow">
+            <h4 className="font-bold text-lg mb-2">새 티켓 추가</h4>
+            <input
+              placeholder="티켓 이름"
+              value={ticketName}
+              onChange={(e) => setTicketName(e.target.value)}
+              className="border w-full mb-2 px-3 py-1 rounded-md"
+            />
+            <textarea
+              placeholder="티켓 설명"
+              value={ticketDescription}
+              onChange={(e) => setTicketDescription(e.target.value)}
+              className="border w-full mb-2 px-3 py-2 rounded-md resize-y min-h-[80px]"
+            />
+            <div className="flex gap-2 mb-2">
+              <input
+                type="number"
+                placeholder="성인 가격"
+                value={ticketAdultPrice}
+                onChange={(e) => setTicketAdultPrice(Number(e.target.value))}
+                className="border flex-1 px-3 py-1 rounded-md"
+              />
+              <input
+                type="number"
+                placeholder="어린이 가격"
+                value={ticketChildPrice}
+                onChange={(e) => setTicketChildPrice(Number(e.target.value))}
+                className="border flex-1 px-3 py-1 rounded-md"
+              />
+            </div>
+            <input
+              type="number"
+              placeholder="총 티켓 수량"
+              value={ticketTotalTickets}
+              onChange={(e) => setTicketTotalTickets(Number(e.target.value))}
+              className="border w-full mb-2 px-3 py-1 rounded-md"
+            />
+            <button
+              type="button"
+              onClick={handleAddTicketType}
+              className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              + 티켓 추가
+            </button>
+          </div>
         </div>
 
         <button
