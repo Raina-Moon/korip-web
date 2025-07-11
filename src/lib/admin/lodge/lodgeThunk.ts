@@ -63,6 +63,8 @@ export const createLodge = createAsyncThunk<
         JSON.stringify(newLodgeData.ticketTypes || [])
       );
 
+      console.log("Creating ticketTypes:", newLodgeData.ticketTypes);
+
       if (
         !Array.isArray(newLodgeData.lodgeImageFile) ||
         newLodgeData.lodgeImageFile.length === 0
