@@ -275,7 +275,20 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                 }))
               )
               .filter((i) => i.roomTypeId !== undefined),
-              ticketTypes
+            ticketTypes: [
+              ...ticketTypes,
+              ...(ticketName.trim()
+                ? [
+                    {
+                      name: ticketName,
+                      description: ticketDescription,
+                      adultPrice: ticketAdultPrice,
+                      childPrice: ticketChildPrice,
+                      totalTickets: ticketTotalTickets,
+                    },
+                  ]
+                : []),
+            ],
           });
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
