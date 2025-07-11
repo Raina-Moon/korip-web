@@ -36,12 +36,12 @@ const LodgeDetailPage = () => {
   }, [dispatch, lodgeId]);
 
   useEffect(() => {
-    if(status === "loading") {
-      dispatch(showLoading())
+    if (status === "loading") {
+      dispatch(showLoading());
     } else {
-      dispatch(hideLoading())
+      dispatch(hideLoading());
     }
-  },[])
+  }, []);
 
   if (status === "failed")
     return <p className="p-8 text-red-600">Error: {error}</p>;
@@ -293,6 +293,41 @@ const LodgeDetailPage = () => {
             </div>
           ))}
         </div>
+
+        <section className="mt-10">
+          <h3 className="text-2xl font-bold text-gray-700 mb-4">티켓 타입</h3>
+          {lodge.ticketTypes && lodge.ticketTypes.length > 0 ? (
+            <div className="grid gap-6">
+              {lodge.ticketTypes.map((ticket, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 border rounded-lg shadow-sm bg-white space-y-2"
+                >
+                  <p className="text-lg font-semibold">이름: {ticket.name}</p>
+                  <p>설명: {ticket.description}</p>
+                  <p>
+                    <span className="font-medium">성인 가격:</span>{" "}
+                    {ticket.adultPrice.toLocaleString()}원
+                  </p>
+                  <p>
+                    <span className="font-medium">어린이 가격:</span>{" "}
+                    {ticket.childPrice.toLocaleString()}원
+                  </p>
+                  <p>
+                    <span className="font-medium">총 성인 티켓 수:</span>{" "}
+                    {ticket.totalAdultTickets}
+                  </p>
+                  <p>
+                    <span className="font-medium">총 어린이 티켓 수:</span>{" "}
+                    {ticket.totalChildTickets}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">등록된 티켓이 없습니다.</p>
+          )}
+        </section>
 
         <div className="flex-1 mt-20">
           <KakaoMap
