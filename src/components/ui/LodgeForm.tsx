@@ -89,8 +89,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setRoomTypeImages(
         initialData.roomTypes.map((roomType) =>
           roomType.images ? [...roomType.images] : []
-        )
+        ) ?? []
       );
+      setTicketTypes(initialData.ticketTypes ?? []);
     }
   }, [mode, initialData]);
 
