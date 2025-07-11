@@ -18,7 +18,7 @@ interface CreateLodgeFormData {
   roomTypes: RoomType[];
   newImageFiles: File[];
   roomTypeImages: File[][];
-  ticketTypes: TicketType[]
+  ticketTypes: TicketType[];
 }
 
 const CreateLodgePage = () => {
@@ -26,24 +26,32 @@ const CreateLodgePage = () => {
   const router = useRouter();
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
-    const {newImageFiles, roomTypeImages, ticketTypes, ...dataWithoutImages} = data;
+    const { newImageFiles, roomTypeImages, ticketTypes, ...dataWithoutImages } =
+      data;
     const lodgeData = await dispatch(
       createLodge({
         ...dataWithoutImages,
         description: dataWithoutImages.description ?? null,
-        roomTypes: dataWithoutImages.roomTypes.map((room): Omit<RoomType, "seasonalPricing"> & { seasonalPricing?: SeasonalPricing[] } => {
-          const { seasonalPricing, ...roomWithoutSeasonal } = room;
-          return {
-            ...roomWithoutSeasonal,
-            seasonalPricing: seasonalPricing ?? [],
-          };
-        }),
+        roomTypes: dataWithoutImages.roomTypes.map(
+          (
+            room
+          ): Omit<RoomType, "seasonalPricing"> & {
+            seasonalPricing?: SeasonalPricing[];
+          } => {
+            const { seasonalPricing, ...roomWithoutSeasonal } = room;
+            return {
+              ...roomWithoutSeasonal,
+              seasonalPricing: seasonalPricing ?? [],
+            };
+          }
+        ),
         lodgeImageFile: newImageFiles,
         roomTypeImages,
         ticketTypes: ticketTypes ?? [],
       })
     );
 
+    console.log("Submtting ticketTypes:", data.ticketTypes);
 
     if (createLodge.fulfilled.match(lodgeData)) {
       alert("숙소가 성공적으로 등록되었습니다.");
@@ -53,19 +61,20 @@ const CreateLodgePage = () => {
     }
   };
 
+
   return (
     <div className="flex flex-col">
       <div className="relative flex items-center justify-center mx-24 mt-10">
-        <div className="absolute left-0 p-2 cursor-pointer" onClick={() => router.push("/admin/lodge")}>
+        <div
+          className="absolute left-0 p-2 cursor-pointer"
+          onClick={() => router.push("/admin/lodge")}
+        >
           <ArrowLeft />
         </div>
         <h1 className="text-2xl font-bold text-center">숙소 등록</h1>
       </div>
-      <LodgeForm
-        mode="create"
-        onSubmit={handleCreateLodge}
-      />
-      </div>
+      <LodgeForm mode="create" onSubmit={handleCreateLodge} />
+    </div>
   );
 };
 
