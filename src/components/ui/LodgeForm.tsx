@@ -41,7 +41,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketAdultPrice, setTicketAdultPrice] = useState(0);
   const [ticketChildPrice, setTicketChildPrice] = useState(0);
-  const [ticketTotalTickets, setTicketTotalTickets] = useState(1);
+  const [ticketTotalAdultTickets, setTicketTotalAdultTickets] = useState(1);
+  const [ticketTotalChildTickets, setTicketTotalChildTickets] = useState(1);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -112,7 +113,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         description: ticketDescription,
         adultPrice: ticketAdultPrice,
         childPrice: ticketChildPrice,
-        totalTickets: ticketTotalTickets,
+        totalAdultTickets: ticketTotalAdultTickets,
+        totalChildTickets: ticketTotalChildTickets,
       },
     ]);
 
@@ -120,7 +122,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     setTicketDescription("");
     setTicketAdultPrice(0);
     setTicketChildPrice(0);
-    setTicketTotalTickets(1);
+    setTicketTotalAdultTickets(1);
+    setTicketTotalChildTickets(1);
   };
 
   const handleTicketTypeChange = (idx: number, key: string, value: any) => {
@@ -284,7 +287,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       description: ticketDescription,
                       adultPrice: ticketAdultPrice,
                       childPrice: ticketChildPrice,
-                      totalTickets: ticketTotalTickets,
+                      totalAdultTickets: ticketTotalAdultTickets,
+                      totalChildTickets: ticketTotalChildTickets,
                     },
                   ]
                 : []),
@@ -570,7 +574,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             >
               <div className="flex justify-between items-center">
                 <p className="font-semibold text-xl">티켓 {idx + 1}</p>
-                {ticketTypes.length > 1 && (
+                {idx > 0 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveTicketType(idx)}
@@ -600,44 +604,46 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               <div className="flex gap-2">
                 <div className="flex flex-col flex-1">
                   <p className="font-semibold text-lg">성인 가격</p>
-                  <input
-                    type="number"
+                  <PriceInput
                     value={ticket.adultPrice}
-                    onChange={(e) =>
-                      handleTicketTypeChange(
-                        idx,
-                        "adultPrice",
-                        Number(e.target.value)
-                      )
+                    onChange={(value) =>
+                      handleTicketTypeChange(idx, "adultPrice", Number(value))
                     }
-                    className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
                   />
                 </div>
                 <div className="flex flex-col flex-1">
                   <p className="font-semibold text-lg">어린이 가격</p>
-                  <input
-                    type="number"
+                  <PriceInput
                     value={ticket.childPrice}
-                    onChange={(e) =>
-                      handleTicketTypeChange(
-                        idx,
-                        "childPrice",
-                        Number(e.target.value)
-                      )
+                    onChange={(value) =>
+                      handleTicketTypeChange(idx, "childPrice", Number(value))
                     }
-                    className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <p className="font-semibold text-lg">총 티켓 수량</p>
+              <p>성인 티켓 수</p>
               <input
                 type="number"
-                value={ticket.totalTickets}
+                value={ticket.totalAdultTickets}
                 onChange={(e) =>
                   handleTicketTypeChange(
                     idx,
-                    "totalTickets",
+                    "totalAdultTickets",
+                    Number(e.target.value)
+                  )
+                }
+                className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+              />
+              <p>어린이 티켓 수</p>
+              <input
+                type="number"
+                value={ticket.totalChildTickets}
+                onChange={(e) =>
+                  handleTicketTypeChange(
+                    idx,
+                    "totalChildTickets",
                     Number(e.target.value)
                   )
                 }
@@ -646,51 +652,9 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             </div>
           ))}
 
-          <div className="mt-4 border p-4 rounded border-gray-300 shadow">
-            <h4 className="font-bold text-lg mb-2">새 티켓 추가</h4>
-            <input
-              placeholder="티켓 이름"
-              value={ticketName}
-              onChange={(e) => setTicketName(e.target.value)}
-              className="border w-full mb-2 px-3 py-1 rounded-md"
-            />
-            <textarea
-              placeholder="티켓 설명"
-              value={ticketDescription}
-              onChange={(e) => setTicketDescription(e.target.value)}
-              className="border w-full mb-2 px-3 py-2 rounded-md resize-y min-h-[80px]"
-            />
-            <div className="flex gap-2 mb-2">
-              <input
-                type="number"
-                placeholder="성인 가격"
-                value={ticketAdultPrice}
-                onChange={(e) => setTicketAdultPrice(Number(e.target.value))}
-                className="border flex-1 px-3 py-1 rounded-md"
-              />
-              <input
-                type="number"
-                placeholder="어린이 가격"
-                value={ticketChildPrice}
-                onChange={(e) => setTicketChildPrice(Number(e.target.value))}
-                className="border flex-1 px-3 py-1 rounded-md"
-              />
-            </div>
-            <input
-              type="number"
-              placeholder="총 티켓 수량"
-              value={ticketTotalTickets}
-              onChange={(e) => setTicketTotalTickets(Number(e.target.value))}
-              className="border w-full mb-2 px-3 py-1 rounded-md"
-            />
-            <button
-              type="button"
-              onClick={handleAddTicketType}
-              className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              + 티켓 추가
-            </button>
-          </div>
+          <button type="button" onClick={handleAddTicketType}>
+            + 티켓 추가
+          </button>
         </div>
 
         <button
