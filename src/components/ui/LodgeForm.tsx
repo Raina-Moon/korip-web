@@ -41,7 +41,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketAdultPrice, setTicketAdultPrice] = useState(0);
   const [ticketChildPrice, setTicketChildPrice] = useState(0);
-  const [ticketTotalTickets, setTicketTotalTickets] = useState(1);
+  const [ticketTotalAdultTickets, setTicketTotalAdultTickets] = useState(1);
+  const [ticketTotalChildTickets, setTicketTotalChildTickets] = useState(1);
 
   const handleAddRoomType = () => {
     setRoomTypes((prev) => [
@@ -112,7 +113,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         description: ticketDescription,
         adultPrice: ticketAdultPrice,
         childPrice: ticketChildPrice,
-        totalTickets: ticketTotalTickets,
+        totalAdultTickets: ticketTotalAdultTickets,
+        totalChildTickets: ticketTotalChildTickets,
       },
     ]);
 
@@ -120,7 +122,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     setTicketDescription("");
     setTicketAdultPrice(0);
     setTicketChildPrice(0);
-    setTicketTotalTickets(1);
+    setTicketTotalAdultTickets(1);
+    setTicketTotalChildTickets(1);
   };
 
   const handleTicketTypeChange = (idx: number, key: string, value: any) => {
@@ -284,7 +287,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
                       description: ticketDescription,
                       adultPrice: ticketAdultPrice,
                       childPrice: ticketChildPrice,
-                      totalTickets: ticketTotalTickets,
+                      totalAdultTickets: ticketTotalAdultTickets,
+                      totalChildTickets: ticketTotalChildTickets,
                     },
                   ]
                 : []),
@@ -633,11 +637,23 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
               <p className="font-semibold text-lg">총 티켓 수량</p>
               <input
                 type="number"
-                value={ticket.totalTickets}
+                value={ticket.totalAdultTickets}
                 onChange={(e) =>
                   handleTicketTypeChange(
                     idx,
-                    "totalTickets",
+                    "totalAdultTickets",
+                    Number(e.target.value)
+                  )
+                }
+                className="border border-gray-600 px-3 py-1 outline-none rounded-md focus:border-blue-500"
+              />
+              <input
+                type="number"
+                value={ticket.totalChildTickets}
+                onChange={(e) =>
+                  handleTicketTypeChange(
+                    idx,
+                    "totalChildTickets",
                     Number(e.target.value)
                   )
                 }
@@ -678,9 +694,20 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
             </div>
             <input
               type="number"
-              placeholder="총 티켓 수량"
-              value={ticketTotalTickets}
-              onChange={(e) => setTicketTotalTickets(Number(e.target.value))}
+              placeholder="총 성인 티켓 수량"
+              value={ticketTotalAdultTickets}
+              onChange={(e) =>
+                setTicketTotalAdultTickets(Number(e.target.value))
+              }
+              className="border w-full mb-2 px-3 py-1 rounded-md"
+            />
+            <input
+              type="number"
+              placeholder="총 어린이 티켓 수량"
+              value={ticketTotalChildTickets}
+              onChange={(e) =>
+                setTicketTotalChildTickets(Number(e.target.value))
+              }
               className="border w-full mb-2 px-3 py-1 rounded-md"
             />
             <button
