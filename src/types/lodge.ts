@@ -69,5 +69,6 @@ export interface TicketType {
   description?: string;
   adultPrice: number;
   childPrice: number;
-  totalTickets: number;
+  totalAdultTickets: number;
+  totalChildTickets: number;
 }
