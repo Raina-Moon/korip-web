@@ -1,6 +1,6 @@
 "use client";
 
-import ReviewCard from "@/components/ui/ReviewCard";
+import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
@@ -236,14 +236,14 @@ const LodgeDetailPage = () => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
   };
 
-  const startEditing = (review: Review) => {
+  const startEditing = (review: GenericReview) => {
     setEditingId(String(review.id));
     setEditingComment(review.comment || "");
     setEditingRating(review.rating || null);
     setOpenMenuId(null);
   };
 
-  const saveEdit = async (review: Review) => {
+  const saveEdit = async (review: GenericReview) => {
     try {
       await updateReview({
         id: review.id,
@@ -256,7 +256,7 @@ const LodgeDetailPage = () => {
     }
   };
 
-  const handleDelete = async (review: Review) => {
+  const handleDelete = async (review: GenericReview) => {
     if (confirm("Are you sure you want to delete this review?")) {
       try {
         await deleteReview(review.id).unwrap();
