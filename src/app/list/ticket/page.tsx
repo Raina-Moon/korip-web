@@ -2,11 +2,13 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetAvailableTicketQuery } from "@/lib/ticket/ticketApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
 const TicketListPage = () => {
+  const [selectedSort, setSelectedSort] = useState<string>("popularity");
+
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
@@ -31,11 +33,42 @@ const TicketListPage = () => {
     else dispatch(hideLoading());
   }, [isLoading, dispatch]);
 
+  useEffect(() => {
+    setSelectedSort(sort);
+  }, [sort]);
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSort(e.target.value);
+
+    const newQuery = new URLSearchParams({
+      region,
+      date,
+      adults,
+      children,
+      sort: e.target.value,
+    }).toString();
+
+    router.push(`/list/ticket?${newQuery}`);
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold text-primary-900">
         티켓 검색 결과 {tickets ? tickets.length : 0}
       </h1>
+
+      <select
+        value={selectedSort}
+        onChange={handleSortChange}
+        className="border rounded-md p-2 my-4"
+      >
+        <option value="popularity">인기순</option>
+        <option value="reviews">리뷰많은순</option>
+        <option value="adult_price_asc">성인 최저가순</option>
+        <option value="adult_price_desc">성인 최고가순</option>
+        <option value="child_price_asc">아동 최저가순</option>
+        <option value="child_price_desc">아동 최고가순</option>
+      </select>
 
       {tickets?.length === 0 ? (
         <p className="text-lg text-gray-600">검색 결과가 없습니다.</p>
