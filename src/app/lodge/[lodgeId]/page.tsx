@@ -1,6 +1,6 @@
 "use client";
 
-import ReviewCard from "@/components/ui/ReviewCard";
+import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
@@ -102,7 +102,7 @@ const LodgeDetailPage = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [dispatch,showingLoginModal]);
+  }, [dispatch, showingLoginModal]);
 
   const handleAdultChange = (delta: number) => {
     const newAdults = Math.max(1, adults + delta);
@@ -112,12 +112,12 @@ const LodgeDetailPage = () => {
   };
 
   useEffect(() => {
-    if(isLoading) {
-      dispatch(showLoading())
+    if (isLoading) {
+      dispatch(showLoading());
     } else {
       dispatch(hideLoading());
     }
-  }, [isLoading, dispatch])
+  }, [isLoading, dispatch]);
 
   useEffect(() => {
     let checkInStr = searchParams.get("checkIn") ?? "";
@@ -194,7 +194,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults,
       children,
-      roomCount : room,
+      roomCount: room,
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
@@ -218,7 +218,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
-      dispatch(openLoginModal("bookmark"));
+      dispatch(openLoginModal("lodge/bookmark"));
       return;
     }
     try {
@@ -236,14 +236,14 @@ const LodgeDetailPage = () => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
   };
 
-  const startEditing = (review: Review) => {
+  const startEditing = (review: GenericReview) => {
     setEditingId(String(review.id));
     setEditingComment(review.comment || "");
     setEditingRating(review.rating || null);
     setOpenMenuId(null);
   };
 
-  const saveEdit = async (review: Review) => {
+  const saveEdit = async (review: GenericReview) => {
     try {
       await updateReview({
         id: review.id,
@@ -256,7 +256,7 @@ const LodgeDetailPage = () => {
     }
   };
 
-  const handleDelete = async (review: Review) => {
+  const handleDelete = async (review: GenericReview) => {
     if (confirm("Are you sure you want to delete this review?")) {
       try {
         await deleteReview(review.id).unwrap();
@@ -535,16 +535,16 @@ const LodgeDetailPage = () => {
 
       {showingLoginModal && (
         <div
-        onClick={() => dispatch(closeLoginModal())}
+          onClick={() => dispatch(closeLoginModal())}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
           <div onClick={(e) => e.stopPropagation()}>
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-            onLogin={() => router.push("/login")}
-          />
-        </div>
+              onLogin={() => router.push("/login")}
+            />
+          </div>
         </div>
       )}
 
