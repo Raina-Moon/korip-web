@@ -35,7 +35,6 @@ export const ticketApi = createApi({
             ]
           : [{ type: "TicketReviews", id: "LIST" }],
     }),
-
     createTicketReview: builder.mutation<
       any,
       { id: number | string; data: { rating: number; comment?: string } }
@@ -47,6 +46,31 @@ export const ticketApi = createApi({
       }),
       invalidatesTags: [{ type: "TicketReviews", id: "LIST" }],
     }),
+    updateTicketReview: builder.mutation<
+      any,
+      { reviewId: number; data: { rating: number; comment?: string } }
+    >({
+      query: ({ reviewId, data }) => ({
+        url: `/review/${reviewId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { reviewId }) => [
+        { type: "TicketReviews", id: reviewId },
+        { type: "TicketReviews", id: "LIST" },
+      ],
+    }),
+
+    deleteTicketReview: builder.mutation<any, number>({
+      query: (reviewId) => ({
+        url: `/review/${reviewId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "TicketReviews", id },
+        { type: "TicketReviews", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -55,4 +79,6 @@ export const {
   useGetTicketByIdQuery,
   useGetTicketReviewsQuery,
   useCreateTicketReviewMutation,
+  useUpdateTicketReviewMutation,
+  useDeleteTicketReviewMutation,
 } = ticketApi;
