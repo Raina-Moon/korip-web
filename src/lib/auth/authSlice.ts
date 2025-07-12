@@ -1,6 +1,11 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+export type LoginModalContextType =
+  | "lodge/bookmark"
+  | "lodge/reserve"
+  | "ticket/bookmark";
+
 interface User {
   id: number;
   nickname: string;
@@ -14,15 +19,15 @@ interface AuthState {
   isAuthenticated: boolean;
   accessToken: string | null;
   showingLoginModal: boolean;
-  loginModalContext: string | null;
+  loginModalContext: LoginModalContextType | null;
 }
 
 const initialState: AuthState = {
   user: undefined,
   isAuthenticated: false,
   accessToken: null,
-  showingLoginModal:false,
-  loginModalContext:null
+  showingLoginModal: false,
+  loginModalContext: null,
 };
 
 const authSlice = createSlice({
@@ -60,7 +65,10 @@ const authSlice = createSlice({
         localStorage.removeItem("accessToken");
       }
     },
-    openLoginModal: (state, action: PayloadAction<string | null>) => {
+    openLoginModal: (
+      state,
+      action: PayloadAction<LoginModalContextType | null>
+    ) => {
       state.showingLoginModal = true;
       state.loginModalContext = action.payload;
     },
@@ -68,14 +76,21 @@ const authSlice = createSlice({
       state.showingLoginModal = false;
       state.loginModalContext = null;
     },
-    updateNickname(state,action) {
-      if(state.user) {
+    updateNickname(state, action) {
+      if (state.user) {
         state.user.nickname = action.payload;
       }
-    }
+    },
   },
 });
 
-export const { logout, setUserOnly, setCredential, setAccessToken, openLoginModal, closeLoginModal, updateNickname } =
-  authSlice.actions;
+export const {
+  logout,
+  setUserOnly,
+  setCredential,
+  setAccessToken,
+  openLoginModal,
+  closeLoginModal,
+  updateNickname,
+} = authSlice.actions;
 export default authSlice.reducer;
