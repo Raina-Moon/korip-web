@@ -79,7 +79,7 @@ export default function RoomCard({
       <button
         onClick={() => {
           if (!isAuthenticated) {
-            dispatch(openLoginModal("reserve"));
+            dispatch(openLoginModal("lodge/reserve"));
           } else {
             if (room.id !== undefined) {
               handleReserve(room.id, room.name);
