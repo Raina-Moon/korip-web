@@ -44,7 +44,16 @@ const TicketListPage = () => {
           <div
             key={ticket.id}
             className="border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer"
-            onClick={() => router.push(`/ticket/${ticket.id}`)}
+            onClick={() => {
+              const query = new URLSearchParams({
+                region,
+                date,
+                adults,
+                children,
+                sort,
+              }).toString();
+              router.push(`/ticket/${ticket.id}?${query}`);
+            }}
           >
             <h2 className="text-lg font-bold text-primary-900">
               {ticket.name}

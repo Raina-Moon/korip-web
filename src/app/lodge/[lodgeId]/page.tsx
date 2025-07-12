@@ -25,7 +25,7 @@ import ReservationSearchBox from "./ReservationSearchBox";
 import RoomCard from "./RoomCard";
 import LoginPromptModal from "../../../components/ui/LoginPromptModal";
 import ReportModal from "../../../components/ui/ReportModal";
-import ImageModal from "./ImageModal";
+import ImageModal from "../../../components/ui/ImageModal";
 import { RoomType } from "@/types/lodge";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 
