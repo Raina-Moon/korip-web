@@ -26,12 +26,16 @@ import {
 } from "@/lib/ticket-bookmark/ticketBookmark";
 import { TicketBookmark } from "@/types/ticket";
 import TicketSearchBox from "./TicketReservationSearckBox";
+import ImageModal from "@/components/ui/ImageModal";
 
 const TicketDetailPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
   const [editingRating, setEditingRating] = useState<number | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentModalImage, setCurrentModalImage] = useState(0);
+  const [modalImages, setModalImages] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
 
@@ -209,6 +213,30 @@ const TicketDetailPage = () => {
     router.push(`/ticket/${ticketId}?${query}`);
   };
 
+  const openModal = (images: string[], index: number) => {
+    setModalImages(images);
+    setCurrentModalImage(index);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setModalImages([]);
+    setCurrentModalImage(0);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentModalImage((prev) =>
+      prev === 0 ? modalImages.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    setCurrentModalImage((prev) =>
+      prev === modalImages.length - 1 ? 0 : prev + 1
+    );
+  };
+
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
@@ -223,6 +251,7 @@ const TicketDetailPage = () => {
             width={1200}
             height={400}
             className="object-cover w-full h-full"
+            onClick={() => openModal(imageUrl, 0)}
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -340,6 +369,16 @@ const TicketDetailPage = () => {
         setReason={setReason}
         selectedReviewId={selectedReviewId}
         onSubmit={() => {}}
+      />
+
+      <ImageModal
+        isOpen={isOpen}
+        images={modalImages}
+        currentIndex={currentModalImage}
+        onPrev={handlePrevImage}
+        onNext={handleNextImage}
+        onClose={closeModal}
+        setCurrentIndex={setCurrentModalImage}
       />
     </div>
   );
