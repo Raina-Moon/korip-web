@@ -11,11 +11,6 @@ import {
   useUpdateTicketReviewMutation,
   useDeleteTicketReviewMutation,
 } from "@/lib/ticket/ticketApi";
-import {
-  useGetMyBookmarksQuery,
-  useCreateBookmarkMutation,
-  useDeleteBookmarkMutation,
-} from "@/lib/bookmark/bookmarkApi";
 import { openLoginModal, closeLoginModal } from "@/lib/auth/authSlice";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Heart, HeartOff } from "lucide-react";
@@ -63,6 +58,7 @@ const TicketDetailPage = () => {
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
+
   const [createBookmark] = useCreateTicketBookmarkMutation();
   const [deleteBookmark] = useDeleteTicketBookmarkMutation();
 
@@ -94,7 +90,7 @@ const TicketDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
-      dispatch(openLoginModal("bookmark"));
+      dispatch(openLoginModal("ticket/bookmark"));
       return;
     }
     try {
@@ -109,10 +105,6 @@ const TicketDetailPage = () => {
   };
 
   const handleSubmitReview = async () => {
-    if (!isAuthenticated) {
-      dispatch(openLoginModal("review"));
-      return;
-    }
     if (!reviewComment.trim() || reviewRating < 1) {
       alert("내용과 평점을 입력해주세요.");
       return;
@@ -201,6 +193,25 @@ const TicketDetailPage = () => {
             No image available
           </div>
         )}
+      </div>
+
+      <div className="flex items-center gap-2 mb-4">
+        <h1 className="text-3xl font-bold text-primary-900">{ticket.name}</h1>
+        <button
+          onClick={handleBookmarkToggle}
+          className={`text-2xl ${
+            isBookmarked ? "text-red-500" : "text-gray-400"
+          } hover:text-red-600`}
+          aria-label={
+            isBookmarked ? "Remove from favorites" : "Add to favorites"
+          }
+        >
+          {isBookmarked ? (
+            <Heart fill="red" stroke="red" className="w-6 h-6" />
+          ) : (
+            <HeartOff className="w-6 h-6 text-gray-400" />
+          )}
+        </button>
       </div>
 
       <div className="mt-8 border-t pt-6">

@@ -102,7 +102,7 @@ const LodgeDetailPage = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [dispatch,showingLoginModal]);
+  }, [dispatch, showingLoginModal]);
 
   const handleAdultChange = (delta: number) => {
     const newAdults = Math.max(1, adults + delta);
@@ -112,12 +112,12 @@ const LodgeDetailPage = () => {
   };
 
   useEffect(() => {
-    if(isLoading) {
-      dispatch(showLoading())
+    if (isLoading) {
+      dispatch(showLoading());
     } else {
       dispatch(hideLoading());
     }
-  }, [isLoading, dispatch])
+  }, [isLoading, dispatch]);
 
   useEffect(() => {
     let checkInStr = searchParams.get("checkIn") ?? "";
@@ -194,7 +194,7 @@ const LodgeDetailPage = () => {
       checkOut,
       adults,
       children,
-      roomCount : room,
+      roomCount: room,
       lodgeName: lodge?.name || "Unknown Lodge",
       roomName,
     };
@@ -218,7 +218,7 @@ const LodgeDetailPage = () => {
 
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
-      dispatch(openLoginModal("bookmark"));
+      dispatch(openLoginModal("lodge/bookmark"));
       return;
     }
     try {
@@ -535,16 +535,16 @@ const LodgeDetailPage = () => {
 
       {showingLoginModal && (
         <div
-        onClick={() => dispatch(closeLoginModal())}
+          onClick={() => dispatch(closeLoginModal())}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
           <div onClick={(e) => e.stopPropagation()}>
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-            onLogin={() => router.push("/login")}
-          />
-        </div>
+              onLogin={() => router.push("/login")}
+            />
+          </div>
         </div>
       )}
 
