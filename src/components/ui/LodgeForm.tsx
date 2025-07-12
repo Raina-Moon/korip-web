@@ -84,10 +84,10 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       setLongitude(initialData.longitude);
       setDescription(initialData.description ?? "");
       setAccommodationType(initialData.accommodationType);
-      setRoomTypes(initialData.roomTypes);
+      setRoomTypes(initialData.roomTypes ?? []);
       setLodgeImages(initialData.images ?? []);
       setRoomTypeImages(
-        initialData.roomTypes.map((roomType) =>
+        (initialData.roomTypes ?? []).map((roomType) =>
           roomType.images ? [...roomType.images] : []
         ) ?? []
       );
