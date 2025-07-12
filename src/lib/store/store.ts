@@ -18,6 +18,7 @@ import { reportReviewApi } from "../report-review/reportReviewApi";
 import loadingReducer from "./loadingSlice";
 import adminReservationReducer from "../admin/reservation/reservationSlice";
 import { userServiceApi } from "../user/userApi";
+import reportsTicketReducer from "../admin/reports/ticketReportsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
     "admin/reports": reportsReducer,
     "admin/roomInventory": roomInventoryReducer,
     "admin/roomPricing": roomPricingReducer,
+    "admin/ticketReports": reportsTicketReducer,
     adminReservation : adminReservationReducer,
     [lodgeApi.reducerPath]: lodgeApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
