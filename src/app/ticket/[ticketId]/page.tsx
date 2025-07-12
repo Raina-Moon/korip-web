@@ -4,17 +4,38 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { useGetTicketByIdQuery, useGetTicketReviewsQuery, useCreateTicketReviewMutation } from "@/lib/ticket/ticketApi";
-import { useGetMyBookmarksQuery, useCreateBookmarkMutation, useDeleteBookmarkMutation } from "@/lib/bookmark/bookmarkApi";
+import {
+  useGetTicketByIdQuery,
+  useGetTicketReviewsQuery,
+  useCreateTicketReviewMutation,
+  useUpdateTicketReviewMutation,
+  useDeleteTicketReviewMutation,
+} from "@/lib/ticket/ticketApi";
+import {
+  useGetMyBookmarksQuery,
+  useCreateBookmarkMutation,
+  useDeleteBookmarkMutation,
+} from "@/lib/bookmark/bookmarkApi";
 import { openLoginModal, closeLoginModal } from "@/lib/auth/authSlice";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Heart, HeartOff } from "lucide-react";
-import ReviewCard from "@/components/ui/ReviewCard";
+import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import { TicketReview } from "@/types/ticketReview";
 import LoginPromptModal from "@/components/ui/LoginPromptModal";
 import ReportModal from "@/components/ui/ReportModal";
+import {
+  useCreateTicketBookmarkMutation,
+  useDeleteTicketBookmarkMutation,
+  useGetMyTicketBookmarksQuery,
+} from "@/lib/ticket-bookmark/ticketBookmark";
+import { TicketBookmark } from "@/types/ticket";
 
 const TicketDetailPage = () => {
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingComment, setEditingComment] = useState<string>("");
+  const [editingRating, setEditingRating] = useState<number | null>(null);
+
   const { ticketId } = useParams() as { ticketId: string };
   const dispatch = useAppDispatch();
 
@@ -26,8 +47,12 @@ const TicketDetailPage = () => {
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const myUserId = useAppSelector((state) => state.auth.user?.id);
-  const showingLoginModal = useAppSelector((state) => state.auth.showingLoginModal);
-  const loginModalContext = useAppSelector((state) => state.auth.loginModalContext);
+  const showingLoginModal = useAppSelector(
+    (state) => state.auth.showingLoginModal
+  );
+  const loginModalContext = useAppSelector(
+    (state) => state.auth.loginModalContext
+  );
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -35,11 +60,18 @@ const TicketDetailPage = () => {
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
   const [createReview] = useCreateTicketReviewMutation();
 
-  const { data: myBookmarks } = useGetMyBookmarksQuery(undefined, { skip: !isAuthenticated });
-  const [createBookmark] = useCreateBookmarkMutation();
-  const [deleteBookmark] = useDeleteBookmarkMutation();
+  const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+  const [createBookmark] = useCreateTicketBookmarkMutation();
+  const [deleteBookmark] = useDeleteTicketBookmarkMutation();
 
-  const isBookmarked = myBookmarks?.some((b) => b.ticketId === Number(ticketId));
+  const [updateReview] = useUpdateTicketReviewMutation();
+  const [deleteReview] = useDeleteTicketReviewMutation();
+
+  const isBookmarked = (myBookmarks as TicketBookmark[] | undefined)?.some(
+    (b) => b.ticketTypeId === Number(ticketId)
+  );
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -48,7 +80,11 @@ const TicketDetailPage = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showingLoginModal && modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        showingLoginModal &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         dispatch(closeLoginModal());
       }
     };
@@ -63,7 +99,7 @@ const TicketDetailPage = () => {
     }
     try {
       if (isBookmarked) {
-        await deleteBookmark({ ticketId: Number(ticketId) }).unwrap();
+        await deleteBookmark(Number(ticketId)).unwrap();
       } else {
         await createBookmark({ ticketId: Number(ticketId) }).unwrap();
       }
@@ -82,7 +118,10 @@ const TicketDetailPage = () => {
       return;
     }
     try {
-      await createReview({ id: ticketId, data: { rating: reviewRating, comment: reviewComment.trim() } }).unwrap();
+      await createReview({
+        id: ticketId,
+        data: { rating: reviewRating, comment: reviewComment.trim() },
+      }).unwrap();
       setReviewComment("");
       setReviewRating(5);
     } catch (error) {
@@ -91,45 +130,77 @@ const TicketDetailPage = () => {
     }
   };
 
+  const toggleMenu = (id: string) => {
+    setOpenMenuId((prevId) => (prevId === id ? null : id));
+  };
+
+  const startEditing = (review: GenericReview) => {
+    setEditingId(String(review.id));
+    setEditingComment(review.comment ?? "");
+    setEditingRating(review.rating ?? null);
+    setOpenMenuId(null);
+  };
+
+  const saveEdit = async (review: GenericReview) => {
+    if (!editingRating || editingRating < 1) {
+      alert("평점을 입력해주세요");
+      return;
+    }
+    try {
+      await updateReview({
+        reviewId: review.id,
+        data: { comment: editingComment, rating: editingRating },
+      }).unwrap();
+      setEditingId(null);
+    } catch (error) {
+      console.error(error);
+      alert("리뷰 수정 실패");
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingComment("");
+    setEditingRating(null);
+  };
+
+  const handleDelete = async (review: GenericReview) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await deleteReview(review.id).unwrap();
+        alert("삭제 완료");
+      } catch (error) {
+        console.error(error);
+        alert("리뷰 삭제 실패");
+      }
+    }
+  };
+
+  const handleReport = (reviewId: number) => {
+    setSelectedReviewId(reviewId);
+    setIsReportModalOpen(true);
+  };
+
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
 
-  const lodgeImage = ticket.lodge?.images?.[0]?.imageUrl;
+  const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-6">
-        {lodgeImage ? (
-          <div className="relative w-full md:w-1/2 h-72 rounded-lg overflow-hidden">
-            <Image
-              src={lodgeImage}
-              alt={ticket.name}
-              fill
-              className="object-cover"
-            />
-          </div>
+      <div className="w-full h-80 rounded-xl overflow-hidden mb-6 cursor-pointer">
+        {imageUrl[0] ? (
+          <Image
+            src={imageUrl[0]}
+            alt={ticket.name}
+            width={1200}
+            height={400}
+            className="object-cover w-full h-full"
+          />
         ) : (
-          <div className="w-full md:w-1/2 h-72 bg-gray-200 flex items-center justify-center rounded-lg">
-            No Image
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            No image available
           </div>
         )}
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-2xl font-bold text-primary-900">{ticket.name}</h1>
-            <button
-              onClick={handleBookmarkToggle}
-              className={`text-2xl ${isBookmarked ? "text-red-500" : "text-gray-400"} hover:text-red-600`}
-              aria-label={isBookmarked ? "Remove from favorites" : "Add to favorites"}
-            >
-              {isBookmarked ? <Heart fill="red" stroke="red" /> : <HeartOff />}
-            </button>
-          </div>
-          <p className="text-gray-600 mb-2">{ticket.region}</p>
-          <p className="text-gray-800 mb-4">{ticket.description}</p>
-          <div className="mb-2">
-            <p className="text-primary-900 font-semibold">성인 가격: {ticket.adultPrice.toLocaleString()}원</p>
-            <p className="text-primary-900 font-semibold">아동 가격: {ticket.childPrice.toLocaleString()}원</p>
-          </div>
-        </div>
       </div>
 
       <div className="mt-8 border-t pt-6">
@@ -144,6 +215,18 @@ const TicketDetailPage = () => {
                   review={review}
                   myUserId={myUserId}
                   isLoggedIn={isAuthenticated}
+                  openMenuId={openMenuId}
+                  editingId={editingId}
+                  toggleMenu={toggleMenu}
+                  startEditing={startEditing}
+                  saveEdit={saveEdit}
+                  cancelEditing={cancelEditing}
+                  handleDelete={handleDelete}
+                  handleReport={handleReport}
+                  editingComment={editingComment}
+                  setEditingComment={setEditingComment}
+                  editingRating={editingRating}
+                  setEditingRating={setEditingRating}
                 />
               ))}
           </div>
@@ -187,7 +270,7 @@ const TicketDetailPage = () => {
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-              onLogin={() => window.location.href = "/login"}
+              onLogin={() => (window.location.href = "/login")}
             />
           </div>
         </div>
