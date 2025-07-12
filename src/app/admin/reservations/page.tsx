@@ -131,11 +131,13 @@ const AdminReservationsPage = () => {
                   <tr
                     key={`${item.type}-${item.id}`}
                     className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() =>
-                      router.push(
-                        `/admin/reservations/${item.id}?type=${item.type}`
-                      )
-                    }
+                    onClick={() => {
+                      if (item.type === "lodges") {
+                        router.push(`/admin/reservations/${item.id}`);
+                      } else {
+                        router.push(`/admin/reservations/ticket/${item.id}`);
+                      }
+                    }}
                   >
                     <td className="px-4 py-2 border">{item.id}</td>
                     <td className="px-4 py-2 border">
