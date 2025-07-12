@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 interface TicketSearchBoxProps {
-  region: string;
-  setRegion: (value: string) => void;
   date: string;
   setDate: (value: string) => void;
   adults: number;
@@ -15,8 +13,6 @@ interface TicketSearchBoxProps {
 }
 
 export default function TicketSearchBox({
-  region,
-  setRegion,
   date,
   setDate,
   adults,
@@ -28,14 +24,6 @@ export default function TicketSearchBox({
     
   return (
     <div className="w-full bg-white rounded-lg shadow-lg flex flex-wrap items-center justify-center gap-4 px-5 py-5 mb-8">
-      <input
-        type="text"
-        className="border border-primary-800 rounded-md px-3 py-1"
-        value={region}
-        onChange={(e) => setRegion(e.target.value)}
-        placeholder="지역"
-      />
-
       <input
         type="date"
         className="border border-primary-800 rounded-md px-3 py-1"
