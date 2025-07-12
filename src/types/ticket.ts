@@ -9,4 +9,23 @@ export interface Ticket {
   availableAdultTickets: number;
   availableChildTickets: number;
   date: string;
+  lodge: Lodge;
+}
+
+export interface TicketBookmark {
+  id: number;
+  ticketTypeId: number;
+  userId: number;
+  createdAt: string;
+}
+
+export interface TicketImage {
+  id: number;
+  imageUrl: string;
+}
+
+export interface Lodge {
+  id: number;
+  address: string;
+  images: TicketImage[];
 }

@@ -1,18 +1,21 @@
 import { Review } from "@/types/reivew";
+import { TicketReview } from "@/types/ticketReview";
 import { formattedDate } from "@/utils/date";
 import { MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+export type GenericReview = Review | TicketReview;
+
 interface ReviewCardProps {
-  review: Review;
+  review: GenericReview;
   myUserId: number | undefined;
   openMenuId: string | null;
   editingId: string | null;
   toggleMenu: (id: string) => void;
-  startEditing: (review: Review) => void;
-  saveEdit: (review: Review) => void;
+  startEditing: (review: GenericReview) => void;
+  saveEdit: (review: GenericReview) => void;
   cancelEditing: () => void;
-  handleDelete: (review: Review) => void;
+  handleDelete: (review: GenericReview) => void;
   handleReport: (reviewId: number) => void;
   editingComment: string;
   setEditingComment: (comment: string) => void;

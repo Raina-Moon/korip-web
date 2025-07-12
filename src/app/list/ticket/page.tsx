@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGetAvailableTicketQuery } from "@/lib/ticket/ticketApi";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/lib/store/hooks";
@@ -9,6 +9,8 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 const TicketListPage = () => {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   const region = searchParams.get("region") || "전체";
   const date = searchParams.get("date") || "";
@@ -41,7 +43,8 @@ const TicketListPage = () => {
         tickets?.map((ticket) => (
           <div
             key={ticket.id}
-            className="border p-4 mb-4 rounded-lg hover:shadow transition"
+            className="border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer"
+            onClick={() => router.push(`/ticket/${ticket.id}`)}
           >
             <h2 className="text-lg font-bold text-primary-900">
               {ticket.name}
