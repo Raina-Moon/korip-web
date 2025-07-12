@@ -10,3 +10,10 @@ export interface Ticket {
   availableChildTickets: number;
   date: string;
 }
+
+export interface TicketBookmark {
+  id: number;
+  ticketTypeId: number;
+  userId: number;
+  createdAt: string;
+}
