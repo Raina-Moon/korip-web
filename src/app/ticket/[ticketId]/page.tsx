@@ -206,7 +206,7 @@ const TicketDetailPage = () => {
       children: String(children),
       sort,
     }).toString();
-    router.push(`/list/ticket?${query}`);
+    router.push(`/ticket/${ticketId}?${query}`);
   };
 
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
@@ -232,8 +232,6 @@ const TicketDetailPage = () => {
       </div>
 
       <TicketSearchBox
-        region={region}
-        setRegion={setRegion}
         date={date}
         setDate={setDate}
         adults={adults}
