@@ -43,7 +43,7 @@ const TicketListPage = () => {
         tickets?.map((ticket) => (
           <div
             key={ticket.id}
-            className="border p-4 mb-4 rounded-lg hover:shadow transition"
+            className="border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer"
             onClick={() => router.push(`/ticket/${ticket.id}`)}
           >
             <h2 className="text-lg font-bold text-primary-900">
