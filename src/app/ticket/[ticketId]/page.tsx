@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
@@ -10,6 +10,7 @@ import {
   useCreateTicketReviewMutation,
   useUpdateTicketReviewMutation,
   useDeleteTicketReviewMutation,
+  useGetAvailableTicketQuery,
 } from "@/lib/ticket/ticketApi";
 import { openLoginModal, closeLoginModal } from "@/lib/auth/authSlice";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
@@ -24,6 +25,7 @@ import {
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmark";
 import { TicketBookmark } from "@/types/ticket";
+import TicketSearchBox from "./TicketReservationSearckBox";
 
 const TicketDetailPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -31,8 +33,23 @@ const TicketDetailPage = () => {
   const [editingComment, setEditingComment] = useState<string>("");
   const [editingRating, setEditingRating] = useState<number | null>(null);
 
+  const searchParams = useSearchParams();
+
+  const regionParam = searchParams.get("region") || "전체";
+  const dateParam = searchParams.get("date") || "";
+  const adultsParam = Number(searchParams.get("adults") || "1");
+  const childrenParam = Number(searchParams.get("children") || "0");
+  const sort = searchParams.get("sort") || "popularity";
+
+  const [region, setRegion] = useState(regionParam);
+  const [date, setDate] = useState(dateParam);
+  const [adults, setAdults] = useState(adultsParam);
+  const [children, setChildren] = useState(childrenParam);
+
   const { ticketId } = useParams() as { ticketId: string };
+
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
@@ -57,6 +74,14 @@ const TicketDetailPage = () => {
 
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
+  });
+
+  const { data: tickets } = useGetAvailableTicketQuery({
+    region,
+    date,
+    adults,
+    children,
+    sort,
   });
 
   const [createBookmark] = useCreateTicketBookmarkMutation();
@@ -173,6 +198,17 @@ const TicketDetailPage = () => {
     setIsReportModalOpen(true);
   };
 
+  const handleSearch = () => {
+    const query = new URLSearchParams({
+      region,
+      date,
+      adults: String(adults),
+      children: String(children),
+      sort,
+    }).toString();
+    router.push(`/list/ticket?${query}`);
+  };
+
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
@@ -194,6 +230,18 @@ const TicketDetailPage = () => {
           </div>
         )}
       </div>
+
+      <TicketSearchBox
+        region={region}
+        setRegion={setRegion}
+        date={date}
+        setDate={setDate}
+        adults={adults}
+        setAdults={setAdults}
+        children={children}
+        setChildren={setChildren}
+        handleSearch={handleSearch}
+      />
 
       <div className="flex items-center gap-2 mb-4">
         <h1 className="text-3xl font-bold text-primary-900">{ticket.name}</h1>
