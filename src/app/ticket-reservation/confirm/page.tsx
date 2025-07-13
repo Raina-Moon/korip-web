@@ -15,7 +15,6 @@ const TicketReservationConfirmPage = () => {
   const dispatch = useAppDispatch();
 
   const totalPrice = searchParams.get("totalPrice");
-  const lodgeName = searchParams.get("lodgeName");
 
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
   const firstName = searchParams.get("firstName") || "";
@@ -31,7 +30,7 @@ const TicketReservationConfirmPage = () => {
       setWidgets(widget);
     };
     initToss();
-  }, []);
+  }, [clientKey]);
 
   useEffect(() => {
     const render = async () => {
