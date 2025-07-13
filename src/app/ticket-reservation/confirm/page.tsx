@@ -16,8 +16,6 @@ const TicketReservationConfirmPage = () => {
 
   const totalPrice = searchParams.get("totalPrice");
 
-  console.log("Total Price:", totalPrice);
-
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
   const firstName = searchParams.get("firstName") || "";
   const lastName = searchParams.get("lastName") || "";
@@ -84,8 +82,6 @@ const TicketReservationConfirmPage = () => {
       const pending = JSON.parse(
         localStorage.getItem("pendingTicketReservation") || "{}"
       );
-
-      console.log("Pending Reservation Data:", JSON.stringify(pending));
 
       const created = await dispatch(createTicketReservation(pending)).unwrap();
       const reservationId = created.id;
