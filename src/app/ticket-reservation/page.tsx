@@ -82,6 +82,7 @@ const TicketReservationPage = () => {
       ),
       lodgeName,
       ticketTypeName,
+      totalPrice: String(totalPrice),
     }).toString();
 
     router.push(`/ticket-reservation/confirm?${query}`);
