@@ -298,6 +298,8 @@ const TicketDetailPage = () => {
             children: String(children),
             lodgeName: ticket.lodge.name,
             ticketTypeName: ticket.name,
+            adultPrice: String(ticket.adultPrice),
+            childPrice: String(ticket.childPrice),
           }).toString();
 
           router.push(`/ticket-reservation?${query}`);
