@@ -289,6 +289,26 @@ const TicketDetailPage = () => {
         </button>
       </div>
 
+      <button
+        onClick={() => {
+          const query = new URLSearchParams({
+            ticketTypeId: String(ticket.id),
+            date,
+            adults: String(adults),
+            children: String(children),
+            lodgeName: ticket.lodge.name,
+            ticketTypeName: ticket.name,
+            adultPrice: String(ticket.adultPrice),
+            childPrice: String(ticket.childPrice),
+          }).toString();
+
+          router.push(`/ticket-reservation?${query}`);
+        }}
+        className="mt-8 bg-primary-700 text-white px-6 py-3 rounded hover:bg-primary-500"
+      >
+        예약하기
+      </button>
+
       <div className="mt-8 border-t pt-6">
         <h2 className="text-xl font-semibold mb-4">리뷰</h2>
         {reviews && reviews.length > 0 ? (

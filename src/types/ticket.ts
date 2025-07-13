@@ -26,6 +26,7 @@ export interface TicketImage {
 
 export interface Lodge {
   id: number;
+  name: string;
   address: string;
   images: TicketImage[];
 }

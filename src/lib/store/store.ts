@@ -22,6 +22,7 @@ import reportsTicketReducer from "../admin/reports/ticketReportsSlice";
 import adminTicketReservationReducer from "../admin/reservation/ticketReservationSlice";
 import { ticketApi } from "../ticket/ticketApi";
 import { ticketBookmarkApi } from "../ticket-bookmark/ticketBookmark";
+import ticketReservationReducer from "../ticket-reservation/ticketReservationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
     [userServiceApi.reducerPath]: userServiceApi.reducer,
     [ticketApi.reducerPath]: ticketApi.reducer,
     [ticketBookmarkApi.reducerPath]: ticketBookmarkApi.reducer,
+    ticketReservation: ticketReservationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
