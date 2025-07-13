@@ -40,6 +40,8 @@ const TicketReservationPage = () => {
 
   const [agreeCancelPolicy, setAgreeCancelPolicy] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [showCancelPolicy, setShowCancelPolicy] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
   const adultPrice = Number(searchParams.get("adultPrice") || "0");
   const childPrice = Number(searchParams.get("childPrice") || "0");
@@ -60,6 +62,7 @@ const TicketReservationPage = () => {
       specialRequests: [...specialRequests, customRequest].filter(Boolean),
       lodgeName,
       ticketTypeName,
+      totalPrice,
     };
 
     localStorage.setItem("pendingTicketReservation", JSON.stringify(pending));
@@ -211,7 +214,7 @@ const TicketReservationPage = () => {
             <button
               type="button"
               className="text-primary-700 underline"
-              onClick={() => setAgreeCancelPolicy(true)}
+              onClick={() => setShowCancelPolicy(true)}
             >
               취소 및 환불 정책
             </button>
@@ -229,7 +232,7 @@ const TicketReservationPage = () => {
             <button
               type="button"
               className="text-primary-700 underline"
-              onClick={() => setAgreePrivacy(true)}
+              onClick={() => setShowPrivacyPolicy(true)}
             >
               개인정보 수집·이용
             </button>
@@ -264,7 +267,7 @@ const TicketReservationPage = () => {
         다음 → 결제 페이지로
       </button>
 
-      {agreeCancelPolicy && (
+      {showCancelPolicy && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
             <h2 className="text-xl font-bold mb-4">취소 및 환불 정책</h2>
@@ -285,7 +288,7 @@ const TicketReservationPage = () => {
             </pre>
             <button
               className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
-              onClick={() => setAgreeCancelPolicy(false)}
+              onClick={() => setShowCancelPolicy(false)}
             >
               닫기
             </button>
@@ -293,7 +296,7 @@ const TicketReservationPage = () => {
         </div>
       )}
 
-      {agreePrivacy && (
+      {showPrivacyPolicy && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
             <h2 className="text-xl font-bold mb-4">개인정보 수집·이용 동의</h2>
@@ -325,7 +328,7 @@ const TicketReservationPage = () => {
             </pre>
             <button
               className="mt-4 bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
-              onClick={() => setAgreePrivacy(false)}
+              onClick={() => setShowPrivacyPolicy(false)}
             >
               닫기
             </button>
