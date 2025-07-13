@@ -26,7 +26,8 @@ const TicketReservationConfirmPage = () => {
 
   useEffect(() => {
     const initToss = async () => {
-      if (!clientKey) throw new Error("Toss Payments client key is not defined.");
+      if (!clientKey)
+        throw new Error("Toss Payments client key is not defined.");
       const tossPayment = await loadTossPayments(clientKey);
       const widget = tossPayment.widgets({ customerKey: ANONYMOUS });
       setWidgets(widget);
@@ -84,7 +85,7 @@ const TicketReservationConfirmPage = () => {
         localStorage.getItem("pendingTicketReservation") || "{}"
       );
 
-      console.log("Pending Reservation Data:", pending);
+      console.log("Pending Reservation Data:", JSON.stringify(pending));
 
       const created = await dispatch(createTicketReservation(pending)).unwrap();
       const reservationId = created.id;
@@ -114,7 +115,9 @@ const TicketReservationConfirmPage = () => {
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">티켓 예약 결제</h1>
-      <p>총 결제 금액: {totalPrice ? Number(totalPrice).toLocaleString() : "0"}원</p>
+      <p>
+        총 결제 금액: {totalPrice ? Number(totalPrice).toLocaleString() : "0"}원
+      </p>
       <div id="payment-methods" />
       <div id="agreement" />
 
