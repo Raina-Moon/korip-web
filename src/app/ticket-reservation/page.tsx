@@ -41,6 +41,11 @@ const TicketReservationPage = () => {
   const [agreeCancelPolicy, setAgreeCancelPolicy] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
 
+  const adultPrice = Number(searchParams.get("adultPrice") || "0");
+  const childPrice = Number(searchParams.get("childPrice") || "0");
+
+  const totalPrice = adults * adultPrice + children * childPrice;
+
   const handleNext = () => {
     const pending = {
       ticketTypeId,
@@ -232,6 +237,10 @@ const TicketReservationPage = () => {
           </span>
         </label>
       </div>
+
+      <p className="text-lg font-semibold text-primary-700">
+        총 결제 금액: {totalPrice.toLocaleString()}원
+      </p>
 
       <button
         onClick={handleNext}
