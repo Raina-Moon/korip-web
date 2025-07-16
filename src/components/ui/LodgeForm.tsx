@@ -295,7 +295,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("onSubmit data:", submitData);
           onSubmit(submitData);
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"

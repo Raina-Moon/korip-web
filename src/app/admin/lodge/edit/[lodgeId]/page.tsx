@@ -24,7 +24,6 @@ const LodgeEditPage = () => {
 
   const handleUpdateLodge = async (data: any) => {
     const updateData = await dispatch(updateLodge({ id, ...data }));
-    console.log("update data to be sent", data);
 
     if (updateLodge.fulfilled.match(updateData)) {
       alert("숙소가 성공적으로 수정되었습니다.");
