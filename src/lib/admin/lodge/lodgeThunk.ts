@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
-import { Lodge, RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
+import { Lodge, RoomInventory, RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
 import { RootState } from "@/lib/store/store";
+import { TicketInventory } from "@/types/ticket";
 
 export const fetchLodges = createAsyncThunk<
   Lodge[],
@@ -262,6 +263,31 @@ export const deleteLodge = createAsyncThunk<
         dispatch(logout());
       }
       return rejectWithValue("Failed to delete lodge");
+    }
+  }
+);
+
+export const fetchLodgeInventories = createAsyncThunk<
+  { roomInventories: RoomInventory[]; ticketInventories: TicketInventory[] },
+  number,
+  { rejectValue: string; state: RootState }
+  >(
+  "admin/lodge/fetchInventories",
+  async (lodgeId, { rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/lodge/${lodgeId}/inventories`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
     }
   }
 );
