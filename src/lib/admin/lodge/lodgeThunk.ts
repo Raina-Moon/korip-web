@@ -213,6 +213,12 @@ export const updateLodge = createAsyncThunk<
         JSON.stringify(updatedLodgeData.keepRoomTypeImgIds || [])
       );
 
+      console.log("newImageFiles", updatedLodgeData.newImageFiles);
+      console.log(
+        "newRoomTypeImageFiles",
+        updatedLodgeData.newRoomTypeImageFiles
+      );
+
       if (
         updatedLodgeData.newRoomTypeImageFiles &&
         updatedLodgeData.newRoomTypeImageFiles.length > 0

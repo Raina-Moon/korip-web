@@ -17,13 +17,15 @@ const LodgeEditPage = () => {
   const lodgeData = useAppSelector((state) => state["admin/lodge"].detail);
 
   useEffect(() => {
-if(!isNaN(id)) {
+    if (!isNaN(id)) {
       dispatch(fetchLodgeById(id));
     }
-  },[dispatch, id]);
+  }, [dispatch, id]);
 
   const handleUpdateLodge = async (data: any) => {
     const updateData = await dispatch(updateLodge({ id, ...data }));
+    console.log("update data to be sent", data);
+
     if (updateLodge.fulfilled.match(updateData)) {
       alert("숙소가 성공적으로 수정되었습니다.");
       router.push(`/admin/lodge/${id}`);
@@ -33,9 +35,12 @@ if(!isNaN(id)) {
   };
 
   return (
-<div className="flex flex-col">
+    <div className="flex flex-col">
       <div className="relative flex items-center justify-center mx-24 mt-10">
-        <div className="absolute left-0 p-2 cursor-pointer" onClick={() => router.push(`/admin/lodge/${id}`)}>
+        <div
+          className="absolute left-0 p-2 cursor-pointer"
+          onClick={() => router.push(`/admin/lodge/${id}`)}
+        >
           <ArrowLeft />
         </div>
         <h1 className="text-2xl font-bold text-center">숙소 수정</h1>

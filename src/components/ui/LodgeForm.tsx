@@ -162,6 +162,46 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       .map((img) => img.id)
   );
 
+  const submitData = {
+    id: initialData?.id,
+    name,
+    address,
+    latitude,
+    longitude,
+    description,
+    accommodationType,
+    roomTypes: roomTypes.map((room) => ({
+      ...room,
+      seasonalPricing: room.seasonalPricing ?? [],
+    })),
+    newImageFiles: uploadedImages,
+    keepImgIds: lodgeImages.map((img) => img.id),
+    roomTypeImages: newRoomTypeImageFiles,
+    keepRoomTypeImgIds: roomTypes
+      .flatMap((room, idx) =>
+        (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
+          roomTypeId: room.id,
+          imageId,
+        }))
+      )
+      .filter((i) => i.roomTypeId !== undefined),
+    ticketTypes: [
+      ...ticketTypes,
+      ...(ticketName.trim()
+        ? [
+            {
+              name: ticketName,
+              description: ticketDescription,
+              adultPrice: ticketAdultPrice,
+              childPrice: ticketChildPrice,
+              totalAdultTickets: ticketTotalAdultTickets,
+              totalChildTickets: ticketTotalChildTickets,
+            },
+          ]
+        : []),
+    ],
+  };
+
   return (
     <div className="my-20 flex flex-row items-start justify-center">
       <div className="flex flex-col w-full max-w-xl p-6">
@@ -255,46 +295,8 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-
-          onSubmit({
-            id: initialData?.id,
-            name,
-            address,
-            latitude,
-            longitude,
-            description,
-            accommodationType,
-            roomTypes: roomTypes.map((room) => ({
-              ...room,
-              seasonalPricing: room.seasonalPricing ?? [],
-            })),
-            newImageFiles: uploadedImages,
-            keepImgIds: lodgeImages.map((img) => img.id),
-            roomTypeImages: newRoomTypeImageFiles,
-            keepRoomTypeImgIds: roomTypes
-              .flatMap((room, idx) =>
-                (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
-                  roomTypeId: room.id,
-                  imageId,
-                }))
-              )
-              .filter((i) => i.roomTypeId !== undefined),
-            ticketTypes: [
-              ...ticketTypes,
-              ...(ticketName.trim()
-                ? [
-                    {
-                      name: ticketName,
-                      description: ticketDescription,
-                      adultPrice: ticketAdultPrice,
-                      childPrice: ticketChildPrice,
-                      totalAdultTickets: ticketTotalAdultTickets,
-                      totalChildTickets: ticketTotalChildTickets,
-                    },
-                  ]
-                : []),
-            ],
-          });
+          console.log("onSubmit data:", submitData);
+          onSubmit(submitData);
         }}
         className="flex flex-col gap-4 p-6 max-w-2xl w-full"
       >
