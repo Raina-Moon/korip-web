@@ -15,36 +15,38 @@ const InventoryCalendar = ({
 }: InventoryCalendarProps) => {
   const [selectedDate, setSelectedDate] = useState<CalendarValue>(new Date());
 
-  const dateHasInventory = new Set(
-    [...roomInventories, ...ticketInventories].map((item) => item.date)
-  );
+  const getDateKey = (dateStr: string) => dateStr.split("T")[0];
 
   const renderTileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view !== "month") return null;
-    const yyyyMMdd = date.toISOString().split("T")[0];
-    const hasInventory = dateHasInventory.has(yyyyMMdd);
 
-    return hasInventory ? (
-      <div className="text-green-600 text-xs mt-1">재고있음</div>
-    ) : null;
+    const dateKey = date.toISOString().split("T")[0];
+
+    const hasRoomInventory = roomInventories.some(
+      (item) => getDateKey(item.date) === dateKey
+    );
+    const hasTicketInventory = ticketInventories.some(
+      (item) => getDateKey(item.date) === dateKey
+    );
+
+    if (hasRoomInventory || hasTicketInventory) {
+      return <div className="text-green-600 text-xs mt-1">재고있음</div>;
+    }
+    return null;
   };
 
-  const handleDateChange = (value: CalendarValue) => {
-    setSelectedDate(value);
+  const getSelectedDateString = () => {
+    if (!selectedDate || Array.isArray(selectedDate)) return "";
+    return selectedDate.toISOString().split("T")[0];
   };
 
-  const formatDate = (date: Date | [Date | null, Date | null] | null) => {
-    if (!date || Array.isArray(date)) return "";
-    return date.toISOString().split("T")[0];
-  };
-
-  const selectedDateString = formatDate(selectedDate);
+  const selectedDateString = getSelectedDateString();
 
   const roomInventoriesForDate = roomInventories.filter(
-    (item) => item.date === selectedDateString
+    (item) => getDateKey(item.date) === selectedDateString
   );
   const ticketInventoriesForDate = ticketInventories.filter(
-    (item) => item.date === selectedDateString
+    (item) => getDateKey(item.date) === selectedDateString
   );
 
   return (
@@ -52,7 +54,7 @@ const InventoryCalendar = ({
       <h3 className="text-xl font-bold mb-2">재고 캘린더</h3>
       <Calendar
         value={selectedDate}
-        onChange={handleDateChange}
+        onChange={setSelectedDate}
         tileContent={renderTileContent}
         locale="ko-KR"
       />
