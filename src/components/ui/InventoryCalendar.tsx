@@ -68,7 +68,7 @@ const InventoryCalendar = ({
             <ul className="list-disc ml-5">
               {roomInventoriesForDate.map((item) => (
                 <li key={item.id}>
-                  룸타입 {item.roomTypeId.name}: {item.availableRooms}개
+                  룸타입 {item.roomType.name}: {item.availableRooms}개
                 </li>
               ))}
             </ul>
@@ -81,7 +81,7 @@ const InventoryCalendar = ({
             <ul className="list-disc ml-5">
               {ticketInventoriesForDate.map((item) => (
                 <li key={item.id}>
-                  티켓타입 {item.ticketTypeId.name}: 성인{" "}
+                  티켓타입 {item.ticketType.name}: 성인{" "}
                   {item.availableAdultTickets}개, 어린이{" "}
                   {item.availableChildTickets}개
                 </li>
