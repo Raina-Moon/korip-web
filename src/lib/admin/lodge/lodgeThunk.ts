@@ -1,7 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../../auth/authSlice";
-import { Lodge, RoomInventory, RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
+import {
+  Lodge,
+  RoomInventory,
+  RoomType,
+  SeasonalPricing,
+  TicketType,
+} from "@/types/lodge";
 import { RootState } from "@/lib/store/store";
 import { TicketInventory } from "@/types/ticket";
 
@@ -207,14 +213,24 @@ export const updateLodge = createAsyncThunk<
         JSON.stringify(updatedLodgeData.keepRoomTypeImgIds || [])
       );
 
+      if (
+        updatedLodgeData.newRoomTypeImageFiles &&
+        updatedLodgeData.newRoomTypeImageFiles.length > 0
+      ) {
+        const counts = updatedLodgeData.newRoomTypeImageFiles.map(
+          (arr) => arr.length
+        );
+        formData.append("roomTypeImagesCounts", JSON.stringify(counts));
+
+        updatedLodgeData.newRoomTypeImageFiles?.forEach((fileArray) => {
+          fileArray.forEach((file) => {
+            formData.append("roomTypeImages", file);
+          });
+        });
+      }
+
       updatedLodgeData.newImageFiles.forEach((file) => {
         formData.append("hotSpringLodgeImages", file);
-      });
-
-      updatedLodgeData.newRoomTypeImageFiles?.forEach((fileArray, idx) => {
-        fileArray.forEach((file, i) => {
-          formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
-        });
       });
 
       const token = getState().auth.accessToken;
@@ -271,7 +287,7 @@ export const fetchLodgeInventories = createAsyncThunk<
   { roomInventories: RoomInventory[]; ticketInventories: TicketInventory[] },
   number,
   { rejectValue: string; state: RootState }
-  >(
+>(
   "admin/lodge/fetchInventories",
   async (lodgeId, { rejectWithValue, getState }) => {
     try {
