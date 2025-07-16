@@ -434,17 +434,8 @@ const LodgeDetailPage = () => {
             <h2 className="text-2xl font-bold mb-4">날짜별 재고 현황</h2>
 
             <InventoryCalendar
-              title="방 재고 캘린더"
-              inventories={roomInventories}
-              dateKey="date"
-              countKey="availableRooms"
-            />
-
-            <InventoryCalendar
-              title="티켓 재고 캘린더"
-              inventories={ticketInventories}
-              dateKey="date"
-              countKey="availableAdultTickets"
+              roomInventories={roomInventories}
+              ticketInventories={ticketInventories}
             />
           </div>
         </div>
