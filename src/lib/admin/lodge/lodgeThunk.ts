@@ -213,21 +213,18 @@ export const updateLodge = createAsyncThunk<
         JSON.stringify(updatedLodgeData.keepRoomTypeImgIds || [])
       );
 
-      formData.append(
-        "roomTypeImagesCounts",
-        JSON.stringify(
-          updatedLodgeData.newRoomTypeImageFiles?.map((arr) => arr.length) || []
-        )
-      );
+      if (
+        updatedLodgeData.newRoomTypeImageFiles &&
+        updatedLodgeData.newRoomTypeImageFiles.length > 0
+      ) {
+        const counts = updatedLodgeData.newRoomTypeImageFiles.map(
+          (arr) => arr.length
+        );
+        formData.append("roomTypeImagesCounts", JSON.stringify(counts));
+      }
 
       updatedLodgeData.newImageFiles.forEach((file) => {
         formData.append("hotSpringLodgeImages", file);
-      });
-
-      updatedLodgeData.newRoomTypeImageFiles?.forEach((fileArray, idx) => {
-        fileArray.forEach((file) => {
-          formData.append("roomTypeImages", file);
-        });
       });
 
       const token = getState().auth.accessToken;
