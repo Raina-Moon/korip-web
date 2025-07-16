@@ -422,8 +422,14 @@ const LodgeDetailPage = () => {
       )}
 
       {isInventoryModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg max-w-3xl w-full h-[80vh] overflow-auto relative">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center"
+          onClick={handleCloseInventoryModal}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-3xl w-full h-[80vh] overflow-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={handleCloseInventoryModal}
               className="absolute top-2 right-2 text-xl"
