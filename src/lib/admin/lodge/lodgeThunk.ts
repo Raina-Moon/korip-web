@@ -219,7 +219,7 @@ export const updateLodge = createAsyncThunk<
 
       updatedLodgeData.newRoomTypeImageFiles?.forEach((fileArray, idx) => {
         fileArray.forEach((file) => {
-          formData.append(`roomTypeImages[${idx}]`, file);
+          formData.append("roomTypeImages", file);
         });
       });
 
