@@ -51,8 +51,6 @@ const CreateLodgePage = () => {
       })
     );
 
-    console.log("📌 [CreateLodgePage] Dispatch result:", lodgeData);
-
     if (createLodge.fulfilled.match(lodgeData)) {
       alert("숙소가 성공적으로 등록되었습니다.");
       router.push("/admin/lodge");

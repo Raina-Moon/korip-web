@@ -256,9 +256,6 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          console.log("🚀 LodgeForm onSubmit ticketTypes:", ticketTypes);
-          console.log("🚀 LodgeForm current ticketName field:", ticketName);
-
           onSubmit({
             id: initialData?.id,
             name,
