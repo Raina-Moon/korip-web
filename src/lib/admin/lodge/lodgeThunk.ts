@@ -213,6 +213,13 @@ export const updateLodge = createAsyncThunk<
         JSON.stringify(updatedLodgeData.keepRoomTypeImgIds || [])
       );
 
+      formData.append(
+        "roomTypeImagesCounts",
+        JSON.stringify(
+          updatedLodgeData.newRoomTypeImageFiles?.map((arr) => arr.length) || []
+        )
+      );
+
       updatedLodgeData.newImageFiles.forEach((file) => {
         formData.append("hotSpringLodgeImages", file);
       });
