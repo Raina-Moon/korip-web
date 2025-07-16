@@ -30,3 +30,14 @@ export interface Lodge {
   address: string;
   images: TicketImage[];
 }
+
+export interface TicketInventory {
+  id: number;
+  lodgeId: number;
+  ticketTypeId: number;
+  date: string;
+  totalAdultTickets: number;
+  availableAdultTickets: number;
+  totalChildTickets: number;
+  availableChildTickets: number;
+}

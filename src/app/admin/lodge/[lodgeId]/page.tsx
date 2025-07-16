@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   deleteLodge,
   fetchLodgeById,
+  fetchLodgeInventories,
   fetchLodges,
 } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
@@ -12,12 +13,14 @@ import KakaoMap from "@/components/KakaoMap";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import InventoryCalendar from "@/components/ui/InventoryCalendar";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [modalImage, setModalImage] = useState<string[]>([]);
   const [currentModalImage, setCurrentModalImage] = useState(0);
+  const [isInventoryModalOpen, setIsInventoryModalOpen] = useState(false);
 
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
@@ -25,6 +28,12 @@ const LodgeDetailPage = () => {
   const lodge = useAppSelector((state) => state["admin/lodge"].detail);
   const status = useAppSelector((state) => state["admin/lodge"].state);
   const error = useAppSelector((state) => state["admin/lodge"].error);
+  const roomInventories = useAppSelector(
+    (state) => state["admin/lodge"].roomInventories
+  );
+  const ticketInventories = useAppSelector(
+    (state) => state["admin/lodge"].ticketInventories
+  );
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -98,6 +107,15 @@ const LodgeDetailPage = () => {
     setCurrentModalImage((prev) =>
       prev === modalImage.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const handleOpenInventoryModal = async () => {
+    await dispatch(fetchLodgeInventories(lodgeId));
+    setIsInventoryModalOpen(true);
+  };
+
+  const handleCloseInventoryModal = () => {
+    setIsInventoryModalOpen(false);
   };
 
   return (
@@ -184,7 +202,15 @@ const LodgeDetailPage = () => {
       </section>
 
       <section>
-        <h3 className="text-2xl font-bold text-gray-700 mt-10 mb-4">방 유형</h3>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-2xl font-bold text-gray-700">방 유형</h3>
+          <button
+            className="text-blue-500 underline"
+            onClick={handleOpenInventoryModal}
+          >
+            재고 보기
+          </button>
+        </div>{" "}
         <div className="grid gap-6">
           {lodge.roomTypes?.map((roomType, idx) => (
             <div
@@ -293,7 +319,6 @@ const LodgeDetailPage = () => {
             </div>
           ))}
         </div>
-
         <section className="mt-10">
           <h3 className="text-2xl font-bold text-gray-700 mb-4">티켓 타입</h3>
           {lodge.ticketTypes && lodge.ticketTypes.length > 0 ? (
@@ -328,7 +353,6 @@ const LodgeDetailPage = () => {
             <p className="text-gray-500">등록된 티켓이 없습니다.</p>
           )}
         </section>
-
         <div className="flex-1 mt-20">
           <KakaoMap
             viewOnly
@@ -393,6 +417,32 @@ const LodgeDetailPage = () => {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {isInventoryModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center"
+          onClick={handleCloseInventoryModal}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-3xl w-full h-[80vh] overflow-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleCloseInventoryModal}
+              className="absolute top-2 right-2 text-xl"
+            >
+              ×
+            </button>
+
+            <h2 className="text-2xl font-bold mb-4">날짜별 재고 현황</h2>
+
+            <InventoryCalendar
+              roomInventories={roomInventories}
+              ticketInventories={ticketInventories}
+            />
           </div>
         </div>
       )}
