@@ -3,16 +3,20 @@ import {
   createLodge,
   deleteLodge,
   fetchLodgeById,
+  fetchLodgeInventories,
   fetchLodges,
   updateLodge,
 } from "./lodgeThunk";
-import { Lodge } from "@/types/lodge";
+import { Lodge, RoomInventory } from "@/types/lodge";
+import { TicketInventory } from "@/types/ticket";
 
 interface LodgeState {
   list: Lodge[];
   detail: Lodge | null;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  roomInventories: RoomInventory[];
+  ticketInventories: TicketInventory[];
 }
 
 const initialState: LodgeState = {
@@ -20,6 +24,8 @@ const initialState: LodgeState = {
   detail: null,
   state: "idle",
   error: null,
+  roomInventories: [],
+  ticketInventories: [],
 };
 
 const lodgeSlice = createSlice({
@@ -115,6 +121,11 @@ const lodgeSlice = createSlice({
         state.state = "failed";
         state.error = action.payload as string;
       });
+
+    builder.addCase(fetchLodgeInventories.fulfilled, (state, action) => {
+      state.roomInventories = action.payload.roomInventories;
+      state.ticketInventories = action.payload.ticketInventories;
+    });
   },
 });
 
