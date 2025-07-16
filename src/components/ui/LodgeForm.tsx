@@ -176,7 +176,7 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
     })),
     newImageFiles: uploadedImages,
     keepImgIds: lodgeImages.map((img) => img.id),
-    roomTypeImages: newRoomTypeImageFiles,
+    newRoomTypeImageFiles: newRoomTypeImageFiles,
     keepRoomTypeImgIds: roomTypes
       .flatMap((room, idx) =>
         (keepRoomTypeImageIds[idx] || []).map((imageId) => ({
