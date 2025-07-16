@@ -59,7 +59,6 @@ const CreateLodgePage = () => {
     }
   };
 
-
   return (
     <div className="flex flex-col">
       <div className="relative flex items-center justify-center mx-24 mt-10">
