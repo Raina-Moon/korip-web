@@ -4,7 +4,7 @@ import React from "react";
 
 interface LoginPromptModalProps {
   isOpen: boolean;
-  context: "lodge/bookmark" | "lodge/reserve" | "ticket/bookmark" | null;
+  context: "lodge/bookmark" | "lodge/reserve" | "ticket/bookmark" | "ticket/reserve" | null;
   onLogin: () => void;
 }
 
@@ -22,6 +22,7 @@ export default function LoginPromptModal({
     "lodge/reserve": "로그인 후 숙소 예약을 완료할 수 있어요.",
     "lodge/bookmark": "로그인 후 이 숙소를 찜할 수 있어요.",
     "ticket/bookmark": "로그인 후 이 티켓을 찜할 수 있어요.",
+    "ticket/reserve": "로그인 후 티켓을 예약할 수 있어요.",
   };
 
   return (
