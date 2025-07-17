@@ -10,6 +10,12 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
   ticket,
   onClick,
 }) => {
+  const formatKSTDate = (utcDateStr: string) => {
+    const utcDate = new Date(utcDateStr);
+    const kst = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    return kst.toISOString().slice(0, 10);
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "CONFIRMED":
@@ -51,7 +57,7 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
         {getStatusBadge(ticket.status)}
       </div>
       <p className="text-sm text-gray-700 mb-1">
-        날짜: {ticket.date.slice(0, 10)}
+        날짜: {formatKSTDate(ticket.date)}
       </p>
       <p className="text-sm text-gray-700 mb-1">
         성인: {ticket.adults}명, 어린이: {ticket.children}명

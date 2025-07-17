@@ -17,10 +17,16 @@ const InventoryCalendar = ({
 
   const getDateKey = (dateStr: string) => dateStr.split("T")[0];
 
+  const getLocalDateKey = (date: Date) => {
+    const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+    const localDate = new Date(date.getTime() - offsetMs);
+    return localDate.toISOString().split("T")[0];
+  };
+
   const renderTileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view !== "month") return null;
 
-    const dateKey = date.toISOString().split("T")[0];
+    const dateKey = getLocalDateKey(date);
 
     const hasRoomInventory = roomInventories.some(
       (item) => getDateKey(item.date) === dateKey
@@ -37,7 +43,10 @@ const InventoryCalendar = ({
 
   const getSelectedDateString = () => {
     if (!selectedDate || Array.isArray(selectedDate)) return "";
-    return selectedDate.toISOString().split("T")[0];
+
+    const kstDate = new Date(selectedDate.getTime() + 9 * 60 * 60 * 1000);
+
+    return kstDate.toISOString().split("T")[0];
   };
 
   const selectedDateString = getSelectedDateString();
