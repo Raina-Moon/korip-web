@@ -17,12 +17,17 @@ interface CreateTicketReservationPayload {
 }
 
 export const fetchTicketReservations = createAsyncThunk<
-  TicketReservation[],
-  void,
+  {
+    reservations: TicketReservation[];
+    totalCount: number;
+    page: number;
+    totalPages: number;
+  },
+  { page: number; limit?: number },
   { rejectValue: string; state: RootState }
 >(
   "ticketReservation/fetchTicketReservations",
-  async (_, { getState, rejectWithValue }) => {
+  async ({ page, limit = 10 }, { getState, rejectWithValue }) => {
     try {
       const token = getState().auth.accessToken;
       const response = await axios.get(
@@ -34,7 +39,12 @@ export const fetchTicketReservations = createAsyncThunk<
           withCredentials: true,
         }
       );
-      return response.data as TicketReservation[];
+      return response.data as {
+        reservations: TicketReservation[];
+        totalCount: number;
+        page: number;
+        totalPages: number;
+      };
     } catch (error) {
       return rejectWithValue("Failed to fetch ticket reservations");
     }
