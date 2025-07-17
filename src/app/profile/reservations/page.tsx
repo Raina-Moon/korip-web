@@ -10,6 +10,7 @@ import Link from "next/link";
 import ReservationCard from "./ReservationCard";
 import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 import TicketReservationCard from "./TicketReservationCard";
+import { TicketReservation } from "@/types/ticketReservation";
 
 export default function ReservationListPage() {
   const [showingModal, setShowingModal] = useState(false);
@@ -24,6 +25,9 @@ export default function ReservationListPage() {
   const [ticketFilter, setTicketFilter] = useState<
     "ALL" | "PENDING" | "CONFIRMED" | "CANCELLED"
   >("ALL");
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] =
+    useState<TicketReservation | null>(null);
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
@@ -83,6 +87,11 @@ export default function ReservationListPage() {
     ticketFilter === "ALL"
       ? ticketState.list
       : ticketState.list.filter((t) => t.status === ticketFilter);
+
+  const openTicketModal = (ticket: TicketReservation) => {
+    setSelectedTicket(ticket);
+    setTicketModalOpen(true);
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -229,7 +238,11 @@ export default function ReservationListPage() {
           {!ticketState.loading && filteredTicketList.length > 0 && (
             <div className="space-y-4">
               {filteredTicketList.map((ticket) => (
-                <TicketReservationCard key={ticket.id} ticket={ticket} />
+                <TicketReservationCard
+                  key={ticket.id}
+                  ticket={ticket}
+                  onClick={openTicketModal}
+                />
               ))}
             </div>
           )}
@@ -336,6 +349,45 @@ export default function ReservationListPage() {
             </div>
           </div>
         </>
+      )}
+
+      {ticketModalOpen && selectedTicket && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
+            <h2 className="text-lg font-semibold mb-4">티켓 예약 상세 정보</h2>
+
+            <p className="mb-2">
+              <strong>티켓명:</strong>{" "}
+              {selectedTicket.ticketType?.name || "정보 없음"}
+            </p>
+            <p className="mb-2">
+              <strong>이용일:</strong> {selectedTicket.date.slice(0, 10)}
+            </p>
+            <p className="mb-2">
+              <strong>성인:</strong> {selectedTicket.adults}명
+            </p>
+            <p className="mb-2">
+              <strong>어린이:</strong> {selectedTicket.children}명
+            </p>
+            <p className="mb-2">
+              <strong>총 가격:</strong>{" "}
+              {selectedTicket.totalPrice?.toLocaleString() || "계산 안됨"}원
+            </p>
+            <p className="mb-2">
+              <strong>예약일:</strong>{" "}
+              {new Date(selectedTicket.createdAt).toLocaleString()}
+            </p>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
+                onClick={() => setTicketModalOpen(false)}
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showCancelModal && (

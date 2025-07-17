@@ -3,10 +3,12 @@ import React from "react";
 
 interface TicketReservationCardProps {
   ticket: TicketReservation;
+  onClick?: (ticket: TicketReservation) => void;
 }
 
 const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
   ticket,
+  onClick,
 }) => {
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -38,14 +40,19 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
   };
 
   return (
-    <div className="border rounded p-4 shadow hover:shadow-lg transition">
+    <div
+      onClick={() => onClick?.(ticket)}
+      className="border rounded p-4 shadow hover:shadow-lg transition cursor-pointer"
+    >
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold mb-2">
           {ticket.ticketType?.name || "이름 없는 티켓"}
         </h2>
         {getStatusBadge(ticket.status)}
       </div>
-      <p className="text-sm text-gray-700 mb-1">날짜: {ticket.date.slice(0, 10)}</p>
+      <p className="text-sm text-gray-700 mb-1">
+        날짜: {ticket.date.slice(0, 10)}
+      </p>
       <p className="text-sm text-gray-700 mb-1">
         성인: {ticket.adults}명, 어린이: {ticket.children}명
       </p>
