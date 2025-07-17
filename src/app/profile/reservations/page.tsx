@@ -8,7 +8,7 @@ import {
 } from "@/lib/reservation/reservationThunk";
 import Link from "next/link";
 import ReservationCard from "./ReservationCard";
-import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
+import { cancelTicketReservation, fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 import TicketReservationCard from "./TicketReservationCard";
 import { TicketReservation } from "@/types/ticketReservation";
 
@@ -86,7 +86,7 @@ export default function ReservationListPage() {
     setIsTicketCancelling(true);
     try {
       await dispatch(
-        cancelReservation({
+        cancelTicketReservation({
           reservationId: selectedTicket.id,
           cancelReason: "USER_REQUESTED",
         })
@@ -94,6 +94,7 @@ export default function ReservationListPage() {
       setShowTicketCancelModal(false);
       setTicketModalOpen(false);
       dispatch(fetchTicketReservations());
+      alert("티켓 예약이 성공적으로 취소되었습니다.");
     } catch (err) {
       alert("티켓 예약 취소 중 오류가 발생했습니다.");
     } finally {
