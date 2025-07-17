@@ -9,7 +9,7 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import {
   useDeleteTicketBookmarkMutation,
   useGetMyTicketBookmarksQuery,
-} from "@/lib/ticket-bookmark/ticketBookmark";
+} from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { Bookmark } from "@/types/bookmark";
 import { HeartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -149,15 +149,17 @@ const FavoritesPage = () => {
               {ticketBookmarks.map((bookmark: any) => (
                 <li
                   key={bookmark.id}
-                  onClick={() => router.push(`/ticket/${bookmark.ticketId}`)}
+                  onClick={() =>
+                    router.push(`/ticket/${bookmark.ticketType?.id}`)
+                  }
                   className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                 >
                   <div>
                     <h2 className="text-lg font-bold">
-                      {bookmark.ticket?.name}
+                      {bookmark.ticketType?.name}
                     </h2>
                     <p className="text-gray-600">
-                      {bookmark.ticket?.description}
+                      {bookmark.ticketType?.description}
                     </p>
                   </div>
 
