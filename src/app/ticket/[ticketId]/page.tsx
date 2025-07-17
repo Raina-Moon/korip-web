@@ -23,7 +23,7 @@ import {
   useCreateTicketBookmarkMutation,
   useDeleteTicketBookmarkMutation,
   useGetMyTicketBookmarksQuery,
-} from "@/lib/ticket-bookmark/ticketBookmark";
+} from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { TicketBookmark } from "@/types/ticket";
 import TicketSearchBox from "./TicketReservationSearckBox";
 import ImageModal from "@/components/ui/ImageModal";
