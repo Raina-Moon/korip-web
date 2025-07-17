@@ -230,8 +230,27 @@ export default function ReservationListPage() {
               {filteredTicketList.map((ticket) => (
                 <div
                   key={ticket.id}
-                  className="border border-gray-300 rounded p-4 shadow-sm"
+                  className="relative border border-gray-300 rounded p-4 shadow-sm"
                 >
+                  <span
+                    className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded ${
+                      ticket.status === "PENDING"
+                        ? "bg-yellow-400 text-yellow-900"
+                        : ticket.status === "CONFIRMED"
+                        ? "bg-green-500 text-white"
+                        : ticket.status === "CANCELLED"
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-300 text-gray-700"
+                    }`}
+                  >
+                    {ticket.status === "PENDING"
+                      ? "진행중"
+                      : ticket.status === "CONFIRMED"
+                      ? "예약확정"
+                      : ticket.status === "CANCELLED"
+                      ? "예약취소"
+                      : ticket.status}
+                  </span>
                   <p className="font-semibold text-lg">
                     {ticket.ticketType?.name}
                   </p>
