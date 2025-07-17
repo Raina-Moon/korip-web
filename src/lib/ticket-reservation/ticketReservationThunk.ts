@@ -112,7 +112,7 @@ export const cancelTicketReservation = createAsyncThunk<
           withCredentials: true,
         }
       );
-      return response.data as TicketReservation;
+      return response.data.reservation as TicketReservation;
     } catch (error) {
       return rejectWithValue("Failed to cancel ticket reservation");
     }
