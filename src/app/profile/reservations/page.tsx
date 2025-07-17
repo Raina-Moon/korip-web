@@ -38,7 +38,9 @@ export default function ReservationListPage() {
   const [lodgeCurrentPage, setLodgeCurrentPage] = useState(1);
 
   const dispatch = useAppDispatch();
-  const { list, loading, error, totalPages } = useAppSelector((state) => state.reservation);
+  const { list, loading, error, totalPages } = useAppSelector(
+    (state) => state.reservation
+  );
   const ticketState = useAppSelector((state) => state.ticketReservation);
 
   const today = new Date();
@@ -59,6 +61,19 @@ export default function ReservationListPage() {
       })
     );
   }, [dispatch, ticketCurrentPage, ticketFilter, lodgeCurrentPage, filter]);
+
+  useEffect(() => {
+    setLodgeCurrentPage(1);
+  }, [filter]);
+
+  useEffect(() => {
+    setTicketCurrentPage(1);
+  }, [ticketFilter]);
+
+  useEffect(() => {
+    setLodgeCurrentPage(1);
+    setTicketCurrentPage(1);
+  }, [typeFilter]);
 
   const openModal = (reservation: any) => {
     setShowingModal(true);
@@ -88,10 +103,12 @@ export default function ReservationListPage() {
       ).unwrap();
       setShowCancelModal(false);
       setShowingModal(false);
-      dispatch(fetchReservation({
-        page: lodgeCurrentPage,
-        status: filter === "ALL" ? undefined : filter,
-      }));
+      dispatch(
+        fetchReservation({
+          page: lodgeCurrentPage,
+          status: filter === "ALL" ? undefined : filter,
+        })
+      );
     } catch (err) {
       alert("예약 취소 중 오류가 발생했습니다.");
     } finally {
