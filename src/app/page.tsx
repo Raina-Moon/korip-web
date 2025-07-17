@@ -19,6 +19,7 @@ const page = () => {
   const [children, setChildren] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [productType, setProductType] = useState<"숙박" | "티켓">("숙박");
+  const [isNavigationg, setIsNavigating] = useState(false);
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -45,10 +46,12 @@ const page = () => {
 
   const handleSearch = () => {
     dispatch(showLoading());
+    setIsNavigating(true);
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
         alert("Please select check-in and check-out dates.");
+        setIsNavigating(false);
         return;
       }
 
@@ -66,6 +69,7 @@ const page = () => {
     } else {
       if (!date) {
         alert("Please select a date.");
+        setIsNavigating(false);
         return;
       }
 
@@ -79,6 +83,8 @@ const page = () => {
       router.push(`/list/ticket?${query.toString()}`);
     }
   };
+
+  if (isNavigationg) return null;
 
   return (
     <div className="h-screen">
