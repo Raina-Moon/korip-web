@@ -21,7 +21,7 @@ import { userServiceApi } from "../user/userApi";
 import reportsTicketReducer from "../admin/reports/ticketReportsSlice";
 import adminTicketReservationReducer from "../admin/reservation/ticketReservationSlice";
 import { ticketApi } from "../ticket/ticketApi";
-import { ticketBookmarkApi } from "../ticket-bookmark/ticketBookmark";
+import { ticketBookmarkApi } from "../ticket-bookmark/ticketBookmarkApi";
 import ticketReservationReducer from "../ticket-reservation/ticketReservationSlice";
 
 export const store = configureStore({
