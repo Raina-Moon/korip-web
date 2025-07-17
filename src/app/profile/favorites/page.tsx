@@ -11,6 +11,7 @@ import {
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { Bookmark } from "@/types/bookmark";
+import { TicketBookmark } from "@/types/ticketBookmark";
 import { HeartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -146,7 +147,7 @@ const FavoritesPage = () => {
 
           {ticketBookmarks && ticketBookmarks.length > 0 && (
             <ul className="space-y-4">
-              {ticketBookmarks.map((bookmark: any) => (
+              {ticketBookmarks.map((bookmark: TicketBookmark) => (
                 <li
                   key={bookmark.id}
                   onClick={() =>
@@ -165,7 +166,7 @@ const FavoritesPage = () => {
 
                   <button
                     onClick={() =>
-                      handleDeleteTicketBookmark(bookmark.ticketId)
+                      handleDeleteTicketBookmark(bookmark.ticketTypeId)
                     }
                     className="text-red-500 hover:text-red-700 ml-4"
                   >
