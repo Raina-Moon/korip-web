@@ -27,8 +27,12 @@ const TicketReservationPage = () => {
   const ticketTypeName =
     searchParams.get("ticketTypeName") ?? "Unknown Ticket Type";
 
-  const [adults, setAdults] = useState<number>(1);
-  const [children, setChildren] = useState<number>(0);
+  const [adults, setAdults] = useState<number>(
+    Number(searchParams.get("adults") || "1")
+  );
+  const [children, setChildren] = useState<number>(
+    Number(searchParams.get("children") || "0")
+  );
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

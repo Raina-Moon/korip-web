@@ -289,8 +289,31 @@ const TicketDetailPage = () => {
         </button>
       </div>
 
+      <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded">
+        <h3 className="text-lg font-semibold text-primary-900 mb-2">
+          이용 요금
+        </h3>
+        <p className="text-primary-800">
+          <span className="font-medium">성인:</span>{" "}
+          {ticket.adultPrice
+            ? `${ticket.adultPrice.toLocaleString()}원`
+            : "정보 없음"}
+        </p>
+        <p className="text-primary-800">
+          <span className="font-medium">아동:</span>{" "}
+          {ticket.childPrice
+            ? `${ticket.childPrice.toLocaleString()}원`
+            : "정보 없음"}
+        </p>
+      </div>
+
       <button
         onClick={() => {
+          if (!isAuthenticated) {
+            dispatch(openLoginModal("ticket/reserve"));
+            return;
+          }
+
           const query = new URLSearchParams({
             ticketTypeId: String(ticket.id),
             date,
