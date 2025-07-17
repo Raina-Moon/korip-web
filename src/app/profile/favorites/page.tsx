@@ -12,6 +12,7 @@ import {
 } from "@/lib/ticket-bookmark/ticketBookmark";
 import { Bookmark } from "@/types/bookmark";
 import { HeartIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const FavoritesPage = () => {
@@ -31,6 +32,8 @@ const FavoritesPage = () => {
   const [deleteTicketBookmark] = useDeleteTicketBookmarkMutation();
 
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   const handleDeleteBookmark = async (lodgeId: number) => {
     try {
@@ -99,7 +102,8 @@ const FavoritesPage = () => {
               {bookmarks.map((bookmark: Bookmark) => (
                 <li
                   key={bookmark.id}
-                  className="border rounded-lg p-4 shadow-sm bg-white flex justify-between items-center"
+                  onClick={() => router.push(`/lodge/${bookmark.lodgeId}`)}
+                  className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                 >
                   <div>
                     <h2 className="text-lg font-bold">
@@ -112,7 +116,10 @@ const FavoritesPage = () => {
                   </div>
 
                   <button
-                    onClick={() => handleDeleteBookmark(bookmark.lodgeId)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDeleteBookmark(bookmark.lodgeId);
+                    }}
                     className="text-red-500 hover:text-red-700 ml-4"
                   >
                     <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
@@ -142,7 +149,8 @@ const FavoritesPage = () => {
               {ticketBookmarks.map((bookmark: any) => (
                 <li
                   key={bookmark.id}
-                  className="border rounded-lg p-4 shadow-sm bg-white flex justify-between items-center"
+                  onClick={() => router.push(`/ticket/${bookmark.ticketId}`)}
+                  className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                 >
                   <div>
                     <h2 className="text-lg font-bold">
