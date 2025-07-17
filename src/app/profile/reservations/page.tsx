@@ -8,7 +8,10 @@ import {
 } from "@/lib/reservation/reservationThunk";
 import Link from "next/link";
 import ReservationCard from "./ReservationCard";
-import { cancelTicketReservation, fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
+import {
+  cancelTicketReservation,
+  fetchTicketReservations,
+} from "@/lib/ticket-reservation/ticketReservationThunk";
 import TicketReservationCard from "./TicketReservationCard";
 import { TicketReservation } from "@/types/ticketReservation";
 
@@ -115,6 +118,12 @@ export default function ReservationListPage() {
   const openTicketModal = (ticket: TicketReservation) => {
     setSelectedTicket(ticket);
     setTicketModalOpen(true);
+  };
+
+  const formatKSTDate = (utcDateStr: string) => {
+    const utcDate = new Date(utcDateStr);
+    const kst = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    return kst.toISOString().slice(0, 10);
   };
 
   return (
@@ -385,7 +394,7 @@ export default function ReservationListPage() {
               {selectedTicket.ticketType?.name || "정보 없음"}
             </p>
             <p className="mb-2">
-              <strong>이용일:</strong> {selectedTicket.date.slice(0, 10)}
+              <strong>이용일:</strong> {formatKSTDate(selectedTicket.date)}
             </p>
             <p className="mb-2">
               <strong>성인:</strong> {selectedTicket.adults}명
