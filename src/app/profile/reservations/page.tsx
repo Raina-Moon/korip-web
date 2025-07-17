@@ -28,6 +28,9 @@ export default function ReservationListPage() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] =
     useState<TicketReservation | null>(null);
+  const [showTicketCancelModal, setShowTicketCancelModal] = useState(false);
+  const [agreeTicketRefundPolicy, setAgreeTicketRefundPolicy] = useState(false);
+  const [isTicketCancelling, setIsTicketCancelling] = useState(false);
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
@@ -75,6 +78,26 @@ export default function ReservationListPage() {
       alert("예약 취소 중 오류가 발생했습니다.");
     } finally {
       setIsCancelling(false);
+    }
+  };
+
+  const handleTicketCancel = async () => {
+    if (!selectedTicket) return;
+    setIsTicketCancelling(true);
+    try {
+      await dispatch(
+        cancelReservation({
+          reservationId: selectedTicket.id,
+          cancelReason: "USER_REQUESTED",
+        })
+      ).unwrap();
+      setShowTicketCancelModal(false);
+      setTicketModalOpen(false);
+      dispatch(fetchTicketReservations());
+    } catch (err) {
+      alert("티켓 예약 취소 중 오류가 발생했습니다.");
+    } finally {
+      setIsTicketCancelling(false);
     }
   };
 
@@ -377,6 +400,14 @@ export default function ReservationListPage() {
               <strong>예약일:</strong>{" "}
               {new Date(selectedTicket.createdAt).toLocaleString()}
             </p>
+            {selectedTicket.status === "CONFIRMED" && (
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4"
+                onClick={() => setShowTicketCancelModal(true)}
+              >
+                예약 취소
+              </button>
+            )}
 
             <div className="mt-4 flex justify-end">
               <button
@@ -430,6 +461,52 @@ export default function ReservationListPage() {
                 }`}
               >
                 {isCancelling ? "취소 처리중..." : "예약 취소"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTicketCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">환불 규정 및 취소 동의</h2>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap mb-4">
+              {`■ 환불 규정
+- 이용일 7일 전 취소 시: 전액 환불
+- 이용일 24시간 초과 ~ 7일 이내 취소 시: 50% 환불
+- 이용일 24시간 이내 취소 시: 환불 불가
+`}
+            </p>
+
+            <label className="flex items-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                checked={agreeTicketRefundPolicy}
+                onChange={(e) => setAgreeTicketRefundPolicy(e.target.checked)}
+              />
+              <span className="text-sm text-gray-800">
+                위 환불 정책을 읽고 동의합니다.
+              </span>
+            </label>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowTicketCancelModal(false)}
+                className="px-4 py-2 rounded border border-gray-400 text-gray-700 hover:bg-gray-100"
+              >
+                닫기
+              </button>
+              <button
+                disabled={!agreeTicketRefundPolicy || isTicketCancelling}
+                onClick={handleTicketCancel}
+                className={`px-4 py-2 rounded ${
+                  agreeTicketRefundPolicy
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {isTicketCancelling ? "취소 처리중..." : "예약 취소"}
               </button>
             </div>
           </div>
