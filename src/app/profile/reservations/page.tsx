@@ -20,6 +20,9 @@ export default function ReservationListPage() {
   const [agreeRefundPolicy, setAgreeRefundPolicy] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [typeFilter, setTypeFilter] = useState<"LODGING" | "TICKET">("LODGING");
+  const [ticketFilter, setTicketFilter] = useState<
+    "ALL" | "PENDING" | "CONFIRMED" | "CANCELLED"
+  >("ALL");
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
@@ -74,6 +77,11 @@ export default function ReservationListPage() {
     filter === "ALL" ? list : list.filter((r) => r.status === filter);
 
   const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+
+  const filteredTicketList =
+    ticketFilter === "ALL"
+      ? ticketState.list
+      : ticketState.list.filter((t) => t.status === ticketFilter);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -168,18 +176,58 @@ export default function ReservationListPage() {
         </>
       ) : (
         <>
-          {ticketState.loading && (
-            <p className="text-gray-600">불러오는 중...</p>
+          <div className="flex flex-wrap gap-2 mb-6">
+            <button
+              onClick={() => setTicketFilter("ALL")}
+              className={`px-3 py-1 rounded border ${
+                ticketFilter === "ALL"
+                  ? "bg-primary-700 text-white"
+                  : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
+              }`}
+            >
+              전체
+            </button>
+            <button
+              onClick={() => setTicketFilter("PENDING")}
+              className={`px-3 py-1 rounded border ${
+                ticketFilter === "PENDING"
+                  ? "bg-yellow-500 text-white"
+                  : "text-yellow-700 border-yellow-700 hover:bg-yellow-700 hover:text-white"
+              }`}
+            >
+              진행중
+            </button>
+            <button
+              onClick={() => setTicketFilter("CONFIRMED")}
+              className={`px-3 py-1 rounded border ${
+                ticketFilter === "CONFIRMED"
+                  ? "bg-green-600 text-white"
+                  : "text-green-700 border-green-700 hover:bg-green-700 hover:text-white"
+              }`}
+            >
+              예약확정
+            </button>
+            <button
+              onClick={() => setTicketFilter("CANCELLED")}
+              className={`px-3 py-1 rounded border ${
+                ticketFilter === "CANCELLED"
+                  ? "bg-red-600 text-white"
+                  : "text-red-700 border-red-700 hover:bg-red-700 hover:text-white"
+              }`}
+            >
+              예약취소
+            </button>
+          </div>
+
+          {!ticketState.loading && filteredTicketList.length === 0 && (
+            <p className="text-gray-700">
+              해당 조건의 티켓 예약 내역이 없습니다.
+            </p>
           )}
-          {ticketState.error && (
-            <p className="text-red-500">{ticketState.error}</p>
-          )}
-          {!ticketState.loading && ticketState.list.length === 0 && (
-            <p className="text-gray-700">티켓 예약 내역이 없습니다.</p>
-          )}
-          {!ticketState.loading && ticketState.list.length > 0 && (
+
+          {!ticketState.loading && filteredTicketList.length > 0 && (
             <div className="space-y-4">
-              {ticketState.list.map((ticket) => (
+              {filteredTicketList.map((ticket) => (
                 <div
                   key={ticket.id}
                   className="border border-gray-300 rounded p-4 shadow-sm"
