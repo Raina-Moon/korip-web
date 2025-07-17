@@ -31,11 +31,11 @@ export const fetchTicketReservations = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >(
   "ticketReservation/fetchTicketReservations",
-  async ({ page, limit = 10 }, { getState, rejectWithValue }) => {
+  async ({ page, limit = 10, status }, { getState, rejectWithValue }) => {
     try {
       const token = getState().auth.accessToken;
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/ticket-reservation`,
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/ticket-reservation?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
