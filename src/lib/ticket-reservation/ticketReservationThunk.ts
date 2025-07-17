@@ -23,7 +23,11 @@ export const fetchTicketReservations = createAsyncThunk<
     page: number;
     totalPages: number;
   },
-  { page: number; limit?: number },
+  {
+    page: number;
+    limit?: number;
+    status?: "PENDING" | "CONFIRMED" | "CANCELLED" | "ALL";
+  },
   { rejectValue: string; state: RootState }
 >(
   "ticketReservation/fetchTicketReservations",
@@ -35,6 +39,11 @@ export const fetchTicketReservations = createAsyncThunk<
         {
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page,
+            limit,
+            status,
           },
           withCredentials: true,
         }
