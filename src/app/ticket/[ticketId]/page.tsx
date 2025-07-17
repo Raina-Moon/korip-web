@@ -309,6 +309,11 @@ const TicketDetailPage = () => {
 
       <button
         onClick={() => {
+          if (!isAuthenticated) {
+            dispatch(openLoginModal("ticket/reserve"));
+            return;
+          }
+
           const query = new URLSearchParams({
             ticketTypeId: String(ticket.id),
             date,
