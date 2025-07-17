@@ -35,9 +35,12 @@ export default function ReservationListPage() {
   const [agreeTicketRefundPolicy, setAgreeTicketRefundPolicy] = useState(false);
   const [isTicketCancelling, setIsTicketCancelling] = useState(false);
   const [ticketCurrentPage, setTicketCurrentPage] = useState(1);
+  const [lodgeCurrentPage, setLodgeCurrentPage] = useState(1);
 
   const dispatch = useAppDispatch();
-  const { list, loading, error } = useAppSelector((state) => state.reservation);
+  const { list, loading, error, totalPages } = useAppSelector(
+    (state) => state.reservation
+  );
   const ticketState = useAppSelector((state) => state.ticketReservation);
 
   const today = new Date();
@@ -45,14 +48,32 @@ export default function ReservationListPage() {
   tomorrow.setDate(today.getDate() + 1);
 
   useEffect(() => {
-    dispatch(fetchReservation());
+    dispatch(
+      fetchReservation({
+        page: lodgeCurrentPage,
+        status: filter === "ALL" ? undefined : filter,
+      })
+    );
     dispatch(
       fetchTicketReservations({
         page: ticketCurrentPage,
         status: ticketFilter === "ALL" ? undefined : ticketFilter,
       })
     );
-  }, [dispatch, ticketCurrentPage, ticketFilter]);
+  }, [dispatch, ticketCurrentPage, ticketFilter, lodgeCurrentPage, filter]);
+
+  useEffect(() => {
+    setLodgeCurrentPage(1);
+  }, [filter]);
+
+  useEffect(() => {
+    setTicketCurrentPage(1);
+  }, [ticketFilter]);
+
+  useEffect(() => {
+    setLodgeCurrentPage(1);
+    setTicketCurrentPage(1);
+  }, [typeFilter]);
 
   const openModal = (reservation: any) => {
     setShowingModal(true);
@@ -82,7 +103,12 @@ export default function ReservationListPage() {
       ).unwrap();
       setShowCancelModal(false);
       setShowingModal(false);
-      dispatch(fetchReservation());
+      dispatch(
+        fetchReservation({
+          page: lodgeCurrentPage,
+          status: filter === "ALL" ? undefined : filter,
+        })
+      );
     } catch (err) {
       alert("예약 취소 중 오류가 발생했습니다.");
     } finally {
@@ -219,6 +245,24 @@ export default function ReservationListPage() {
                   reservation={reservation}
                   onClick={openModal}
                 />
+              ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setLodgeCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded border ${
+                    lodgeCurrentPage === i + 1
+                      ? "bg-primary-700 text-white"
+                      : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
+                  }`}
+                >
+                  {i + 1}
+                </button>
               ))}
             </div>
           )}

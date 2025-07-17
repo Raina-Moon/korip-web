@@ -20,26 +20,39 @@ interface CreateReservationPayload {
 }
 
 export const fetchReservation = createAsyncThunk<
-  Reservation[],
-  void,
+  {
+    reservations: Reservation[];
+    totalCount: number;
+    totalPages: number;
+    page: number;
+  },
+  { page: number; limit?: number; status?: string },
   { rejectValue: string; state: RootState }
->("reservation/fetchReservation", async (_, { getState, rejectWithValue }) => {
-  try {
-    const token = getState().auth.accessToken;
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data as Reservation[];
-  } catch (error) {
-    return rejectWithValue("Failed to fetch reservations");
+>(
+  "reservation/fetchReservation",
+  async ({ page, limit = 10, status }, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.accessToken;
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reservation`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page,
+            limit,
+            status: status ?? "ALL",
+          },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch reservations");
+    }
   }
-});
+);
 
 export const createReservation = createAsyncThunk<
   Reservation,
