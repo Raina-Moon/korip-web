@@ -10,12 +10,18 @@ interface TicketReservationState {
   list: TicketReservation[];
   loading: boolean;
   error: string | null;
+  totalCount: number;
+  page: number;
+  totalPages: number;
 }
 
 const initialState: TicketReservationState = {
   list: [],
   loading: false,
   error: null,
+  totalCount: 0,
+  page: 1,
+  totalPages: 1,
 };
 
 const ticketReservationSlice = createSlice({
@@ -30,7 +36,10 @@ const ticketReservationSlice = createSlice({
       })
       .addCase(fetchTicketReservations.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload;
+        state.list = action.payload.reservations;
+        state.totalCount = action.payload.totalCount;
+        state.page = action.payload.page;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchTicketReservations.rejected, (state, action) => {
         state.loading = false;

@@ -34,6 +34,7 @@ export default function ReservationListPage() {
   const [showTicketCancelModal, setShowTicketCancelModal] = useState(false);
   const [agreeTicketRefundPolicy, setAgreeTicketRefundPolicy] = useState(false);
   const [isTicketCancelling, setIsTicketCancelling] = useState(false);
+  const [ticketCurrentPage, setTicketCurrentPage] = useState(1);
 
   const dispatch = useAppDispatch();
   const { list, loading, error } = useAppSelector((state) => state.reservation);
@@ -45,8 +46,13 @@ export default function ReservationListPage() {
 
   useEffect(() => {
     dispatch(fetchReservation());
-    dispatch(fetchTicketReservations());
-  }, [dispatch]);
+    dispatch(
+      fetchTicketReservations({
+        page: ticketCurrentPage,
+        status: ticketFilter === "ALL" ? undefined : ticketFilter,
+      })
+    );
+  }, [dispatch, ticketCurrentPage, ticketFilter]);
 
   const openModal = (reservation: any) => {
     setShowingModal(true);
@@ -96,7 +102,7 @@ export default function ReservationListPage() {
       ).unwrap();
       setShowTicketCancelModal(false);
       setTicketModalOpen(false);
-      dispatch(fetchTicketReservations());
+      dispatch(fetchTicketReservations({ page: ticketCurrentPage }));
       alert("티켓 예약이 성공적으로 취소되었습니다.");
     } catch (err) {
       alert("티켓 예약 취소 중 오류가 발생했습니다.");
@@ -276,6 +282,24 @@ export default function ReservationListPage() {
                   ticket={ticket}
                   onClick={openTicketModal}
                 />
+              ))}
+            </div>
+          )}
+
+          {ticketState.totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {Array.from({ length: ticketState.totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setTicketCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded border ${
+                    ticketCurrentPage === i + 1
+                      ? "bg-primary-700 text-white"
+                      : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
+                  }`}
+                >
+                  {i + 1}
+                </button>
               ))}
             </div>
           )}
