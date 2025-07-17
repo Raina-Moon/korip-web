@@ -46,8 +46,13 @@ export default function ReservationListPage() {
 
   useEffect(() => {
     dispatch(fetchReservation());
-    dispatch(fetchTicketReservations({ page: ticketCurrentPage }));
-  }, [dispatch, ticketCurrentPage]);
+    dispatch(
+      fetchTicketReservations({
+        page: ticketCurrentPage,
+        status: ticketFilter === "ALL" ? undefined : ticketFilter,
+      })
+    );
+  }, [dispatch, ticketCurrentPage, ticketFilter]);
 
   const openModal = (reservation: any) => {
     setShowingModal(true);
@@ -280,7 +285,7 @@ export default function ReservationListPage() {
               ))}
             </div>
           )}
-          
+
           {ticketState.totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-6">
               {Array.from({ length: ticketState.totalPages }, (_, i) => (
