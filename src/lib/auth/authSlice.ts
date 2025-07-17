@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export type LoginModalContextType =
   | "lodge/bookmark"
   | "lodge/reserve"
-  | "ticket/bookmark";
+  | "ticket/bookmark"
+  | "ticket/reserve";
 
 interface User {
   id: number;
