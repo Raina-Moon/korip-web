@@ -16,8 +16,8 @@ const ReviewsPage = () => {
           onClick={() => setSelectedTab("lodge")}
           className={`px-4 py-2 rounded ${
             selectedTab === "lodge"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-800"
+              ? "bg-primary-700 text-white"
+              : "bg-gray-100 text-primary-800"
           }`}
         >
           숙소 리뷰
@@ -26,8 +26,8 @@ const ReviewsPage = () => {
           onClick={() => setSelectedTab("ticket")}
           className={`px-4 py-2 rounded ${
             selectedTab === "ticket"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-800"
+              ? "bg-primary-700 text-white"
+              : "bg-gray-100 text-primary-800"
           }`}
         >
           티켓 리뷰
