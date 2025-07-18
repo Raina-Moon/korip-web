@@ -23,12 +23,9 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
   const { data: myReviews } = useGetMyTicketReviewsQuery();
-  const reviewedTicketTypeIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketTypeId)
-  );
 
   const reviewedReservationIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketReservationId)
+    (myReviews as TicketReview[])?.map((r) => r.ticketReservation.id)
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
