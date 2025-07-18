@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useCreateReviewMutation } from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 interface Props {
   onClose: () => void;
@@ -61,14 +63,10 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         </select>
 
         <label className="block mb-2 font-medium">별점</label>
-        <input
-          type="number"
-          min={0}
-          max={5}
-          step={1}
+        <Rating
           value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-          className="w-full border px-3 py-2 rounded mb-4"
+          onChange={setRating}
+          style={{ maxWidth: 180 }}
         />
 
         <label className="block mb-2 font-medium">내용</label>
