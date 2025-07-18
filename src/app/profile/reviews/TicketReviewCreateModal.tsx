@@ -28,7 +28,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   });
 
   const reviewedReservationIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketReservation.id)
+    (myReviews?.reviews as TicketReview[]).map((r) => r.ticketReservation.id)
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
@@ -38,9 +38,12 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const today = new Date();
 
   const eligibleTickets = tickets?.filter((t) => {
-    const usedDate = new Date(t.date);
-    return usedDate <= today && !reviewedReservationIds.has(t.id);
-  });
+  const usedDate = new Date(t.date);
+  return (
+    usedDate.toDateString() <= today.toDateString() &&
+    !reviewedReservationIds.has(t.id)
+  );
+});
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
