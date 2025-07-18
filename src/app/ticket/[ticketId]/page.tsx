@@ -362,32 +362,7 @@ const TicketDetailPage = () => {
         ) : (
           <p className="text-gray-500">아직 작성된 리뷰가 없습니다.</p>
         )}
-        {isAuthenticated && (
-          <div className="mt-6 flex flex-col gap-2">
-            <h3 className="text-lg font-semibold">리뷰 작성</h3>
-            <textarea
-              value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
-              className="border rounded p-2 w-full min-h-[100px]"
-              placeholder="리뷰 내용을 작성해주세요."
-            />
-            <input
-              type="number"
-              min={1}
-              max={5}
-              value={reviewRating}
-              onChange={(e) => setReviewRating(Number(e.target.value))}
-              className="border rounded p-2 w-24"
-              placeholder="평점 (1~5)"
-            />
-            <button
-              onClick={handleSubmitReview}
-              className="bg-primary-700 text-white rounded-md px-4 py-2 hover:bg-primary-500"
-            >
-              리뷰 등록
-            </button>
-          </div>
-        )}
+       
       </div>
 
       {showingLoginModal && (
