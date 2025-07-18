@@ -1,3 +1,5 @@
+import { TicketReservation } from "./ticketReservation";
+
 export interface TicketReview {
   id: number;
   ticketTypeId: number;
@@ -9,5 +11,5 @@ export interface TicketReview {
   user: {
     nickname: string;
   };
-  ticketReservationId: number;
+  ticketReservation: TicketReservation;
 }
