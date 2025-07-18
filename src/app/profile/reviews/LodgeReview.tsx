@@ -111,15 +111,13 @@ const LodgeReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                <p className="text-sm text-gray-500">
-                  {formattedDate(review.createdAt)}
-                </p>
-
                 {review.reservation && (
-                  <p className="text-sm text-gray-600">
-                    {review.reservation.lodge.name} (
-                    {review.reservation.checkIn.slice(0, 10)} ~ {review.reservation.checkOut.slice(0, 10)}
-                    )
+                  <p className="text-md text-primary-900">
+                    <span className="text-lg font-semibold mr-3">
+                      {review.reservation.lodge.name}
+                    </span>
+                    ({review.reservation.checkIn.slice(0, 10)} ~{" "}
+                    {review.reservation.checkOut.slice(0, 10)})
                   </p>
                 )}
 
@@ -128,6 +126,9 @@ const LodgeReview = () => {
                   readOnly
                   style={{ maxWidth: 100 }}
                 />
+                <p className="text-sm text-gray-500">
+                  {formattedDate(review.createdAt)}
+                </p>
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
                     가려진 리뷰입니다.
