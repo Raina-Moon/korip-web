@@ -11,8 +11,12 @@ import { fetchReservation } from "@/lib/reservation/reservationThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Review } from "@/types/reivew";
 import { MoreVertical } from "lucide-react";
+import ReviewCreateModal from "./LodgeReviewCreateModal";
+import LodgeReviewCreateModal from "./LodgeReviewCreateModal";
 
 const LodgeReview = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const dispatch = useAppDispatch();
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
   const reservation = useAppSelector((state) => state.reservation.list);
@@ -54,7 +58,11 @@ const LodgeReview = () => {
 
   const saveEdit = async (review: Review) => {
     try {
-      await updateReview({ id: review.id, comment: editingComment, rating: editingRating }).unwrap();
+      await updateReview({
+        id: review.id,
+        comment: editingComment,
+        rating: editingRating,
+      }).unwrap();
       cancelEditing();
     } catch (error) {
       console.error("Failed to update review:", error);
@@ -77,7 +85,22 @@ const LodgeReview = () => {
     <div>
       <h2 className="text-xl font-semibold mb-4">{nickname}의 숙소 리뷰</h2>
       {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
-      {reviews && reviews.length === 0 && <p className="text-gray-500">작성된 숙소 리뷰가 없습니다</p>}
+      {reviews && reviews.length === 0 && (
+        <p className="text-gray-500">작성된 숙소 리뷰가 없습니다</p>
+      )}
+
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="px-4 py-2 bg-primary-700 text-white rounded"
+      >
+        숙소 리뷰 작성
+      </button>
+
+      {isModalOpen && (
+        <LodgeReviewCreateModal
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       <ul className="space-y-4">
         {reviews?.map((review: Review) => (
