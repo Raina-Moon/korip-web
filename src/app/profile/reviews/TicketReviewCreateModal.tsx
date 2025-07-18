@@ -15,12 +15,20 @@ interface Props {
 }
 
 const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
+  const [ticketReservationId, setTicketReservationId] = useState<number | null>(
+    null
+  );
+
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
-  const { data: myReviews } = useGetMyTicketReviewsQuery(); // 작성한 리뷰
+  const { data: myReviews } = useGetMyTicketReviewsQuery();
   const reviewedTicketTypeIds = new Set(
     (myReviews as TicketReview[])?.map((r) => r.ticketTypeId)
+  );
+
+  const reviewedReservationIds = new Set(
+    (myReviews as TicketReview[])?.map((r) => r.ticketReservationId)
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
@@ -31,7 +39,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
   const eligibleTickets = tickets?.filter((t) => {
     const usedDate = new Date(t.date);
-    return usedDate <= today && !reviewedTicketTypeIds.has(t.ticketType.id); // 작성된 티켓은 제외
+    return usedDate <= today && !reviewedReservationIds.has(t.id);
   });
 
   const formatDate = (dateStr: string) => {
@@ -45,7 +53,12 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     if (!ticketTypeId) return alert("티켓을 선택해주세요.");
 
     try {
-      await createReview({ ticketTypeId, comment, rating }).unwrap();
+      await createReview({
+        ticketTypeId,
+        comment,
+        rating,
+        ticketReservationId,
+      }).unwrap();
       alert("티켓 리뷰가 등록되었습니다.");
       onClose();
     } catch (error) {
@@ -61,13 +74,13 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
         <label className="block mb-2 font-medium">사용한 티켓</label>
         <select
-          value={ticketTypeId ?? ""}
-          onChange={(e) => setTicketTypeId(Number(e.target.value))}
+          value={ticketReservationId ?? ""}
+          onChange={(e) => setTicketReservationId(Number(e.target.value))}
           className="w-full border px-3 py-2 rounded mb-4"
         >
           <option value="">티켓 선택</option>
           {eligibleTickets?.map((t) => (
-            <option key={t.id} value={t.ticketType.id}>
+            <option key={t.id} value={t.id}>
               {t.ticketType.name} - {formatDate(t.date)}
             </option>
           ))}
