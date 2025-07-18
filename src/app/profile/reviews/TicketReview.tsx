@@ -8,17 +8,22 @@ import {
   useUpdateTicketReviewMutation,
 } from "@/lib/ticket-review/ticketReviewApi";
 import { MoreVertical } from "lucide-react";
-import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
 import type { TicketReview } from "@/types/ticketReview";
+import TicketReviewCreateModal from "./TicketReviewCreateModal";
 
 const TicketReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
-  const { data: reviews, isLoading, isError } = useGetMyTicketReviewsQuery();
+  const { data, isLoading, isError } = useGetMyTicketReviewsQuery({
+    page,
+    pageSize,
+  });
   const [deleteReview] = useDeleteTicketReviewMutation();
   const [updateReview] = useUpdateTicketReviewMutation();
 
@@ -26,6 +31,10 @@ const TicketReview = () => {
   const [editingComment, setEditingComment] = useState("");
   const [editingRating, setEditingRating] = useState<number | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  const reviews = data?.reviews || [];
+  const totalCount = data?.totalCount || 0;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   const toggleMenu = (id: string) => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
@@ -172,6 +181,28 @@ const TicketReview = () => {
             )}
           </li>
         ))}
+
+        {totalPages > 1 && (
+          <div className="mt-4 flex gap-2 justify-center items-center">
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <span className="px-2">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={page === totalPages}
+              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </ul>
     </div>
   );

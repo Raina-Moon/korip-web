@@ -22,13 +22,13 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
-  const { data: myReviews } = useGetMyTicketReviewsQuery();
-  const reviewedTicketTypeIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketTypeId)
-  );
+  const { data: myReviews } = useGetMyTicketReviewsQuery({
+    page: 1,
+    pageSize: 100,
+  });
 
   const reviewedReservationIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketReservationId)
+    (myReviews as TicketReview[])?.map((r) => r.ticketReservation.id)
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);

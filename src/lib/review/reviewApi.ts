@@ -11,13 +11,18 @@ export const reviewApi = createApi({
   tagTypes: ["Reviews"],
   endpoints: (builder) => ({
     getReviewsByLodgeId: builder.query({
-      query: (lodgeId) => `review/lodge/${lodgeId}`,
+      query: ({ lodgeId, page = 1, pageSize = 5 }) =>
+        `review/lodge/${lodgeId}?page=${page}&pageSize=${pageSize}`,
       providesTags: (result, error, lodgeId) => [
         { type: "Reviews", id: lodgeId },
       ],
     }),
-    getReviewsByUserId: builder.query<any, void>({
-      query: () => `review/my`,
+    getReviewsByUserId: builder.query<
+      any,
+      { page?: number; pageSize?: number }
+    >({
+      query: ({ page = 1, pageSize = 5 }) =>
+        `review/my?page=${page}&pageSize=${pageSize}`,
       providesTags: ["Reviews"],
     }),
     createReview: builder.mutation({
