@@ -93,7 +93,7 @@ const LodgeReview = () => {
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-4 py-2 bg-primary-700 text-white rounded"
+        className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
       >
         숙소 리뷰 작성
       </button>
