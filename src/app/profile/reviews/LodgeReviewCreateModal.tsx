@@ -20,7 +20,7 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [createReview] = useCreateReviewMutation();
   const reservationList = useAppSelector((state) => state.reservation.list);
 
-  const { data: myReviews } = useGetReviewsByUserIdQuery();
+  const { data: myReviews } = useGetReviewsByUserIdQuery({ page: 1, pageSize: 100 });
   const reviewedReservationIds = new Set(
     (myReviews as Review[])?.map((r) => r.reservationId)
   );
