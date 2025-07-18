@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useCreateReviewMutation, useGetReviewsByUserIdQuery } from "@/lib/review/reviewApi";
+import {
+  useCreateReviewMutation,
+  useGetReviewsByUserIdQuery,
+} from "@/lib/review/reviewApi";
 import { useAppSelector } from "@/lib/store/hooks";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
@@ -12,11 +15,15 @@ interface Props {
 }
 
 const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
+  const [reservationId, setReservationId] = useState<number | null>(null);
+
   const [createReview] = useCreateReviewMutation();
   const reservationList = useAppSelector((state) => state.reservation.list);
 
   const { data: myReviews } = useGetReviewsByUserIdQuery();
-  const reviewedLodgeIds = new Set((myReviews as Review[])?.map((r) => r.lodge?.id));
+  const reviewedReservationIds = new Set(
+    (myReviews as Review[])?.map((r) => r.reservationId)
+  );
 
   const [lodgeId, setLodgeId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
@@ -26,7 +33,7 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
   const eligibleLodges = reservationList?.filter((r) => {
     const checkOutDate = new Date(r.checkOut);
-    return checkOutDate <= today && !reviewedLodgeIds.has(r.lodge.id); // 작성된 숙소는 제외
+    return checkOutDate <= today && !reviewedReservationIds.has(r.id); // 작성된 숙소는 제외
   });
 
   const formatDate = (dateStr: string) => {
@@ -40,7 +47,7 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     if (!lodgeId) return alert("숙소를 선택해주세요.");
 
     try {
-      await createReview({ lodgeId, comment, rating }).unwrap();
+      await createReview({ lodgeId, comment, rating, reservationId }).unwrap();
       alert("리뷰가 등록되었습니다.");
       onClose();
     } catch (error) {
@@ -56,13 +63,19 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
         <label className="block mb-2 font-medium">숙소 선택</label>
         <select
-          value={lodgeId ?? ""}
-          onChange={(e) => setLodgeId(Number(e.target.value))}
+          value={reservationId ?? ""}
+          onChange={(e) => {
+            const selected = reservationList?.find(
+              (r) => r.id === Number(e.target.value)
+            );
+            setReservationId(selected?.id ?? null);
+            setLodgeId(selected?.lodge.id ?? null);
+          }}
           className="w-full border px-3 py-2 rounded mb-4"
         >
           <option value="">숙소 선택</option>
           {eligibleLodges?.map((r) => (
-            <option key={r.id} value={r.lodge.id}>
+            <option key={r.id} value={r.id}>
               {r.lodge.name} - {formatDate(r.checkOut)}
             </option>
           ))}
