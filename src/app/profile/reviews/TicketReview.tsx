@@ -9,8 +9,9 @@ import {
 } from "@/lib/ticket-review/ticketReviewApi";
 import { Review } from "@/types/reivew";
 import { MoreVertical } from "lucide-react";
-import ReviewCreateModal from "./LodgeReviewCreateModal";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 const TicketReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,9 +86,7 @@ const TicketReview = () => {
       </button>
 
       {isModalOpen && (
-        <TicketReviewCreateModal
-          onClose={() => setIsModalOpen(false)}
-        />
+        <TicketReviewCreateModal onClose={() => setIsModalOpen(false)} />
       )}
 
       <ul className="space-y-4">
@@ -99,7 +98,11 @@ const TicketReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                <p className="text-yellow-500">{review.rating} / 5</p>
+                <Rating
+                  value={review.rating}
+                  readOnly
+                  style={{ maxWidth: 100 }}
+                />{" "}
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
                     가려진 리뷰입니다.
