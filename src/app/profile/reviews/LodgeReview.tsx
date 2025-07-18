@@ -198,7 +198,7 @@ const LodgeReview = () => {
           </li>
         ))}
 
-        <div className="mt-4 flex gap-2">
+        <div className="mt-4 flex gap-2 justify-center items-center">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
