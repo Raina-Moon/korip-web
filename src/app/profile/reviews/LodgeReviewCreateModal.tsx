@@ -76,7 +76,8 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           <option value="">숙소 선택</option>
           {eligibleLodges?.map((r) => (
             <option key={r.id} value={r.id}>
-              {r.lodge.name} - {formatDate(r.checkOut)}
+              {r.lodge.name} ({formatDate(r.checkIn)} ~ {formatDate(r.checkOut)}
+              )
             </option>
           ))}
         </select>
