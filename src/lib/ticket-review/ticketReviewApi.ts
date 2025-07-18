@@ -10,15 +10,23 @@ export const ticketReviewApi = createApi({
   }),
   tagTypes: ["TicketReviews"],
   endpoints: (builder) => ({
-    getReviewsByTicketTypeId: builder.query({
-      query: (ticketTypeId) => `ticket-review/ticket/${ticketTypeId}`,
-      providesTags: (result, error, ticketTypeId) => [
+    getReviewsByTicketTypeId: builder.query<
+      any,
+      { ticketTypeId: number; page?: number; pageSize?: number }
+    >({
+      query: ({ ticketTypeId, page = 1, pageSize = 5 }) =>
+        `ticket-review/ticket/${ticketTypeId}?page=${page}&pageSize=${pageSize}`,
+      providesTags: (result, error, { ticketTypeId }) => [
         { type: "TicketReviews", id: ticketTypeId },
       ],
     }),
 
-    getMyTicketReviews: builder.query<any, void>({
-      query: () => `ticket-review/my`,
+    getMyTicketReviews: builder.query<
+      any,
+      { page?: number; pageSize?: number }
+    >({
+      query: ({ page = 1, pageSize = 5 }) =>
+        `ticket-review/my?page=${page}&pageSize=${pageSize}`,
       providesTags: ["TicketReviews"],
     }),
 
