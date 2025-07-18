@@ -1,3 +1,5 @@
+import { Reservation } from "./reservation";
+
 export interface Review {
   id: number;
   lodgeId: number;
@@ -8,10 +10,11 @@ export interface Review {
   isHidden: boolean;
   lodge: LodgeSummary;
   reservationId: number;
-  user?:{
+  user?: {
     id: number;
     nickname: string;
-  }
+  };
+  reservation?: Reservation;
 }
 
 export interface LodgeSummary {
