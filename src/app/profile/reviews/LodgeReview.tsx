@@ -11,8 +11,9 @@ import { fetchReservation } from "@/lib/reservation/reservationThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Review } from "@/types/reivew";
 import { MoreVertical } from "lucide-react";
-import ReviewCreateModal from "./LodgeReviewCreateModal";
 import LodgeReviewCreateModal from "./LodgeReviewCreateModal";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 const LodgeReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,9 +98,7 @@ const LodgeReview = () => {
       </button>
 
       {isModalOpen && (
-        <LodgeReviewCreateModal
-          onClose={() => setIsModalOpen(false)}
-        />
+        <LodgeReviewCreateModal onClose={() => setIsModalOpen(false)} />
       )}
 
       <ul className="space-y-4">
@@ -111,7 +110,11 @@ const LodgeReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                <p className="text-yellow-500">{review.rating} / 5</p>
+                <Rating
+                  value={review.rating}
+                  readOnly
+                  style={{ maxWidth: 100 }}
+                />
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
                     가려진 리뷰입니다.
