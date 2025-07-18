@@ -9,4 +9,5 @@ export interface TicketReview {
   user: {
     nickname: string;
   };
+  ticketReservationId: number;
 }
