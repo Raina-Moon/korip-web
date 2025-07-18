@@ -18,12 +18,21 @@ import { formattedDate } from "@/utils/date";
 
 const LodgeReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
   const dispatch = useAppDispatch();
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
-  const reservation = useAppSelector((state) => state.reservation.list);
 
-  const { data: reviews, isLoading, isError } = useGetReviewsByUserIdQuery();
+  const { data, isLoading, isError } = useGetReviewsByUserIdQuery({
+    page,
+    pageSize,
+  });
+
+  const reviews = data?.reviews || [];
+  const totalCount = data?.totalCount || 0;
+  const totalPages = Math.ceil(totalCount / pageSize);
+
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
 
@@ -188,6 +197,26 @@ const LodgeReview = () => {
             )}
           </li>
         ))}
+
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+            className="px-3 py-1 bg-gray-200 rounded"
+          >
+            Prev
+          </button>
+          <span className="px-2 py-1">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+            className="px-3 py-1 bg-gray-200 rounded"
+          >
+            Next
+          </button>
+        </div>
       </ul>
     </div>
   );
