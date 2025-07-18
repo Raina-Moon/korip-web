@@ -12,6 +12,7 @@ import { MoreVertical } from "lucide-react";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
+import { formattedDate } from "@/utils/date";
 
 const TicketReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,6 +99,9 @@ const TicketReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
+                <p className="text-sm text-gray-500">
+                  {formattedDate(review.createdAt)}
+                </p>
                 <Rating
                   value={review.rating}
                   readOnly
