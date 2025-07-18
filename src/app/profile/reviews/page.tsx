@@ -14,6 +14,11 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { fetchReservation } from "@/lib/reservation/reservationThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { useGetMyTicketReviewsQuery } from "@/lib/ticket-review/ticketReviewApi";
+import {
+  useDeleteTicketReviewMutation,
+  useUpdateTicketReviewMutation,
+} from "@/lib/ticket/ticketApi";
 
 const ReviewsPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -25,14 +30,37 @@ const ReviewsPage = () => {
   const [newRating, setNewRating] = useState<number>(0);
   const [selectedReservationId, setSelectedReservationId] =
     useState<string>("");
+  const [selectedType, setSelectedType] = useState<"lodge" | "ticket">("lodge");
 
-  const { data: reviews, isLoading, isError } = useGetReviewsByUserIdQuery();
-  const [deleteReview] = useDeleteReviewMutation();
-  const [updateReview] = useUpdateReviewMutation();
   const [createReview] = useCreateReviewMutation();
+
+  const {
+    data: lodgeReviews,
+    isLoading: isLodgeLoading,
+    isError: isLodgeError,
+  } = useGetReviewsByUserIdQuery();
+
+  const {
+    data: ticketReviews,
+    isLoading: isTicketLoading,
+    isError: isTicketError,
+  } = useGetMyTicketReviewsQuery();
+
+  const [deleteLodgeReview] = useDeleteReviewMutation();
+  const [deleteTicketReview] = useDeleteTicketReviewMutation();
+
+  const [updateLodgeReview] = useUpdateReviewMutation();
+  const [updateTicketReview] = useUpdateTicketReviewMutation();
 
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
   const reservation = useAppSelector((state) => state.reservation.list);
+
+  const selectedReviews =
+    selectedType === "lodge" ? lodgeReviews : ticketReviews;
+  const selectedIsError =
+    selectedType === "lodge" ? isLodgeError : isTicketError;
+  const selectedIsLoading =
+    selectedType === "lodge" ? isLodgeLoading : isTicketLoading;
 
   const dispatch = useAppDispatch();
 
@@ -41,12 +69,12 @@ const ReviewsPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if(isLoading) {
-      dispatch(showLoading())
+    if (selectedIsLoading) {
+      dispatch(showLoading());
     } else {
-      dispatch(hideLoading())
+      dispatch(hideLoading());
     }
-  },[isLoading, dispatch]);
+  }, [selectedIsLoading, dispatch]);
 
   const toggleMenu = (id: string) => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
@@ -67,11 +95,20 @@ const ReviewsPage = () => {
 
   const saveEdit = async (review: Review) => {
     try {
-      await updateReview({
-        id: review.id,
-        comment: editingComment,
-        rating: editingRating,
-      }).unwrap();
+      if (selectedType === "lodge") {
+        await updateLodgeReview({
+          id: review.id,
+          comment: editingComment,
+          rating: editingRating,
+        }).unwrap();
+      } else {
+        await updateTicketReview({
+          id: review.id,
+          comment: editingComment,
+          rating: editingRating,
+        }).unwrap();
+      }
+      cancelEditing();
     } catch (error) {
       console.error("Failed to update review:", error);
       alert("Failed to update review");
@@ -79,14 +116,18 @@ const ReviewsPage = () => {
   };
 
   const handleDelete = async (review: Review) => {
-    if (confirm("Are you sure you want to delete this review?")) {
-      try {
-        await deleteReview(review.id).unwrap();
-        alert("Review deleted successfully");
-      } catch (error) {
-        console.error("Failed to delete review:", error);
-        alert("Failed to delete review");
+    if (!confirm("Are you sure you want to delete this review?")) return;
+
+    try {
+      if (selectedType === "lodge") {
+        await deleteLodgeReview(review.id).unwrap();
+      } else {
+        await deleteTicketReview(review.id).unwrap();
       }
+      alert("Review deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      alert("Failed to delete review");
     }
   };
 
@@ -119,8 +160,32 @@ const ReviewsPage = () => {
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">{nickname}'s Reviews</h1>
 
-      {isError && <p className="text-red-500">Error loading reviews</p>}
-      {reviews && reviews.length === 0 && (
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={() => setSelectedType("lodge")}
+          className={`px-4 py-2 rounded ${
+            selectedType === "lodge"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          숙소 리뷰
+        </button>
+        <button
+          onClick={() => setSelectedType("ticket")}
+          className={`px-4 py-2 rounded ${
+            selectedType === "ticket"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          티켓 리뷰
+        </button>
+      </div>
+
+      {selectedIsError && <p className="text-red-500">Error loading reviews</p>}
+
+      {selectedReviews && selectedReviews.length === 0 && (
         <p className="text-gray-500">No reviews found</p>
       )}
 
@@ -136,9 +201,9 @@ const ReviewsPage = () => {
         </div>
       )}
 
-      {reviews && reviews.length > 0 && (
+      {selectedReviews && selectedReviews.length > 0 && (
         <ul className="space-y-4">
-          {reviews.map((review: Review) => (
+          {selectedReviews.map((review: Review) => (
             <li
               key={review.id}
               className="relative border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2"
@@ -148,7 +213,9 @@ const ReviewsPage = () => {
                   <span className="font-semibold">{review.user?.nickname}</span>
                   <p className="text-yellow-500">{review.rating} / 5</p>
                   {review.isHidden && (
-                    <p className="text-white bg-red-500 px-2 py-1 rounded-sm">가려진 리뷰입니다.</p>
+                    <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
+                      가려진 리뷰입니다.
+                    </p>
                   )}
                 </div>
 
