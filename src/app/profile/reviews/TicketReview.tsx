@@ -8,11 +8,11 @@ import {
   useUpdateTicketReviewMutation,
 } from "@/lib/ticket-review/ticketReviewApi";
 import { MoreVertical } from "lucide-react";
-import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
 import type { TicketReview } from "@/types/ticketReview";
+import TicketReviewCreateModal from "./TicketReviewCreateModal";
 
 const TicketReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
