@@ -111,7 +111,18 @@ const LodgeReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                <p className="text-sm text-gray-500">{formattedDate(review.createdAt)}</p>
+                <p className="text-sm text-gray-500">
+                  {formattedDate(review.createdAt)}
+                </p>
+
+                {review.reservation && (
+                  <p className="text-sm text-gray-600">
+                    {review.reservation.lodge.name} (
+                    {review.reservation.checkIn.slice(0, 10)} ~ {review.reservation.checkOut.slice(0, 10)}
+                    )
+                  </p>
+                )}
+
                 <Rating
                   value={review.rating}
                   readOnly
