@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import { useAppSelector } from "@/lib/store/hooks";
-import { useCreateTicketReviewMutation } from "@/lib/ticket-review/ticketReviewApi";
+import {
+  useCreateTicketReviewMutation,
+  useGetMyTicketReviewsQuery,
+} from "@/lib/ticket-review/ticketReviewApi";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
+import { TicketReview } from "@/types/ticketReview";
 
 interface Props {
   onClose: () => void;
@@ -14,21 +18,28 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
+  const { data: myReviews } = useGetMyTicketReviewsQuery(); // 작성한 리뷰
+  const reviewedTicketTypeIds = new Set(
+    (myReviews as TicketReview[])?.map((r) => r.ticketTypeId)
+  );
+
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState<number>(0);
 
   const today = new Date();
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-  };
-
   const eligibleTickets = tickets?.filter((t) => {
     const usedDate = new Date(t.date);
-    return usedDate <= today;
+    return usedDate <= today && !reviewedTicketTypeIds.has(t.ticketType.id); // 작성된 티켓은 제외
   });
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return `${date.getFullYear()}년 ${
+      date.getMonth() + 1
+    }월 ${date.getDate()}일`;
+  };
 
   const handleSubmit = async () => {
     if (!ticketTypeId) return alert("티켓을 선택해주세요.");
@@ -63,11 +74,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         </select>
 
         <label className="block mb-2 font-medium">별점</label>
-        <Rating
-          value={rating}
-          onChange={setRating}
-          style={{ maxWidth: 180 }}
-        />
+        <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
 
         <label className="block mb-2 font-medium">내용</label>
         <textarea
@@ -81,7 +88,10 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           <button onClick={onClose} className="px-4 py-2 border rounded">
             취소
           </button>
-          <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded">
+          <button
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+          >
             등록
           </button>
         </div>
