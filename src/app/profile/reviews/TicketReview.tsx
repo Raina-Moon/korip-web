@@ -7,12 +7,12 @@ import {
   useDeleteTicketReviewMutation,
   useUpdateTicketReviewMutation,
 } from "@/lib/ticket-review/ticketReviewApi";
-import { Review } from "@/types/reivew";
 import { MoreVertical } from "lucide-react";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
+import type { TicketReview } from "@/types/ticketReview";
 
 const TicketReview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,7 +31,7 @@ const TicketReview = () => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
   };
 
-  const startEditing = (review: Review) => {
+  const startEditing = (review: TicketReview) => {
     setEditingId(String(review.id));
     setEditingComment(review.comment || "");
     setEditingRating(review.rating || null);
@@ -44,7 +44,7 @@ const TicketReview = () => {
     setEditingRating(null);
   };
 
-  const saveEdit = async (review: Review) => {
+  const saveEdit = async (review: TicketReview) => {
     try {
       await updateReview({
         reviewId: review.id,
@@ -60,7 +60,7 @@ const TicketReview = () => {
     }
   };
 
-  const handleDelete = async (review: Review) => {
+  const handleDelete = async (review: TicketReview) => {
     if (!confirm("리뷰를 삭제할까요?")) return;
     try {
       await deleteReview(review.id).unwrap();
@@ -78,20 +78,20 @@ const TicketReview = () => {
       <button
         onClick={() => setIsModalOpen(true)}
         className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
-        >
+      >
         티켓 리뷰 작성
       </button>
-        {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
-        {reviews && reviews.length === 0 && (
-          <p className="text-gray-500">작성된 티켓 리뷰가 없습니다</p>
-        )}
+      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
+      {reviews && reviews.length === 0 && (
+        <p className="text-gray-500">작성된 티켓 리뷰가 없습니다</p>
+      )}
 
       {isModalOpen && (
         <TicketReviewCreateModal onClose={() => setIsModalOpen(false)} />
       )}
 
       <ul className="space-y-4">
-        {reviews?.map((review: Review) => (
+        {reviews?.map((review: TicketReview) => (
           <li
             key={review.id}
             className="relative border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2"
@@ -99,14 +99,22 @@ const TicketReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                <p className="text-sm text-gray-500">
-                  {formattedDate(review.createdAt)}
-                </p>
+                {review.ticketReservation && (
+                  <p className="text-md text-primary-900">
+                    <span className="text-lg font-semibold mr-3">
+                      {review.ticketReservation.ticketType.name}
+                    </span>
+                    ({review.ticketReservation.date.slice(0, 10)})
+                  </p>
+                )}
                 <Rating
                   value={review.rating}
                   readOnly
                   style={{ maxWidth: 100 }}
                 />{" "}
+                <p className="text-sm text-gray-500">
+                  {formattedDate(review.createdAt)}
+                </p>
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
                     가려진 리뷰입니다.
