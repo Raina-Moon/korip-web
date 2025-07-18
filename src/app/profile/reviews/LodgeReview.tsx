@@ -86,10 +86,6 @@ const LodgeReview = () => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{nickname}의 숙소 리뷰</h2>
-      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
-      {reviews && reviews.length === 0 && (
-        <p className="text-gray-500">작성된 숙소 리뷰가 없습니다</p>
-      )}
 
       <button
         onClick={() => setIsModalOpen(true)}
@@ -97,6 +93,12 @@ const LodgeReview = () => {
       >
         숙소 리뷰 작성
       </button>
+
+      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
+
+      {reviews && reviews.length === 0 && (
+        <p className="text-gray-500">작성된 숙소 리뷰가 없습니다</p>
+      )}
 
       {isModalOpen && (
         <LodgeReviewCreateModal onClose={() => setIsModalOpen(false)} />

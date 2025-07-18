@@ -74,17 +74,17 @@ const TicketReview = () => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{nickname}의 티켓 리뷰</h2>
-      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
-      {reviews && reviews.length === 0 && (
-        <p className="text-gray-500">작성된 티켓 리뷰가 없습니다</p>
-      )}
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-4 py-2 bg-primary-700 text-white rounded"
-      >
+        className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
+        >
         티켓 리뷰 작성
       </button>
+        {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
+        {reviews && reviews.length === 0 && (
+          <p className="text-gray-500">작성된 티켓 리뷰가 없습니다</p>
+        )}
 
       {isModalOpen && (
         <TicketReviewCreateModal onClose={() => setIsModalOpen(false)} />
