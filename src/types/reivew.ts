@@ -7,6 +7,7 @@ export interface Review {
   createdAt: string;
   isHidden: boolean;
   lodge: LodgeSummary;
+  reservationId: number;
   user?:{
     id: number;
     nickname: string;
