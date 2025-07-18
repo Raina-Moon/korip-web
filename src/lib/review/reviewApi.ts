@@ -26,9 +26,7 @@ export const reviewApi = createApi({
         method: "POST",
         body,
       }),
-      invalidatesTags: (result, error, { lodgeId }) => [
-        { type: "Reviews", id: lodgeId },
-      ],
+      invalidatesTags: ["Reviews"],
     }),
     updateReview: builder.mutation({
       query: ({ id, ...body }) => ({
