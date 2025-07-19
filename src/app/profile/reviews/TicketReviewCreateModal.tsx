@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   useCreateTicketReviewMutation,
   useGetMyTicketReviewsQuery,
@@ -9,6 +9,7 @@ import {
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { TicketReview } from "@/types/ticketReview";
+import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 
 interface Props {
   onClose: () => void;
@@ -19,27 +20,48 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     null
   );
 
+  const dispatch = useAppDispatch();
+
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
-  const { data: myReviews } = useGetMyTicketReviewsQuery({
+  const { data: myReviews, refetch } = useGetMyTicketReviewsQuery({
     page: 1,
     pageSize: 100,
   });
 
-  const reviewedReservationIds = new Set(
-    (myReviews as TicketReview[])?.map((r) => r.ticketReservation.id)
+  const reviewedReservationIds = new Set<number>(
+    ((myReviews?.reviews ?? []) as TicketReview[])
+      .filter((r) => r.reservation?.id != null)
+      .map((r) => r.reservation!.id)
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState<number>(0);
 
-  const today = new Date();
+  useEffect(() => {
+    dispatch(fetchTicketReservations({ page: 1, status: "CONFIRMED" }));
+  }, [dispatch]);
+
+  const getDateOnly = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  const todayDateOnly = new Date();
+  const today = new Date(
+    todayDateOnly.getFullYear(),
+    todayDateOnly.getMonth(),
+    todayDateOnly.getDate()
+  );
 
   const eligibleTickets = tickets?.filter((t) => {
-    const usedDate = new Date(t.date);
-    return usedDate <= today && !reviewedReservationIds.has(t.id);
+    const ticketDate = getDateOnly(t.date);
+    const isBeforeOrToday = ticketDate <= today;
+    const isNotReviewed = !reviewedReservationIds.has(t.id);
+
+    return isBeforeOrToday && isNotReviewed;
   });
 
   const formatDate = (dateStr: string) => {
@@ -59,6 +81,9 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         rating,
         ticketReservationId,
       }).unwrap();
+
+      await refetch();
+
       alert("티켓 리뷰가 등록되었습니다.");
       onClose();
     } catch (error) {
@@ -75,7 +100,12 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         <label className="block mb-2 font-medium">사용한 티켓</label>
         <select
           value={ticketReservationId ?? ""}
-          onChange={(e) => setTicketReservationId(Number(e.target.value))}
+          onChange={(e) => {
+            const selectedId = Number(e.target.value);
+            const selected = tickets?.find((t) => t.id === selectedId);
+            setTicketReservationId(selectedId);
+            setTicketTypeId(selected?.ticketType.id ?? null);
+          }}
           className="w-full border px-3 py-2 rounded mb-4"
         >
           <option value="">티켓 선택</option>
