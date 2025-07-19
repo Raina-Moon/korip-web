@@ -342,7 +342,7 @@ const TicketDetailPage = () => {
       <div className="mt-8 border-t pt-6">
         <h2 className="text-xl font-semibold mb-4">
           {" "}
-          리뷰 {reviews.length}
+          리뷰 {reviews?.length}
         </h2>
         {reviews && reviews.length > 0 ? (
           <div className="flex flex-col gap-4">
