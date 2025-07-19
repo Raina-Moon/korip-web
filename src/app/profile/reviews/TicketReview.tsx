@@ -116,12 +116,12 @@ const TicketReview = () => {
             <div className="flex justify-between items-start">
               <div>
                 <span className="font-semibold">{review.user?.nickname}</span>
-                {review.ticketReservation && (
+                {review.reservation && (
                   <p className="text-md text-primary-900">
                     <span className="text-lg font-semibold mr-3">
-                      {review.ticketReservation.ticketType.name}
+                      {review.reservation?.ticketType?.name || "알 수 없음"}
                     </span>
-                    ({review.ticketReservation.date.slice(0, 10)})
+                    ({review.reservation?.date?.slice(0, 10) || "알 수 없음"})
                   </p>
                 )}
                 <Rating
