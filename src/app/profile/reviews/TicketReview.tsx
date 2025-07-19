@@ -121,6 +121,11 @@ const TicketReview = () => {
                     <span className="text-lg font-semibold mr-3">
                       {review.reservation?.ticketType?.name || "알 수 없음"}
                     </span>
+                    <span className="text-gray-600 ml-1 text-sm">
+                      -{" "}
+                      {review.reservation?.ticketType?.lodge?.name ||
+                        "숙소 없음"}
+                    </span>
                     ({review.reservation?.date?.slice(0, 10) || "알 수 없음"})
                   </p>
                 )}
