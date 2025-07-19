@@ -105,7 +105,8 @@ const ReviewCard = ({
             )}
           </div>
         ) : (
-          isLoggedIn && (
+          isLoggedIn &&
+          !review.isHidden && (
             <button
               onClick={() => handleReport(review.id)}
               className="text-sm text-red-500 hover:underline ml-2"
