@@ -27,23 +27,45 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     pageSize: 100,
   });
 
-  const reviewedReservationIds = new Set(
-    (myReviews?.reviews as TicketReview[]).map((r) => r.ticketReservation.id)
+  const reviewedReservationIds = new Set<number>(
+    ((myReviews?.reviews ?? []) as TicketReview[]).map(
+      (r) => r.ticketReservation.id
+    )
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState<number>(0);
 
-  const today = new Date();
+  const getDateOnly = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  const todayDateOnly = new Date();
+  const today = new Date(
+    todayDateOnly.getFullYear(),
+    todayDateOnly.getMonth(),
+    todayDateOnly.getDate()
+  );
+
+  console.log("All Tickets:", tickets);
+  console.log("Reviewed IDs:", reviewedReservationIds);
+  console.log("Today:", today);
 
   const eligibleTickets = tickets?.filter((t) => {
-  const usedDate = new Date(t.date);
-  return (
-    usedDate.toDateString() <= today.toDateString() &&
-    !reviewedReservationIds.has(t.id)
-  );
-});
+    const ticketDate = getDateOnly(t.date);
+    const isBeforeOrToday = ticketDate <= today;
+    const isNotReviewed = !reviewedReservationIds.has(t.id);
+
+    console.log(`Ticket ${t.id} - ${formatDate(t.date)}:`, {
+      ticketDate,
+      isBeforeOrToday,
+      isNotReviewed,
+    });
+
+    return isBeforeOrToday && isNotReviewed;
+  });
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -78,7 +100,12 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         <label className="block mb-2 font-medium">사용한 티켓</label>
         <select
           value={ticketReservationId ?? ""}
-          onChange={(e) => setTicketReservationId(Number(e.target.value))}
+          onChange={(e) => {
+            const selectedId = Number(e.target.value);
+            const selected = tickets?.find((t) => t.id === selectedId);
+            setTicketReservationId(selectedId);
+            setTicketTypeId(selected?.ticketType.id ?? null);
+          }}
           className="w-full border px-3 py-2 rounded mb-4"
         >
           <option value="">티켓 선택</option>
