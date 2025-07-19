@@ -343,9 +343,7 @@ const TicketDetailPage = () => {
         <h2 className="text-xl font-semibold mb-4">리뷰</h2>
         {reviews && reviews.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {reviews
-              .filter((r) => !r.isHidden)
-              .map((review: TicketReview) => (
+            {reviews.map((review: TicketReview) => (
                 <ReviewCard
                   key={review.id}
                   review={review}
