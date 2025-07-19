@@ -11,5 +11,5 @@ export interface TicketReview {
   user: {
     nickname: string;
   };
-  ticketReservation?: TicketReservation | null;
+  reservation?: TicketReservation | null;
 }
