@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   useCreateTicketReviewMutation,
   useGetMyTicketReviewsQuery,
@@ -9,6 +9,7 @@ import {
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { TicketReview } from "@/types/ticketReview";
+import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 
 interface Props {
   onClose: () => void;
@@ -18,6 +19,8 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [ticketReservationId, setTicketReservationId] = useState<number | null>(
     null
   );
+
+  const dispatch = useAppDispatch();
 
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
@@ -36,6 +39,10 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState<number>(0);
+
+  useEffect(() => {
+    dispatch(fetchTicketReservations({ page: 1, status: "CONFIRMED" }));
+  }, [dispatch]);
 
   const getDateOnly = (dateStr: string) => {
     const date = new Date(dateStr);
