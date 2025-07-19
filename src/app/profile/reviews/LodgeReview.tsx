@@ -177,6 +177,14 @@ const LodgeReview = () => {
                   onChange={(e) => setEditingComment(e.target.value)}
                   className="border rounded px-3 py-2"
                 />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">별점 수정:</span>
+                  <Rating
+                    value={editingRating || 0}
+                    onChange={setEditingRating}
+                    style={{ maxWidth: 100 }}
+                  />
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => saveEdit(review)}
