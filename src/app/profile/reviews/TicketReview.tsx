@@ -20,7 +20,7 @@ const TicketReview = () => {
   const pageSize = 5;
 
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
-  const { data, isLoading, isError } = useGetMyTicketReviewsQuery({
+  const { data, isLoading, isError, refetch } = useGetMyTicketReviewsQuery({
     page,
     pageSize,
   });
@@ -63,6 +63,8 @@ const TicketReview = () => {
         },
       }).unwrap();
       cancelEditing();
+      alert("리뷰가 업데이트되었습니다");
+      refetch();
     } catch (error) {
       console.error("Failed to update review:", error);
       alert("Failed to update review");
@@ -74,6 +76,7 @@ const TicketReview = () => {
     try {
       await deleteReview(review.id).unwrap();
       alert("리뷰가 삭제되었습니다");
+      refetch();
     } catch (error) {
       console.error("리뷰 삭제 실패:", error);
       alert("리뷰 삭제 실패");
@@ -96,7 +99,12 @@ const TicketReview = () => {
       )}
 
       {isModalOpen && (
-        <TicketReviewCreateModal onClose={() => setIsModalOpen(false)} />
+        <TicketReviewCreateModal
+          onClose={() => {
+            setIsModalOpen(false);
+            refetch();
+          }}
+        />
       )}
 
       <ul className="space-y-4">
