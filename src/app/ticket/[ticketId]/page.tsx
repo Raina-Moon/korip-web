@@ -340,29 +340,32 @@ const TicketDetailPage = () => {
       </button>
 
       <div className="mt-8 border-t pt-6">
-        <h2 className="text-xl font-semibold mb-4">리뷰</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {" "}
+          리뷰 {reviews.length}
+        </h2>
         {reviews && reviews.length > 0 ? (
           <div className="flex flex-col gap-4">
             {reviews.map((review: TicketReview) => (
-                <ReviewCard
-                  key={review.id}
-                  review={review}
-                  myUserId={myUserId}
-                  isLoggedIn={isAuthenticated}
-                  openMenuId={openMenuId}
-                  editingId={editingId}
-                  toggleMenu={toggleMenu}
-                  startEditing={startEditing}
-                  saveEdit={saveEdit}
-                  cancelEditing={cancelEditing}
-                  handleDelete={handleDelete}
-                  handleReport={handleReport}
-                  editingComment={editingComment}
-                  setEditingComment={setEditingComment}
-                  editingRating={editingRating}
-                  setEditingRating={setEditingRating}
-                />
-              ))}
+              <ReviewCard
+                key={review.id}
+                review={review}
+                myUserId={myUserId}
+                isLoggedIn={isAuthenticated}
+                openMenuId={openMenuId}
+                editingId={editingId}
+                toggleMenu={toggleMenu}
+                startEditing={startEditing}
+                saveEdit={saveEdit}
+                cancelEditing={cancelEditing}
+                handleDelete={handleDelete}
+                handleReport={handleReport}
+                editingComment={editingComment}
+                setEditingComment={setEditingComment}
+                editingRating={editingRating}
+                setEditingRating={setEditingRating}
+              />
+            ))}
           </div>
         ) : (
           <p className="text-gray-500">아직 작성된 리뷰가 없습니다.</p>
