@@ -49,23 +49,10 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     todayDateOnly.getDate()
   );
 
-  console.log("All Tickets:", tickets);
-  console.log("Reviewed IDs:", reviewedReservationIds);
-  console.log("Today:", today);
-
-  const entireState = useAppSelector((state) => state);
-  console.log("Redux state:", entireState);
-
   const eligibleTickets = tickets?.filter((t) => {
     const ticketDate = getDateOnly(t.date);
     const isBeforeOrToday = ticketDate <= today;
     const isNotReviewed = !reviewedReservationIds.has(t.id);
-
-    console.log(`Ticket ${t.id} - ${formatDate(t.date)}:`, {
-      ticketDate,
-      isBeforeOrToday,
-      isNotReviewed,
-    });
 
     return isBeforeOrToday && isNotReviewed;
   });
