@@ -42,10 +42,10 @@ export const ticketReviewApi = createApi({
     }),
 
     updateTicketReview: builder.mutation({
-      query: ({ id, ...body }) => ({
-        url: `ticket-review/${id}`,
+      query: ({ reviewId, data }) => ({
+        url: `ticket-review/${reviewId}`,
         method: "PATCH",
-        body,
+        body:data,
       }),
       invalidatesTags: ["TicketReviews"],
     }),
