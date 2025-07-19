@@ -223,21 +223,16 @@ const TicketDetailPage = () => {
   };
 
   const handleReportSubmit = async () => {
-    console.log("Submitting report");
     if (!selectedReviewId || !reason.trim()) {
       alert("신고 사유를 입력해주세요.");
       return;
     }
 
     try {
-      console.log("Reporting review with reason and ID:", reason, selectedReviewId);
-
       await createReportTicketReview({
         reviewId: selectedReviewId,
         reason: reason.trim(),
       }).unwrap();
-
-      console.log("Report submitted successfully");
 
       setIsReportModalOpen(false);
       setReason("");
