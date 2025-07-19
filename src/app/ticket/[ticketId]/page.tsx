@@ -27,6 +27,7 @@ import {
 import { TicketBookmark } from "@/types/ticket";
 import TicketSearchBox from "./TicketReservationSearckBox";
 import ImageModal from "@/components/ui/ImageModal";
+import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
 
 const TicketDetailPage = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -69,6 +70,8 @@ const TicketDetailPage = () => {
   const loginModalContext = useAppSelector(
     (state) => state.auth.loginModalContext
   );
+  const [createReportTicketReview, { isLoading: isReporting }] =
+    useCreateReportTicketReviewMutation();
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -130,24 +133,6 @@ const TicketDetailPage = () => {
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
-    }
-  };
-
-  const handleSubmitReview = async () => {
-    if (!reviewComment.trim() || reviewRating < 1) {
-      alert("내용과 평점을 입력해주세요.");
-      return;
-    }
-    try {
-      await createReview({
-        id: ticketId,
-        data: { rating: reviewRating, comment: reviewComment.trim() },
-      }).unwrap();
-      setReviewComment("");
-      setReviewRating(5);
-    } catch (error) {
-      console.error(error);
-      alert("리뷰 작성 실패");
     }
   };
 
@@ -235,6 +220,28 @@ const TicketDetailPage = () => {
     setCurrentModalImage((prev) =>
       prev === modalImages.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const handleReportSubmit = async () => {
+    if (!selectedReviewId || !reason.trim()) {
+      alert("신고 사유를 입력해주세요.");
+      return;
+    }
+
+    try {
+      await createReportTicketReview({
+        reviewId: selectedReviewId,
+        reason: reason.trim(),
+      }).unwrap();
+
+      setIsReportModalOpen(false);
+      setReason("");
+      setSelectedReviewId(null);
+      alert("신고가 접수되었습니다.");
+    } catch (error) {
+      console.error("신고 실패:", error);
+      alert("신고에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
@@ -362,7 +369,6 @@ const TicketDetailPage = () => {
         ) : (
           <p className="text-gray-500">아직 작성된 리뷰가 없습니다.</p>
         )}
-       
       </div>
 
       {showingLoginModal && (
@@ -386,7 +392,7 @@ const TicketDetailPage = () => {
         reason={reason}
         setReason={setReason}
         selectedReviewId={selectedReviewId}
-        onSubmit={() => {}}
+        onSubmit={handleReportSubmit}
       />
 
       <ImageModal
