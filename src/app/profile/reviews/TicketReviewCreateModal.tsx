@@ -25,7 +25,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
 
-  const { data: myReviews } = useGetMyTicketReviewsQuery({
+  const { data: myReviews, refetch } = useGetMyTicketReviewsQuery({
     page: 1,
     pageSize: 100,
   });
@@ -81,6 +81,9 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
         rating,
         ticketReservationId,
       }).unwrap();
+
+      await refetch();
+
       alert("티켓 리뷰가 등록되었습니다.");
       onClose();
     } catch (error) {
