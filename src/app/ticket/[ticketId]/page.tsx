@@ -61,6 +61,9 @@ const TicketDetailPage = () => {
   const [reason, setReason] = useState("");
   const [reviewComment, setReviewComment] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
+  const [sortOption, setSortOption] = useState<
+    "latest" | "oldest" | "highest" | "lowest"
+  >("latest");
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const myUserId = useAppSelector((state) => state.auth.user?.id);
@@ -244,6 +247,22 @@ const TicketDetailPage = () => {
     }
   };
 
+  const sortedReviews = [...(reviews ?? [])].sort((a, b) => {
+    if (sortOption === "latest") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    if (sortOption === "oldest") {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }
+    if (sortOption === "highest") {
+      return (b.rating ?? 0) - (a.rating ?? 0);
+    }
+    if (sortOption === "lowest") {
+      return (a.rating ?? 0) - (b.rating ?? 0);
+    }
+    return 0;
+  });
+
   if (!ticket) return <div className="p-6">Loading or not found...</div>;
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
@@ -342,11 +361,33 @@ const TicketDetailPage = () => {
       <div className="mt-8 border-t pt-6">
         <h2 className="text-xl font-semibold mb-4">
           {" "}
-          리뷰 {reviews?.length}
+          총 {reviews?.length}개의 리뷰
         </h2>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="sort" className="text-sm font-medium text-gray-700">
+            정렬 기준:
+          </label>
+          <select
+            id="sort"
+            value={sortOption}
+            onChange={(e) =>
+              setSortOption(
+                e.target.value as "latest" | "oldest" | "highest" | "lowest"
+              )
+            }
+            className="border border-gray-300 rounded-md p-2"
+          >
+            <option value="latest">최신순</option>
+            <option value="oldest">오래된순</option>
+            <option value="highest">높은 평점순</option>
+            <option value="lowest">낮은 평점순</option>
+          </select>
+        </div>
+
         {reviews && reviews.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {reviews.map((review: TicketReview) => (
+            {sortedReviews.map((review: TicketReview) => (
               <ReviewCard
                 key={review.id}
                 review={review}
