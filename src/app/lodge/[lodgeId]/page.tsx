@@ -285,19 +285,19 @@ const LodgeDetailPage = () => {
     >("latest");
 
     const {
-      data: reviews,
+      data,
       isLoading,
       isError,
-    } = useGetReviewsByLodgeIdQuery(lodgeId);
+    } = useGetReviewsByLodgeIdQuery({lodgeId});
 
     if (isLoading) return <div>Loading reviews...</div>;
     if (isError) return <div>Error loading reviews.</div>;
 
-    if (!reviews || reviews.length === 0) {
+    if (!data || data.length === 0) {
       return <div>아직 리뷰가 없습니다.</div>;
     }
 
-    const typesReviews = reviews as Review[];
+    const typesReviews = data.reviews as Review[];
     const visibleReviews = typesReviews.filter((r) => !r.isHidden);
     const totalReviews = visibleReviews.length;
     const averageRating = (
