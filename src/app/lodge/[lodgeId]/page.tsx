@@ -284,11 +284,9 @@ const LodgeDetailPage = () => {
       "latest" | "oldest" | "highest" | "lowest"
     >("latest");
 
-    const {
-      data,
-      isLoading,
-      isError,
-    } = useGetReviewsByLodgeIdQuery({lodgeId});
+    const { data, isLoading, isError } = useGetReviewsByLodgeIdQuery({
+      lodgeId,
+    });
 
     if (isLoading) return <div>Loading reviews...</div>;
     if (isError) return <div>Error loading reviews.</div>;
@@ -300,10 +298,12 @@ const LodgeDetailPage = () => {
     const typesReviews = data.reviews as Review[];
     const visibleReviews = typesReviews.filter((r) => !r.isHidden);
     const totalReviews = visibleReviews.length;
-    const averageRating = (
-      visibleReviews.reduce((sum, review) => sum + review.rating, 0) /
-      totalReviews
-    ).toFixed(1);
+    const averageRating = totalReviews
+      ? (
+          visibleReviews.reduce((sum, review) => sum + review.rating, 0) /
+          totalReviews
+        ).toFixed(1)
+      : null;
 
     const sortedReviews = [...typesReviews].sort((a, b) => {
       switch (sortOption) {
@@ -328,8 +328,13 @@ const LodgeDetailPage = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between mb-4">
           <div className="text-lg font-semibold text-primary-900">
-            총 {totalReviews}개의 리뷰{" "}
-            <span className="font-bold">{averageRating}</span> / 5
+            총 {totalReviews}개의 리뷰
+            {averageRating && (
+              <>
+                {" "}
+                <span className="font-bold">{averageRating}</span> / 5
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
