@@ -49,6 +49,10 @@ const ReviewCard = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("Review Data:", review);
+  }, [review]);
+
+  useEffect(() => {
     const clickOutsideHandler = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -63,9 +67,27 @@ const ReviewCard = ({
     };
   }, []);
 
+  function isTicketReview(review: GenericReview): review is TicketReview {
+    return "reservation" in review;
+  }
+
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
       <div className="flex justify-between items-center mb-2 relative">
+        {isTicketReview(review) && review.reservation && (
+          <div className="text-sm text-gray-500 mb-2">
+            <span className="mr-2">
+              <strong>이용일:</strong> {formattedDate(review.reservation.date)}
+            </span>
+            <span className="mr-2">
+              <strong>성인:</strong> {review.reservation.adults}명
+            </span>
+            <span>
+              <strong>어린이:</strong> {review.reservation.children}명
+            </span>
+          </div>
+        )}
+
         <div className="flex items-center">
           <span className="text-md text-primary-800 font-medium mr-2">
             {review.user?.nickname}
