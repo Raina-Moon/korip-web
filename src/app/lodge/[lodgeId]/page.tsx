@@ -291,10 +291,6 @@ const LodgeDetailPage = () => {
     if (isLoading) return <div>Loading reviews...</div>;
     if (isError) return <div>Error loading reviews.</div>;
 
-    if (!data || data.length === 0) {
-      return <div>아직 리뷰가 없습니다.</div>;
-    }
-
     const typesReviews = data.reviews as Review[];
     const visibleReviews = typesReviews.filter((r) => !r.isHidden);
     const totalReviews = visibleReviews.length;
@@ -332,7 +328,10 @@ const LodgeDetailPage = () => {
             {averageRating && (
               <>
                 {" "}
-                <span className="font-bold">{averageRating}</span> / 5
+                <span className="font-bold text-yellow-600">
+                  {averageRating}
+                </span>{" "}
+                / 5
               </>
             )}
           </div>
@@ -358,26 +357,32 @@ const LodgeDetailPage = () => {
             </select>
           </div>
         </div>
-        {sortedReviews.map((review: Review) => (
-          <ReviewCard
-            key={review.id}
-            review={review}
-            myUserId={myUserId}
-            openMenuId={openMenuId}
-            editingId={editingId}
-            toggleMenu={toggleMenu}
-            startEditing={startEditing}
-            saveEdit={saveEdit}
-            cancelEditing={cancelEditing}
-            handleDelete={handleDelete}
-            editingComment={editingComment}
-            setEditingComment={setEditingComment}
-            editingRating={editingRating}
-            setEditingRating={setEditingRating}
-            handleReport={handleOpenReportModal}
-            isLoggedIn={isAuthenticated}
-          />
-        ))}
+        {visibleReviews.length > 0 ? (
+          <div className="flex flex-col gap-4 mt-4">
+            {sortedReviews.map((review: Review) => (
+              <ReviewCard
+                key={review.id}
+                review={review}
+                myUserId={myUserId}
+                openMenuId={openMenuId}
+                editingId={editingId}
+                toggleMenu={toggleMenu}
+                startEditing={startEditing}
+                saveEdit={saveEdit}
+                cancelEditing={cancelEditing}
+                handleDelete={handleDelete}
+                editingComment={editingComment}
+                setEditingComment={setEditingComment}
+                editingRating={editingRating}
+                setEditingRating={setEditingRating}
+                handleReport={handleOpenReportModal}
+                isLoggedIn={isAuthenticated}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-4">아직 작성된 리뷰가 없습니다.</p>
+        )}
       </div>
     );
   };
