@@ -99,8 +99,6 @@ const TicketListPage = () => {
             </div>
 
             <p className="text-gray-700">지역: {ticket.region}</p>
-            <p className="text-gray-700">이용 날짜: {ticket.date.slice(0, 10)}</p>
-            <p className="text-gray-700">설명: {ticket.description}</p>
             <p className="text-gray-700">
               성인 가격: {ticket.adultPrice?.toLocaleString()}원
             </p>
