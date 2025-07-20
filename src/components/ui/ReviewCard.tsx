@@ -72,9 +72,20 @@ const ReviewCard = ({
     return (review as TicketReview).ticketReservationId !== undefined;
   }
 
-  useEffect(() => {
-    console.log("Review : " , review);
-  }, [review]);
+  function isLodgeReview(review: GenericReview): review is Review {
+    return (review as Review).reservationId === undefined;
+  }
+
+  const getNightsAndDays = (checkInStr: string, checkOutStr: string) => {
+    const checkIn = new Date(checkInStr);
+    const checkOut = new Date(checkOutStr);
+
+    const diffTime = checkOut.getTime() - checkIn.getTime();
+    const nights = diffTime / (1000 * 60 * 60 * 24);
+    const days = nights + 1;
+
+    return { nights, days };
+  };
 
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
@@ -92,6 +103,34 @@ const ReviewCard = ({
             </span>
           </div>
         )}
+
+        {isLodgeReview(review) &&
+          review.reservation?.checkIn &&
+          review.reservation?.checkOut && (
+            <div className="text-sm text-gray-500 mb-2">
+              <span className="mr-2">
+                <strong>체크인:</strong>{" "}
+                {review.reservation.checkIn.slice(0, 10)}
+              </span>
+              <span className="mr-2">
+                <strong>체크아웃:</strong>{" "}
+                {review.reservation.checkOut.slice(0, 10)}
+              </span>
+              <span>
+                {(() => {
+                  const { nights, days } = getNightsAndDays(
+                    review.reservation.checkIn,
+                    review.reservation.checkOut
+                  );
+                  return (
+                    <strong>
+                      {nights}박 {days}일
+                    </strong>
+                  );
+                })()}
+              </span>
+            </div>
+          )}
 
         <div className="flex items-center">
           <span className="text-md text-primary-800 font-medium mr-2">
