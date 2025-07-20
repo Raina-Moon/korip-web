@@ -88,6 +88,18 @@ const TicketListPage = () => {
               router.push(`/ticket/${ticket.id}?${query}`);
             }}
           >
+            {ticket.lodgeImage ? (
+              <img
+                src={ticket.lodgeImage}
+                alt={ticket.name}
+                className="w-full h-48 object-cover rounded"
+              />
+            ) : (
+              <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+                No image
+              </div>
+            )}
+
             <h2 className="text-lg font-bold text-primary-900">
               {ticket.name}
             </h2>
