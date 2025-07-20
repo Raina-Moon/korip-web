@@ -91,8 +91,15 @@ const TicketListPage = () => {
             <h2 className="text-lg font-bold text-primary-900">
               {ticket.name}
             </h2>
+            <div className="flex gap-2 text-sm text-yellow-600 mb-1">
+              <span>⭐ {ticket.averageRating?.toFixed(1) ?? "0.0"}</span>
+              <span className="text-gray-500">
+                ({ticket.reviewCount ?? 0}개 리뷰)
+              </span>
+            </div>
+
             <p className="text-gray-700">지역: {ticket.region}</p>
-            <p className="text-gray-700">이용 날짜: {ticket.date}</p>
+            <p className="text-gray-700">이용 날짜: {ticket.date.slice(0, 10)}</p>
             <p className="text-gray-700">설명: {ticket.description}</p>
             <p className="text-gray-700">
               성인 가격: {ticket.adultPrice?.toLocaleString()}원
