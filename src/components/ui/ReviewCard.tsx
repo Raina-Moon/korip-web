@@ -1,8 +1,10 @@
 import { Review } from "@/types/reivew";
 import { TicketReview } from "@/types/ticketReview";
 import { formattedDate } from "@/utils/date";
+import { Rating } from "@smastrom/react-rating";
 import { MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import "@smastrom/react-rating/style.css";
 
 export type GenericReview = Review | TicketReview;
 
@@ -47,6 +49,11 @@ const ReviewCard = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("Review Data:", review);
+    console.log("Reservation:", review.reservation);
+  }, [review]);
+
+  useEffect(() => {
     const clickOutsideHandler = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -61,11 +68,29 @@ const ReviewCard = ({
     };
   }, []);
 
+  function isTicketReview(review: GenericReview): review is TicketReview {
+    return "reservation" in review;
+  }
+
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
-      <div className="flex justify-between items-center mb-2 relative">
-        <div className="flex items-center">
-          <span className="text-sm text-gray-600 mr-2">
+<div className="mb-2 relative">
+        {isTicketReview(review) && review.reservation && (
+          <div className="text-sm text-gray-500 mb-2">
+            <span className="mr-2">
+              <strong>이용일:</strong> {review.reservation.date.slice(0, 10)}
+            </span>
+            <span className="mr-2">
+              <strong>성인:</strong> {review.reservation.adults}명
+            </span>
+            <span>
+              <strong>어린이:</strong> {review.reservation.children}명
+            </span>
+          </div>
+        )}
+
+  <div className="flex items-center">
+          <span className="text-md text-primary-800 font-medium mr-2">
             {review.user?.nickname}
           </span>
           <span className="text-sm text-gray-500">
@@ -123,32 +148,39 @@ const ReviewCard = ({
         </div>
       ) : (
         <>
-          {!isEditing && <p>{review.rating} / 5</p>}
+          {!isEditing && (
+            <div className="flex items-center gap-2">
+              <Rating
+                style={{ maxWidth: 100 }}
+                value={review.rating}
+                readOnly
+              />
+            </div>
+          )}
 
           {isEditing && isOwner ? (
             <div className="mt-2 flex flex-col gap-2">
               <input
                 type="text"
-                className="border rounded px-3 py-2 w-full"
                 value={editingComment}
                 onChange={(e) => setEditingComment(e.target.value)}
+                className="border rounded px-3 py-2"
               />
-              <input
-                type="number"
-                className="border rounded px-3 py-2 w-full"
-                value={editingRating ?? ""}
-                onChange={(e) => setEditingRating(Number(e.target.value))}
+              <Rating
+                value={editingRating ?? 0}
+                onChange={setEditingRating}
+                style={{ maxWidth: 100 }}
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => saveEdit(review)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded"
                 >
                   Save
                 </button>
                 <button
                   onClick={cancelEditing}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
+                  className="px-4 py-2 border rounded"
                 >
                   Cancel
                 </button>

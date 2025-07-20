@@ -247,7 +247,16 @@ const TicketDetailPage = () => {
     }
   };
 
-  const sortedReviews = [...(reviews ?? [])].sort((a, b) => {
+  const visibleReviews = (reviews ?? []).filter((r) => !r.isHidden);
+  const totalVisible = visibleReviews.length;
+  const averageRating = totalVisible
+    ? (
+        visibleReviews.reduce((sum, r) => sum + (r.rating ?? 0), 0) /
+        totalVisible
+      ).toFixed(1)
+    : null;
+
+  const sortedReviews = [...visibleReviews].sort((a, b) => {
     if (sortOption === "latest") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
@@ -360,8 +369,12 @@ const TicketDetailPage = () => {
 
       <div className="mt-8 border-t pt-6">
         <h2 className="text-xl font-semibold mb-4">
-          {" "}
-          총 {reviews?.length}개의 리뷰
+          총 {visibleReviews.length}개의 리뷰{" "}
+          {averageRating && (
+            <span className="font-bold text-yellow-600">
+              ({averageRating} / 5)
+            </span>
+          )}
         </h2>
 
         <div className="flex items-center gap-2">
