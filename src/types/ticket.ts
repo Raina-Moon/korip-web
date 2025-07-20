@@ -1,4 +1,5 @@
 export interface Ticket {
+  lodgeImage: any;
   averageRating: any;
   reviewCount: number;
   id: number;
