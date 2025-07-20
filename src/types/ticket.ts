@@ -1,4 +1,6 @@
 export interface Ticket {
+  averageRating: any;
+  reviewCount: number;
   id: number;
   name: string;
   description?: string;
