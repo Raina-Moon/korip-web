@@ -78,7 +78,7 @@ const ReviewCard = ({
         {isTicketReview(review) && review.reservation && (
           <div className="text-sm text-gray-500 mb-2">
             <span className="mr-2">
-              <strong>이용일:</strong> {formattedDate(review.reservation.date)}
+              <strong>이용일:</strong> {review.reservation.date.slice(0, 10)}
             </span>
             <span className="mr-2">
               <strong>성인:</strong> {review.reservation.adults}명
