@@ -110,6 +110,12 @@ const ListPage = () => {
               <h2 className="text-lg font-bold text-primary-900">
                 {lodge.name}
               </h2>
+              <div className="flex items-center gap-2 text-sm text-yellow-600 mt-1">
+                <span>⭐ {lodge.averageRating?.toFixed(1) ?? "0.0"}</span>
+                <span className="text-gray-500">
+                  ({lodge.reviewCount ?? 0}개 리뷰)
+                </span>
+              </div>
               <p className="text-gray-700 mb-2">지역: {lodge.address}</p>
 
               {lodge.roomTypes?.map((room: any) => (

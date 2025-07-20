@@ -76,7 +76,7 @@ const TicketListPage = () => {
         tickets?.map((ticket) => (
           <div
             key={ticket.id}
-            className="border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer"
+            className="flex border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer gap-4"
             onClick={() => {
               const query = new URLSearchParams({
                 region,
@@ -88,24 +88,45 @@ const TicketListPage = () => {
               router.push(`/ticket/${ticket.id}?${query}`);
             }}
           >
-            <h2 className="text-lg font-bold text-primary-900">
-              {ticket.name}
-            </h2>
-            <p className="text-gray-700">지역: {ticket.region}</p>
-            <p className="text-gray-700">이용 날짜: {ticket.date}</p>
-            <p className="text-gray-700">설명: {ticket.description}</p>
-            <p className="text-gray-700">
-              성인 가격: {ticket.adultPrice?.toLocaleString()}원
-            </p>
-            <p className="text-gray-700">
-              아동 가격: {ticket.childPrice?.toLocaleString()}원
-            </p>
-            <p className="text-gray-700">
-              남은 성인 티켓: {ticket.availableAdultTickets}
-            </p>
-            <p className="text-gray-700">
-              남은 아동 티켓: {ticket.availableChildTickets}
-            </p>
+            <div className="w-32 h-24 flex-shrink-0">
+              {ticket.lodgeImage ? (
+                <img
+                  src={ticket.lodgeImage}
+                  alt={ticket.name}
+                  className="w-full h-full object-cover rounded"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm rounded">
+                  No image
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-primary-900">
+                {ticket.name}
+              </h2>
+              <div className="flex gap-2 text-sm text-yellow-600 mb-1">
+                <span>⭐ {ticket.averageRating?.toFixed(1) ?? "0.0"}</span>
+                <span className="text-gray-500">
+                  ({ticket.reviewCount ?? 0}개 리뷰)
+                </span>
+              </div>
+
+              <p className="text-gray-700">지역: {ticket.region}</p>
+              <p className="text-gray-700">
+                성인 가격: {ticket.adultPrice?.toLocaleString()}원
+              </p>
+              <p className="text-gray-700">
+                아동 가격: {ticket.childPrice?.toLocaleString()}원
+              </p>
+              <p className="text-gray-700">
+                남은 성인 티켓: {ticket.availableAdultTickets}
+              </p>
+              <p className="text-gray-700">
+                남은 아동 티켓: {ticket.availableChildTickets}
+              </p>
+            </div>
           </div>
         ))
       )}
