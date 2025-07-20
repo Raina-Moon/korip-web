@@ -50,6 +50,7 @@ const ReviewCard = ({
 
   useEffect(() => {
     console.log("Review Data:", review);
+    console.log("Reservation:", review.reservation);
   }, [review]);
 
   useEffect(() => {
