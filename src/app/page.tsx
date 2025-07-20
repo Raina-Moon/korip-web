@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
+import TicketDateInput from "@/components/TicketDateInput";
 
 const page = () => {
   const [calendar, setCalendar] = useState(false);
@@ -343,15 +344,7 @@ const page = () => {
                 </select>
               </label>
 
-              <label className="flex flex-col w-full text-primary-900 font-medium">
-                이용 날짜
-                <input
-                  type="date"
-                  className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
-                  value={date ? formatDate(date) : ""}
-                  onChange={(e) => setDate(new Date(e.target.value))}
-                />
-              </label>
+              <TicketDateInput date={date} setDate={setDate} />
 
               <div className="w-full relative">
                 <button
