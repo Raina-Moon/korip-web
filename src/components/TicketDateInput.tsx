@@ -51,8 +51,7 @@ export default function TicketDateInput({
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
   return (
@@ -82,8 +81,6 @@ export default function TicketDateInput({
               top: position.top,
               left: position.left,
               zIndex: 9999,
-              background: "white",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
               borderRadius: "8px",
               padding: "8px",
               width: position.width,
