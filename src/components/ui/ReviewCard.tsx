@@ -69,12 +69,16 @@ const ReviewCard = ({
   }, []);
 
   function isTicketReview(review: GenericReview): review is TicketReview {
-    return "reservation" in review;
+    return (review as TicketReview).ticketReservationId !== undefined;
   }
+
+  useEffect(() => {
+    console.log("Review : " , review);
+  }, [review]);
 
   return (
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
-<div className="mb-2 relative">
+      <div className="mb-2 relative">
         {isTicketReview(review) && review.reservation && (
           <div className="text-sm text-gray-500 mb-2">
             <span className="mr-2">
@@ -89,7 +93,7 @@ const ReviewCard = ({
           </div>
         )}
 
-  <div className="flex items-center">
+        <div className="flex items-center">
           <span className="text-md text-primary-800 font-medium mr-2">
             {review.user?.nickname}
           </span>
