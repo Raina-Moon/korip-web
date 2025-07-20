@@ -1,8 +1,10 @@
 import { Review } from "@/types/reivew";
 import { TicketReview } from "@/types/ticketReview";
 import { formattedDate } from "@/utils/date";
+import { Rating } from "@smastrom/react-rating";
 import { MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import "@smastrom/react-rating/style.css";
 
 export type GenericReview = Review | TicketReview;
 
@@ -65,7 +67,7 @@ const ReviewCard = ({
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
       <div className="flex justify-between items-center mb-2 relative">
         <div className="flex items-center">
-          <span className="text-sm text-gray-600 mr-2">
+          <span className="text-md text-primary-800 font-medium mr-2">
             {review.user?.nickname}
           </span>
           <span className="text-sm text-gray-500">
@@ -123,7 +125,15 @@ const ReviewCard = ({
         </div>
       ) : (
         <>
-          {!isEditing && <p>{review.rating} / 5</p>}
+          {!isEditing && (
+            <div className="flex items-center gap-2">
+              <Rating
+                style={{ maxWidth: 100 }}
+                value={review.rating}
+                readOnly
+              />
+            </div>
+          )}
 
           {isEditing && isOwner ? (
             <div className="mt-2 flex flex-col gap-2">
