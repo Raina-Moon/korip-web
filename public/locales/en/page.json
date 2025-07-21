@@ -30,5 +30,7 @@
   "search": "Search",
   "news": "News",
   "events": "Events",
-  "page": "page"
+  "page": "page",
+  "selectDateWarning": "Please select a date.",
+  "selectCheckinCheckoutWarning": "Please select check-in and check-out dates."
 }

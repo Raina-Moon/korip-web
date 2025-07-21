@@ -54,7 +54,7 @@ const Page = () => {
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
-        alert("Please select check-in and check-out dates.");
+        alert(t('selectCheckinCheckoutWarning'));
         setIsNavigating(false);
         return;
       }
@@ -72,7 +72,7 @@ const Page = () => {
       router.push(`/list/lodge?${query.toString()}`);
     } else {
       if (!date) {
-        alert("Please select a date.");
+        alert(t('selectDateWarning'));
         setIsNavigating(false);
         return;
       }

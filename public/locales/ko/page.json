@@ -30,5 +30,7 @@
   "search": "검색",
   "news": "뉴스",
   "events": "이벤트",
-  "page": "페이지"
+  "page": "페이지",
+  "selectDateWarning": "날짜를 선택해주세요.",
+  "selectCheckinCheckoutWarning": "체크인과 체크아웃 날짜를 선택해주세요."
 }
