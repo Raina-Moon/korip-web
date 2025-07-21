@@ -8,8 +8,10 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
 import TicketDateInput from "@/components/TicketDateInput";
+import { useTranslation } from "react-i18next";
 
-const page = () => {
+const Page = () => {
+  const { t } = useTranslation();
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
   const [date, setDate] = useState<Date | null>(null);
@@ -100,10 +102,10 @@ const page = () => {
         <div className="absolute inset-0 bg-black/50 flex flex-col justify-center z-10">
           <div className="flex flex-col items-center gap-5">
             <p className="text-white font-semibold text-3xl">
-              당신의 일상에 따뜻한 쉼표를
+              {t('welcome')}
             </p>
             <p className="text-white/70 text-xl">
-              전국 온천을 간편하게 예약하고, 지친 몸과 마음을 녹여보세요.
+              {t('greeting', { name: 'User' })}
             </p>
           </div>
         </div>
@@ -139,7 +141,7 @@ const page = () => {
             } transition-colors duration-300`}
           >
             <i className="bi bi-building mr-2"></i>
-            숙박
+            {t('accommodation')}
           </button>
           <button
             onClick={() => setProductType("티켓")}
@@ -150,7 +152,7 @@ const page = () => {
             } transition-colors duration-300`}
           >
             <i className="bi bi-ticket-perforated-fill mr-2"></i>
-            티켓
+            {t('ticket')}
           </button>
         </div>
 
@@ -159,37 +161,37 @@ const page = () => {
             <>
               <div className="flex w-full gap-4">
                 <label className="flex flex-col flex-1 w-full max-w-xs text-primary-900 font-medium">
-                  지역 선택
+                  {t('selectRegion')}
                   <select
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
                   >
-                    <option value="전체">전체</option>
-                    <option value="서울">서울</option>
-                    <option value="부산">부산</option>
-                    <option value="경기">경기도</option>
-                    <option value="충청">충청도</option>
-                    <option value="전라">전라도</option>
-                    <option value="경상">경상도</option>
-                    <option value="제주">제주도</option>
-                    <option value="강원">강원도</option>
+                    <option value="전체">{t('all')}</option>
+                    <option value="서울">{t('seoul')}</option>
+                    <option value="부산">{t('busan')}</option>
+                    <option value="경기">{t('gyeonggi')}</option>
+                    <option value="충청">{t('chungcheong')}</option>
+                    <option value="전라">{t('jeolla')}</option>
+                    <option value="경상">{t('gyeongsang')}</option>
+                    <option value="제주">{t('jeju')}</option>
+                    <option value="강원">{t('gangwon')}</option>
                   </select>
                 </label>
 
                 <label className="flex flex-col flex-1 text-primary-900 font-medium">
-                  숙소 유형
+                  {t('accommodationType')}
                   <select
                     value={accommodationType}
                     onChange={(e) => setAccommodationType(e.target.value)}
                     className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
                   >
-                    <option value="All">숙소 유형 전체</option>
-                    <option value="호텔">호텔</option>
-                    <option value="모텔">모텔</option>
-                    <option value="리조트">리조트</option>
-                    <option value="펜션">펜션</option>
-                    <option value="기타">기타</option>
+                    <option value="All">{t('allAccommodationTypes')}</option>
+                    <option value="호텔">{t('hotel')}</option>
+                    <option value="모텔">{t('motel')}</option>
+                    <option value="리조트">{t('resort')}</option>
+                    <option value="펜션">{t('pension')}</option>
+                    <option value="기타">{t('etc')}</option>
                   </select>
                 </label>
               </div>
@@ -197,7 +199,7 @@ const page = () => {
               <CheckinInput range={range} setRange={setRange} />
 
               <label className="flex flex-col w-full text-primary-900 font-medium">
-                체크아웃 날짜
+                {t('checkoutDate')}
                 <input
                   className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
                   readOnly
@@ -205,7 +207,7 @@ const page = () => {
                     setCalendar(true);
                   }}
                   value={formatDate(range?.[1] ?? null)}
-                  placeholder="Check-out Date"
+                  placeholder={t('checkoutDatePlaceholder')}
                 />
               </label>
 
@@ -228,17 +230,17 @@ const page = () => {
   "
                 >
                   <span className="text-primary-900 font-medium">
-                    객실/인원 선택
+                    {t('roomAndGuestSelection')}
                   </span>
                   <span className="flex gap-2">
                     <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
-                      방 {room}
+                      {t('room')} {room}
                     </span>
                     <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
-                      성인 {adults}
+                      {t('adults')} {adults}
                     </span>
                     <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
-                      아동 {children}
+                      {t('children')} {children}
                     </span>
                   </span>
                 </button>
@@ -256,7 +258,7 @@ const page = () => {
                       </div>
                       <div className="flex flex-row items-center justify-center p-5 gap-4">
                         <p className="text-lg font-semibold text-primary-900">
-                          방{" "}
+                          {t('room')}{" "}
                         </p>
                         <button
                           onClick={() => handleRoomChange(-1)}
@@ -276,7 +278,7 @@ const page = () => {
                       </div>
                       <div className="flex flex-row items-center justify-center p-5 gap-4">
                         <p className="text-lg font-semibold text-primary-900">
-                          성인
+                          {t('adults')}
                         </p>
                         <button
                           className="border border-primary-800 p-3 rounded-full text-2xl"
@@ -297,7 +299,7 @@ const page = () => {
                       </div>
                       <div className="flex flex-row items-center justify-center p-5 gap-4">
                         <p className="text-lg font-semibold text-primary-900">
-                          아동{" "}
+                          {t('children')}{" "}
                         </p>
                         <button
                           className="border border-primary-800 p-3 rounded-full text-2xl"
@@ -326,21 +328,21 @@ const page = () => {
           {productType === "티켓" && (
             <>
               <label className="flex flex-col w-full max-w-xs text-primary-900 font-medium">
-                지역 선택
+                {t('selectRegion')}
                 <select
                   value={region}
                   onChange={(e) => setRegion(e.target.value)}
                   className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
                 >
-                  <option value="전체">전체</option>
-                  <option value="서울">서울</option>
-                  <option value="부산">부산</option>
-                  <option value="경기">경기도</option>
-                  <option value="충청">충청도</option>
-                  <option value="전라">전라도</option>
-                  <option value="경상">경상도</option>
-                  <option value="제주">제주도</option>
-                  <option value="강원">강원도</option>
+                  <option value="전체">{t('all')}</option>
+                  <option value="서울">{t('seoul')}</option>
+                  <option value="부산">{t('busan')}</option>
+                  <option value="경기">{t('gyeonggi')}</option>
+                  <option value="충청">{t('chungcheong')}</option>
+                  <option value="전라">{t('jeolla')}</option>
+                  <option value="경상">{t('gyeongsang')}</option>
+                  <option value="제주">{t('jeju')}</option>
+                  <option value="강원">{t('gangwon')}</option>
                 </select>
               </label>
 
@@ -365,14 +367,14 @@ const page = () => {
   "
                 >
                   <span className="text-primary-900 font-medium">
-                    인원 선택
+                    {t('guestSelection')}
                   </span>
                   <span className="flex gap-2">
                     <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
-                      성인 {adults}
+                      {t('adults')} {adults}
                     </span>
                     <span className="bg-primary-100 text-primary-800 px-2 py-0.5 rounded-full text-sm">
-                      아동 {children}
+                      {t('children')} {children}
                     </span>
                   </span>
                 </button>
@@ -391,7 +393,7 @@ const page = () => {
 
                       <div className="flex flex-row items-center justify-center p-5 gap-4">
                         <p className="text-lg font-semibold text-primary-900">
-                          성인
+                          {t('adults')}
                         </p>
                         <button
                           className="border border-primary-800 p-3 rounded-full text-2xl"
@@ -412,7 +414,7 @@ const page = () => {
                       </div>
                       <div className="flex flex-row items-center justify-center p-5 gap-4">
                         <p className="text-lg font-semibold text-primary-900">
-                          아동{" "}
+                          {t('children')}{" "}
                         </p>
                         <button
                           className="border border-primary-800 p-3 rounded-full text-2xl"
@@ -442,26 +444,26 @@ const page = () => {
             onClick={handleSearch}
             className="bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-500 transition-colors duration-300"
           >
-            <i className="bi bi-search mr-2"></i>Search
+            <i className="bi bi-search mr-2"></i>{t('search')}
           </button>
         </div>
       </div>
 
       <div className="flex justify-between items-center mt-20 mb-20 px-5 w-[60%] gap-10">
         <div className="border-b border-primary-800 w-full">
-          <p className="text-primary-800 font-bold text-3xl">News</p>
+          <p className="text-primary-800 font-bold text-3xl">{t('news')}</p>
         </div>
 
         <div className="border-b border-primary-800 w-full">
-          <p className="text-primary-800 font-bold text-3xl">Events</p>
+          <p className="text-primary-800 font-bold text-3xl">{t('events')}</p>
         </div>
       </div>
 
       <div>
-        <p>page</p>
+        <p>{t('page')}</p>
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
