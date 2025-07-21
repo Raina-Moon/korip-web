@@ -11,7 +11,7 @@ import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
 
 const Page = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("page");
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
   const [date, setDate] = useState<Date | null>(null);
@@ -53,7 +53,7 @@ const Page = () => {
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
-        alert("Please select check-in and check-out dates.");
+        alert(t('selectCheckinCheckoutWarning'));
         setIsNavigating(false);
         return;
       }
@@ -71,7 +71,7 @@ const Page = () => {
       router.push(`/list/lodge?${query.toString()}`);
     } else {
       if (!date) {
-        alert("Please select a date.");
+        alert(t('selectDateWarning'));
         setIsNavigating(false);
         return;
       }
