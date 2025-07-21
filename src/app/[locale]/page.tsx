@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import "@/lib/i18n"; // Import i18n configuration
 
 const Page = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("page");
   const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
   const [date, setDate] = useState<Date | null>(null);
