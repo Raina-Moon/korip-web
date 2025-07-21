@@ -13,6 +13,8 @@ if (!i18n.isInitialized) {
     .init({
       fallbackLng: "en",
       debug: true,
+      supportedLngs: ["en", "ko"],
+      load: "languageOnly",
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default
       },
