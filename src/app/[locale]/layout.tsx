@@ -27,15 +27,15 @@ export function generateStaticParams() {
   return ["en", "ko"].map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({
-  children,
+export default async function LocaleLayout({
   params,
-}: Readonly<{
+  children,
+}: {
   children: React.ReactNode;
   params: { locale: string };
-}>) {
-  const locale = params.locale;
-
+}) {
+  const locale = await params.locale;
+  
   return (
     <html lang={locale}>
       <head>
