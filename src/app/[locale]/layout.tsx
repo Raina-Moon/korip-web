@@ -7,6 +7,14 @@ import AuthLoader from "@/components/AuthLoader";
 import HeaderWrapper from "@/components/HeaderWrapper";
 import GlobalLoadingOverlay from "@/components/GlobalLoadingOverlay";
 import NavigationEvents from "@/lib/providers/NavigationEvents";
+import { ReactNode } from "react";
+import TranslationsProvider from "@/lib/i18n/TranslationsProvider";
+import { createInstance } from "i18next";
+import { initReactI18next } from "react-i18next";
+import resourcesToBackend from "i18next-resources-to-backend";
+import { I18nextProvider } from "react-i18next";
+import { dir } from "i18next";
+import i18nConfig from "@/lib/i18n/settings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,32 +32,30 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return ["en", "ko"].map((locale) => ({ locale }));
+  return i18nConfig.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
-  params,
   children,
+  params,
 }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const locale = await params.locale;
-  
+  const locale = params.locale;
+
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={dir(locale)}>
       <head>
         <script src="https://js.tosspayments.com/v2/standard"></script>
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <AuthLoader />
           <HeaderWrapper />
           <GlobalLoadingOverlay />
           <NavigationEvents />
-          {children}
+          <TranslationsProvider>{children}</TranslationsProvider>
         </Providers>
       </body>
     </html>
