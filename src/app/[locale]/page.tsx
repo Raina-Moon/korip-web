@@ -9,7 +9,6 @@ import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
 import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
-import "@/lib/i18n"; // Import i18n configuration
 
 const Page = () => {
   const { t } = useTranslation("page");
