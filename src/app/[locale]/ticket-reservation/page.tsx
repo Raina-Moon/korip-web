@@ -7,19 +7,9 @@ import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const countryOptions = [
-  "대한민국",
-  "미국",
-  "일본",
-  "중국",
-  "영국",
-  "독일",
-  "프랑스",
-  "호주",
-  "캐나다",
-];
-
 const TicketReservationPage = () => {
+  const countryCodes = ["kr", "us", "jp", "cn", "gb", "de", "fr", "au", "ca"];
+
   const { t } = useTranslation("ticket-reservation");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -41,7 +31,7 @@ const TicketReservationPage = () => {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [nationality, setNationality] = useState(countryOptions[0]);
+  const [nationality, setNationality] = useState(countryCodes[0]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
@@ -163,9 +153,9 @@ const TicketReservationPage = () => {
           onChange={(e) => setNationality(e.target.value)}
           className="border p-2 rounded"
         >
-          {countryOptions.map((country) => (
-            <option key={country} value={country}>
-              {country}
+          {countryCodes.map((code) => (
+            <option key={code} value={code}>
+              {t(`countries.${code}`)}
             </option>
           ))}
         </select>
