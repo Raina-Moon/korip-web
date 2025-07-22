@@ -1,0 +1,18 @@
+{
+  "title": "Search Results",
+  "sort": {
+    "popularity": "Popularity",
+    "reviews": "Most Reviews",
+    "adult_price_asc": "Lowest Adult Price",
+    "adult_price_desc": "Highest Adult Price",
+    "child_price_asc": "Lowest Child Price",
+    "child_price_desc": "Highest Child Price"
+  },
+  "noResults": "No search results found.",
+  "reviewsCount": "({{count}} reviews)",
+  "region": "Region: {{address}}",
+  "adultPrice": "Adult Price: {{price}} KRW",
+  "childPrice": "Child Price: {{price}} KRW",
+  "availableAdultTickets": "Available Adult Tickets: {{count}}",
+  "availableChildTickets": "Available Child Tickets: {{count}}"
+}
