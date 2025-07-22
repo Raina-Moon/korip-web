@@ -12,6 +12,10 @@
   "guestInfo": "Guests",
   "adults": "Adults",
   "children": "Children",
+  "adultsWithUnit": "{{count}} adult",
+  "adultsWithUnit_plural": "{{count}} adults",
+  "childrenWithUnit": "{{count}} child",
+  "childrenWithUnit_plural": "{{count}} children",
 
   "userInfo": "Reservation Info",
   "name": "Name",

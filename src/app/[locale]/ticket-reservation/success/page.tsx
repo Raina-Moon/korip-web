@@ -76,13 +76,13 @@ const TicketReservationSuccessPage = () => {
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("adults")}
               </td>
-              <td className="py-2 px-4">{pending.adults}명</td>
+              <td className="py-2 px-4">{t("adultsWithUnit", { count: pending.adults })}</td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("children")}
               </td>
-              <td className="py-2 px-4">{pending.children}명</td>
+              <td className="py-2 px-4">{t("childrenWithUnit", { count: pending.children })}</td>
             </tr>
 
             <tr className="bg-gray-100">

@@ -12,6 +12,8 @@
   "guestInfo": "이용 인원",
   "adults": "성인",
   "children": "어린이",
+  "adultsWithUnit": "{{count}}명",
+  "childrenWithUnit": "{{count}}명",
 
   "userInfo": "예약자 정보",
   "name": "이름",
