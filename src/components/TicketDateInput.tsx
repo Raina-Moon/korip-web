@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 export default function TicketDateInput({
   date,
@@ -11,6 +12,7 @@ export default function TicketDateInput({
   date: Date | null;
   setDate: (d: Date) => void;
 }) {
+  const { t } = useTranslation("page");
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 300 });
 
@@ -57,7 +59,7 @@ export default function TicketDateInput({
   return (
     <>
       <label className="flex flex-col w-full text-primary-900 font-medium">
-        이용 날짜
+        {t("date")}
         <input
           ref={inputRef}
           className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
@@ -67,7 +69,7 @@ export default function TicketDateInput({
             handleOpen();
           }}
           value={date ? formatDate(date) : ""}
-          placeholder="이용 날짜를 선택하세요"
+          placeholder={t("selectDate")}
         />
       </label>
 

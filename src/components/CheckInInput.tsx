@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 export default function CheckinInput({
   range,
@@ -11,6 +12,7 @@ export default function CheckinInput({
   range: [Date, Date] | null;
   setRange: (r: [Date, Date]) => void;
 }) {
+  const { t } = useTranslation("page");
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<{
     top: number;
@@ -61,7 +63,7 @@ export default function CheckinInput({
   return (
     <>
       <label className="flex flex-col w-full text-primary-900 font-medium">
-        체크인 날짜
+        {t("checkInDate")}
         <input
           ref={inputRef}
           className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
