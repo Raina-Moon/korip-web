@@ -7,8 +7,11 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { useLocale } from "@/utils/useLocale";
+import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
+  const { t } = useTranslation("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +19,7 @@ const LoginPage = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const locale = useLocale();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("rememberedEmail");
@@ -27,7 +31,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      return alert("Please fill in all fields");
+      return alert(t("fillAllFields"));
     }
 
     if (rememberMe) {
@@ -41,7 +45,7 @@ const LoginPage = () => {
       await dispatch(loginUser(email, password));
       router.push("/");
     } catch (err) {
-      alert("Login failed. Please check your credentials and try again.");
+      alert(t("loginFailed"));
     } finally {
       dispatch(hideLoading());
     }
@@ -50,7 +54,7 @@ const LoginPage = () => {
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     const { credential } = credentialResponse;
     if (!credential) {
-      alert("Google login failed. Please try again.");
+      alert(t("googleLoginFailed"));
       return;
     }
     try {
@@ -70,12 +74,12 @@ const LoginPage = () => {
           children: parsed.children.toString(),
           roomCount: parsed.roomCount.toString(),
         });
-        router.push(`/lodge/${lodgeId}?${query.toString()}`);
+        router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
       } else {
-        router.push("/");
+        router.push(`/${locale}/`);
       }
     } catch (err) {
-      alert("Google login failed. Please try again.");
+      alert(t("googleLoginFailed"));
     } finally {
       dispatch(hideLoading());
     }
@@ -83,13 +87,13 @@ const LoginPage = () => {
 
   const handleGoogleLoginError = () => {
     console.error("Login failed:");
-    alert("Login failed, please try again.");
+    alert(t("loginFailed"));
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-4">
       <div className="flex flex-col gap-1">
-        <p className="text-primary-800 text-sm font-medium">Email</p>
+        <p className="text-primary-800 text-sm font-medium">{t("email")}</p>
         <input
           type="email"
           className="border border-primary-800 rounded-md outline-none px-3 py-1"
@@ -98,7 +102,7 @@ const LoginPage = () => {
         />
       </div>
       <div className="flex flex-col gap-1">
-        <p className="text-primary-800 text-sm font-medium">Password</p>
+        <p className="text-primary-800 text-sm font-medium">{t("password")}</p>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -128,7 +132,7 @@ const LoginPage = () => {
           checked={rememberMe}
         />
         <label htmlFor="remember-me" className="text-primary-800 text-sm">
-          Remember Me
+          {t("rememberMe")}
         </label>
       </div>
 
@@ -136,27 +140,27 @@ const LoginPage = () => {
         onClick={handleLogin}
         className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
       >
-        Log In
+        {t("login")}
       </button>
       <div className="flex flex-col gap-2">
         <p className="text-primary-800 text-sm">
-          Don't have an account?{" "}
+          {t("signupPrompt")}{" "}
           <a href="/signup/email" className="text-primary-700 hover:underline">
-            Sign Up
+            {t("signupLink")}
           </a>
         </p>
         <p className="text-primary-800 text-sm">
-          Forgot your password?{" "}
+          {t("forgotPassword")}{" "}
           <a
             href="/reset-password"
             className="text-primary-700 hover:underline"
           >
-            Reset Password
+            {t("resetPassword")}
           </a>
         </p>
       </div>
 
-      <h2 className="text-2xl text-primary-800">Social Login</h2>
+      <h2 className="text-2xl text-primary-800">{t("socialLogin")}</h2>
       <div className="flex flex-row gap-6">
         <button className="text-primary-700 text-4xl hover:text-primary-500">
           <i className="bi bi-apple"></i>
