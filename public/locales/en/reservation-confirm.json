@@ -1,0 +1,9 @@
+{
+  "title": "Reservation Confirmation",
+  "totalPrice": "Total Payment Amount",
+  "payment": {
+    "button": "Pay Now (Toss)",
+    "failAlert": "Payment failed. Please try again.",
+    "invalidPhoneAlert": "Please enter a valid Korean phone number starting with 010 (10-11 digits)."
+  }
+}
