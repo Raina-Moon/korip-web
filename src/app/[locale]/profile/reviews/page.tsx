@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import LodgeReview from "./LodgeReview";
-import TicketReview from "./TicketReview";
+import LodgeReview from "../../../../components/reviews/LodgeReview";
+import TicketReview from "../../../../components/reviews/TicketReview";
 
 const ReviewsPage = () => {
   const [selectedTab, setSelectedTab] = useState<"lodge" | "ticket">("lodge");
