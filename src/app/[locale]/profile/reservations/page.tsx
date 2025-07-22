@@ -14,8 +14,10 @@ import {
 } from "@/lib/ticket-reservation/ticketReservationThunk";
 import TicketReservationCard from "../../../../components/reservations/TicketReservationCard";
 import { TicketReservation } from "@/types/ticketReservation";
+import { useTranslation } from "react-i18next";
 
 export default function ReservationListPage() {
+  const { t } = useTranslation("reservations");
   const [showingModal, setShowingModal] = useState(false);
   const [pending, setPending] = useState<any | null>(null);
   const [filter, setFilter] = useState<
@@ -110,7 +112,7 @@ export default function ReservationListPage() {
         })
       );
     } catch (err) {
-      alert("예약 취소 중 오류가 발생했습니다.");
+      alert(t("alert.cancelFailed"));
     } finally {
       setIsCancelling(false);
     }
@@ -129,9 +131,9 @@ export default function ReservationListPage() {
       setShowTicketCancelModal(false);
       setTicketModalOpen(false);
       dispatch(fetchTicketReservations({ page: ticketCurrentPage }));
-      alert("티켓 예약이 성공적으로 취소되었습니다.");
+      alert(t("alert.ticketCancelSuccess"));
     } catch (err) {
-      alert("티켓 예약 취소 중 오류가 발생했습니다.");
+      alert(t("alert.ticketCancelFailed"));
     } finally {
       setIsTicketCancelling(false);
     }
@@ -160,13 +162,13 @@ export default function ReservationListPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">내 예약 목록</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("title")}</h1>
 
-      {loading && <p className="text-gray-600">불러오는 중...</p>}
+      {loading && <p className="text-gray-600">{t("loading")}</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && list.length === 0 && (
-        <p className="text-gray-700">예약 내역이 없습니다.</p>
+        <p className="text-gray-700">{t("empty")}</p>
       )}
 
       <div className="flex gap-2 mb-6">
@@ -178,7 +180,7 @@ export default function ReservationListPage() {
               : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
           }`}
         >
-          숙소 예약
+          {t("lodgingTab")}
         </button>
         <button
           onClick={() => setTypeFilter("TICKET")}
@@ -188,7 +190,7 @@ export default function ReservationListPage() {
               : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
           }`}
         >
-          티켓 예약
+          {t("ticketTab")}
         </button>
       </div>
 
@@ -203,7 +205,7 @@ export default function ReservationListPage() {
                   : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
               }`}
             >
-              전체
+              {t("filter.all")}
             </button>
             <button
               onClick={() => setFilter("PENDING")}
@@ -213,7 +215,7 @@ export default function ReservationListPage() {
                   : "text-yellow-700 border-yellow-700 hover:bg-yellow-700 hover:text-white"
               }`}
             >
-              진행중
+              {t("filter.pending")}
             </button>
             <button
               onClick={() => setFilter("CONFIRMED")}
@@ -223,7 +225,7 @@ export default function ReservationListPage() {
                   : "text-green-700 border-green-700 hover:bg-green-700 hover:text-white"
               }`}
             >
-              예약확정
+              {t("filter.confirmed")}
             </button>
             <button
               onClick={() => setFilter("CANCELLED")}
@@ -233,7 +235,7 @@ export default function ReservationListPage() {
                   : "text-red-700 border-red-700 hover:bg-red-700 hover:text-white"
               }`}
             >
-              예약취소
+              {t("filter.cancelled")}
             </button>
           </div>
 
@@ -278,7 +280,7 @@ export default function ReservationListPage() {
                   : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
               }`}
             >
-              전체
+              {t("filter.all")}
             </button>
             <button
               onClick={() => setTicketFilter("PENDING")}
@@ -288,7 +290,7 @@ export default function ReservationListPage() {
                   : "text-yellow-700 border-yellow-700 hover:bg-yellow-700 hover:text-white"
               }`}
             >
-              진행중
+              {t("filter.pending")}
             </button>
             <button
               onClick={() => setTicketFilter("CONFIRMED")}
@@ -298,7 +300,7 @@ export default function ReservationListPage() {
                   : "text-green-700 border-green-700 hover:bg-green-700 hover:text-white"
               }`}
             >
-              예약확정
+              {t("filter.confirmed")}
             </button>
             <button
               onClick={() => setTicketFilter("CANCELLED")}
@@ -308,14 +310,12 @@ export default function ReservationListPage() {
                   : "text-red-700 border-red-700 hover:bg-red-700 hover:text-white"
               }`}
             >
-              예약취소
+              {t("filter.cancelled")}
             </button>
           </div>
 
           {!ticketState.loading && filteredTicketList.length === 0 && (
-            <p className="text-gray-700">
-              해당 조건의 티켓 예약 내역이 없습니다.
-            </p>
+            <p className="text-gray-700">{t("emptyTicket")}</p>
           )}
 
           {!ticketState.loading && filteredTicketList.length > 0 && (
@@ -355,7 +355,7 @@ export default function ReservationListPage() {
           href="/profile"
           className="inline-block border border-primary-700 text-primary-800 px-4 py-2 rounded hover:bg-primary-700 hover:text-white"
         >
-          메인으로 돌아가기
+          {t("backToMain")}
         </Link>
       </div>
 
@@ -363,7 +363,7 @@ export default function ReservationListPage() {
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
-              <h2 className="text-lg font-semibold mb-4">예약 상세 정보</h2>
+              <h2 className="text-lg font-semibold mb-4">{t("modal.title")}</h2>
 
               {pending.roomType?.images?.[0] && (
                 <img
@@ -378,7 +378,7 @@ export default function ReservationListPage() {
               )}
 
               <p className="mb-2">
-                <strong>숙소:</strong>{" "}
+                <strong>{t("modal.lodge")}:</strong>{" "}
                 {pending.lodge?.id ? (
                   <Link
                     href={{
@@ -403,40 +403,42 @@ export default function ReservationListPage() {
               </p>
 
               <p className="mb-2">
-                <strong>방 타입:</strong>{" "}
+                <strong>{t("modal.roomType")}:</strong>{" "}
                 {pending.roomType?.name || "정보 없음"}
               </p>
               <p className="mb-2">
-                <strong>체크인:</strong> {pending.checkIn.slice(0, 10)}
+                <strong>{t("modal.checkIn")}:</strong>{" "}
+                {pending.checkIn.slice(0, 10)}
               </p>
               <p className="mb-2">
-                <strong>체크아웃:</strong> {pending.checkOut.slice(0, 10)}
+                <strong>{t("modal.checkOut")}:</strong>{" "}
+                {pending.checkOut.slice(0, 10)}
               </p>
               <p className="mb-2">
-                <strong>성인:</strong> {pending.adults}명
+                <strong>{t("modal.adults")}:</strong> {pending.adults}명
               </p>
               <p className="mb-2">
-                <strong>어린이:</strong> {pending.children}명
+                <strong>{t("modal.children")}:</strong> {pending.children}명
               </p>
               <p className="mb-2">
-                <strong>객실 수:</strong> {pending.roomCount}개
+                <strong>{t("modal.roomCount")}:</strong> {pending.roomCount}개
               </p>
               <p className="mb-2">
-                <strong>예약일:</strong>{" "}
+                <strong>{t("modal.createdAt")}:</strong>{" "}
                 {new Date(pending.createdAt).toLocaleString()}
               </p>
               <p className="mb-2">
-                <strong>특별 요청:</strong>{" "}
+                <strong>{t("modal.specialRequests")}:</strong>{" "}
                 {parsedSpecialRequests(pending.specialRequests).length > 0
                   ? parsedSpecialRequests(pending.specialRequests).join(", ")
-                  : "없음"}
+                  : t("modal.none")}
               </p>
               {pending && pending.status === "CONFIRMED" && (
                 <button
                   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4"
                   onClick={() => setShowCancelModal(true)}
                 >
-                  예약 취소
+                  {t("modal.cancel")}
                 </button>
               )}
               <div className="mt-4">
@@ -444,7 +446,7 @@ export default function ReservationListPage() {
                   className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
                   onClick={() => setShowingModal(false)}
                 >
-                  닫기
+                  {t("modal.close")}
                 </button>
               </div>
             </div>
@@ -455,27 +457,32 @@ export default function ReservationListPage() {
       {ticketModalOpen && selectedTicket && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
-            <h2 className="text-lg font-semibold mb-4">티켓 예약 상세 정보</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              {t("ticketModal.title")}
+            </h2>
 
             <p className="mb-2">
-              <strong>티켓명:</strong>{" "}
-              {selectedTicket.ticketType?.name || "정보 없음"}
+              <strong>{t("ticketModal.ticketName")}:</strong>{" "}
+              {selectedTicket.ticketType?.name || t("modal.none")}
             </p>
             <p className="mb-2">
-              <strong>이용일:</strong> {formatKSTDate(selectedTicket.date)}
+              <strong>{t("ticketModal.useDate")}:</strong>{" "}
+              {formatKSTDate(selectedTicket.date)}
             </p>
             <p className="mb-2">
-              <strong>성인:</strong> {selectedTicket.adults}명
+              <strong>{t("ticketModal.adults")}:</strong>{" "}
+              {selectedTicket.adults}명
             </p>
             <p className="mb-2">
-              <strong>어린이:</strong> {selectedTicket.children}명
+              <strong>{t("ticketModal.children")}:</strong>{" "}
+              {selectedTicket.children}명
             </p>
             <p className="mb-2">
-              <strong>총 가격:</strong>{" "}
+              <strong>{t("ticketModal.totalPrice")}:</strong>{" "}
               {selectedTicket.totalPrice?.toLocaleString() || "계산 안됨"}원
             </p>
             <p className="mb-2">
-              <strong>예약일:</strong>{" "}
+              <strong>{t("ticketModal.createdAt")}:</strong>{" "}
               {new Date(selectedTicket.createdAt).toLocaleString()}
             </p>
             {selectedTicket.status === "CONFIRMED" && (
@@ -483,7 +490,7 @@ export default function ReservationListPage() {
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-4"
                 onClick={() => setShowTicketCancelModal(true)}
               >
-                예약 취소
+                {t("ticketModal.cancel")}
               </button>
             )}
 
@@ -492,7 +499,7 @@ export default function ReservationListPage() {
                 className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-primary-800"
                 onClick={() => setTicketModalOpen(false)}
               >
-                닫기
+                {t("ticketModal.close")}
               </button>
             </div>
           </div>
@@ -502,13 +509,9 @@ export default function ReservationListPage() {
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">환불 규정 및 취소 동의</h2>
+            <h2 className="text-xl font-bold mb-4">{t("refund.title")}</h2>
             <p className="text-sm text-gray-700 whitespace-pre-wrap mb-4">
-              {`■ 환불 규정
-- 체크인 7일 전 취소 시: 전액 환불
-- 체크인 24시간 초과 ~ 7일 이내 취소 시: 50% 환불
-- 체크인 24시간 이내 취소 시: 환불 불가
-`}
+              {t("refund.lodgingPolicy")}
             </p>
 
             <label className="flex items-center gap-2 mb-4">
@@ -518,7 +521,7 @@ export default function ReservationListPage() {
                 onChange={(e) => setAgreeRefundPolicy(e.target.checked)}
               />
               <span className="text-sm text-gray-800">
-                위 환불 정책을 읽고 동의합니다.
+                {t("refund.agreeText")}
               </span>
             </label>
 
@@ -527,7 +530,7 @@ export default function ReservationListPage() {
                 onClick={() => setShowCancelModal(false)}
                 className="px-4 py-2 rounded border border-gray-400 text-gray-700 hover:bg-gray-100"
               >
-                닫기
+                {t("refund.close")}
               </button>
               <button
                 disabled={!agreeRefundPolicy || isCancelling}
@@ -538,7 +541,7 @@ export default function ReservationListPage() {
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                {isCancelling ? "취소 처리중..." : "예약 취소"}
+                {isCancelling ? t("refund.cancelling") : t("refund.cancel")}
               </button>
             </div>
           </div>
@@ -548,13 +551,9 @@ export default function ReservationListPage() {
       {showTicketCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">환불 규정 및 취소 동의</h2>
+            <h2 className="text-xl font-bold mb-4">{t("refund.title")}</h2>
             <p className="text-sm text-gray-700 whitespace-pre-wrap mb-4">
-              {`■ 환불 규정
-- 이용일 7일 전 취소 시: 전액 환불
-- 이용일 24시간 초과 ~ 7일 이내 취소 시: 50% 환불
-- 이용일 24시간 이내 취소 시: 환불 불가
-`}
+              {t("refund.ticketPolicy")}
             </p>
 
             <label className="flex items-center gap-2 mb-4">
@@ -564,7 +563,7 @@ export default function ReservationListPage() {
                 onChange={(e) => setAgreeTicketRefundPolicy(e.target.checked)}
               />
               <span className="text-sm text-gray-800">
-                위 환불 정책을 읽고 동의합니다.
+                {t("refund.agreeText")}
               </span>
             </label>
 
@@ -573,7 +572,7 @@ export default function ReservationListPage() {
                 onClick={() => setShowTicketCancelModal(false)}
                 className="px-4 py-2 rounded border border-gray-400 text-gray-700 hover:bg-gray-100"
               >
-                닫기
+                {t("refund.close")}
               </button>
               <button
                 disabled={!agreeTicketRefundPolicy || isTicketCancelling}
@@ -584,7 +583,9 @@ export default function ReservationListPage() {
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                {isTicketCancelling ? "취소 처리중..." : "예약 취소"}
+                {isTicketCancelling
+                  ? t("refund.cancelling")
+                  : t("refund.cancel")}
               </button>
             </div>
           </div>

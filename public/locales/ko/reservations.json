@@ -1,0 +1,56 @@
+{
+  "title": "내 예약 목록",
+  "loading": "불러오는 중...",
+  "error": "예약 정보를 불러오는 데 실패했습니다.",
+  "empty": "예약 내역이 없습니다.",
+  "emptyTicket": "해당 조건의 티켓 예약 내역이 없습니다.",
+  "backToMain": "메인으로 돌아가기",
+  "lodgingTab": "숙소 예약",
+  "ticketTab": "티켓 예약",
+  "filter": {
+    "all": "전체",
+    "pending": "진행중",
+    "confirmed": "예약확정",
+    "cancelled": "예약취소"
+  },
+  "modal": {
+    "title": "예약 상세 정보",
+    "lodge": "숙소",
+    "roomType": "방 타입",
+    "checkIn": "체크인",
+    "checkOut": "체크아웃",
+    "adults": "성인",
+    "children": "어린이",
+    "roomCount": "객실 수",
+    "createdAt": "예약일",
+    "specialRequests": "특별 요청",
+    "none": "없음",
+    "cancel": "예약 취소",
+    "close": "닫기"
+  },
+  "ticketModal": {
+    "title": "티켓 예약 상세 정보",
+    "ticketName": "티켓명",
+    "useDate": "이용일",
+    "adults": "성인",
+    "children": "어린이",
+    "totalPrice": "총 가격",
+    "createdAt": "예약일",
+    "cancel": "예약 취소",
+    "close": "닫기"
+  },
+  "refund": {
+    "title": "환불 규정 및 취소 동의",
+    "lodgingPolicy": "■ 환불 규정\n- 체크인 7일 전 취소 시: 전액 환불\n- 체크인 24시간 초과 ~ 7일 이내 취소 시: 50% 환불\n- 체크인 24시간 이내 취소 시: 환불 불가\n",
+    "ticketPolicy": "■ 환불 규정\n- 이용일 7일 전 취소 시: 전액 환불\n- 이용일 24시간 초과 ~ 7일 이내 취소 시: 50% 환불\n- 이용일 24시간 이내 취소 시: 환불 불가\n",
+    "agreeText": "위 환불 정책을 읽고 동의합니다.",
+    "cancel": "예약 취소",
+    "cancelling": "취소 처리중...",
+    "close": "닫기"
+  },
+  "alert": {
+    "cancelFailed": "예약 취소 중 오류가 발생했습니다.",
+    "ticketCancelFailed": "티켓 예약 취소 중 오류가 발생했습니다.",
+    "ticketCancelSuccess": "티켓 예약이 성공적으로 취소되었습니다."
+  }
+}
