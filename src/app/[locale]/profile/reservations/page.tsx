@@ -415,13 +415,16 @@ export default function ReservationListPage() {
                 {pending.checkOut.slice(0, 10)}
               </p>
               <p className="mb-2">
-                <strong>{t("modal.adults")}:</strong> {pending.adults}명
+                <strong>{t("modal.adults")}:</strong>{" "}
+                {t("modal.adultsWithCount", { count: pending.adults })}
               </p>
               <p className="mb-2">
-                <strong>{t("modal.children")}:</strong> {pending.children}명
+                <strong>{t("modal.children")}:</strong>{" "}
+                {t("modal.childrenWithCount", { count: pending.children })}
               </p>
               <p className="mb-2">
-                <strong>{t("modal.roomCount")}:</strong> {pending.roomCount}개
+                <strong>{t("modal.roomCount")}:</strong>{" "}
+                {t("modal.roomCountWithUnit", { count: pending.roomCount })}
               </p>
               <p className="mb-2">
                 <strong>{t("modal.createdAt")}:</strong>{" "}
@@ -470,12 +473,12 @@ export default function ReservationListPage() {
               {formatKSTDate(selectedTicket.date)}
             </p>
             <p className="mb-2">
-              <strong>{t("ticketModal.adults")}:</strong>{" "}
-              {selectedTicket.adults}명
+              <strong>{t("modal.adults")}:</strong>{" "}
+              {t("modal.adultsWithCount", { count: pending.adults })}
             </p>
             <p className="mb-2">
-              <strong>{t("ticketModal.children")}:</strong>{" "}
-              {selectedTicket.children}명
+              <strong>{t("modal.children")}:</strong>{" "}
+              {t("modal.childrenWithCount", { count: pending.children })}
             </p>
             <p className="mb-2">
               <strong>{t("ticketModal.totalPrice")}:</strong>{" "}
