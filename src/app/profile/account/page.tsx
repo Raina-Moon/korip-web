@@ -8,14 +8,19 @@ import {
 import { useAppDispatch } from "@/lib/store/hooks";
 import { logout, updateNickname } from "@/lib/auth/authSlice";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const AccountPage = () => {
+  const { t } = useTranslation("account");
   const [nickname, setNickname] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const locale = useLocale();
 
   const [updateNicknameMutation, { isLoading: isUpdating }] =
     useUpdateUserNicknameMutation();
@@ -47,37 +52,33 @@ const AccountPage = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (
-      !confirm(
-        "Are you sure you want to delete your account? This cannot be undone."
-      )
-    ) {
+    if (!confirm(t("deleteConfirm"))) {
       return;
     }
 
     try {
       await deleteUser().unwrap();
-      setSuccessMessage("Your account has been deleted.");
+      setSuccessMessage(t("deleted"));
       dispatch(logout());
-      router.push("/");
+      router.push(`/${locale}/`);
     } catch (err: any) {
       console.error(err);
-      setErrorMessage(err?.data?.message || "Failed to delete account.");
+      setErrorMessage(err?.data?.message || t("deleteFailed"));
     }
   };
 
   return (
     <div className="max-w-lg mx-auto p-6 space-y-8">
-      <h1 className="text-2xl font-bold">My Account</h1>
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
 
       <section className="border p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-2">Change Nickname</h2>
+        <h2 className="text-lg font-semibold mb-2">{t("changeNickname")}</h2>
         <form onSubmit={handleNicknameSubmit} className="space-y-3">
           <input
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="Enter new nickname"
+            placeholder={t("nicknamePlaceholder")}
             className="border rounded px-3 py-2 w-full"
             disabled={isUpdating}
           />
@@ -86,22 +87,22 @@ const AccountPage = () => {
             disabled={isUpdating}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {isUpdating ? "Updating..." : "Update Nickname"}
+            {isUpdating ? t("updating") : t("updateNickname")}
           </button>
         </form>
       </section>
 
       <section className="border p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-2 text-red-600">Danger Zone</h2>
-        <p className="mb-3 text-sm text-gray-600">
-          Deleting your account is permanent and cannot be undone.
-        </p>
+        <h2 className="text-lg font-semibold mb-2 text-red-600">
+          {t("dangerZone")}
+        </h2>
+        <p className="mb-3 text-sm text-gray-600">{t("deleteWarning")}</p>
         <button
           onClick={handleDeleteAccount}
           disabled={isDeleting}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
         >
-          {isDeleting ? "Deleting..." : "Delete My Account"}
+          {isDeleting ? t("deleting") : t("deleteAccount")}
         </button>
       </section>
 

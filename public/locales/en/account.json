@@ -1,0 +1,18 @@
+{
+  "title": "My Account",
+  "changeNickname": "Change Nickname",
+  "nicknamePlaceholder": "Enter new nickname",
+  "updateNickname": "Update Nickname",
+  "updating": "Updating...",
+  "nicknameUpdated": "Nickname updated successfully!",
+  "nicknameError": "Please enter a nickname.",
+  "nicknameUpdateFailed": "Failed to update nickname.",
+
+  "dangerZone": "Danger Zone",
+  "deleteWarning": "Deleting your account is permanent and cannot be undone.",
+  "deleteAccount": "Delete My Account",
+  "deleting": "Deleting...",
+  "deleted": "Your account has been deleted.",
+  "deleteFailed": "Failed to delete account.",
+  "deleteConfirm": "Are you sure you want to delete your account? This cannot be undone."
+}
