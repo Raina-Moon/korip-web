@@ -25,11 +25,14 @@ import {
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { TicketBookmark } from "@/types/ticket";
-import TicketSearchBox from "./TicketReservationSearckBox";
+import TicketSearchBox from "../../../../components/ticket/TicketReservationSearckBox";
 import ImageModal from "@/components/ui/ImageModal";
 import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const TicketDetailPage = () => {
+  const { t } = useTranslation("ticket");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
@@ -39,6 +42,7 @@ const TicketDetailPage = () => {
   const [modalImages, setModalImages] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
+  const locale = useLocale();
 
   const regionParam = searchParams.get("region") || "전체";
   const dateParam = searchParams.get("date") || "";
@@ -152,7 +156,7 @@ const TicketDetailPage = () => {
 
   const saveEdit = async (review: GenericReview) => {
     if (!editingRating || editingRating < 1) {
-      alert("평점을 입력해주세요");
+      alert(t("ratingAlert"));
       return;
     }
     try {
@@ -163,7 +167,7 @@ const TicketDetailPage = () => {
       setEditingId(null);
     } catch (error) {
       console.error(error);
-      alert("리뷰 수정 실패");
+      alert(t("editFailed"));
     }
   };
 
@@ -174,13 +178,13 @@ const TicketDetailPage = () => {
   };
 
   const handleDelete = async (review: GenericReview) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
+    if (confirm(t("deleteConfirm"))) {
       try {
         await deleteReview(review.id).unwrap();
-        alert("삭제 완료");
+        alert(t("deleteSuccess"));
       } catch (error) {
         console.error(error);
-        alert("리뷰 삭제 실패");
+        alert(t("deleteFailed"));
       }
     }
   };
@@ -198,7 +202,7 @@ const TicketDetailPage = () => {
       children: String(children),
       sort,
     }).toString();
-    router.push(`/ticket/${ticketId}?${query}`);
+    router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
   const openModal = (images: string[], index: number) => {
@@ -227,7 +231,7 @@ const TicketDetailPage = () => {
 
   const handleReportSubmit = async () => {
     if (!selectedReviewId || !reason.trim()) {
-      alert("신고 사유를 입력해주세요.");
+      alert(t("reportReasonRequired"));
       return;
     }
 
@@ -240,10 +244,10 @@ const TicketDetailPage = () => {
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
-      alert("신고가 접수되었습니다.");
+      alert(t("reportSuccess"));
     } catch (error) {
       console.error("신고 실패:", error);
-      alert("신고에 실패했습니다. 다시 시도해주세요.");
+      alert(t("reportFailed"));
     }
   };
 
@@ -290,7 +294,7 @@ const TicketDetailPage = () => {
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            No image available
+            No image
           </div>
         )}
       </div>
@@ -326,19 +330,19 @@ const TicketDetailPage = () => {
 
       <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded">
         <h3 className="text-lg font-semibold text-primary-900 mb-2">
-          이용 요금
+          {t("priceTitle")}
         </h3>
         <p className="text-primary-800">
-          <span className="font-medium">성인:</span>{" "}
+          <span className="font-medium">{t("adult")}:</span>{" "}
           {ticket.adultPrice
-            ? `${ticket.adultPrice.toLocaleString()}원`
-            : "정보 없음"}
+            ? `${ticket.adultPrice.toLocaleString()}KRW`
+            : t("priceUnavailable")}
         </p>
         <p className="text-primary-800">
-          <span className="font-medium">아동:</span>{" "}
+          <span className="font-medium">{t("children")}:</span>{" "}
           {ticket.childPrice
-            ? `${ticket.childPrice.toLocaleString()}원`
-            : "정보 없음"}
+            ? `${ticket.childPrice.toLocaleString()}KRW`
+            : t("priceUnavailable")}
         </p>
       </div>
 
@@ -360,16 +364,16 @@ const TicketDetailPage = () => {
             childPrice: String(ticket.childPrice),
           }).toString();
 
-          router.push(`/ticket-reservation?${query}`);
+          router.push(`/${locale}/ticket-reservation?${query}`);
         }}
         className="mt-8 bg-primary-700 text-white px-6 py-3 rounded hover:bg-primary-500"
       >
-        예약하기
+        {t("reserveButton")}
       </button>
 
       <div className="mt-8 border-t pt-6">
         <h2 className="text-xl font-semibold mb-4">
-          총 {visibleReviews.length}개의 리뷰{" "}
+          {t("totalReviews")} ({totalVisible})
           {averageRating && (
             <span className="font-bold text-yellow-600">
               ({averageRating} / 5)
@@ -379,7 +383,7 @@ const TicketDetailPage = () => {
 
         <div className="flex items-center gap-2">
           <label htmlFor="sort" className="text-sm font-medium text-gray-700">
-            정렬 기준:
+            {t("sortBy")}
           </label>
           <select
             id="sort"
@@ -391,10 +395,10 @@ const TicketDetailPage = () => {
             }
             className="border border-gray-300 rounded-md p-2"
           >
-            <option value="latest">최신순</option>
-            <option value="oldest">오래된순</option>
-            <option value="highest">높은 평점순</option>
-            <option value="lowest">낮은 평점순</option>
+            <option value="latest">{t("latest")}</option>
+            <option value="oldest">{t("oldest")}</option>
+            <option value="highest">{t("highest")}</option>
+            <option value="lowest">{t("lowest")}</option>
           </select>
         </div>
 
@@ -422,7 +426,7 @@ const TicketDetailPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">아직 작성된 리뷰가 없습니다.</p>
+          <p className="text-gray-500">{t("noReviews")}</p>
         )}
       </div>
 
