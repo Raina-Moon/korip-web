@@ -20,6 +20,8 @@
   "resort": "리조트",
   "pension": "펜션",
   "etc": "기타",
+  "checkInDate": "체크인 날짜",
+  "checkInDatePlaceholder": "체크인 날짜",
   "checkoutDate": "체크아웃 날짜",
   "checkoutDatePlaceholder": "체크아웃 날짜",
   "roomAndGuestSelection": "객실/인원 선택",
@@ -32,5 +34,6 @@
   "events": "이벤트",
   "page": "페이지",
   "selectDateWarning": "날짜를 선택해주세요.",
-  "selectCheckinCheckoutWarning": "체크인과 체크아웃 날짜를 선택해주세요."
+  "selectCheckinCheckoutWarning": "체크인과 체크아웃 날짜를 선택해주세요.",
+  "date" : "날짜"
 }
