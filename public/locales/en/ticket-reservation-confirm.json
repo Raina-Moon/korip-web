@@ -1,0 +1,7 @@
+{
+  "title": "Ticket Reservation Payment",
+  "totalPrice": "Total Payment Amount",
+  "payNow": "Pay Now (Toss)",
+  "alertInvalidPhone": "Please enter a valid Korean mobile number (starting with 010).",
+  "alertPaymentFail": "Payment failed. Please try again."
+}
