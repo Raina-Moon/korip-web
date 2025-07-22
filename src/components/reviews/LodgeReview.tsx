@@ -15,8 +15,10 @@ import LodgeReviewCreateModal from "./LodgeReviewCreateModal";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
+import { useTranslation } from "react-i18next";
 
 const LodgeReview = () => {
+  const {t} = useTranslation("lodge-review");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 5;
@@ -77,36 +79,36 @@ const LodgeReview = () => {
       cancelEditing();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert("Failed to update review");
+      alert(t("updateFail"));
     }
   };
 
   const handleDelete = async (review: Review) => {
-    if (!confirm("리뷰를 삭제할까요?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     try {
       await deleteReview(review.id).unwrap();
-      alert("리뷰가 삭제되었습니다");
+      alert(t("deleteSuccess"));
     } catch (error) {
       console.error("리뷰 삭제 실패:", error);
-      alert("리뷰 삭제 실패");
+      alert(t("deleteFail"));
     }
   };
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">{nickname}의 숙소 리뷰</h2>
+      <h2 className="text-xl font-semibold mb-4">{t("title", { nickname })}</h2>
 
       <button
         onClick={() => setIsModalOpen(true)}
         className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
       >
-        숙소 리뷰 작성
+        {t("createButton")}
       </button>
 
-      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
+      {isError && <p className="text-red-500">{t("loadError")}</p>}
 
       {reviews && reviews.length === 0 && (
-        <p className="text-gray-500">작성된 숙소 리뷰가 없습니다</p>
+        <p className="text-gray-500">{t("empty")}</p>
       )}
 
       {isModalOpen && (
@@ -142,7 +144,7 @@ const LodgeReview = () => {
                 </p>
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
-                    가려진 리뷰입니다.
+                    {t("hidden")}
                   </p>
                 )}
               </div>
@@ -156,13 +158,13 @@ const LodgeReview = () => {
                       onClick={() => startEditing(review)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      Edit
+                      {t("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(review)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                     >
-                      Delete
+                      {t("delete")}
                     </button>
                   </div>
                 )}
@@ -178,7 +180,7 @@ const LodgeReview = () => {
                   className="border rounded px-3 py-2"
                 />
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">별점 수정:</span>
+                  <span className="text-sm text-gray-600">{t("editRatingLabel")}</span>
                   <Rating
                     value={editingRating || 0}
                     onChange={setEditingRating}
@@ -190,13 +192,13 @@ const LodgeReview = () => {
                     onClick={() => saveEdit(review)}
                     className="px-4 py-2 bg-blue-600 text-white rounded"
                   >
-                    Save
+                    {t("save")}
                   </button>
                   <button
                     onClick={cancelEditing}
                     className="px-4 py-2 border rounded"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
