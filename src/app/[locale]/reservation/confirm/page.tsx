@@ -5,8 +5,11 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const ReservationConfirmPage = () => {
+  const {t} = useTranslation("reservation-confirm");
   const [widgets, setWidgets] = useState<any>(null);
   const [ready, setReady] = useState(false);
 
@@ -24,6 +27,8 @@ const ReservationConfirmPage = () => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
+
+  const locale = useLocale();
 
   useEffect(() => {
     const initToss = async () => {
@@ -102,7 +107,7 @@ const ReservationConfirmPage = () => {
 
       if (!customerMobilePhone || !/^010\d{7,8}$/.test(customerMobilePhone)) {
         alert(
-          "휴대폰 번호를 정확히 입력해주세요. (010으로 시작하는 10~11자리 숫자)"
+          t("payment.invalidPhoneAlert")
         );
         return;
       }
@@ -118,16 +123,16 @@ const ReservationConfirmPage = () => {
       });
     } catch (error) {
       console.error("Payment failed:", error);
-      alert("결제에 실패했습니다. 다시 시도해주세요.");
-      router.push("/reservation/fail");
+      alert(t("payment.failAlert"));
+      router.push(`/${locale}/reservation/fail`);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
-      <h1 className="text-2xl font-bold mb-4">예약 최종 확인</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       <p>
-        총 결제 금액: {totalPrice ? Number(totalPrice).toLocaleString() : "0"}원
+        {t("totalPrice")}: {totalPrice ? Number(totalPrice).toLocaleString() : "0"} ₩
       </p>
 
       <div id="payment-methods" />
@@ -138,7 +143,7 @@ const ReservationConfirmPage = () => {
         onClick={handleTossPayment}
         className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-500"
       >
-        결제하기 (Toss)
+        {t("payment.button")}
       </button>
     </div>
   );

@@ -1,0 +1,41 @@
+{
+  "loading": {
+    "title": "예약 처리 중...",
+    "message": "잠시만 기다려주세요."
+  },
+  "success": {
+    "title": "예약 확정 🎉",
+    "subtitle": "아래 내용을 확인해주세요.",
+    "sections": {
+      "lodge": "숙소 정보",
+      "schedule": "숙박 일정",
+      "guests": "투숙 인원",
+      "user": "예약자 정보",
+      "requests": "요청사항"
+    },
+    "labels": {
+      "lodge": "숙소",
+      "roomType": "룸 타입",
+      "checkIn": "체크인",
+      "checkOut": "체크아웃",
+      "nights": "숙박일수",
+      "adults": "성인",
+      "children": "어린이",
+      "roomCount": "객실 수",
+      "name": "이름",
+      "email": "이메일",
+      "phone": "휴대폰",
+      "nationality": "국적",
+      "request": "요청",
+      "requestNone": "없음",
+      "nightsWithUnit": "{{count}}박",
+      "adultsWithUnit": "{{count}}명",
+      "childrenWithUnit": "{{count}}명",
+      "roomsWithUnit": "{{count}}개"
+    },
+    "buttons": {
+      "goHome": "홈으로 가기",
+      "goToReservations": "예약 리스트 보러가기"
+    }
+  }
+}
