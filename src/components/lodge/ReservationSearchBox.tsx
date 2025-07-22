@@ -3,6 +3,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useTranslation } from "react-i18next";
 
 interface ReservationSearchBoxProps {
   checkIn: string;
@@ -27,7 +28,6 @@ interface ReservationSearchBoxProps {
   handleSearch: () => void;
 }
 
-
 export default function ReservationSearchBox({
   checkIn,
   setCheckIn,
@@ -50,6 +50,7 @@ export default function ReservationSearchBox({
   handleChildrenChange,
   handleSearch,
 }: ReservationSearchBoxProps) {
+  const { t } = useTranslation("lodge");
   const formatDate = (date: Date | null) => {
     if (!date) return "";
     const year = date.getFullYear();
@@ -65,14 +66,14 @@ export default function ReservationSearchBox({
         readOnly
         onClick={() => setCalendar(true)}
         value={formatDate(dateRange?.[0] ?? null)}
-        placeholder="Check-in Date"
+        placeholder={t("checkInPlaceholder")}
       />
       <input
         className="border border-primary-800 rounded-md outline-none px-3 py-1"
         readOnly
         onClick={() => setCalendar(true)}
         value={formatDate(dateRange?.[1] ?? null)}
-        placeholder="Check-out Date"
+        placeholder={t("checkOutPlaceholder")}
       />
 
       {calendar && (
@@ -99,15 +100,15 @@ export default function ReservationSearchBox({
         onClick={() => setIsActive(!isActive)}
         className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2 cursor-pointer"
       >
-        <p>Room : {room}</p>
-        <p>Adult : {adults}</p>
-        <p>Children : {children}</p>
+        <p>{t("room")} : {room}</p>
+        <p>{t("adult")} : {adults}</p>
+        <p>{t("children")} : {children}</p>
       </div>
       <button
         className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
         onClick={handleSearch}
       >
-        검색
+        {t("search")}
       </button>
 
       {isActive && (
