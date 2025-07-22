@@ -1,13 +1,15 @@
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import { logoutUser } from "../lib/auth/logoutThunk";
+import i18n from "i18next";
 
 const HeaderBar = () => {
   const [select, setSelect] = useState("en");
   const [isHover, setIsHover] = useState(false);
 
+  const pathname = usePathname();
   const router = useRouter();
 
   const user = useAppSelector((state) => state.auth.user);
@@ -15,8 +17,15 @@ const HeaderBar = () => {
 
   const languages = [
     { name: "English", code: "en" },
-    { name: "한국어", code: "kr" },
+    { name: "한국어", code: "ko" },
   ];
+
+  const handleLanguageChange = (lang: string) => {
+    setSelect(lang);
+    i18n.changeLanguage(lang);
+    const pathWithoutLocale = pathname.replace(/^\/(en|ko)/, "");
+    router.push(`/${lang}${pathWithoutLocale}`);
+  };
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -38,7 +47,7 @@ const HeaderBar = () => {
       <div className="flex items-center gap-4 pr-3">
         <select
           value={select}
-          onChange={(e) => setSelect(e.target.value)}
+          onChange={(e) => handleLanguageChange(e.target.value)}
           className="border border-primary-800 rounded-sm px-2 py-1"
         >
           {languages.map((lang) => (
