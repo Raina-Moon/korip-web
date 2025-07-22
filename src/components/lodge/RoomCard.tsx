@@ -5,6 +5,7 @@ import { openLoginModal } from "@/lib/auth/authSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import React from "react";
 import { RoomType, SeasonalPricing } from "@/types/lodge";
+import { useTranslation } from "react-i18next";
 
 interface RoomCardProps {
   room: RoomType;
@@ -23,6 +24,7 @@ export default function RoomCard({
   checkIn,
   checkOut,
 }: RoomCardProps) {
+  const { t } = useTranslation("lodge");
   const dispatch = useAppDispatch();
 
   const calculateTotalPrice = () => {
@@ -71,10 +73,14 @@ export default function RoomCard({
     <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
       <h3 className="text-xl font-bold mb-2">{room.name}</h3>
       <p className="text-primary-700 mb-1">{room.description}</p>
-      <p className="text-gray-600 mb-1">성인 최대 인원: {room.maxAdults}</p>
-      <p className="text-gray-600 mb-1">어린이 최대 인원: {room.maxChildren}</p>
+      <p className="text-gray-600 mb-1">
+        {t("maxAdults", { count: room.maxAdults })}
+      </p>
+      <p className="text-gray-600 mb-1">
+        {t("maxChildren", { count: room.maxChildren })}
+      </p>
       <p className="text-lg font-bold text-primary-900 mb-2">
-        총 예상 숙박 요금: ₩{calculateTotalPrice().toLocaleString()}
+        {t("totalPrice")}: ₩{calculateTotalPrice().toLocaleString()}
       </p>
       <button
         onClick={() => {
@@ -88,7 +94,7 @@ export default function RoomCard({
         }}
         className="mt-4 bg-primary-800 text-white px-4 py-2 rounded hover:bg-primary-500"
       >
-        이 객실 예약하기
+        {t("reserve")}
       </button>
       {room.images?.[0]?.imageUrl && (
         <Image

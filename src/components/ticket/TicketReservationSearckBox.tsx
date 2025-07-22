@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface TicketSearchBoxProps {
   date: string;
@@ -21,6 +22,7 @@ export default function TicketSearchBox({
   setChildren,
   handleSearch,
 }: TicketSearchBoxProps) {
+  const {t} = useTranslation("ticket");
     
   return (
     <div className="w-full bg-white rounded-lg shadow-lg flex flex-wrap items-center justify-center gap-4 px-5 py-5 mb-8">
@@ -31,14 +33,14 @@ export default function TicketSearchBox({
         onChange={(e) => setDate(e.target.value)}
       />
 
-      <QuantitySelector label="Adult" value={adults} setValue={setAdults} />
-      <QuantitySelector label="Children" value={children} setValue={setChildren} />
+      <QuantitySelector label={t("adult")} value={adults} setValue={setAdults} />
+      <QuantitySelector label={t("children")} value={children} setValue={setChildren} />
 
       <button
         className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
         onClick={handleSearch}
       >
-        검색
+        {t("search")}
       </button>
     </div>
   );

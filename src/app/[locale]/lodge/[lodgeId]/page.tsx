@@ -21,15 +21,18 @@ import { Heart, HeartOff } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import ReservationSearchBox from "./ReservationSearchBox";
-import RoomCard from "./RoomCard";
-import LoginPromptModal from "../../../components/ui/LoginPromptModal";
-import ReportModal from "../../../components/ui/ReportModal";
-import ImageModal from "../../../components/ui/ImageModal";
 import { RoomType } from "@/types/lodge";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
+import ReportModal from "@/components/ui/ReportModal";
+import LoginPromptModal from "@/components/ui/LoginPromptModal";
+import ImageModal from "@/components/ui/ImageModal";
+import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
+import RoomCard from "@/components/lodge/RoomCard";
 
 const LodgeDetailPage = () => {
+      const { t } = useTranslation("lodge");
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
@@ -48,6 +51,8 @@ const LodgeDetailPage = () => {
   const searchParams = useSearchParams();
 
   const dispatch = useAppDispatch();
+
+  const locale = useLocale();
 
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -108,7 +113,7 @@ const LodgeDetailPage = () => {
     const newAdults = Math.max(1, adults + delta);
     const query = new URLSearchParams(searchParams);
     query.set("adults", String(newAdults));
-    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
   };
 
   useEffect(() => {
@@ -213,7 +218,7 @@ const LodgeDetailPage = () => {
       roomName,
     }).toString();
 
-    router.push(`/reservation?${query}`);
+    router.push(`/${locale}/reservation?${query}`);
   };
 
   const handleBookmarkToggle = async () => {
@@ -252,7 +257,7 @@ const LodgeDetailPage = () => {
       }).unwrap();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert("Failed to update review");
+      alert(t("editFailed"));
     }
   };
 
@@ -260,10 +265,10 @@ const LodgeDetailPage = () => {
     if (confirm("Are you sure you want to delete this review?")) {
       try {
         await deleteReview(review.id).unwrap();
-        alert("Review deleted successfully");
+        alert(t("deleteSuccess"));
       } catch (error) {
         console.error("Failed to delete review:", error);
-        alert("Failed to delete review");
+        alert(t("deleteFailed"));
       }
     }
   };
@@ -324,7 +329,7 @@ const LodgeDetailPage = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between mb-4">
           <div className="text-lg font-semibold text-primary-900">
-            총 {totalReviews}개의 리뷰
+            {t("reviewsTitle", { count: totalReviews })}
             {averageRating && (
               <>
                 {" "}
@@ -338,7 +343,7 @@ const LodgeDetailPage = () => {
 
           <div className="flex items-center gap-2">
             <label htmlFor="sort" className="text-sm font-medium text-gray-700">
-              정렬 기준:
+                {t("sortBy")}
             </label>
             <select
               id="sort"
@@ -350,10 +355,10 @@ const LodgeDetailPage = () => {
               }
               className="border border-gray-300 rounded-md p-2"
             >
-              <option value="latest">최신순</option>
-              <option value="oldest">오래된순</option>
-              <option value="highest">높은 평점순</option>
-              <option value="lowest">낮은 평점순</option>
+              <option value="latest">{t("latest")}</option>
+              <option value="oldest">{t("oldest")}</option>
+              <option value="highest">{t("highest")}</option>
+              <option value="lowest">{t("lowest")}</option>
             </select>
           </div>
         </div>
@@ -381,7 +386,7 @@ const LodgeDetailPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-4">아직 작성된 리뷰가 없습니다.</p>
+          <p className="text-gray-500 mt-4">{t("noReviews")}</p>
         )}
       </div>
     );
@@ -389,7 +394,7 @@ const LodgeDetailPage = () => {
 
   const submitReport = async () => {
     if (!selectedReviewId || !reason.trim()) {
-      alert("신고 사유를 입력해주세요.");
+      alert(t("reportReasonRequired"));
       return;
     }
 
@@ -399,13 +404,13 @@ const LodgeDetailPage = () => {
         reason: reason.trim(),
       }).unwrap();
 
-      alert("리뷰가 신고되었습니다.");
+      alert(t("reportSuccess"));
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
     } catch (error) {
       console.error("Failed to report review:", error);
-      alert("리뷰 신고에 실패했습니다.");
+      alert(t("reportFailed"));
     }
   };
 
@@ -413,14 +418,14 @@ const LodgeDetailPage = () => {
     const newRoom = Math.max(1, room + delta);
     const query = new URLSearchParams(searchParams);
     query.set("roomCount", String(newRoom));
-    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
   };
 
   const handleChildrenChange = (delta: number) => {
     const newChildren = Math.max(0, children + delta);
     const query = new URLSearchParams(searchParams);
     query.set("children", String(newChildren));
-    router.push(`/lodge/${lodgeId}?${query.toString()}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
   };
 
   const handleSearch = () => {
@@ -432,11 +437,11 @@ const LodgeDetailPage = () => {
       roomCount: String(room),
     }).toString();
 
-    router.push(`/lodge/${lodgeId}?${query}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${query}`);
   };
 
-  if (isError) return <div>Error loading lodge details.</div>;
-  if (!lodge) return <div>No lodge data found.</div>;
+  if (isError) return <div>{t("errorLoading")}</div>;
+  if (!lodge) return <div>{t("noLodge")}</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -452,7 +457,7 @@ const LodgeDetailPage = () => {
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            No image available
+            No image
           </div>
         )}
       </div>
@@ -503,14 +508,14 @@ const LodgeDetailPage = () => {
       {/* 설명 */}
       {lodge.description && (
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">숙소 설명</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("description")}</h2>
           <p className="text-gray-700">{lodge.description}</p>
         </div>
       )}
 
       {/* 객실 목록 */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">객실 정보</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t("roomInfo")}</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {lodge.roomTypes
             ?.filter((room) => room.id !== undefined)
