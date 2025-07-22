@@ -7,12 +7,12 @@ import {
   fetchReservation,
 } from "@/lib/reservation/reservationThunk";
 import Link from "next/link";
-import ReservationCard from "./ReservationCard";
+import ReservationCard from "../../../../components/reservations/ReservationCard";
 import {
   cancelTicketReservation,
   fetchTicketReservations,
 } from "@/lib/ticket-reservation/ticketReservationThunk";
-import TicketReservationCard from "./TicketReservationCard";
+import TicketReservationCard from "../../../../components/reservations/TicketReservationCard";
 import { TicketReservation } from "@/types/ticketReservation";
 
 export default function ReservationListPage() {
