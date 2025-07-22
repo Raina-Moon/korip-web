@@ -15,8 +15,10 @@ import { TicketBookmark } from "@/types/ticketBookmark";
 import { HeartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const FavoritesPage = () => {
+  const {t} = useTranslation("favorites");
   const [selectedType, setSelectedType] = useState<"LODGING" | "TICKET">(
     "LODGING"
   );
@@ -64,7 +66,7 @@ const FavoritesPage = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">My Favorites</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("title")}</h1>
 
       <div className="flex gap-2 mb-6">
         <button
@@ -75,7 +77,7 @@ const FavoritesPage = () => {
               : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
           }`}
         >
-          숙소
+          {t("tab.lodging")}
         </button>
         <button
           onClick={() => setSelectedType("TICKET")}
@@ -85,17 +87,17 @@ const FavoritesPage = () => {
               : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
           }`}
         >
-          티켓
+          {t("tab.ticket")}
         </button>
       </div>
 
       {selectedType === "LODGING" && (
         <>
-          {isLoading && <p className="text-gray-500">Loading...</p>}
-          {isError && <p className="text-red-500">Error loading favorites</p>}
+          {isLoading && <p className="text-gray-500">{t("loading")}</p>}
+          {isError && <p className="text-red-500">{t("error")}</p>}
 
           {bookmarks && bookmarks.length === 0 && (
-            <p className="text-gray-500">No favorites found</p>
+            <p className="text-gray-500">{t("empty")}</p>
           )}
 
           {bookmarks && bookmarks.length > 0 && (
@@ -138,14 +140,14 @@ const FavoritesPage = () => {
       {selectedType === "TICKET" && (
         <>
           {isTicketLoading && (
-            <p className="text-gray-500">Loading ticket bookmarks...</p>
+            <p className="text-gray-500">{t("loadingTickets")}</p>
           )}
           {isTicketError && (
-            <p className="text-red-500">Error loading ticket bookmarks</p>
+            <p className="text-red-500">{t("ticketError")}</p>
           )}
 
           {ticketBookmarks && ticketBookmarks.length === 0 && (
-            <p className="text-gray-500">No ticket bookmarks found</p>
+            <p className="text-gray-500">{t("ticketEmpty")}</p>
           )}
 
           {ticketBookmarks && ticketBookmarks.length > 0 && (
