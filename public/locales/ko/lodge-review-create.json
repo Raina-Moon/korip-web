@@ -1,0 +1,14 @@
+{
+  "title": "숙소 리뷰 작성",
+  "selectLabel": "숙소 선택",
+  "selectPlaceholder": "숙소 선택",
+  "ratingLabel": "별점",
+  "commentLabel": "내용",
+  "cancel": "취소",
+  "submit": "등록",
+  "alert": {
+    "noLodge": "숙소를 선택해주세요.",
+    "success": "리뷰가 등록되었습니다.",
+    "fail": "리뷰 생성에 실패했습니다."
+  }
+}

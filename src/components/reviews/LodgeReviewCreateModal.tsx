@@ -9,12 +9,14 @@ import { useAppSelector } from "@/lib/store/hooks";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Review } from "@/types/reivew";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onClose: () => void;
 }
 
 const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation("lodge-review-create");
   const [reservationId, setReservationId] = useState<number | null>(null);
 
   const [createReview] = useCreateReviewMutation();
@@ -48,24 +50,24 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (!lodgeId) return alert("숙소를 선택해주세요.");
+    if (!lodgeId) return alert(t("alert.noLodge"));
 
     try {
       await createReview({ lodgeId, comment, rating, reservationId }).unwrap();
-      alert("리뷰가 등록되었습니다.");
+      alert(t("alert.success"));
       onClose();
     } catch (error) {
       console.error("리뷰 생성 실패:", error);
-      alert("리뷰 생성에 실패했습니다.");
+      alert(t("alert.fail"));
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">숙소 리뷰 작성</h3>
+        <h3 className="text-xl font-bold mb-4">{t("title")}</h3>
 
-        <label className="block mb-2 font-medium">숙소 선택</label>
+        <label className="block mb-2 font-medium">{t("selectLabel")}</label>
         <select
           value={reservationId ?? ""}
           onChange={(e) => {
@@ -77,7 +79,7 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           }}
           className="w-full border px-3 py-2 rounded mb-4"
         >
-          <option value="">숙소 선택</option>
+          <option value="">{t("selectPlaceholder")}</option>
           {eligibleLodges?.map((r) => (
             <option key={r.id} value={r.id}>
               {r.lodge.name} ({formatDate(r.checkIn)} ~ {formatDate(r.checkOut)}
@@ -86,10 +88,10 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           ))}
         </select>
 
-        <label className="block mb-2 font-medium">별점</label>
+        <label className="block mb-2 font-medium">{t("ratingLabel")}</label>
         <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
 
-        <label className="block mb-2 font-medium">내용</label>
+        <label className="block mb-2 font-medium">{t("commentLabel")}</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -99,13 +101,13 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 border rounded">
-            취소
+            {t("cancel")}
           </button>
           <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-600 text-white rounded"
           >
-            등록
+            {t("submit")}
           </button>
         </div>
       </div>
