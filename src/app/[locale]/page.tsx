@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import "react-calendar/dist/Calendar.css";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
@@ -26,6 +26,12 @@ const Page = () => {
 
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const params = useParams();
+  const locale =
+    typeof params.locale === "string"
+      ? params.locale
+      : params.locale?.[0] ?? "en";
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -68,7 +74,7 @@ const Page = () => {
         accommodationType,
       });
 
-      router.push(`/list/lodge?${query.toString()}`);
+      router.push(`/${locale}/list/lodge?${query.toString()}`);
     } else {
       if (!date) {
         alert(t("selectDateWarning"));
@@ -83,7 +89,7 @@ const Page = () => {
         children: children.toString(),
       });
 
-      router.push(`/list/ticket?${query.toString()}`);
+      router.push(`/${locale}/list/ticket?${query.toString()}`);
     }
   };
 
