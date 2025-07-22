@@ -10,12 +10,14 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { TicketReview } from "@/types/ticketReview";
 import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onClose: () => void;
 }
 
 const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation("ticket-review-create");
   const [ticketReservationId, setTicketReservationId] = useState<number | null>(
     null
   );
@@ -72,7 +74,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (!ticketTypeId) return alert("티켓을 선택해주세요.");
+    if (!ticketTypeId) return alert(t("alert.noTicket"));
 
     try {
       await createReview({
@@ -84,20 +86,20 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
       await refetch();
 
-      alert("티켓 리뷰가 등록되었습니다.");
+      alert(t("alert.success"));
       onClose();
     } catch (error) {
       console.error("티켓 리뷰 등록 실패:", error);
-      alert("티켓 리뷰 등록 실패");
+      alert(t("alert.fail"));
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">티켓 리뷰 작성</h3>
+        <h3 className="text-xl font-bold mb-4">{t("title")}</h3>
 
-        <label className="block mb-2 font-medium">사용한 티켓</label>
+        <label className="block mb-2 font-medium">{t("selectLabel")}</label>
         <select
           value={ticketReservationId ?? ""}
           onChange={(e) => {
@@ -108,7 +110,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           }}
           className="w-full border px-3 py-2 rounded mb-4"
         >
-          <option value="">티켓 선택</option>
+          <option value="">{t("selectPlaceholder")}</option>
           {eligibleTickets?.map((t) => (
             <option key={t.id} value={t.id}>
               {t.ticketType.name} - {formatDate(t.date)}
@@ -116,10 +118,10 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           ))}
         </select>
 
-        <label className="block mb-2 font-medium">별점</label>
+        <label className="block mb-2 font-medium">{t("ratingLabel")}</label>
         <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
 
-        <label className="block mb-2 font-medium">내용</label>
+        <label className="block mb-2 font-medium">{t("commentLabel")}</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -129,13 +131,13 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 border rounded">
-            취소
+            {t("cancel")}
           </button>
           <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-600 text-white rounded"
           >
-            등록
+            {t("submit")}
           </button>
         </div>
       </div>
