@@ -1,0 +1,15 @@
+{
+  "edit": "Edit",
+  "delete": "Delete",
+  "report": "Report",
+  "hiddenByAdmin": "This comment has been hidden by an admin.",
+  "save": "Save",
+  "cancel": "Cancel",
+  "inputPlaceholder": "Write your comment here",
+  "checkIn": "Check-in",
+  "checkOut": "Check-out",
+  "nightsDays": "{{nights}} night(s), {{days}} day(s)",
+  "usedOn": "Used on: {{date}}",
+  "adults": "Adults: {{count}}",
+  "children": "Children: {{count}}"
+}
