@@ -1,0 +1,7 @@
+{
+  "title": "Report Review",
+  "description": "Please provide a reason for your report.",
+  "placeholder": "Enter the reason for reporting.",
+  "cancel": "Cancel",
+  "submit": "Submit Report"
+}
