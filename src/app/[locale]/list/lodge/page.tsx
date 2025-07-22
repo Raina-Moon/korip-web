@@ -3,7 +3,7 @@
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,12 @@ export default function LodgeListPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const params = useParams();
+  const locale =
+    typeof params.locale === "string"
+      ? params.locale
+      : params.locale?.[0] ?? "ko";
 
   const region = searchParams.get("region") || "전체";
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -56,7 +62,7 @@ export default function LodgeListPage() {
 
     localStorage.setItem("pendingReservation", JSON.stringify(query));
     const search = new URLSearchParams(query).toString();
-    router.push(`/lodge/${lodgeId}?${search}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${search}`);
   };
 
   const handleSortChange = (e: any) => {
@@ -70,7 +76,7 @@ export default function LodgeListPage() {
       room,
       sort: e.target.value,
     }).toString();
-    router.push(`/list/lodge?${newQuery}`);
+    router.push(`/${locale}/list/lodge?${newQuery}`);
   };
 
   return (
