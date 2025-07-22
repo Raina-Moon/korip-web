@@ -1,0 +1,45 @@
+{
+  "loading": {
+    "title": "Processing your reservation...",
+    "message": "Please wait a moment."
+  },
+  "success": {
+    "title": "Reservation Confirmed 🎉",
+    "subtitle": "Please review the details below.",
+    "sections": {
+      "lodge": "Lodge Information",
+      "schedule": "Stay Schedule",
+      "guests": "Guest Details",
+      "user": "Reservation Holder",
+      "requests": "Special Requests"
+    },
+    "labels": {
+      "lodge": "Lodge",
+      "roomType": "Room Type",
+      "checkIn": "Check-In",
+      "checkOut": "Check-Out",
+      "nights": "Number of Nights",
+      "adults": "Adults",
+      "children": "Children",
+      "roomCount": "Rooms",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "nationality": "Nationality",
+      "request": "Request",
+      "requestNone": "None",
+      "nightsWithUnit": "{{count}} night",
+      "nightsWithUnit_plural": "{{count}} nights",
+      "adultsWithUnit": "{{count}} adult",
+      "adultsWithUnit_plural": "{{count}} adults",
+      "childrenWithUnit": "{{count}} child",
+      "childrenWithUnit_plural": "{{count}} children",
+      "roomsWithUnit": "{{count}} room",
+      "roomsWithUnit_plural": "{{count}} rooms"
+    },
+    "buttons": {
+      "goHome": "Go to Home",
+      "goToReservations": "View My Reservations"
+    }
+  }
+}
