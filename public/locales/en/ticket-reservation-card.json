@@ -1,0 +1,15 @@
+{
+  "noName": "Unnamed Ticket",
+  "date": "Date",
+  "adultsWithCount": "Adults: {{count}}",
+  "adultsWithCount_plural": "Adults: {{count}}",
+  "childrenWithCount": "Children: {{count}}",
+  "childrenWithCount_plural": "Children: {{count}}",
+  "createdAt": "Booked At: {{date}}",
+  "status": {
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "none": "No Status"
+  }
+}

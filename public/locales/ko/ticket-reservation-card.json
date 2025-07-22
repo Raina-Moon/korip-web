@@ -1,0 +1,13 @@
+{
+  "noName": "이름 없는 티켓",
+  "date": "날짜",
+  "adultsWithCount": "성인: {{count}}명",
+  "childrenWithCount": "어린이: {{count}}명",
+  "createdAt": "예약일: {{date}}",
+  "status": {
+    "confirmed": "예약확정",
+    "pending": "진행중",
+    "cancelled": "예약취소",
+    "none": "상태 없음"
+  }
+}
