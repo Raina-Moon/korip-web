@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import "react-calendar/dist/Calendar.css";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
 import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -27,11 +28,7 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const params = useParams();
-  const locale =
-    typeof params.locale === "string"
-      ? params.locale
-      : params.locale?.[0] ?? "en";
+  const locale = useLocale();
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
