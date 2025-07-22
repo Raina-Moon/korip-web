@@ -1,0 +1,12 @@
+{
+  "title": "내 프로필",
+  "name": "홍길동",
+  "email": "honggildong@example.com",
+  "sections": {
+    "reservations": "예약 내역",
+    "reviews": "리뷰",
+    "account": "계정",
+    "favorites": "즐겨찾기",
+    "settings": "설정"
+  }
+}
