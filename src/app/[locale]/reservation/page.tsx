@@ -11,20 +11,8 @@ import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const countryOptions = [
-  "대한민국",
-  "미국",
-  "일본",
-  "중국",
-  "영국",
-  "독일",
-  "프랑스",
-  "호주",
-  "캐나다",
-];
-
 const ReservationPage = () => {
-  const {t} = useTranslation("reservation");
+  const { t } = useTranslation("reservation");
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -41,9 +29,11 @@ const ReservationPage = () => {
   const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
   const roomName = searchParams.get("roomName") || "Unknown Room";
 
+  const countryCodes = ["kr", "us", "jp", "cn", "gb", "de", "fr", "au", "ca"];
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [nationality, setNationality] = useState(countryOptions[0]);
+  const [nationality, setNationality] = useState(countryCodes[0]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [specialRequests, setSpecialRequests] = useState<string[]>([]);
@@ -223,7 +213,9 @@ const ReservationPage = () => {
 
           <div className="flex flex-col space-y-1">
             <p className="font-semibold">{lodgeName}</p>
-            <p className="text-gray-700">{t("roomType")}: {roomName}</p>
+            <p className="text-gray-700">
+              {t("roomType")}: {roomName}
+            </p>
             <p className="text-gray-700">
               {t("checkInOut", { checkIn, checkOut })}
             </p>
@@ -256,9 +248,9 @@ const ReservationPage = () => {
           onChange={(e) => setNationality(e.target.value)}
           className="border p-2 rounded"
         >
-          {countryOptions.map((country) => (
-            <option key={country} value={country}>
-              {country}
+          {countryCodes.map((code) => (
+            <option key={code} value={code}>
+              {t(`countries.${code}`)}
             </option>
           ))}
         </select>
@@ -272,15 +264,15 @@ const ReservationPage = () => {
             width: "100%",
             height: "42px",
             borderRadius: "0.375rem",
-            border: "1px solid #d1d5db", 
+            border: "1px solid #d1d5db",
             paddingLeft: "48px",
-            fontSize: "0.875rem", 
+            fontSize: "0.875rem",
           }}
           buttonStyle={{
             borderTopLeftRadius: "0.375rem",
             borderBottomLeftRadius: "0.375rem",
             border: "1px solid #d1d5db",
-            backgroundColor: "#f9fafb", 
+            backgroundColor: "#f9fafb",
           }}
           containerStyle={{
             width: "100%",
@@ -423,7 +415,9 @@ const ReservationPage = () => {
       {showCancelPolicyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
-            <h2 className="text-xl font-bold mb-4">{t("modal.cancelPolicyTitle")}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {t("modal.cancelPolicyTitle")}
+            </h2>
             <pre className="mb-4 text-sm text-gray-700 whitespace-pre-wrap">
               {t("modal.cancelPolicyContent")}
             </pre>
@@ -440,7 +434,9 @@ const ReservationPage = () => {
       {showPrivacyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full overflow-y-auto max-h-[70vh]">
-            <h2 className="text-xl font-bold mb-4">{t("modal.privacyTitle")}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {t("modal.privacyTitle")}
+            </h2>
             <pre className="mb-4 text-sm text-gray-700 whitespace-pre-wrap">
               {t("modal.privacyContent")}
             </pre>
@@ -458,4 +454,3 @@ const ReservationPage = () => {
 };
 
 export default ReservationPage;
-

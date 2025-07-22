@@ -38,5 +38,16 @@
     "privacyTitle": "Consent to Collection and Use of Personal Information",
     "privacyContent": "I agree to the collection and use of my personal information as follows for reservation services.\n\n1. Information Collected\n- Name (First Name, Last Name)\n- Contact (Phone Number, Email)\n- Nationality\n- Reservation details (Lodge name, Room type, Guests, Stay schedule)\n- Requests (Special requests, etc.)\n\n2. Purpose of Use\n- Reservation processing and management\n- Customer support for changes, cancellations, or refunds\n- Payment processing and settlement\n- Legal compliance and dispute resolution\n- Service quality improvement and customer support\n- Provision of marketing/event info (only if separately agreed)\n\n3. Retention Period\n- Retained for 5 years after reservation completion for fulfillment and follow-up purposes\n- If required by law (e.g., consumer protection laws), retained for the legally mandated duration\n\n4. Third-party Sharing & Delegation\n- Personal data may be delegated to payment processors, reservation systems, customer service agencies, etc., only as necessary\n- Details are specified in the Privacy Policy\n\n5. Privacy Policy\n- Detailed information on collection, use, storage, and disposal can be found anytime via the [Privacy Policy] link at the bottom of this site\n\n6. Right to Refuse\n- You have the right to refuse consent, but refusal may limit access to the reservation service\n\nI have read and understood the above and agree to the collection and use of my personal data.",
     "close": "Close"
+  },
+  "countries": {
+    "kr": "South Korea",
+    "us": "United States",
+    "jp": "Japan",
+    "cn": "China",
+    "gb": "United Kingdom",
+    "de": "Germany",
+    "fr": "France",
+    "au": "Australia",
+    "ca": "Canada"
   }
 }
