@@ -13,8 +13,10 @@ import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
 import type { TicketReview } from "@/types/ticketReview";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
+import { useTranslation } from "react-i18next";
 
 const TicketReview = () => {
+  const { t } = useTranslation("ticket-review");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 5;
@@ -63,39 +65,39 @@ const TicketReview = () => {
         },
       }).unwrap();
       cancelEditing();
-      alert("리뷰가 업데이트되었습니다");
+      alert(t("updateSuccess"));
       refetch();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert("Failed to update review");
+      alert(t("updateFail"));
     }
   };
 
   const handleDelete = async (review: TicketReview) => {
-    if (!confirm("리뷰를 삭제할까요?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     try {
       await deleteReview(review.id).unwrap();
-      alert("리뷰가 삭제되었습니다");
+      alert(t("deleteSuccess"));
       refetch();
     } catch (error) {
       console.error("리뷰 삭제 실패:", error);
-      alert("리뷰 삭제 실패");
+      alert(t("deleteFail"));
     }
   };
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">{nickname}의 티켓 리뷰</h2>
+      <h2 className="text-xl font-semibold mb-4">{t("title", { nickname })}</h2>
 
       <button
         onClick={() => setIsModalOpen(true)}
         className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
       >
-        티켓 리뷰 작성
+        {t("createButton")}
       </button>
-      {isError && <p className="text-red-500">리뷰를 불러오는 중 오류 발생</p>}
+      {isError && <p className="text-red-500">{t("loadError")}</p>}
       {reviews && reviews.length === 0 && (
-        <p className="text-gray-500">작성된 티켓 리뷰가 없습니다</p>
+        <p className="text-gray-500">{t("empty")}</p>
       )}
 
       {isModalOpen && (
@@ -119,14 +121,14 @@ const TicketReview = () => {
                 {review.reservation && (
                   <p className="text-md text-primary-900">
                     <span className="text-lg font-semibold mr-3">
-                      {review.reservation?.ticketType?.name || "알 수 없음"}
+                      {review.reservation?.ticketType?.name || t("unknown")}
                     </span>
                     <span className="text-gray-600 ml-1 text-sm">
                       -{" "}
                       {review.reservation?.ticketType?.lodge?.name ||
-                        "숙소 없음"}
+                        t("noLodge")}
                     </span>
-                    ({review.reservation?.date?.slice(0, 10) || "알 수 없음"})
+                    ({review.reservation?.date?.slice(0, 10) || t("unknown")})
                   </p>
                 )}
                 <Rating
@@ -139,7 +141,7 @@ const TicketReview = () => {
                 </p>
                 {review.isHidden && (
                   <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
-                    가려진 리뷰입니다.
+                    {t("hidden")}
                   </p>
                 )}
               </div>
@@ -153,13 +155,13 @@ const TicketReview = () => {
                       onClick={() => startEditing(review)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      Edit
+                      {t("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(review)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                     >
-                      Delete
+                      {t("delete")}
                     </button>
                   </div>
                 )}
@@ -184,13 +186,13 @@ const TicketReview = () => {
                     onClick={() => saveEdit(review)}
                     className="px-4 py-2 bg-blue-600 text-white rounded"
                   >
-                    Save
+                    {t("save")}
                   </button>
                   <button
                     onClick={cancelEditing}
                     className="px-4 py-2 border rounded"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
