@@ -5,6 +5,7 @@ import { Rating } from "@smastrom/react-rating";
 import { MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import "@smastrom/react-rating/style.css";
+import { useTranslation } from "react-i18next";
 
 export type GenericReview = Review | TicketReview;
 
@@ -43,6 +44,7 @@ const ReviewCard = ({
   setEditingRating,
   isLoggedIn,
 }: ReviewCardProps) => {
+  const {t} = useTranslation("review");
   const isOwner = myUserId !== undefined && myUserId === review.userId;
   const isEditing = editingId === String(review.id);
   const [closeDropDown, setCloseDropDown] = useState(false);
@@ -93,13 +95,13 @@ const ReviewCard = ({
         {isTicketReview(review) && review.reservation && (
           <div className="text-sm text-gray-500 mb-2">
             <span className="mr-2">
-              <strong>이용일:</strong> {review.reservation.date.slice(0, 10)}
+              <strong>{t("usedOn", { date: review.reservation.date.slice(0, 10) })}</strong>
             </span>
             <span className="mr-2">
-              <strong>성인:</strong> {review.reservation.adults}명
+              <strong>{t("adults", { count: review.reservation.adults })}</strong>
             </span>
             <span>
-              <strong>어린이:</strong> {review.reservation.children}명
+              <strong>{t("children", { count: review.reservation.children })}</strong>
             </span>
           </div>
         )}
@@ -109,11 +111,11 @@ const ReviewCard = ({
           review.reservation?.checkOut && (
             <div className="text-sm text-gray-500 mb-2">
               <span className="mr-2">
-                <strong>체크인:</strong>{" "}
+                <strong>{t("checkIn")}:</strong>{" "}
                 {review.reservation.checkIn.slice(0, 10)}
               </span>
               <span className="mr-2">
-                <strong>체크아웃:</strong>{" "}
+                <strong>{t("checkOut")}:</strong>{" "}
                 {review.reservation.checkOut.slice(0, 10)}
               </span>
               <span>
@@ -124,7 +126,7 @@ const ReviewCard = ({
                   );
                   return (
                     <strong>
-                      {nights}박 {days}일
+                      {t("nightDays",{ nights, days })}
                     </strong>
                   );
                 })()}
@@ -161,13 +163,13 @@ const ReviewCard = ({
                   onClick={() => startEditing(review)}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
-                  Edit
+                  {t("edit")}
                 </button>
                 <button
                   onClick={() => handleDelete(review)}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                 >
-                  Delete
+                  {t("delete")}
                 </button>
               </div>
             )}
@@ -179,7 +181,7 @@ const ReviewCard = ({
               onClick={() => handleReport(review.id)}
               className="text-sm text-red-500 hover:underline ml-2"
             >
-              신고하기
+              {t("report")}
             </button>
           )
         )}
@@ -187,7 +189,7 @@ const ReviewCard = ({
 
       {review.isHidden ? (
         <div className="text-gray-400 italic mt-2">
-          관리자에 의해 가려진 댓글입니다.
+          {t("hiddenByAdmin")}
         </div>
       ) : (
         <>
@@ -219,13 +221,13 @@ const ReviewCard = ({
                   onClick={() => saveEdit(review)}
                   className="px-4 py-2 bg-blue-600 text-white rounded"
                 >
-                  Save
+                  {t("save")}
                 </button>
                 <button
                   onClick={cancelEditing}
                   className="px-4 py-2 border rounded"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
               </div>
             </div>
