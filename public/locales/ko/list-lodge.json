@@ -1,0 +1,17 @@
+{
+  "title": "검색 결과",
+  "resultsCount": "검색 결과 {{count}}",
+  "sort": {
+    "popularity": "인기순",
+    "reviews": "리뷰많은순",
+    "price_asc": "최저가순",
+    "price_desc": "최고가순"
+  },
+  "noResults": "검색 결과가 없습니다.",
+  "noImage": "이미지 없음",
+  "reviewsCount": "({{count}}개 리뷰)",
+  "region": "지역: {{address}}",
+  "maxAdults": "최대 성인 수: {{count}}",
+  "maxChildren": "최대 어린이 수: {{count}}",
+  "pricePerNight": "1박당 평균 가격: {{price}}원"
+}
