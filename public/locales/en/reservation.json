@@ -1,0 +1,42 @@
+{
+  "reservationInfo": "Reservation Details",
+  "noImage": "No Image",
+  "roomType": "Room Type",
+  "checkInOut": "Check-in: {{checkIn}} ~ Check-out: {{checkOut}}",
+  "guests": "Adults: {{adults}} / Children: {{children}} / Rooms: {{roomCount}}",
+  "enterGuestInfo": "Enter Guest Information",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "nationality": "Nationality",
+  "phone": "Enter phone number",
+  "emailOptional": "Email (optional)",
+  "specialRequests": "Special Requests",
+  "quietRoom": "Request for quiet room",
+  "crib": "Request for crib",
+  "accessibility": "Accessibility request",
+  "highFloor": "High-floor room request",
+  "customRequestPlaceholder": "Enter any other special requests",
+  "priceLoading": "Calculating price...",
+  "priceError": "Failed to retrieve price information.",
+  "totalPrice": "Total Price: {{price}} KRW",
+  "agreement": {
+    "title": "Agreement Terms",
+    "cancelPolicyPrefix": "I have read and agree to the ",
+    "cancelPolicyLink": "cancellation and refund policy",
+    "cancelPolicySuffix": ".",
+    "privacyPrefix": "I agree to the ",
+    "privacyLink": "collection and use of personal data",
+    "privacySuffix": "."
+  },
+  "nextButton": "Next → Proceed to Payment",
+  "cancelPolicyTitle": "Cancellation & Refund Policy",
+  "privacyTitle": "Consent to Collection and Use of Personal Information",
+  "close": "Close",
+  "modal": {
+    "cancelPolicyTitle": "Cancellation & Refund Policy",
+    "cancelPolicyContent": "The cancellation and refund policy for this lodging reservation is as follows:\n\n- Cancellations up to 7 days (168 hours) before check-in: Full 100% refund\n- Cancellations between 24 hours and 7 days before check-in: 50% refund\n- Cancellations within 24 hours or no-shows: No refund (0%)\n\n※ Cancellations must be submitted through the cancellation request function on this site. The time of request will be used to determine the applicable policy.\n※ Refunds may be subject to payment processing and refund handling fees based on the payment provider’s policy.\n※ Refunds typically take 3–10 business days depending on the payment method.\n※ Some promotions, discounts, or special rates may have separate refund conditions. These are explained at the reservation or payment stage.\n※ In cases where cancellation is due to unavoidable circumstances (natural disasters, government orders, emergencies, etc.), a separate refund policy may apply.\n※ For more details, please refer to the 'Cancellation & Refund Policy' page or contact customer service.\n\nI have read and understood the above and agree to the cancellation and refund policy.",
+    "privacyTitle": "Consent to Collection and Use of Personal Information",
+    "privacyContent": "I agree to the collection and use of my personal information as follows for reservation services.\n\n1. Information Collected\n- Name (First Name, Last Name)\n- Contact (Phone Number, Email)\n- Nationality\n- Reservation details (Lodge name, Room type, Guests, Stay schedule)\n- Requests (Special requests, etc.)\n\n2. Purpose of Use\n- Reservation processing and management\n- Customer support for changes, cancellations, or refunds\n- Payment processing and settlement\n- Legal compliance and dispute resolution\n- Service quality improvement and customer support\n- Provision of marketing/event info (only if separately agreed)\n\n3. Retention Period\n- Retained for 5 years after reservation completion for fulfillment and follow-up purposes\n- If required by law (e.g., consumer protection laws), retained for the legally mandated duration\n\n4. Third-party Sharing & Delegation\n- Personal data may be delegated to payment processors, reservation systems, customer service agencies, etc., only as necessary\n- Details are specified in the Privacy Policy\n\n5. Privacy Policy\n- Detailed information on collection, use, storage, and disposal can be found anytime via the [Privacy Policy] link at the bottom of this site\n\n6. Right to Refuse\n- You have the right to refuse consent, but refusal may limit access to the reservation service\n\nI have read and understood the above and agree to the collection and use of my personal data.",
+    "close": "Close"
+  }
+}
