@@ -1,0 +1,18 @@
+{
+  "title": "검색 결과",
+  "sort": {
+    "popularity": "인기순",
+    "reviews": "리뷰많은순",
+    "adult_price_asc": "성인 최저가순",
+    "adult_price_desc": "성인 최고가순",
+    "child_price_asc": "아동 최저가순",
+    "child_price_desc": "아동 최고가순"
+  },
+  "noResults": "검색 결과가 없습니다.",
+  "reviewsCount": "({{count}}개 리뷰)",
+  "region": "지역: {{address}}",
+  "adultPrice": "성인 가격: {{price}}원",
+  "childPrice": "아동 가격: {{price}}원",
+  "availableAdultTickets": "남은 성인 티켓: {{count}}",
+  "availableChildTickets": "남은 아동 티켓: {{count}}"
+}
