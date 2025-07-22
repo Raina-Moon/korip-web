@@ -1,0 +1,13 @@
+{
+  "title": "My Favorites",
+  "tab": {
+    "lodging": "Lodging",
+    "ticket": "Ticket"
+  },
+  "loading": "Loading...",
+  "loadingTickets": "Loading ticket bookmarks...",
+  "error": "Error loading favorites",
+  "ticketError": "Error loading ticket bookmarks",
+  "empty": "No favorites found",
+  "ticketEmpty": "No ticket bookmarks found"
+}

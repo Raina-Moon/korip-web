@@ -1,0 +1,62 @@
+{
+  "title": "My Reservations",
+  "loading": "Loading...",
+  "error": "Failed to load reservations.",
+  "empty": "No reservations found.",
+  "emptyTicket": "No ticket reservations match this filter.",
+  "backToMain": "Back to Main",
+  "lodgingTab": "Lodging Reservations",
+  "ticketTab": "Ticket Reservations",
+  "filter": {
+    "all": "All",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled"
+  },
+  "modal": {
+    "title": "Reservation Details",
+    "lodge": "Lodge",
+    "roomType": "Room Type",
+    "checkIn": "Check-In",
+    "checkOut": "Check-Out",
+    "adults": "Adults",
+    "children": "Children",
+    "roomCount": "Room Count",
+    "adultsWithCount": "{{count}} adult",
+    "adultsWithCount_plural": "{{count}} adults",
+    "childrenWithCount": "{{count}} child",
+    "childrenWithCount_plural": "{{count}} children",
+    "roomCountWithUnit": "{{count}} room",
+    "roomCountWithUnit_plural": "{{count}} rooms",
+    "createdAt": "Created At",
+    "specialRequests": "Special Requests",
+    "none": "None",
+    "cancel": "Cancel Reservation",
+    "close": "Close"
+  },
+  "ticketModal": {
+    "title": "Ticket Reservation Details",
+    "ticketName": "Ticket Name",
+    "useDate": "Use Date",
+    "adults": "Adults",
+    "children": "Children",
+    "totalPrice": "Total Price",
+    "createdAt": "Created At",
+    "cancel": "Cancel Reservation",
+    "close": "Close"
+  },
+  "refund": {
+    "title": "Refund Policy & Agreement",
+    "lodgingPolicy": "■ Refund Policy\n- Cancel before 7 days of check-in: Full refund\n- Cancel between 24 hrs and 7 days: 50% refund\n- Cancel within 24 hrs: No refund\n",
+    "ticketPolicy": "■ Refund Policy\n- Cancel before 7 days of use: Full refund\n- Cancel between 24 hrs and 7 days: 50% refund\n- Cancel within 24 hrs: No refund\n",
+    "agreeText": "I have read and agree to the above refund policy.",
+    "cancel": "Cancel Reservation",
+    "cancelling": "Cancelling...",
+    "close": "Close"
+  },
+  "alert": {
+    "cancelFailed": "An error occurred while canceling the reservation.",
+    "ticketCancelFailed": "An error occurred while canceling the ticket reservation.",
+    "ticketCancelSuccess": "Ticket reservation has been successfully canceled."
+  }
+}

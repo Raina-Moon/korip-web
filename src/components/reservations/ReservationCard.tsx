@@ -1,45 +1,38 @@
-import { TicketReservation } from "@/types/ticketReservation";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-interface TicketReservationCardProps {
-  ticket: TicketReservation;
-  onClick?: (ticket: TicketReservation) => void;
-}
-
-const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
-  ticket,
+function ReservationCard({
+  reservation,
   onClick,
-}) => {
-  const formatKSTDate = (utcDateStr: string) => {
-    const utcDate = new Date(utcDateStr);
-    const kst = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
-    return kst.toISOString().slice(0, 10);
-  };
-
+}: {
+  reservation: any;
+  onClick: (r: any) => void;
+}) {
+  const { t } = useTranslation("reservation-card");
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "CONFIRMED":
         return (
           <span className="px-3 py-1 rounded border bg-green-600 text-white text-xs font-semibold">
-            예약확정
+            {t("status.confirmed")}
           </span>
         );
       case "PENDING":
         return (
           <span className="px-3 py-1 rounded border bg-yellow-500 text-white text-xs font-semibold">
-            진행중
+            {t("status.pending")}
           </span>
         );
       case "CANCELLED":
         return (
           <span className="px-3 py-1 rounded border bg-red-600 text-white text-xs font-semibold">
-            예약취소
+            {t("status.cancelled")}
           </span>
         );
       default:
         return (
           <span className="px-3 py-1 rounded border text-gray-700 border-gray-700 text-xs font-semibold">
-            상태 없음
+            {t("status.none")}
           </span>
         );
     }
@@ -47,26 +40,38 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
 
   return (
     <div
-      onClick={() => onClick?.(ticket)}
       className="border rounded p-4 shadow hover:shadow-lg transition cursor-pointer"
+      onClick={() => onClick(reservation)}
     >
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold mb-2">
-          {ticket.ticketType?.name || "이름 없는 티켓"}
+          {reservation.lodge?.name || t("noName")}
         </h2>
-        {getStatusBadge(ticket.status)}
+        {getStatusBadge(reservation.status)}
       </div>
       <p className="text-sm text-gray-700 mb-1">
-        날짜: {formatKSTDate(ticket.date)}
+        {t("roomType")}: {reservation.roomType?.name || t("정보 없음")}
       </p>
       <p className="text-sm text-gray-700 mb-1">
-        성인: {ticket.adults}명, 어린이: {ticket.children}명
+        {t("checkIn")}: {reservation.checkIn.slice(0, 10)}
+      </p>
+      <p className="text-sm text-gray-700 mb-1">
+        {t("checkOut")}: {reservation.checkOut.slice(0, 10)}
+      </p>
+      <p className="text-sm text-gray-700 mb-1">
+        {t("adultsWithCount", { count: reservation.adults })},{" "}
+        {t("childrenWithCount", { count: reservation.children })}
+      </p>
+      <p className="text-sm text-gray-700 mb-1">
+        {t("roomCountWithUnit", { count: reservation.roomCount })}
       </p>
       <p className="text-sm text-gray-500">
-        예약일: {new Date(ticket.createdAt).toLocaleString()}
+        {t("createdAt", {
+          date: new Date(reservation.createdAt).toLocaleString(),
+        })}
       </p>
     </div>
   );
-};
+}
 
-export default TicketReservationCard;
+export default ReservationCard;

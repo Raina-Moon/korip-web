@@ -1,0 +1,14 @@
+{
+  "title": "Write a Ticket Review",
+  "selectLabel": "Used Ticket",
+  "selectPlaceholder": "Select a ticket",
+  "ratingLabel": "Rating",
+  "commentLabel": "Comment",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "alert": {
+    "noTicket": "Please select a ticket.",
+    "success": "Ticket review submitted successfully.",
+    "fail": "Failed to submit ticket review"
+  }
+}

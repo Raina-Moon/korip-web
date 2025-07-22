@@ -1,0 +1,12 @@
+{
+  "title": "My Profile",
+  "name": "Hong Gildong",
+  "email": "honggildong@example.com",
+  "sections": {
+    "reservations": "Reservations",
+    "reviews": "Reviews",
+    "account": "Account",
+    "favorites": "Favorites",
+    "settings": "Settings"
+  }
+}

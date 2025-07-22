@@ -1,0 +1,14 @@
+{
+  "title": "티켓 리뷰 작성",
+  "selectLabel": "사용한 티켓",
+  "selectPlaceholder": "티켓 선택",
+  "ratingLabel": "별점",
+  "commentLabel": "내용",
+  "cancel": "취소",
+  "submit": "등록",
+  "alert": {
+    "noTicket": "티켓을 선택해주세요.",
+    "success": "티켓 리뷰가 등록되었습니다.",
+    "fail": "티켓 리뷰 등록 실패"
+  }
+}

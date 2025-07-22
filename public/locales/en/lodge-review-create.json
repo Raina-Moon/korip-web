@@ -1,0 +1,14 @@
+{
+  "title": "Write a Lodge Review",
+  "selectLabel": "Select Lodge",
+  "selectPlaceholder": "Choose a lodge",
+  "ratingLabel": "Rating",
+  "commentLabel": "Comment",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "alert": {
+    "noLodge": "Please select a lodge.",
+    "success": "Review submitted successfully.",
+    "fail": "Failed to submit review."
+  }
+}
