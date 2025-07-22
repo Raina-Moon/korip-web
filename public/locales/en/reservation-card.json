@@ -1,0 +1,18 @@
+{
+  "noName": "Unnamed Lodge",
+  "roomType": "Room Type",
+  "checkIn": "Check-In",
+  "checkOut": "Check-Out",
+  "adultsWithCount": "{{count}} adult",
+  "adultsWithCount_plural": "{{count}} adults",
+  "childrenWithCount": "{{count}} child",
+  "childrenWithCount_plural": "{{count}} children",
+  "roomCountWithCount": "Room Count: {{count}}",
+  "createdAt": "Booked At: {{date}}",
+  "status": {
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "none": "No Status"
+  }
+}
