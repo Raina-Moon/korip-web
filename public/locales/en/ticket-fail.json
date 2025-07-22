@@ -1,0 +1,7 @@
+{
+  "title": "Payment Failed 😢",
+  "reason": "Reason",
+  "errorCode": "Error Code",
+  "back": "Go Back",
+  "defaultMessage": "The payment has failed."
+}

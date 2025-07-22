@@ -1,0 +1,30 @@
+{
+  "loadingTitle": "예약 처리 중...",
+  "loadingDesc": "잠시만 기다려주세요.",
+
+  "title": "예약 확정 🎉",
+  "description": "아래 내용을 확인해주세요.",
+
+  "ticketInfo": "티켓 정보",
+  "lodge": "숙소",
+  "date": "이용일자",
+
+  "guestInfo": "이용 인원",
+  "adults": "성인",
+  "children": "어린이",
+  "adultsWithUnit": "{{count}}명",
+  "childrenWithUnit": "{{count}}명",
+
+  "userInfo": "예약자 정보",
+  "name": "이름",
+  "email": "이메일",
+  "phone": "휴대폰",
+  "nationality": "국적",
+
+  "requestInfo": "요청사항",
+  "request": "요청",
+  "none": "없음",
+
+  "goHome": "홈으로 가기",
+  "viewReservations": "티켓 예약 보기"
+}

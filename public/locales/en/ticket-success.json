@@ -1,0 +1,32 @@
+{
+  "loadingTitle": "Processing your reservation...",
+  "loadingDesc": "Please wait a moment.",
+
+  "title": "Reservation Confirmed 🎉",
+  "description": "Please review the details below.",
+
+  "ticketInfo": "Ticket Information",
+  "lodge": "Lodge",
+  "date": "Date of Use",
+
+  "guestInfo": "Guests",
+  "adults": "Adults",
+  "children": "Children",
+  "adultsWithUnit": "{{count}} adult",
+  "adultsWithUnit_plural": "{{count}} adults",
+  "childrenWithUnit": "{{count}} child",
+  "childrenWithUnit_plural": "{{count}} children",
+
+  "userInfo": "Reservation Info",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone",
+  "nationality": "Nationality",
+
+  "requestInfo": "Special Requests",
+  "request": "Request",
+  "none": "None",
+
+  "goHome": "Go to Home",
+  "viewReservations": "View Ticket Reservations"
+}

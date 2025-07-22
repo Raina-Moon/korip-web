@@ -5,10 +5,15 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const TicketReservationConfirmPage = () => {
+  const { t } = useTranslation("ticket-reservation-confirm");
   const [widgets, setWidgets] = useState<any>(null);
   const [ready, setReady] = useState(false);
+
+  const locale = useLocale();
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -88,7 +93,7 @@ const TicketReservationConfirmPage = () => {
 
       const customerMobilePhone = normalizeKoreanPhone(phoneNumber);
       if (!customerMobilePhone) {
-        alert("휴대폰 번호를 정확히 입력해주세요 (010으로 시작)");
+        alert(t("alertInvalidPhone"));
         return;
       }
 
@@ -103,16 +108,16 @@ const TicketReservationConfirmPage = () => {
       });
     } catch (error) {
       console.error("Payment failed:", error);
-      alert("결제에 실패했습니다. 다시 시도해주세요.");
-      router.push("/ticket-reservation/fail");
+      alert(t("alertPaymentFail"));
+      router.push(`/${locale}/ticket-reservation/fail`);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
-      <h1 className="text-2xl font-bold mb-4">티켓 예약 결제</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       <p>
-        총 결제 금액: {totalPrice ? Number(totalPrice).toLocaleString() : "0"}원
+        {t("totalPrice")}: {totalPrice ? Number(totalPrice).toLocaleString() : "0"} KRW
       </p>
       <div id="payment-methods" />
       <div id="agreement" />
@@ -122,7 +127,7 @@ const TicketReservationConfirmPage = () => {
         onClick={handleTossPayment}
         className="bg-primary-700 text-white px-6 py-2 rounded hover:bg-primary-500"
       >
-        결제하기 (Toss)
+        {t("payNow")}
       </button>
     </div>
   );
