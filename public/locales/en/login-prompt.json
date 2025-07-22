@@ -1,0 +1,11 @@
+{
+  "lodge": {
+    "reserve": "Log in to complete your lodge reservation.",
+    "bookmark": "Log in to bookmark this lodge."
+  },
+  "ticket": {
+    "reserve": "Log in to reserve this ticket.",
+    "bookmark": "Log in to bookmark this ticket."
+  },
+  "goLogin": "Go to Login"
+}

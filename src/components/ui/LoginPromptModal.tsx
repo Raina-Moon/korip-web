@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface LoginPromptModalProps {
   isOpen: boolean;
@@ -13,16 +14,18 @@ export default function LoginPromptModal({
   context,
   onLogin,
 }: LoginPromptModalProps) {
+  const {t} = useTranslation("login-prompt");
+
   if (!isOpen) return null;
 
   const contextMessages: Record<
     NonNullable<LoginPromptModalProps["context"]>,
     string
   > = {
-    "lodge/reserve": "로그인 후 숙소 예약을 완료할 수 있어요.",
-    "lodge/bookmark": "로그인 후 이 숙소를 찜할 수 있어요.",
-    "ticket/bookmark": "로그인 후 이 티켓을 찜할 수 있어요.",
-    "ticket/reserve": "로그인 후 티켓을 예약할 수 있어요.",
+    "lodge/reserve": t("lodge.reserve"),
+    "lodge/bookmark": t("lodge.bookmark"),
+    "ticket/bookmark": t("ticket.bookmark"),
+    "ticket/reserve": t("ticket.reserve"),
   };
 
   return (
@@ -34,7 +37,7 @@ export default function LoginPromptModal({
         className="bg-primary-700 text-white rounded-md px-3 py-1 hover:bg-primary-500"
         onClick={onLogin}
       >
-        로그인하러 가기
+        {t("goLogin")}
       </button>
     </div>
   );
