@@ -1,0 +1,17 @@
+{
+  "title": "Search Results",
+  "resultsCount": "Search Results {{count}}",
+  "sort": {
+    "popularity": "Popularity",
+    "reviews": "Most Reviews",
+    "price_asc": "Lowest Price",
+    "price_desc": "Highest Price"
+  },
+  "noResults": "No search results found.",
+  "noImage": "No image",
+  "reviewsCount": "({{count}} reviews)",
+  "region": "Region: {{address}}",
+  "maxAdults": "Max Adults: {{count}}",
+  "maxChildren": "Max Children: {{count}}",
+  "pricePerNight": "Average Price per Night: {{price}} KRW"
+}

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Provider } from "react-redux";
 import { store } from "../store/store";
@@ -7,11 +7,14 @@ import { setupAxiosInterceptor } from "../axios/interceptor";
 
 setupAxiosInterceptor();
 
-export function Providers({children}: {children: React.ReactNode}) {
-  return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+export function Providers({ children }: { children: React.ReactNode }) {
+  console.log("✅ Redux Provider Mounted");
 
-    <Provider store={store}>{children}</Provider>
+  return (
+    <GoogleOAuthProvider
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+    >
+      <Provider store={store}>{children}</Provider>
     </GoogleOAuthProvider>
   );
 }

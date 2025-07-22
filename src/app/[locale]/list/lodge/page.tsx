@@ -3,15 +3,20 @@
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const ListPage = () => {
+export default function LodgeListPage() {
+  const { t } = useTranslation("list-lodge");
   const [selectedSort, setSelectedSort] = useState<string>("popularity");
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const locale = useLocale();
 
   const region = searchParams.get("region") || "전체";
   const checkIn = searchParams.get("checkIn") || "Not specified";
@@ -54,7 +59,7 @@ const ListPage = () => {
 
     localStorage.setItem("pendingReservation", JSON.stringify(query));
     const search = new URLSearchParams(query).toString();
-    router.push(`/lodge/${lodgeId}?${search}`);
+    router.push(`/${locale}/lodge/${lodgeId}?${search}`);
   };
 
   const handleSortChange = (e: any) => {
@@ -68,23 +73,23 @@ const ListPage = () => {
       room,
       sort: e.target.value,
     }).toString();
-    router.push(`/list?${newQuery}`);
+    router.push(`/${locale}/list/lodge?${newQuery}`);
   };
 
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold text-primary-900">
-        검색 결과 {lodges ? lodges.length : 0}
+        {t("resultsCount", { count: lodges ? lodges.length : 0 })}
       </h1>
       <select value={selectedSort} onChange={handleSortChange}>
-        <option value="popularity">인기순</option>
-        <option value="reviews">리뷰많은순</option>
-        <option value="price_asc">최저가순</option>
-        <option value="price_desc">최고가순</option>
+        <option value="popularity">{t("sort.popularity")}</option>
+        <option value="reviews">{t("sort.reviews")}</option>
+        <option value="price_asc">{t("sort.price_asc")}</option>
+        <option value="price_desc">{t("sort.price_desc")}</option>
       </select>
 
       {lodges?.length === 0 ? (
-        <p className="text-lg text-gray-600">검색 결과가 없습니다.</p>
+        <p className="text-lg text-gray-600">{t("noResults")}</p>
       ) : (
         lodges?.map((lodge: any) => (
           <div
@@ -101,7 +106,7 @@ const ListPage = () => {
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
-                  No image
+                  {t("noImage")}
                 </div>
               )}
             </div>
@@ -113,10 +118,12 @@ const ListPage = () => {
               <div className="flex items-center gap-2 text-sm text-yellow-600 mt-1">
                 <span>⭐ {lodge.averageRating?.toFixed(1) ?? "0.0"}</span>
                 <span className="text-gray-500">
-                  ({lodge.reviewCount ?? 0}개 리뷰)
+                  {t("reviewsCount", { count: lodge.reviewCount ?? 0 })}
                 </span>
               </div>
-              <p className="text-gray-700 mb-2">지역: {lodge.address}</p>
+              <p className="text-gray-700 mb-2">
+                {t("region", { address: lodge.address })}
+              </p>
 
               {lodge.roomTypes?.map((room: any) => (
                 <div
@@ -125,13 +132,15 @@ const ListPage = () => {
                 >
                   <p className="font-medium">{room.name}</p>
                   <p className="text-gray-700">
-                    최대 성인 수: {room.maxAdults}
+                    {t("maxAdults", { count: room.maxAdults })}
                   </p>
                   <p className="text-gray-700">
-                    최대 어린이 수: {room.maxChildren}
+                    {t("maxChildren", { count: room.maxChildren })}
                   </p>
                   <p className="text-gray-700">
-                    1박당 평균 가격: {room.pricePerNight?.toLocaleString()}원
+                    {t("pricePerNight", {
+                      price: room.pricePerNight?.toLocaleString(),
+                    })}
                   </p>
                 </div>
               ))}
@@ -141,6 +150,4 @@ const ListPage = () => {
       )}
     </div>
   );
-};
-
-export default ListPage;
+}

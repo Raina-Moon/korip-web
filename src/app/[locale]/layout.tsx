@@ -2,19 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Providers } from "@/lib/providers/providers";
-import AuthLoader from "@/components/AuthLoader";
-import HeaderWrapper from "@/components/HeaderWrapper";
-import GlobalLoadingOverlay from "@/components/GlobalLoadingOverlay";
-import NavigationEvents from "@/lib/providers/NavigationEvents";
-import { ReactNode } from "react";
-import TranslationsProvider from "@/lib/i18n/TranslationsProvider";
-import { createInstance } from "i18next";
-import { initReactI18next } from "react-i18next";
-import resourcesToBackend from "i18next-resources-to-backend";
-import { I18nextProvider } from "react-i18next";
 import { dir } from "i18next";
 import i18nConfig from "@/lib/i18n/settings";
+import ClientApp from "@/components/ClientApp";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,20 +33,17 @@ export default async function LocaleLayout({
   params: { locale: string };
 }) {
   const locale = params.locale;
+  const htmlDir = dir(locale ?? "en"); // fallback 제공
 
   return (
-    <html lang={locale} dir={dir(locale)}>
+    <html lang={locale} dir={htmlDir}>
       <head>
         <script src="https://js.tosspayments.com/v2/standard"></script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          <AuthLoader />
-          <HeaderWrapper />
-          <GlobalLoadingOverlay />
-          <NavigationEvents />
-          <TranslationsProvider>{children}</TranslationsProvider>
-        </Providers>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClientApp>{children}</ClientApp>
       </body>
     </html>
   );
