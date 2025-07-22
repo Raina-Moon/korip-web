@@ -69,7 +69,7 @@ export default function TicketDateInput({
             handleOpen();
           }}
           value={date ? formatDate(date) : ""}
-          placeholder={t("selectDate")}
+          placeholder={t("selectDateWarning")}
         />
       </label>
 

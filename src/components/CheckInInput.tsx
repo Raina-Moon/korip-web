@@ -73,7 +73,7 @@ export default function CheckinInput({
             handleOpen();
           }}
           value={range ? formatDate(range[0]) : ""}
-          placeholder="Check-in Date"
+          placeholder={t("checkInDatePlaceholder")}
         />
       </label>
       {open && typeof window !== "undefined" &&
