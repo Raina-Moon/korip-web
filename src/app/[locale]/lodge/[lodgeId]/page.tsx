@@ -329,7 +329,7 @@ const LodgeDetailPage = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between mb-4">
           <div className="text-lg font-semibold text-primary-900">
-            {t("reviewsTitle", { count: totalReviews })}
+            {t("reviewTitle", { count: totalReviews })}
             {averageRating && (
               <>
                 {" "}
