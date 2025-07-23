@@ -5,8 +5,8 @@
   "empty": "No reservations found.",
   "emptyTicket": "No ticket reservations match this filter.",
   "backToMain": "Back to Main",
-  "lodgingTab": "Lodging Reservations",
-  "ticketTab": "Ticket Reservations",
+  "lodgingTab": "Your Stays",
+  "ticketTab": "Your Tickets",
   "filter": {
     "all": "All",
     "pending": "Pending",
