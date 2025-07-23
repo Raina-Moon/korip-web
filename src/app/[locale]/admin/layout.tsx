@@ -8,6 +8,7 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { useGetCurrentUserQuery } from "@/lib/auth/authApi";
 import { setUserOnly } from "@/lib/auth/authSlice";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { useLocale } from "@/utils/useLocale";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const user = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const locale = useLocale();
 
   const {
     data: fetchedUser,
@@ -36,11 +39,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   useEffect(() => {
     if (user === null) {
-      router.push("/login");
+      router.push(`/${locale}/login`);
       return;
     }
     if (user !== undefined && user.role !== "ADMIN") {
-      router.replace("/");
+      router.replace(`/${locale}/`);
     }
   }, [user, router]);
 
