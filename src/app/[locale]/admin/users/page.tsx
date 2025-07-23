@@ -5,10 +5,13 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchAllUsers, deleteUser } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/utils/useLocale";
 
 export default function AdminUsersPage() {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
+
+  const locale = useLocale();
 
   const { list, state, error, total, page, limit } = useAppSelector(
     (state: RootState) => state["admin/user"]
@@ -51,7 +54,7 @@ export default function AdminUsersPage() {
               <tr
                 key={user.id}
                 className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => router.push(`/admin/users/${user.id}`)}
+                onClick={() => router.push(`/${locale}/admin/users/${user.id}`)}
               >
                 <td className="p-2 border text-center">{user.id}</td>
                 <td className="p-2 border">{user.email}</td>

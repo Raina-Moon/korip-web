@@ -14,6 +14,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import InventoryCalendar from "@/components/ui/InventoryCalendar";
+import { useLocale } from "@/utils/useLocale";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -24,6 +25,8 @@ const LodgeDetailPage = () => {
 
   const params = useParams();
   const lodgeId = Number(params.lodgeId);
+
+  const locale = useLocale();
 
   const lodge = useAppSelector((state) => state["admin/lodge"].detail);
   const status = useAppSelector((state) => state["admin/lodge"].state);
@@ -64,7 +67,7 @@ const LodgeDetailPage = () => {
     if (deleteLodge.fulfilled.match(resultAction)) {
       dispatch(fetchLodges());
       alert("숙소가 성공적으로 삭제되었습니다.");
-      router.push("/admin/lodge");
+      router.push(`/${locale}/admin/lodge`);
     } else {
       alert("숙소 삭제에 실패했습니다.");
       console.error("Failed to delete lodge:", error);
@@ -123,7 +126,7 @@ const LodgeDetailPage = () => {
       <div className=" relative flex-row items-center justify-between mb-6">
         <div
           className="cursor-pointer absolute left-0"
-          onClick={() => router.push("/admin/lodge")}
+          onClick={() => router.push(`/${locale}/admin/lodge`)}
         >
           <ArrowLeft />
         </div>
@@ -133,7 +136,7 @@ const LodgeDetailPage = () => {
         <div className="gap-4 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={() => router.push(`/admin/lodge/edit/${lodge.id}`)}
+            onClick={() => router.push(`/${locale}/admin/lodge/edit/${lodge.id}`)}
           >
             수정
           </button>

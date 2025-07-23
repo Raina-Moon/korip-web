@@ -4,6 +4,7 @@ import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Lodge } from "@/types/lodge";
+import { useLocale } from "@/utils/useLocale";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -14,6 +15,8 @@ const LodgePage = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const locale = useLocale();
 
   const lodges = useAppSelector(
     (state) => state["admin/lodge"].list as Lodge[]
@@ -71,7 +74,7 @@ const LodgePage = () => {
         </div>
         <h1 className="text-3xl font-bold">관리자 – 숙소 목록</h1>
         <button
-          onClick={() => router.push("/admin/lodge/create")}
+          onClick={() => router.push(`/${locale}/admin/lodge/create`)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
           <Plus size={18} />
@@ -112,7 +115,7 @@ const LodgePage = () => {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => router.push(`/admin/lodge/${lodge.id}`)}
+                  onClick={() => router.push(`/${locale}/admin/lodge/${lodge.id}`)}
                   className="px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-50"
                 >
                   상세보기

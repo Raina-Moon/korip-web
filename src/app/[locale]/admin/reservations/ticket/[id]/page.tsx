@@ -19,6 +19,7 @@ const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
 const AdminTicketReservationDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  
   const dispatch = useAppDispatch();
 
   const { selected, state, error } = useAppSelector(

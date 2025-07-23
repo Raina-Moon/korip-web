@@ -12,12 +12,15 @@ import {
   getAllTicketReservations,
   updateTicketReservationStatus,
 } from "@/lib/admin/reservation/ticketReservationThunk";
+import { useLocale } from "@/utils/useLocale";
 
 const AdminReservationsPage = () => {
   const [filter, setFilter] = useState<"all" | "lodges" | "tickets">("all");
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const locale = useLocale();
 
   const lodge = useAppSelector((state) => state.adminReservation);
   const ticket = useAppSelector((state) => state.adminTicketReservation);
@@ -133,9 +136,9 @@ const AdminReservationsPage = () => {
                     className="hover:bg-gray-50 cursor-pointer"
                     onClick={() => {
                       if (item.type === "lodges") {
-                        router.push(`/admin/reservations/${item.id}`);
+                        router.push(`/${locale}/admin/reservations/${item.id}`);
                       } else {
-                        router.push(`/admin/reservations/ticket/${item.id}`);
+                        router.push(`/${locale}/admin/reservations/ticket/${item.id}`);
                       }
                     }}
                   >

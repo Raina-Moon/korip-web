@@ -3,6 +3,7 @@
 import LodgeForm from "@/components/ui/LodgeForm";
 import { fetchLodgeById, updateLodge } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useLocale } from "@/utils/useLocale";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -13,6 +14,8 @@ const LodgeEditPage = () => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
+
+  const locale = useLocale();
 
   const lodgeData = useAppSelector((state) => state["admin/lodge"].detail);
 
@@ -27,7 +30,7 @@ const LodgeEditPage = () => {
 
     if (updateLodge.fulfilled.match(updateData)) {
       alert("숙소가 성공적으로 수정되었습니다.");
-      router.push(`/admin/lodge/${id}`);
+      router.push(`/${locale}/admin/lodge/${id}`);
     } else {
       alert("숙소 수정에 실패했습니다. 다시 시도해주세요.");
     }
@@ -38,7 +41,7 @@ const LodgeEditPage = () => {
       <div className="relative flex items-center justify-center mx-24 mt-10">
         <div
           className="absolute left-0 p-2 cursor-pointer"
-          onClick={() => router.push(`/admin/lodge/${id}`)}
+          onClick={() => router.push(`/${locale}/admin/lodge/${id}`)}
         >
           <ArrowLeft />
         </div>
