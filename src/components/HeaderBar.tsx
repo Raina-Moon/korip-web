@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import { logoutUser } from "../lib/auth/logoutThunk";
 import i18n from "i18next";
 import { useLocale } from "@/utils/useLocale";
 
 const HeaderBar = () => {
-  const [select, setSelect] = useState("en");
+  const [select, setSelect] = useState(i18n.language || "ko");
   const [isHover, setIsHover] = useState(false);
 
   const pathname = usePathname();
@@ -22,6 +22,20 @@ const HeaderBar = () => {
     { name: "English", code: "en" },
     { name: "한국어", code: "ko" },
   ];
+
+  useEffect(() => {
+    const updateLanguage = () => {
+      setSelect(i18n.language);
+    };
+
+    i18n.on("languageChanged", updateLanguage);
+
+    updateLanguage();
+
+    return () => {
+      i18n.off("languageChanged", updateLanguage);
+    };
+  }, []);
 
   const handleLanguageChange = (lang: string) => {
     setSelect(lang);
