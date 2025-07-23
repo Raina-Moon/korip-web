@@ -1,0 +1,12 @@
+{
+  "title": "We'll send you the code",
+  "placeholder": "email@example.com",
+  "button": "Send",
+  "signupPrompt": {
+    "text": "Don't have an account?",
+    "link": "Sign Up"
+  },
+  "alert": {
+    "error": "Unexpected error occurred. Please try again later."
+  }
+}
