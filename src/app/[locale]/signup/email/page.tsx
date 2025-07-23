@@ -2,32 +2,34 @@
 
 import { useRequestVerificationMutation } from "@/lib/auth/authApi";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const EmailPage = () => {
+  const { t } = useTranslation("email");
   const [email, setEmail] = useState("");
   const [requestVerification, { isLoading, isSuccess }] =
     useRequestVerificationMutation();
 
   const handleSubmit = async () => {
-    if (!email) return alert("Please enter an email address");
+    if (!email) return alert(t("alert.empty"));
 
     try {
       await requestVerification({ email }).unwrap();
-      alert("Verification email sent successfully!");
+      alert(t("alert.success"));
     } catch (err) {
-      alert("Failed to send verification email. Please try again.");
+      alert(t("alert.error"));
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-primary-800 font-semibold text-3xl mb-5">
-        Email Verification
+        {t("title")}
       </h1>
       <input
         value={email}
         type="email"
-        placeholder="example@mail.com"
+        placeholder={t("placeholder")}
         onChange={(e) => setEmail(e.target.value)}
         className="border border-primary-700 rounded-md px-2 py-1 outline-none"
       />
@@ -36,13 +38,9 @@ const EmailPage = () => {
         disabled={isLoading}
         className="mt-4 bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
       >
-        {isLoading ? "Sending..." : "Send Verification Email"}
+        {isLoading ? t("button.loading") : t("button.default")}
       </button>
-      {isSuccess && (
-        <p className="text-primary-800 mt-4">
-          Check your email for the verification link!
-        </p>
-      )}
+      {isSuccess && <p className="text-primary-800 mt-4">{t("success")}</p>}
     </div>
   );
 };
