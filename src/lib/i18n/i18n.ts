@@ -9,8 +9,8 @@ i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    lng: "en", // 기본 언어
-    fallbackLng: "en",
+    lng: "ko", // 기본 언어
+    fallbackLng: "ko",
     supportedLngs: ["en", "ko"],
     ns: ["page"],
     defaultNS: "page",
