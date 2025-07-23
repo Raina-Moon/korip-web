@@ -123,7 +123,7 @@ const HeaderBar = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        router.push("/admin");
+                        router.push(`/${locale}/admin`);
                       }}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500 mt-2"
                     >
