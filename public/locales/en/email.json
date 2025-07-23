@@ -1,0 +1,14 @@
+{
+  "title": "Email Verification",
+  "placeholder": "example@mail.com",
+  "button": {
+    "default": "Send Verification Email",
+    "loading": "Sending..."
+  },
+  "success": "Check your email for the verification link!",
+  "alert": {
+    "empty": "Please enter an email address",
+    "success": "Verification email sent successfully!",
+    "error": "Failed to send verification email. Please try again."
+  }
+}
