@@ -557,7 +557,7 @@ const LodgeDetailPage = () => {
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-              onLogin={() => router.push("/login")}
+              onLogin={() => router.push(`/${locale}/login`)}
             />
           </div>
         </div>
