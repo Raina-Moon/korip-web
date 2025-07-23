@@ -10,7 +10,7 @@ i18n
   .use(initReactI18next)
   .init({
     lng: "ko", // 기본 언어
-    fallbackLng: "ko",
+    fallbackLng: false,
     supportedLngs: ["en", "ko"],
     ns: ["page"],
     defaultNS: "page",

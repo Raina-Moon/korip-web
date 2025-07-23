@@ -118,8 +118,8 @@ const ReservationConfirmPage = () => {
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
         customerMobilePhone: customerMobilePhone,
-        successUrl: `${window.location.origin}/reservation/success?reservationId=${reservationId}`,
-        failUrl: `${window.location.origin}/reservation/fail?lodgeId=${lodgeId}`,
+        successUrl: `${window.location.origin}/${locale}/reservation/success?reservationId=${reservationId}`,
+        failUrl: `${window.location.origin}/${locale}/reservation/fail?lodgeId=${lodgeId}`,
       });
     } catch (error) {
       console.error("Payment failed:", error);
