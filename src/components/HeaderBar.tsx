@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import { logoutUser } from "../lib/auth/logoutThunk";
 import i18n from "i18next";
+import { useLocale } from "@/utils/useLocale";
 
 const HeaderBar = () => {
   const [select, setSelect] = useState("en");
@@ -11,6 +12,8 @@ const HeaderBar = () => {
 
   const pathname = usePathname();
   const router = useRouter();
+
+  const locale = useLocale();
 
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
@@ -29,7 +32,7 @@ const HeaderBar = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
-    router.push("/");
+    router.push(`/${locale}/`);
   };
 
   return (
@@ -38,7 +41,7 @@ const HeaderBar = () => {
         <Image
           src="/images/koriplogo.png"
           alt="korip logo"
-          onClick={() => router.push("/")}
+          onClick={() => router.push(`/${locale}/`)}
           width={100}
           height={100}
           className="cursor-pointer"
@@ -59,7 +62,7 @@ const HeaderBar = () => {
 
         <div className="relative">
           <div
-            onClick={() => router.push(user ? "/profile" : "/login")}
+            onClick={() => router.push(user ? `/${locale}/profile` : `/${locale}/login`)}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
             className="flex flex-col items-end"
@@ -84,7 +87,7 @@ const HeaderBar = () => {
                   <div>
                     <p>Login to Continue</p>
                     <button
-                      onClick={() => router.push("/login")}
+                      onClick={() => router.push(`/${locale}/login`)}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500"
                     >
                       Login
@@ -120,7 +123,7 @@ const HeaderBar = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        router.push("/admin");
+                        router.push(`/${locale}/admin`);
                       }}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500 mt-2"
                     >

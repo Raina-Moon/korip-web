@@ -1,0 +1,12 @@
+{
+  "title": "인증 코드를 보내드릴게요",
+  "placeholder": "email@example.com",
+  "button": "보내기",
+  "signupPrompt": {
+    "text": "계정이 없으신가요?",
+    "link": "회원가입"
+  },
+  "alert": {
+    "error": "예기치 못한 오류가 발생했습니다. 나중에 다시 시도해주세요."
+  }
+}

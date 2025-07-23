@@ -43,7 +43,7 @@ const LoginPage = () => {
     try {
       dispatch(showLoading());
       await dispatch(loginUser(email, password));
-      router.push("/");
+      router.push(`/${locale}/`);
     } catch (err) {
       alert(t("loginFailed"));
     } finally {
@@ -145,14 +145,14 @@ const LoginPage = () => {
       <div className="flex flex-col gap-2">
         <p className="text-primary-800 text-sm">
           {t("signupPrompt")}{" "}
-          <a href="/signup/email" className="text-primary-700 hover:underline">
+          <a href={`/${locale}/signup/email`} className="text-primary-700 hover:underline">
             {t("signupLink")}
           </a>
         </p>
         <p className="text-primary-800 text-sm">
           {t("forgotPassword")}{" "}
           <a
-            href="/reset-password"
+            href={`/${locale}/reset-password`}
             className="text-primary-700 hover:underline"
           >
             {t("resetPassword")}
