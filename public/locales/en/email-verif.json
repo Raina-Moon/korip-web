@@ -1,0 +1,56 @@
+{
+  "title": "Sign Up",
+  "email": "Email",
+  "nickname": "Nickname",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "nicknameError": "Nickname must be 4-15 characters long",
+  "passwordError": "Must be +10 chs, including uppercase, number, and symbol",
+  "passwordMismatch": "Password do not match",
+  "privacyAgree": "I agree to the",
+  "privacyPolicy": "Privacy Policy",
+  "button": "Sign Up",
+  "alert": {
+    "empty": "Please fill in all fields",
+    "agree": "Please agree to the terms and conditions",
+    "success": "Sign up successful! Redirecting to login...",
+    "error": "Sign up failed. Please try again."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "We value your privacy. This policy outlines how we collect, use, and protect your personal information.",
+    "sections": {
+      "collection": {
+        "title": "1. Data Collection",
+        "content": "We collect your email address, nickname, and password during signup. This information is used solely for authentication and user identification."
+      },
+      "usage": {
+        "title": "2. Data Usage",
+        "content": {
+          "intro": "Your data is used to:",
+          "list": [
+            "Allow you to log in securely",
+            "Personalize your experience",
+            "Improve our services"
+          ]
+        }
+      },
+      "storage": {
+        "title": "3. Data Storage",
+        "content": "Your information is stored securely and encrypted where applicable. We do not store plaintext passwords."
+      },
+      "sharing": {
+        "title": "4. Data Sharing",
+        "content": "We do not share your personal information with third parties without your explicit consent, unless required by law."
+      },
+      "rights": {
+        "title": "5. Your Rights",
+        "content": "You can request to update or delete your personal information at any time. Contact us at koripSupport@gmail.com."
+      },
+      "consent": {
+        "title": "6. Consent",
+        "content": "By using our services, you consent to the collection and use of your information as described in this policy."
+      }
+    }
+  }
+}

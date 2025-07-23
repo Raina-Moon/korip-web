@@ -2,10 +2,13 @@
 
 import Modal from "@/components/ui/Modal";
 import { useSignUpMutation } from "@/lib/auth/authApi";
+import { useLocale } from "@/utils/useLocale";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const EmailVerifPage = () => {
+  const { t } = useTranslation("email-verif");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +23,8 @@ const EmailVerifPage = () => {
 
   const router = useRouter();
 
+  const locale = useLocale();
+
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
 
@@ -30,19 +35,19 @@ const EmailVerifPage = () => {
 
   const handleSignUp = async () => {
     if (!nickname || !email || !password || !confirmPassword) {
-      return alert("Please fill in all fields");
+      return alert(t("alert.empty"));
     }
 
     if (!agree) {
-      return alert("Please agree to the terms and conditions");
+      return alert(t("alert.agree"));
     }
 
     try {
       await signup({ nickname, email, password }).unwrap();
-      alert("Sign up successful! Redirecting to login...");
-      router.push("/login");
+      alert(t("alert.success"));
+      router.push(`/${locale}/login`);
     } catch (err) {
-      alert("Sign up failed. Please try again.");
+      alert(t("alert.error"));
     }
   };
 
@@ -50,7 +55,7 @@ const EmailVerifPage = () => {
     <div className="flex flex-col items-center justify-center h-screen gap-4">
       <div className="flex flex-col gap-4">
         <div>
-          <p className="text-primary-800 font-medium text-sm">Email</p>
+          <p className="text-primary-800 font-medium text-sm">{t("email")}</p>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -58,7 +63,7 @@ const EmailVerifPage = () => {
           />
         </div>
         <div>
-          <p className="text-primary-800 font-medium text-sm">Nickname</p>
+          <p className="text-primary-800 font-medium text-sm">{t("nickname")}</p>
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
@@ -66,12 +71,12 @@ const EmailVerifPage = () => {
           />
           {!nicknameValid && (
             <p className="text-red-700 text-sm mt-1">
-              Nickname must be 4-15 characters long
+              {t("nicknameError")}
             </p>
           )}
         </div>
         <div>
-          <p className="text-primary-800 font-medium text-sm">Password</p>
+          <p className="text-primary-800 font-medium text-sm">{t("password")}</p>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -82,13 +87,13 @@ const EmailVerifPage = () => {
           />
           {!passwordValid && (
             <p className="text-red-700 text-sm mt-1">
-              Must be +10 chs, including uppercase, number, and symbol
+              {t("passwordError")}
             </p>
           )}
         </div>
         <div>
           <p className="text-primary-800 font-medium text-sm">
-            Confirm Password
+            {t("confirmPassword")}
           </p>
           <input
             value={confirmPassword}
@@ -99,7 +104,7 @@ const EmailVerifPage = () => {
             type="password"
           />
           {!passwordMatch && (
-            <p className="text-red-700 text-sm mt-1">Password do not match</p>
+            <p className="text-red-700 text-sm mt-1">{t("passwordMismatch")}</p>
           )}
         </div>
       </div>
@@ -113,73 +118,67 @@ const EmailVerifPage = () => {
         />
 
         <label htmlFor="agree" className="text-sm text-gray-800">
-          I agree to the{" "}
+          {t("privacyAgree")}
           <button
             onClick={() => setShowModal(true)}
             className="text-primary-700 underline"
           >
-            Privacy Policy
+            {t("privacyPolicy")}
           </button>
         </label>
       </div>
 
       <button className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500">
-        Sign Up
+        {t("button")}
       </button>
 
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <div className="p-4">
             <h2 className="text-lg font-semibold text-primary-800 mb-2">
-              Privacy Policy
+              {t("privacy.title")}
             </h2>
             <p className="text-sm text-gray-700 mb-2">
-              We value your privacy. This policy outlines how we collect, use,
-              and protect your personal information.
+              {t("privacy.intro")}
             </p>
 
             <h3 className="text-md font-semibold mt-4 mb-1">
-              1. Data Collection
+              {t("privacy.sections.collection.title")}
             </h3>
             <p className="text-sm text-gray-700 mb-2">
-              We collect your email address, nickname, and password during
-              signup. This information is used solely for authentication and
-              user identification.
+              {t("privacy.sections.collection.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">2. Data Usage</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.usage.title")}</h3>
             <div className="text-sm text-gray-700 mb-2">
-              <p>Your data is used to:</p>
+              <p>{t("privacy.sections.usage.content.intro")}</p>
               <ul className="list-disc ml-6 mt-1">
-                <li>Allow you to log in securely</li>
-                <li>Personalize your experience</li>
-                <li>Improve our services</li>
+                <li>{t("privacy.sections.usage.content.list.1")}</li>
+                <li>{t("privacy.sections.usage.content.list.2")}</li>
+                <li>{t("privacy.sections.usage.content.list.3")}</li>
               </ul>
             </div>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">3. Data Storage</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.storage.title")}</h3>
             <p className="text-sm text-gray-700 mb-2">
-              Your information is stored securely and encrypted where
-              applicable. We do not store plaintext passwords.
+              {t("privacy.sections.storage.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">4. Data Sharing</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.sharing.title")}</h3>
             <p className="text-sm text-gray-700 mb-2">
-              We do not share your personal information with third parties
-              without your explicit consent, unless required by law.
+              {t("privacy.sections.sharing.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">5. Your Rights</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.rights.title")}</h3>
             <p className="text-sm text-gray-700 mb-2">
-              You can request to update or delete your personal information at
-              any time. Contact us at{" "}
-              <span className="underline">koripSupport@gmail.com.</span>
+              {t("privacy.sections.rights.content")}
+              <br />
+              {t("privacy.sections.rights.contact")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">6. Consent</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.consent.title")}</h3>
             <p className="text-sm text-gray-700">
-              By using our services, you consent to the collection and use of
-              your information as described in this policy.
+              {t("privacy.sections.consent.content")}
             </p>
           </div>
         </Modal>
