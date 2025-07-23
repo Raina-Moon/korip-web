@@ -1,7 +1,12 @@
+"use client";
+
+import { useLocale } from "@/utils/useLocale";
 import Link from "next/link";
 import React from "react";
 
 const AdminPage = () => {
+  const locale = useLocale();
+
   return (
     <div className="max-w-4xl mx-auto">
       <section className="mb-10">
@@ -33,7 +38,7 @@ const AdminPage = () => {
       </section>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <Link href="/admin/users">
+        <Link href={`/${locale}/admin/users`}>
           <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +59,7 @@ const AdminPage = () => {
           </div>
         </Link>
 
-        <Link href="/admin/lodge">
+        <Link href={`/${locale}/admin/lodge`}>
           <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +81,7 @@ const AdminPage = () => {
             </p>
           </div>
         </Link>
-        <Link href="/admin/reports">
+        <Link href={`/${locale}/admin/reports`}>
           <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +103,7 @@ const AdminPage = () => {
             <p className="text-gray-500 mt-2">신고된 리뷰 확인 및 숨김·삭제</p>
           </div>
         </Link>
-        <Link href="/admin/reservations">
+        <Link href={`/${locale}/admin/reservations`}>
           <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
