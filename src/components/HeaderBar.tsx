@@ -5,8 +5,10 @@ import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import { logoutUser } from "../lib/auth/logoutThunk";
 import i18n from "i18next";
 import { useLocale } from "@/utils/useLocale";
+import { useTranslation } from "react-i18next";
 
 const HeaderBar = () => {
+  const {t} = useTranslation("header");
   const [select, setSelect] = useState(i18n.language || "ko");
   const [isHover, setIsHover] = useState(false);
 
@@ -99,12 +101,12 @@ const HeaderBar = () => {
               <div className="absolute right-0 mt-8 w-56 bg-white border border-gray-300 shadow-xl rounded p-3 z-50">
                 {!user ? (
                   <div>
-                    <p>Login to Continue</p>
+                    <p>{t("loginPrompt")}</p>
                     <button
                       onClick={() => router.push(`/${locale}/login`)}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500"
                     >
-                      Login
+                      {t("loginButton")}
                     </button>
                   </div>
                 ) : user.role !== "ADMIN" ? (
@@ -118,7 +120,7 @@ const HeaderBar = () => {
                       }}
                       className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
                     >
-                      Logout
+                      {t("logoutButton")}
                     </button>
                   </div>
                 ) : (
@@ -132,7 +134,7 @@ const HeaderBar = () => {
                       }}
                       className="bg-red-600 text-white rounded-md px-2 py-1 hover:bg-red-500"
                     >
-                      Logout
+                      {t("logoutButton")}
                     </button>
                     <button
                       onClick={(e) => {
@@ -141,7 +143,7 @@ const HeaderBar = () => {
                       }}
                       className="bg-primary-700 text-white rounded-md px-2 py-1 hover:bg-primary-500 mt-2"
                     >
-                      Go to Admin
+                      {t("adminButton")}
                     </button>
                   </div>
                 )}
