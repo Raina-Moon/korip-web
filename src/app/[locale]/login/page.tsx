@@ -127,6 +127,8 @@ const LoginPage = () => {
             });
             router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
           } else if (parsed.lodgeId) {
+            console.log("parsed pendingReservation:", parsed);
+
             const {
               lodgeId,
               roomTypeId,
@@ -139,14 +141,14 @@ const LoginPage = () => {
               roomName,
             } = parsed;
             const query = new URLSearchParams({
-              roomTypeId,
-              checkIn,
-              checkOut,
-              adults: adults.toString(),
-              children: children.toString(),
-              roomCount: parsed.roomCount ? parsed.roomCount.toString() : "1",
-              lodgeName,
-              roomName,
+              roomTypeId: roomTypeId ?? "",
+              checkIn: checkIn ?? "",
+              checkOut: checkOut ?? "",
+              adults: (adults ?? "1").toString(),
+              children: (children ?? "0").toString(),
+              roomCount: (roomCount ?? "1").toString(),
+              lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
+              roomName: roomName ? encodeURIComponent(roomName) : "",
             });
             console.log(
               "👉 redirecting to:",
