@@ -114,6 +114,8 @@ const LoginPage = () => {
 
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
+        console.log("📦 Raw pendingReservation value:", pending);
+
         if (pending) {
           const parsed = JSON.parse(pending);
           localStorage.removeItem("pendingReservation");
