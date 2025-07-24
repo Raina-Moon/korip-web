@@ -1,7 +1,11 @@
 "use client";
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
-import { closeLoginModal, openLoginModal, setRedirectAfterLogin } from "@/lib/auth/authSlice";
+import {
+  closeLoginModal,
+  openLoginModal,
+  setRedirectAfterLogin,
+} from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -81,6 +85,9 @@ const LodgeDetailPage = () => {
   );
 
   const myUserId = useAppSelector((state) => state.auth.user?.id);
+  const redirectAfterLogin = useAppSelector(
+    (state) => state.auth.redirectAfterLogin
+  );
 
   const [createBookmark] = useCreateBookmarkMutation();
   const [deleteBookmark] = useDeleteBookmarkMutation();
@@ -141,9 +148,9 @@ const LodgeDetailPage = () => {
           const parsed = JSON.parse(pending);
           checkInStr = parsed.checkIn ?? checkInStr;
           checkOutStr = parsed.checkOut ?? checkOutStr;
-          adultsNum = Number(parsed.adults ?? adultsNum);
-          roomNum = Number(parsed.room ?? roomNum);
-          childrenNum = Number(parsed.children ?? childrenNum);
+          adultsNum = Number(parsed.adults ?? "1");
+          roomNum = Number(parsed.room ?? "1");
+          childrenNum = Number(parsed.children ?? "1");
         }
       } catch (err) {
         console.error("Failed to parse localStorage pendingReservation", err);
@@ -169,6 +176,37 @@ const LodgeDetailPage = () => {
       parsedCheckIn && parsedCheckOut ? [parsedCheckIn, parsedCheckOut] : null
     );
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    if (redirectAfterLogin) {
+      const redirect = redirectAfterLogin;
+      dispatch(setRedirectAfterLogin(null));
+      router.push(`/${locale}/${redirect}`);
+      return;
+    }
+
+    const reservationData = localStorage.getItem("pendingReservation");
+    if (reservationData) {
+      const parsed = JSON.parse(reservationData);
+      localStorage.removeItem("pendingReservation");
+
+      const { lodgeId } = parsed;
+      const query = new URLSearchParams({
+        checkIn: parsed.checkIn,
+        checkOut: parsed.checkOut,
+        adults: parsed.adults.toString(),
+        children: parsed.children.toString(),
+        roomCount: parsed.roomCount.toString(),
+      });
+
+      router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+      return;
+    }
+
+    router.push(`/${locale}`);
+  }, [isAuthenticated, redirectAfterLogin]);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -562,7 +600,10 @@ const LodgeDetailPage = () => {
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-              onLogin={() => router.push(`/${locale}/login`)}
+              onLogin={() => {
+                dispatch(setRedirectAfterLogin(redirectPath));
+                router.push(`/${locale}/login`);
+              }}
             />
           </div>
         </div>
