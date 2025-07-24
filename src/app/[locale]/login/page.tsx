@@ -9,6 +9,7 @@ import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n/i18n";
 
 const LoginPage = () => {
   const { t } = useTranslation("login");
@@ -145,7 +146,10 @@ const LoginPage = () => {
       <div className="flex flex-col gap-2">
         <p className="text-primary-800 text-sm">
           {t("signupPrompt")}{" "}
-          <a href={`/${locale}/signup/email`} className="text-primary-700 hover:underline">
+          <a
+            href={`/${locale}/signup/email`}
+            className="text-primary-700 hover:underline"
+          >
             {t("signupLink")}
           </a>
         </p>
@@ -166,8 +170,10 @@ const LoginPage = () => {
           <i className="bi bi-apple"></i>
         </button>
         <GoogleLogin
+          key={i18n.language}
           onSuccess={handleGoogleLogin}
           onError={handleGoogleLoginError}
+          locale={i18n.language}
         />
         <button className="text-primary-700 text-4xl hover:text-primary-500">
           <i className="bi bi-facebook"></i>
