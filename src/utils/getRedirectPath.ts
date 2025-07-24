@@ -11,14 +11,18 @@ export const useRedirectPath = (locale: string) => {
 
   const redirectPath = fullPath.replace(`/${locale}`, "");
 
-  if (
-    redirectPath === "/login" ||
-    redirectPath === "/signup" ||
-    redirectPath.startsWith("/login") ||
-    redirectPath.startsWith("/signup")
-  ) {
+  if (!isValidRedirectPath(redirectPath)) {
     return "/";
   }
 
   return redirectPath;
+};
+
+export const isValidRedirectPath = (path: string) => {
+  return (
+    path !== "/login" &&
+    path !== "/signup" &&
+    !path.startsWith("/login") &&
+    !path.startsWith("/signup")
+  );
 };
