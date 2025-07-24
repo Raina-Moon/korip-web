@@ -78,9 +78,9 @@ const LoginPage = () => {
             roomTypeId,
             checkIn,
             checkOut,
-            adults,
-            children,
-            roomCount,
+            adults: adults.toString(),
+            children: children.toString(),
+            roomCount: roomCount.toString(),
             lodgeName,
             roomName,
           }).toString();
@@ -108,7 +108,9 @@ const LoginPage = () => {
     }
     try {
       dispatch(showLoading());
-      await dispatch(socialLoginThunk({ provider: "google", accessToken: credential })).unwrap();
+      await dispatch(
+        socialLoginThunk({ provider: "google", accessToken: credential })
+      );
 
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
@@ -124,7 +126,7 @@ const LoginPage = () => {
               children: children.toString(),
             });
             router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
-          } else {
+          } else if (parsed.lodgeId) {
             const {
               lodgeId,
               roomTypeId,
@@ -137,17 +139,23 @@ const LoginPage = () => {
               roomName,
             } = parsed;
             const query = new URLSearchParams({
-              lodgeId,
               roomTypeId,
               checkIn,
               checkOut,
               adults: adults.toString(),
               children: children.toString(),
-              roomCount: roomCount.toString(),
+              roomCount: parsed.roomCount ? parsed.roomCount.toString() : "1",
               lodgeName,
               roomName,
             });
-            router.push(`/${locale}/lodge?${query.toString()}`);
+            console.log(
+              "👉 redirecting to:",
+              `/${locale}/lodge/${lodgeId}?${query.toString()}`
+            );
+
+            router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+          } else {
+            alert(t("loginFailed"));
           }
         } else {
           router.push(`/${locale}${redirectPath}`);
