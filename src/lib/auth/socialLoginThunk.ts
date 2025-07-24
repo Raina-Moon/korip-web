@@ -1,9 +1,14 @@
 import axios from "axios";
 import { AppDispatch } from "../store/store";
 import { setCredential } from "./authSlice";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const socialLoginThunk =
-  (provider: string, accessToken: string) => async (dispatch: AppDispatch) => {
+export const socialLoginThunk = createAsyncThunk(
+  "auth/socialLogin",
+  async (
+    { provider, accessToken }: { provider: string; accessToken: string },
+    thunkAPI
+  ) => {
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/social-login`,
       { provider, accessToken },
@@ -13,5 +18,7 @@ export const socialLoginThunk =
     );
 
     const { token, user } = res.data;
-    dispatch(setCredential({ user, token }));
-  };
+    thunkAPI.dispatch(setCredential({ user, token }));
+    return user;
+  }
+);
