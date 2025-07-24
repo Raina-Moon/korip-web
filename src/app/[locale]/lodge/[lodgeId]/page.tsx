@@ -234,6 +234,7 @@ const LodgeDetailPage = () => {
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
     const reservationData = {
+      type: "lodge",
       lodgeId: Number(lodgeId),
       roomTypeId,
       checkIn,
