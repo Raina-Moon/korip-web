@@ -4,12 +4,13 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React, { useEffect, useState } from "react";
 import { loginUser } from "@/lib/auth/loginThunk";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
 import i18n from "@/lib/i18n/i18n";
+import { setRedirectAfterLogin } from "@/lib/auth/authSlice";
 
 const LoginPage = () => {
   const { t } = useTranslation("login");
@@ -22,6 +23,9 @@ const LoginPage = () => {
   const router = useRouter();
   const locale = useLocale();
 
+  const redirectPath = useAppSelector((state) => state.auth.redirectAfterLogin);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
   useEffect(() => {
     const storedEmail = localStorage.getItem("rememberedEmail");
     if (storedEmail) {
@@ -29,6 +33,17 @@ const LoginPage = () => {
       setRememberMe(true);
     }
   }, []);
+
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     if (redirectPath) {
+  //       router.push(`/${locale}${redirectPath}`);
+  //       dispatch(setRedirectAfterLogin(null));
+  //     } else {
+  //       router.push(`/${locale}`);
+  //     }
+  //   }
+  // }, [isAuthenticated]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -43,8 +58,41 @@ const LoginPage = () => {
 
     try {
       dispatch(showLoading());
-      await dispatch(loginUser(email, password));
-      router.push(`/${locale}/`);
+      await dispatch(loginUser({ email, password })).unwrap();
+      if (redirectPath) {
+        const pending = localStorage.getItem("pendingReservation");
+        if (pending) {
+          const {
+            lodgeId,
+            roomTypeId,
+            checkIn,
+            checkOut,
+            adults,
+            children,
+            roomCount,
+            lodgeName,
+            roomName,
+          } = JSON.parse(pending);
+          const query = new URLSearchParams({
+            lodgeId,
+            roomTypeId,
+            checkIn,
+            checkOut,
+            adults: adults.toString(),
+            children: children.toString(),
+            roomCount: roomCount.toString(),
+            lodgeName,
+            roomName,
+          }).toString();
+          localStorage.removeItem("pendingReservation");
+          router.push(`/${locale}/reservation?${query}`);
+        } else {
+          router.push(`/${locale}${redirectPath}`);
+        }
+        dispatch(setRedirectAfterLogin(null));
+      } else {
+        router.push(`/${locale}`);
+      }
     } catch (err) {
       alert(t("loginFailed"));
     } finally {
@@ -60,24 +108,63 @@ const LoginPage = () => {
     }
     try {
       dispatch(showLoading());
-      await dispatch(socialLoginThunk("google", credential));
+      await dispatch(
+        socialLoginThunk({ provider: "google", accessToken: credential })
+      );
 
-      const reservationData = localStorage.getItem("pendingReservation");
-      if (reservationData) {
-        const parsed = JSON.parse(reservationData);
-        localStorage.removeItem("pendingReservation");
+      if (redirectPath) {
+        const pending = localStorage.getItem("pendingReservation");
+        console.log("📦 Raw pendingReservation value:", pending);
 
-        const { lodgeId } = parsed;
-        const query = new URLSearchParams({
-          checkIn: parsed.checkIn,
-          checkOut: parsed.checkOut,
-          adults: parsed.adults.toString(),
-          children: parsed.children.toString(),
-          roomCount: parsed.roomCount.toString(),
-        });
-        router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
-      } else {
-        router.push(`/${locale}/`);
+        if (pending) {
+          const parsed = JSON.parse(pending);
+          localStorage.removeItem("pendingReservation");
+
+          if (parsed.type === "ticket") {
+            const { ticketId, date, adults, children } = parsed;
+            const query = new URLSearchParams({
+              date,
+              adults: adults.toString(),
+              children: children.toString(),
+            });
+            router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
+          } else if (parsed.lodgeId) {
+            console.log("parsed pendingReservation:", parsed);
+
+            const {
+              lodgeId,
+              roomTypeId,
+              checkIn,
+              checkOut,
+              adults,
+              children,
+              roomCount,
+              lodgeName,
+              roomName,
+            } = parsed;
+            const query = new URLSearchParams({
+              roomTypeId: roomTypeId ?? "",
+              checkIn: checkIn ?? "",
+              checkOut: checkOut ?? "",
+              adults: (adults ?? "1").toString(),
+              children: (children ?? "0").toString(),
+              roomCount: (roomCount ?? "1").toString(),
+              lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
+              roomName: roomName ? encodeURIComponent(roomName) : "",
+            });
+            console.log(
+              "👉 redirecting to:",
+              `/${locale}/lodge/${lodgeId}?${query.toString()}`
+            );
+
+            router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+          } else {
+            alert(t("loginFailed"));
+          }
+        } else {
+          router.push(`/${locale}${redirectPath}`);
+        }
+        dispatch(setRedirectAfterLogin(null));
       }
     } catch (err) {
       alert(t("googleLoginFailed"));

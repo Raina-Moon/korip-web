@@ -12,7 +12,11 @@ import {
   useDeleteTicketReviewMutation,
   useGetAvailableTicketQuery,
 } from "@/lib/ticket/ticketApi";
-import { openLoginModal, closeLoginModal } from "@/lib/auth/authSlice";
+import {
+  openLoginModal,
+  closeLoginModal,
+  setRedirectAfterLogin,
+} from "@/lib/auth/authSlice";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Heart, HeartOff } from "lucide-react";
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
@@ -349,6 +353,23 @@ const TicketDetailPage = () => {
       <button
         onClick={() => {
           if (!isAuthenticated) {
+            localStorage.setItem(
+              "pendingReservation",
+              JSON.stringify({
+                type: "ticket",
+                ticketId,
+                date,
+                adults,
+                children,
+              })
+            );
+
+            dispatch(
+              setRedirectAfterLogin(
+                `/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
+              )
+            );
+
             dispatch(openLoginModal("ticket/reserve"));
             return;
           }
@@ -439,7 +460,10 @@ const TicketDetailPage = () => {
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-              onLogin={() => (window.location.href = "/login")}
+              onLogin={() => {
+                dispatch(closeLoginModal());
+                router.push(`/${locale}/login`);
+              }}
             />
           </div>
         </div>

@@ -1,7 +1,11 @@
 "use client";
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
-import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
+import {
+  closeLoginModal,
+  openLoginModal,
+  setRedirectAfterLogin,
+} from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -30,9 +34,10 @@ import LoginPromptModal from "@/components/ui/LoginPromptModal";
 import ImageModal from "@/components/ui/ImageModal";
 import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
 import RoomCard from "@/components/lodge/RoomCard";
+import { isValidRedirectPath, useRedirectPath } from "@/utils/getRedirectPath";
 
 const LodgeDetailPage = () => {
-      const { t } = useTranslation("lodge");
+  const { t } = useTranslation("lodge");
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
@@ -80,12 +85,17 @@ const LodgeDetailPage = () => {
   );
 
   const myUserId = useAppSelector((state) => state.auth.user?.id);
+  const redirectAfterLogin = useAppSelector(
+    (state) => state.auth.redirectAfterLogin
+  );
 
   const [createBookmark] = useCreateBookmarkMutation();
   const [deleteBookmark] = useDeleteBookmarkMutation();
   const [createReportReview] = useCreateReportReviewMutation();
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
+
+  const redirectPath = useRedirectPath(locale);
 
   const showingLoginModal = useAppSelector(
     (state) => state.auth.showingLoginModal
@@ -138,9 +148,9 @@ const LodgeDetailPage = () => {
           const parsed = JSON.parse(pending);
           checkInStr = parsed.checkIn ?? checkInStr;
           checkOutStr = parsed.checkOut ?? checkOutStr;
-          adultsNum = Number(parsed.adults ?? adultsNum);
-          roomNum = Number(parsed.room ?? roomNum);
-          childrenNum = Number(parsed.children ?? childrenNum);
+          adultsNum = Number(parsed.adults ?? 1);
+          roomNum = Number(parsed.room ?? 1);
+          childrenNum = Number(parsed.children ?? 0);
         }
       } catch (err) {
         console.error("Failed to parse localStorage pendingReservation", err);
@@ -166,6 +176,48 @@ const LodgeDetailPage = () => {
       parsedCheckIn && parsedCheckOut ? [parsedCheckIn, parsedCheckOut] : null
     );
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const reservationData = localStorage.getItem("pendingReservation");
+    console.log("✅ localStorage reservationData:", reservationData);
+
+    if (reservationData) {
+      const parsed = JSON.parse(reservationData);
+      localStorage.removeItem("pendingReservation");
+
+      const parsedLodgeId = parsed.lodgeId;
+      console.log("✅ parsed reservation:", parsed);
+
+      const query = new URLSearchParams({
+        checkIn: parsed.checkIn,
+        checkOut: parsed.checkOut,
+        adults: (parsed.adults ?? 1).toString(),
+        children: (parsed.children ?? 0).toString(),
+        roomCount: (parsed.roomCount ?? 1).toString(),
+      });
+
+      if (parsedLodgeId) {
+        router.push(`/${locale}/lodge/${parsedLodgeId}?${query.toString()}`);
+      } else {
+        console.warn("🚨 parsedLodgeId is missing");
+      }
+      return;
+    }
+
+    if (redirectAfterLogin) {
+      dispatch(setRedirectAfterLogin(null));
+      if (!window.location.pathname.includes(redirectAfterLogin)) {
+        router.push(`/${locale}/${redirectAfterLogin}`);
+      }
+      return;
+    }
+
+    if (!window.location.pathname.includes("/lodge/")) {
+      router.push(`/${locale}`);
+    }
+  }, [isAuthenticated]);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -193,6 +245,7 @@ const LodgeDetailPage = () => {
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
     const reservationData = {
+      type: "lodge",
       lodgeId: Number(lodgeId),
       roomTypeId,
       checkIn,
@@ -224,6 +277,8 @@ const LodgeDetailPage = () => {
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
       dispatch(openLoginModal("lodge/bookmark"));
+      dispatch(setRedirectAfterLogin(redirectPath));
+
       return;
     }
     try {
@@ -343,7 +398,7 @@ const LodgeDetailPage = () => {
 
           <div className="flex items-center gap-2">
             <label htmlFor="sort" className="text-sm font-medium text-gray-700">
-                {t("sortBy")}
+              {t("sortBy")}
             </label>
             <select
               id="sort"
@@ -557,7 +612,32 @@ const LodgeDetailPage = () => {
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
-              onLogin={() => router.push(`/${locale}/login`)}
+              onLogin={() => {
+                console.log("🔥 lodgeId before login redirect:", lodgeId);
+
+                const reservationData = {
+                  type: "lodge",
+                  lodgeId: Number(lodgeId),
+                  checkIn,
+                  checkOut,
+                  adults,
+                  children,
+                  roomCount: room,
+                  lodgeName: lodge?.name || "Unknown Lodge",
+                };
+
+                localStorage.setItem(
+                  "pendingReservation",
+                  JSON.stringify(reservationData)
+                );
+
+                const path = `lodge/${lodgeId}`;
+
+                if (path && isValidRedirectPath(`/${path}`)) {
+                  dispatch(setRedirectAfterLogin(path));
+                }
+                router.push(`/${locale}/login`);
+              }}
             />
           </div>
         </div>

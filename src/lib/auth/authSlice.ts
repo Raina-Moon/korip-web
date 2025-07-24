@@ -21,6 +21,7 @@ interface AuthState {
   accessToken: string | null;
   showingLoginModal: boolean;
   loginModalContext: LoginModalContextType | null;
+  redirectAfterLogin: string | null;
 }
 
 const initialState: AuthState = {
@@ -29,6 +30,7 @@ const initialState: AuthState = {
   accessToken: null,
   showingLoginModal: false,
   loginModalContext: null,
+  redirectAfterLogin: null,
 };
 
 const authSlice = createSlice({
@@ -82,6 +84,12 @@ const authSlice = createSlice({
         state.user.nickname = action.payload;
       }
     },
+    setRedirectAfterLogin: (state, action: PayloadAction<string | null>) => {
+      state.redirectAfterLogin = action.payload;
+    },
+    clearRedirectAfterLogin: (state) => {
+      state.redirectAfterLogin = null;
+    },
   },
 });
 
@@ -93,5 +101,7 @@ export const {
   openLoginModal,
   closeLoginModal,
   updateNickname,
+  setRedirectAfterLogin,
+  clearRedirectAfterLogin,
 } = authSlice.actions;
 export default authSlice.reducer;
