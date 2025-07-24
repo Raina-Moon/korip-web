@@ -148,9 +148,9 @@ const LodgeDetailPage = () => {
           const parsed = JSON.parse(pending);
           checkInStr = parsed.checkIn ?? checkInStr;
           checkOutStr = parsed.checkOut ?? checkOutStr;
-          adultsNum = Number(parsed.adults ?? "1");
-          roomNum = Number(parsed.room ?? "1");
-          childrenNum = Number(parsed.children ?? "1");
+          adultsNum = Number(parsed.adults ?? 1);
+          roomNum = Number(parsed.room ?? 1);
+          childrenNum = Number(parsed.children ?? 0);
         }
       } catch (err) {
         console.error("Failed to parse localStorage pendingReservation", err);
@@ -196,9 +196,9 @@ const LodgeDetailPage = () => {
       const query = new URLSearchParams({
         checkIn: parsed.checkIn,
         checkOut: parsed.checkOut,
-        adults: parsed.adults.toString(),
-        children: parsed.children.toString(),
-        roomCount: parsed.roomCount.toString(),
+        adults: (parsed.adults ?? 1).toString(),
+        children: (parsed.children ?? 0).toString(),
+        roomCount: (parsed.roomCount ?? 1).toString(),
       });
 
       router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
