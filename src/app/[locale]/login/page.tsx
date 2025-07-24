@@ -58,7 +58,7 @@ const LoginPage = () => {
 
     try {
       dispatch(showLoading());
-      await dispatch(loginUser(email, password));
+      await dispatch(loginUser({ email, password })).unwrap();
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
         if (pending) {
@@ -108,7 +108,8 @@ const LoginPage = () => {
     }
     try {
       dispatch(showLoading());
-      await dispatch(socialLoginThunk("google", credential));
+      await dispatch(socialLoginThunk({ provider: "google", accessToken: credential })).unwrap();
+
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
         if (pending) {
@@ -146,7 +147,7 @@ const LoginPage = () => {
               lodgeName,
               roomName,
             });
-            router.push(`/${locale}/reservation?${query.toString()}`);
+            router.push(`/${locale}/lodge?${query.toString()}`);
           }
         } else {
           router.push(`/${locale}${redirectPath}`);
