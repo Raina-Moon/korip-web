@@ -112,34 +112,46 @@ const LoginPage = () => {
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
         if (pending) {
-          const {
-            lodgeId,
-            roomTypeId,
-            checkIn,
-            checkOut,
-            adults,
-            children,
-            roomCount,
-            lodgeName,
-            roomName,
-          } = JSON.parse(pending);
-          const query = new URLSearchParams({
-            lodgeId,
-            roomTypeId,
-            checkIn,
-            checkOut,
-            adults,
-            children,
-            roomCount,
-            lodgeName,
-            roomName,
-          }).toString();
+          const parsed = JSON.parse(pending);
           localStorage.removeItem("pendingReservation");
-          router.push(`/${locale}/reservation?${query}`);
+
+          if (parsed.type === "ticket") {
+            const { ticketId, date, adults, children } = parsed;
+            const query = new URLSearchParams({
+              date,
+              adults: adults.toString(),
+              children: children.toString(),
+            });
+            router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
+          } else {
+            const {
+              lodgeId,
+              roomTypeId,
+              checkIn,
+              checkOut,
+              adults,
+              children,
+              roomCount,
+              lodgeName,
+              roomName,
+            } = parsed;
+            const query = new URLSearchParams({
+              lodgeId,
+              roomTypeId,
+              checkIn,
+              checkOut,
+              adults: adults.toString(),
+              children: children.toString(),
+              roomCount: roomCount.toString(),
+              lodgeName,
+              roomName,
+            });
+            router.push(`/${locale}/reservation?${query.toString()}`);
+          }
         } else {
           router.push(`/${locale}${redirectPath}`);
         }
-        dispatch(setRedirectAfterLogin(null)); // 초기화
+        dispatch(setRedirectAfterLogin(null));
       }
     } catch (err) {
       alert(t("googleLoginFailed"));
