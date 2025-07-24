@@ -170,10 +170,10 @@ const LoginPage = () => {
           <i className="bi bi-apple"></i>
         </button>
         <GoogleLogin
-          key={i18n.language}
+          key="en"
+          locale="en"
           onSuccess={handleGoogleLogin}
           onError={handleGoogleLoginError}
-          locale={i18n.language}
         />
         <button className="text-primary-700 text-4xl hover:text-primary-500">
           <i className="bi bi-facebook"></i>
