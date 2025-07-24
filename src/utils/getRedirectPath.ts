@@ -11,5 +11,14 @@ export const useRedirectPath = (locale: string) => {
 
   const redirectPath = fullPath.replace(`/${locale}`, "");
 
+  if (
+    redirectPath === "/login" ||
+    redirectPath === "/signup" ||
+    redirectPath.startsWith("/login") ||
+    redirectPath.startsWith("/signup")
+  ) {
+    return "/";
+  }
+
   return redirectPath;
 };
