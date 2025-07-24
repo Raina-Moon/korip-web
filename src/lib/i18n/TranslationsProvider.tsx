@@ -17,10 +17,14 @@ export default function TranslationsProvider({ children }: Props) {
     : params.locale;
 
   useEffect(() => {
-    if (i18n.language !== locale) {
-      i18n.changeLanguage(locale);
-    }
-    setReady(true);
+    const applyLocale = async () => {
+      if (i18n.language !== locale) {
+        await i18n.changeLanguage(locale);
+      }
+      setReady(true);
+    };
+
+    applyLocale();
   }, [locale]);
 
   if (!ready) return null;
