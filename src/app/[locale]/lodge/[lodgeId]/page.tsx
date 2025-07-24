@@ -1,7 +1,7 @@
 "use client";
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
-import { closeLoginModal, openLoginModal } from "@/lib/auth/authSlice";
+import { closeLoginModal, openLoginModal, setRedirectAfterLogin } from "@/lib/auth/authSlice";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -30,9 +30,10 @@ import LoginPromptModal from "@/components/ui/LoginPromptModal";
 import ImageModal from "@/components/ui/ImageModal";
 import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
 import RoomCard from "@/components/lodge/RoomCard";
+import { useRedirectPath } from "@/utils/getRedirectPath";
 
 const LodgeDetailPage = () => {
-      const { t } = useTranslation("lodge");
+  const { t } = useTranslation("lodge");
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
@@ -86,6 +87,8 @@ const LodgeDetailPage = () => {
   const [createReportReview] = useCreateReportReviewMutation();
   const [deleteReview] = useDeleteReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
+
+  const redirectPath = useRedirectPath(locale);
 
   const showingLoginModal = useAppSelector(
     (state) => state.auth.showingLoginModal
@@ -224,6 +227,8 @@ const LodgeDetailPage = () => {
   const handleBookmarkToggle = async () => {
     if (!isAuthenticated) {
       dispatch(openLoginModal("lodge/bookmark"));
+      dispatch(setRedirectAfterLogin(redirectPath));
+
       return;
     }
     try {
@@ -343,7 +348,7 @@ const LodgeDetailPage = () => {
 
           <div className="flex items-center gap-2">
             <label htmlFor="sort" className="text-sm font-medium text-gray-700">
-                {t("sortBy")}
+              {t("sortBy")}
             </label>
             <select
               id="sort"
