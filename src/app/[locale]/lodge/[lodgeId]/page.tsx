@@ -180,13 +180,6 @@ const LodgeDetailPage = () => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    if (redirectAfterLogin) {
-      const redirect = redirectAfterLogin;
-      dispatch(setRedirectAfterLogin(null));
-      router.push(`/${locale}/${redirect}`);
-      return;
-    }
-
     const reservationData = localStorage.getItem("pendingReservation");
     if (reservationData) {
       const parsed = JSON.parse(reservationData);
@@ -205,8 +198,18 @@ const LodgeDetailPage = () => {
       return;
     }
 
-    router.push(`/${locale}`);
-  }, [isAuthenticated, redirectAfterLogin]);
+    if (redirectAfterLogin) {
+      dispatch(setRedirectAfterLogin(null));
+      if (!window.location.pathname.includes(redirectAfterLogin)) {
+        router.push(`/${locale}/${redirectAfterLogin}`);
+      }
+      return;
+    }
+
+    if (!window.location.pathname.includes("/lodge/")) {
+      router.push(`/${locale}`);
+    }
+  }, [isAuthenticated]);
 
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
@@ -602,7 +605,22 @@ const LodgeDetailPage = () => {
               isOpen={showingLoginModal}
               context={loginModalContext}
               onLogin={() => {
-                dispatch(setRedirectAfterLogin(redirectPath));
+                const reservationData = {
+                  type: "lodge",
+                  lodgeId: Number(lodgeId),
+                  checkIn,
+                  checkOut,
+                  adults,
+                  children,
+                  roomCount: room,
+                  lodgeName: lodge?.name || "Unknown Lodge",
+                };
+                localStorage.setItem(
+                  "pendingReservation",
+                  JSON.stringify(reservationData)
+                );
+
+                dispatch(setRedirectAfterLogin(`lodge/${lodgeId}`));
                 router.push(`/${locale}/login`);
               }}
             />
