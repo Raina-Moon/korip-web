@@ -34,7 +34,7 @@ import LoginPromptModal from "@/components/ui/LoginPromptModal";
 import ImageModal from "@/components/ui/ImageModal";
 import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
 import RoomCard from "@/components/lodge/RoomCard";
-import { useRedirectPath } from "@/utils/getRedirectPath";
+import { isValidRedirectPath, useRedirectPath } from "@/utils/getRedirectPath";
 
 const LodgeDetailPage = () => {
   const { t } = useTranslation("lodge");
@@ -187,7 +187,7 @@ const LodgeDetailPage = () => {
       const parsed = JSON.parse(reservationData);
       localStorage.removeItem("pendingReservation");
 
-      const { lodgeId } = parsed;
+      const parsedLodgeId = parsed.lodgeId;
       console.log("✅ parsed reservation:", parsed);
 
       const query = new URLSearchParams({
@@ -198,7 +198,11 @@ const LodgeDetailPage = () => {
         roomCount: (parsed.roomCount ?? 1).toString(),
       });
 
-      router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+      if (parsedLodgeId) {
+        router.push(`/${locale}/lodge/${parsedLodgeId}?${query.toString()}`);
+      } else {
+        console.warn("🚨 parsedLodgeId is missing");
+      }
       return;
     }
 
@@ -621,12 +625,17 @@ const LodgeDetailPage = () => {
                   roomCount: room,
                   lodgeName: lodge?.name || "Unknown Lodge",
                 };
+
                 localStorage.setItem(
                   "pendingReservation",
                   JSON.stringify(reservationData)
                 );
 
-                dispatch(setRedirectAfterLogin(`lodge/${lodgeId}`));
+                const path = `lodge/${lodgeId}`;
+
+                if (path && isValidRedirectPath(`/${path}`)) {
+                  dispatch(setRedirectAfterLogin(path));
+                }
                 router.push(`/${locale}/login`);
               }}
             />
