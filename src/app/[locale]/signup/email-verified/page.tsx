@@ -54,7 +54,7 @@ const EmailVerifPage = () => {
     verifyEmailToken({ token })
       .unwrap()
       .then(() => console.log("Successfully verified email"))
-      .catch((err:any) => console.error("Failed to verify email", err));
+      .catch((err: any) => console.error("Failed to verify email", err));
   }, []);
 
   const handleSubmit = async (formData: {
@@ -71,19 +71,19 @@ const EmailVerifPage = () => {
       const message = err?.data?.message;
 
       if (status === 403 && message === "Email not verified") {
-        alert("Please verify your email first.");
+        alert(t("alert.notVerified"));
         router.push(`/${locale}/signup/email`);
       } else if (
         status === 404 &&
         message ===
           "Email verification not found. Please request verification again."
       ) {
-        alert("Verification expired. Request again.");
+        alert(t("alert.notVerified"));
         router.push(`/${locale}/signup/email`);
       } else if (status === 409) {
-        alert("Nickname or email already taken.");
+        alert(t("alert.expired"));
       } else {
-        alert("Signup failed. Try again.");
+        alert(t("alert.signupFail"));
       }
     }
   };
@@ -194,9 +194,9 @@ const EmailVerifPage = () => {
             <div className="text-sm text-gray-700 mb-2">
               <p>{t("privacy.sections.usage.content.intro")}</p>
               <ul className="list-disc ml-6 mt-1">
+                <li>{t("privacy.sections.usage.content.list.0")}</li>
                 <li>{t("privacy.sections.usage.content.list.1")}</li>
                 <li>{t("privacy.sections.usage.content.list.2")}</li>
-                <li>{t("privacy.sections.usage.content.list.3")}</li>
               </ul>
             </div>
 

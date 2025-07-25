@@ -10,11 +10,14 @@
   "privacyAgree": "I agree to the",
   "privacyPolicy": "Privacy Policy",
   "button": "Sign Up",
+  "loading": "Processing...",
   "alert": {
-    "empty": "Please fill in all fields",
-    "agree": "Please agree to the terms and conditions",
-    "success": "Sign up successful! Redirecting to login...",
-    "error": "Sign up failed. Please try again."
+    "verifySuccess": "✅ Email verified successfully.",
+    "verifyFail": "❌ Email verification failed. Token may be invalid or expired.",
+    "notVerified": "Please verify your email first.",
+    "expired": "Verification expired. Please request it again.",
+    "conflict": "Nickname or email already taken.",
+    "signupFail": "Signup failed. Please try again."
   },
   "privacy": {
     "title": "Privacy Policy",
