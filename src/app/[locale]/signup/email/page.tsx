@@ -1,6 +1,7 @@
 "use client";
 
 import { useRequestVerificationMutation } from "@/lib/auth/authApi";
+import { useLocale } from "@/utils/useLocale";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -10,11 +11,13 @@ const EmailPage = () => {
   const [requestVerification, { isLoading, isSuccess }] =
     useRequestVerificationMutation();
 
+  const locale = useLocale();
+
   const handleSubmit = async () => {
     if (!email) return alert(t("alert.empty"));
 
     try {
-      await requestVerification({ email }).unwrap();
+      await requestVerification({ email, locale }).unwrap();
       alert(t("alert.success"));
     } catch (err) {
       alert(t("alert.error"));
