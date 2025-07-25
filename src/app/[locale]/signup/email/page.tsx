@@ -23,10 +23,19 @@ const EmailPage = () => {
       await requestVerification({ email, locale }).unwrap();
       setRemaining(VERIFY_DURATION_SECONDS);
       alert(t("alert.success"));
-    } catch (err) {
-      alert(t("alert.error"));
+    } catch (err: any) {
+    const status = err?.status;
+    const msg = err?.data?.message || t("alert.error");
+
+    if (status === 409) {
+      alert(t("alert.alreadyRegistered"));
+    } else if (status === 429) {
+      alert(t("alert.alreadyRequested"));
+    } else {
+      alert(msg);
     }
-  };
+  }
+};
 
   useEffect(() => {
     if (remaining === 0) return;
