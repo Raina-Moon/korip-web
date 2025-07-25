@@ -180,15 +180,17 @@ const LodgeDetailPage = () => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
+    if (showingLoginModal) {
+      dispatch(closeLoginModal());
+    }
+
     const reservationData = localStorage.getItem("pendingReservation");
-    console.log("✅ localStorage reservationData:", reservationData);
 
     if (reservationData) {
       const parsed = JSON.parse(reservationData);
       localStorage.removeItem("pendingReservation");
 
       const parsedLodgeId = parsed.lodgeId;
-      console.log("✅ parsed reservation:", parsed);
 
       const query = new URLSearchParams({
         checkIn: parsed.checkIn,
@@ -613,7 +615,6 @@ const LodgeDetailPage = () => {
               isOpen={showingLoginModal}
               context={loginModalContext}
               onLogin={() => {
-                console.log("🔥 lodgeId before login redirect:", lodgeId);
 
                 const reservationData = {
                   type: "lodge",
@@ -631,7 +632,15 @@ const LodgeDetailPage = () => {
                   JSON.stringify(reservationData)
                 );
 
-                const path = `lodge/${lodgeId}`;
+                const query = new URLSearchParams({
+                  checkIn,
+                  checkOut,
+                  adults: String(adults),
+                  children: String(children),
+                  roomCount: String(room),
+                }).toString();
+
+                const path = `/lodge/${lodgeId}?${query}`;
 
                 if (path && isValidRedirectPath(`/${path}`)) {
                   dispatch(setRedirectAfterLogin(path));
