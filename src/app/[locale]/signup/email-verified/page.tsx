@@ -144,8 +144,12 @@ const EmailVerifPage = () => {
         </label>
       </div>
 
-      <button className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500">
-        {t("button")}
+      <button
+        className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
+        onClick={handleSignUp}
+        disabled={isLoading}
+      >
+        {isLoading ? t("loading") : t("button")}
       </button>
 
       {showModal && (
