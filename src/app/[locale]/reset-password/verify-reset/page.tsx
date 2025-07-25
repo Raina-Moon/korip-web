@@ -4,7 +4,7 @@ import {
   updatePassword,
   verifyCode,
 } from "@/lib/reset-password/resetPasswordThunk";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -17,6 +17,10 @@ const VerifyandResetPage = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [attemptsExceeded, setAttemptsExceeded] = useState(false);
 
+  const { error, remainingAttempts } = useAppSelector(
+    (state) => state.resetPassword
+  );
+
   const params = useSearchParams();
   const email = params.get("email") || "";
   const router = useRouter();
@@ -27,6 +31,12 @@ const VerifyandResetPage = () => {
   useEffect(() => {
     setPasswordMatch(newPassword === confirmPassword);
   }, [newPassword, confirmPassword]);
+
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
 
   const handleCodeChange = (i: number, val: string) => {
     if (!/^\d?$/.test(val)) return;
@@ -43,22 +53,10 @@ const VerifyandResetPage = () => {
     const result = await dispatch(verifyCode({ email, code: joinedCode }));
 
     if (verifyCode.fulfilled.match(result)) {
-      setIsCodeValid(true);
-      alert("Code verified successfully. You can now reset your password.");
-    } else {
-      const { message, status, remainingAttempts } = result.payload as {
-        message: string;
-        status: number;
-        remainingAttempts?: number;
-      };
-
-      if (status === 429) {
-        setAttemptsExceeded(true);
-        alert("Too many failed attempts. Please request a new reset code.");
-      } else {
-        alert(message || "Invalid code. Please try again.");
-      }
-    }
+    setIsCodeValid(true);
+    alert("Code verified successfully. You can now reset your password.");
+  }
+  
     setCode(["", "", "", "", "", ""]);
   };
 
@@ -110,6 +108,12 @@ const VerifyandResetPage = () => {
         >
           Verify Code
         </button>
+
+        {remainingAttempts !== null && !attemptsExceeded && (
+          <p className="text-sm text-center text-gray-600">
+            Attempts remaining: {remainingAttempts}
+          </p>
+        )}
       </div>
 
       {attemptsExceeded && (
