@@ -180,6 +180,10 @@ const LodgeDetailPage = () => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
+    if (showingLoginModal) {
+      dispatch(closeLoginModal());
+    }
+
     const reservationData = localStorage.getItem("pendingReservation");
     console.log("✅ localStorage reservationData:", reservationData);
 
