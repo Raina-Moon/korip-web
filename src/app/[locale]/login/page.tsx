@@ -36,61 +36,65 @@ const LoginPage = () => {
   }, []);
 
   useEffect(() => {
-  if (isAuthenticated) {
-    const pending = localStorage.getItem("pendingReservation");
+    if (isAuthenticated) {
+      const pending = localStorage.getItem("pendingReservation");
 
-    if (pending) {
-      const parsed = JSON.parse(pending);
-      localStorage.removeItem("pendingReservation");
+      if (pending) {
+        const parsed = JSON.parse(pending);
+        localStorage.removeItem("pendingReservation");
 
-      if (parsed?.type === "ticket" && parsed.ticketId) {
-        const { ticketId, date, adults, children } = parsed;
-        const query = new URLSearchParams({
-          date,
-          adults: adults.toString(),
-          children: children.toString(),
-        });
-        router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
-      } else if (parsed?.type === "lodge" && parsed.lodgeId) {
-        const {
-          lodgeId,
-          roomTypeId,
-          checkIn,
-          checkOut,
-          adults,
-          children,
-          roomCount,
-          lodgeName,
-          roomName,
-        } = parsed;
-        const query = new URLSearchParams({
-          roomTypeId: roomTypeId ?? "",
-          checkIn: checkIn ?? "",
-          checkOut: checkOut ?? "",
-          adults: (adults ?? 1).toString(),
-          children: (children ?? 0).toString(),
-          roomCount: (roomCount ?? 1).toString(),
-          lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
-          roomName: roomName ? encodeURIComponent(roomName) : "",
-        });
-        router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+        if (parsed?.type === "ticket" && parsed.ticketId) {
+          const { ticketId, date, adults, children } = parsed;
+          const query = new URLSearchParams({
+            date,
+            adults: adults.toString(),
+            children: children.toString(),
+          });
+          router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
+        } else if (parsed?.type === "lodge" && parsed.lodgeId) {
+          const {
+            lodgeId,
+            roomTypeId,
+            checkIn,
+            checkOut,
+            adults,
+            children,
+            roomCount,
+            lodgeName,
+            roomName,
+          } = parsed;
+          const query = new URLSearchParams({
+            roomTypeId: roomTypeId ?? "",
+            checkIn: checkIn ?? "",
+            checkOut: checkOut ?? "",
+            adults: (adults ?? 1).toString(),
+            children: (children ?? 0).toString(),
+            roomCount: (roomCount ?? 1).toString(),
+            lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
+            roomName: roomName ? encodeURIComponent(roomName) : "",
+          });
+          router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
+        } else {
+          router.push(`/${locale}`);
+        }
+
+        dispatch(setRedirectAfterLogin(null));
+        return;
+      }
+
+      if (redirectPath && isValidRedirectPath(`/${redirectPath}`)) {
+        router.push(
+          `/${locale}${
+            redirectPath.startsWith("/") ? redirectPath : `/${redirectPath}`
+          }`
+        );
       } else {
         router.push(`/${locale}`);
       }
 
       dispatch(setRedirectAfterLogin(null));
-      return;
     }
-
-    if (redirectPath && isValidRedirectPath(`/${redirectPath}`)) {
-      router.push(`/${locale}/${redirectPath}`);
-    } else {
-      router.push(`/${locale}`);
-    }
-
-    dispatch(setRedirectAfterLogin(null));
-  }
-}, [isAuthenticated]);
+  }, [isAuthenticated]);
 
   const handleLogin = async () => {
     if (!email || !password) {
