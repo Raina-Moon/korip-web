@@ -9,6 +9,11 @@
   "alert": {
     "empty": "Please enter an email address",
     "success": "Verification email sent successfully!",
-    "error": "Failed to send verification email. Please try again."
+    "error": "Failed to send verification email. Please try again.",
+    "alreadyRegistered": "This email is already registered. Please use a different email.",
+    "alreadyRequested": "A verification email has already been requested. Please try again later."
+  },
+  "timer": {
+    "label": "Remaining Time"
   }
 }
