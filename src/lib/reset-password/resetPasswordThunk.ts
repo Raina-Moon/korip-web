@@ -33,6 +33,9 @@ export const verifyCode = createAsyncThunk(
       );
       return res.data;
     } catch (err: any) {
+      console.log("❌ verifyCode error:", err);
+      console.log("❌ err.response?.data:", err.response?.data);
+
       return thunkAPI.rejectWithValue({
         message: err.response?.data?.message || "Something went wrong",
         status: err.response?.status || 500,
