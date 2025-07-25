@@ -117,7 +117,7 @@ const VerifyandResetPage = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-center mb-4">
           <button
             className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
             onClick={handleVerify}
@@ -139,7 +139,7 @@ const VerifyandResetPage = () => {
           You've exceeded the maximum number of attempts. Please{" "}
           <a
             href={`/${locale}/reset-password`}
-            className="underline text-blue-600"
+            className="underline text-primary-600"
           >
             request a new reset code
           </a>
@@ -147,9 +147,7 @@ const VerifyandResetPage = () => {
         </p>
       )}
 
-      <hr className="my-6" />
-
-      <div className="space-y-4">
+      <div className="space-y-4 pt-2 w-full max-w-md ml-10">
         <label className="block text-gray-700 mb-1">New Password</label>
         <input
           type="password"
