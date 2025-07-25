@@ -51,11 +51,6 @@ const ReviewCard = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("Review Data:", review);
-    console.log("Reservation:", review.reservation);
-  }, [review]);
-
-  useEffect(() => {
     const clickOutsideHandler = (event: MouseEvent) => {
       if (
         dropdownRef.current &&

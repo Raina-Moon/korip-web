@@ -8,7 +8,6 @@ import { setupAxiosInterceptor } from "../axios/interceptor";
 setupAxiosInterceptor();
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  console.log("✅ Redux Provider Mounted");
 
   return (
     <GoogleOAuthProvider

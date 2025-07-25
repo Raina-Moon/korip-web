@@ -165,7 +165,6 @@ const LoginPage = () => {
 
       if (redirectPath) {
         const pending = localStorage.getItem("pendingReservation");
-        console.log("📦 Raw pendingReservation value:", pending);
 
         if (pending) {
           const parsed = JSON.parse(pending);
@@ -180,7 +179,6 @@ const LoginPage = () => {
             });
             router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
           } else if (parsed.lodgeId) {
-            console.log("parsed pendingReservation:", parsed);
 
             const {
               lodgeId,
@@ -203,10 +201,7 @@ const LoginPage = () => {
               lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
               roomName: roomName ? encodeURIComponent(roomName) : "",
             });
-            console.log(
-              "👉 redirecting to:",
-              `/${locale}/lodge/${lodgeId}?${query.toString()}`
-            );
+           
 
             router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
           } else {

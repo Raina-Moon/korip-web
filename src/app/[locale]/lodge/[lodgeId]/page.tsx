@@ -185,14 +185,12 @@ const LodgeDetailPage = () => {
     }
 
     const reservationData = localStorage.getItem("pendingReservation");
-    console.log("✅ localStorage reservationData:", reservationData);
 
     if (reservationData) {
       const parsed = JSON.parse(reservationData);
       localStorage.removeItem("pendingReservation");
 
       const parsedLodgeId = parsed.lodgeId;
-      console.log("✅ parsed reservation:", parsed);
 
       const query = new URLSearchParams({
         checkIn: parsed.checkIn,
@@ -617,7 +615,6 @@ const LodgeDetailPage = () => {
               isOpen={showingLoginModal}
               context={loginModalContext}
               onLogin={() => {
-                console.log("🔥 lodgeId before login redirect:", lodgeId);
 
                 const reservationData = {
                   type: "lodge",

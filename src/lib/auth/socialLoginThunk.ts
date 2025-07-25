@@ -19,7 +19,6 @@ export const socialLoginThunk = createAsyncThunk(
       );
 
       const { token, user } = res.data;
-      console.log("Social login response:", res.data);
 
       thunkAPI.dispatch(setCredential({ user, token }));
       return user;
