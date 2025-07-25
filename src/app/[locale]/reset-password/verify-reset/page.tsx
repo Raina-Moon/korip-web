@@ -21,13 +21,6 @@ const VerifyandResetPage = () => {
 
   useEffect(() => {
     setPasswordMatch(newPassword === confirmPassword);
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
-    if (newPassword && !passwordRegex.test(newPassword)) {
-      alert(
-        "Password must be at least 10 characters long, contain uppercase, numbers, and special characters."
-      );
-    }
   }, [newPassword, confirmPassword]);
 
   const handleCodeChange = (i: number, val: string) => {
@@ -38,7 +31,7 @@ const VerifyandResetPage = () => {
       document.getElementById(`code=${i + 1}`)?.focus();
     }
     setCode(next);
-    };
+  };
 
   const handleVerify = async () => {
     const joinedCode = code.join("");
@@ -53,6 +46,20 @@ const VerifyandResetPage = () => {
   };
 
   const handleUpdatePassword = async () => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
+
+    if (!passwordRegex.test(newPassword)) {
+      alert(
+        "Password must be at least 10 characters long, contain uppercase, numbers, and special characters."
+      );
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
     const result = await dispatch(updatePassword({ email, newPassword }));
     if (updatePassword.fulfilled.match(result)) {
       alert("Password updated successfully. Redirecting to login...");
