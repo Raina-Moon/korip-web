@@ -11,6 +11,7 @@ const initialState = {
   isLoading: false,
   error: null as string | null,
   remainingAttempts: null as number | null,
+  attemptsExceeded: false,
 };
 
 const resetPasswordSlice = createSlice({
@@ -35,7 +36,8 @@ const resetPasswordSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(verifyCode.pending, (state) => {
-        state.isCodeVerified = true;
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(verifyCode.fulfilled, (state) => {
         state.isCodeVerified = true;
@@ -46,11 +48,13 @@ const resetPasswordSlice = createSlice({
         const payload = action.payload as {
           message?: string;
           remainingAttempts?: number;
+          status?: number;
         };
 
         state.isLoading = false;
         state.error = payload?.message || "Invalid code.";
         state.remainingAttempts = payload?.remainingAttempts ?? null;
+        state.attemptsExceeded = payload?.status === 429;
       })
       .addCase(updatePassword.fulfilled, (state) => {
         state.isCodeVerified = false;
