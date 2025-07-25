@@ -3,7 +3,7 @@
 import Modal from "@/components/ui/Modal";
 import { useSignUpMutation } from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,8 @@ const EmailVerifPage = () => {
 
   const [signup, { isLoading }] = useSignUpMutation();
 
+  const searchParams = useSearchParams();
+
   const router = useRouter();
 
   const locale = useLocale();
@@ -32,6 +34,20 @@ const EmailVerifPage = () => {
     setPasswordValid(passwordRegex.test(password));
     setNicknameValid(nickname.length >= 4 && nickname.length <= 15);
   }, [password, confirmPassword, nickname]);
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      if (payload?.email) {
+        setEmail(payload.email);
+      }
+    } catch (err) {
+      console.error("Invalid token");
+    }
+  }, []);
 
   const handleSignUp = async () => {
     if (!nickname || !email || !password || !confirmPassword) {
@@ -58,25 +74,27 @@ const EmailVerifPage = () => {
           <p className="text-primary-800 font-medium text-sm">{t("email")}</p>
           <input
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
+            disabled
+            className="border border-primary-700 rounded-md px-2 py-1 outline-none bg-gray-100 cursor-not-allowed text-gray-600"
           />
         </div>
         <div>
-          <p className="text-primary-800 font-medium text-sm">{t("nickname")}</p>
+          <p className="text-primary-800 font-medium text-sm">
+            {t("nickname")}
+          </p>
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             className="border border-primary-700 rounded-md px-2 py-1 outline-none"
           />
           {!nicknameValid && (
-            <p className="text-red-700 text-sm mt-1">
-              {t("nicknameError")}
-            </p>
+            <p className="text-red-700 text-sm mt-1">{t("nicknameError")}</p>
           )}
         </div>
         <div>
-          <p className="text-primary-800 font-medium text-sm">{t("password")}</p>
+          <p className="text-primary-800 font-medium text-sm">
+            {t("password")}
+          </p>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -86,9 +104,7 @@ const EmailVerifPage = () => {
             type="password"
           />
           {!passwordValid && (
-            <p className="text-red-700 text-sm mt-1">
-              {t("passwordError")}
-            </p>
+            <p className="text-red-700 text-sm mt-1">{t("passwordError")}</p>
           )}
         </div>
         <div>
@@ -138,9 +154,7 @@ const EmailVerifPage = () => {
             <h2 className="text-lg font-semibold text-primary-800 mb-2">
               {t("privacy.title")}
             </h2>
-            <p className="text-sm text-gray-700 mb-2">
-              {t("privacy.intro")}
-            </p>
+            <p className="text-sm text-gray-700 mb-2">{t("privacy.intro")}</p>
 
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.collection.title")}
@@ -149,7 +163,9 @@ const EmailVerifPage = () => {
               {t("privacy.sections.collection.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.usage.title")}</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              {t("privacy.sections.usage.title")}
+            </h3>
             <div className="text-sm text-gray-700 mb-2">
               <p>{t("privacy.sections.usage.content.intro")}</p>
               <ul className="list-disc ml-6 mt-1">
@@ -159,24 +175,32 @@ const EmailVerifPage = () => {
               </ul>
             </div>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.storage.title")}</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              {t("privacy.sections.storage.title")}
+            </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.storage.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.sharing.title")}</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              {t("privacy.sections.sharing.title")}
+            </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.sharing.content")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.rights.title")}</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              {t("privacy.sections.rights.title")}
+            </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.rights.content")}
               <br />
               {t("privacy.sections.rights.contact")}
             </p>
 
-            <h3 className="text-md font-semibold mt-4 mb-1">{t("privacy.sections.consent.title")}</h3>
+            <h3 className="text-md font-semibold mt-4 mb-1">
+              {t("privacy.sections.consent.title")}
+            </h3>
             <p className="text-sm text-gray-700">
               {t("privacy.sections.consent.content")}
             </p>
