@@ -631,7 +631,15 @@ const LodgeDetailPage = () => {
                   JSON.stringify(reservationData)
                 );
 
-                const path = `lodge/${lodgeId}`;
+                const query = new URLSearchParams({
+                  checkIn,
+                  checkOut,
+                  adults: String(adults),
+                  children: String(children),
+                  roomCount: String(room),
+                }).toString();
+
+                const path = `/lodge/${lodgeId}?${query}`;
 
                 if (path && isValidRedirectPath(`/${path}`)) {
                   dispatch(setRedirectAfterLogin(path));
