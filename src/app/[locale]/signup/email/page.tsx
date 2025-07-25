@@ -12,7 +12,6 @@ const EmailPage = () => {
     useRequestVerificationMutation();
 
   const locale = useLocale();
-  console.log("locale", locale);
 
   const handleSubmit = async () => {
     if (!email) return alert(t("alert.empty"));
