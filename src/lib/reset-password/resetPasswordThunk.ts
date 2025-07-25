@@ -13,7 +13,9 @@ export const sendResetCode = createAsyncThunk(
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Something went wrong"
+      );
     }
   }
 );
@@ -31,7 +33,11 @@ export const verifyCode = createAsyncThunk(
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
+      return thunkAPI.rejectWithValue({
+        message: err.response?.data?.message || "Something went wrong",
+        status: err.response?.status || 500,
+        remainingAttempts: err.response?.data?.remainingAttempts,
+      });
     }
   }
 );
@@ -48,7 +54,9 @@ export const updatePassword = createAsyncThunk(
       );
       return res.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Something went wrong");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Something went wrong"
+      );
     }
   }
 );

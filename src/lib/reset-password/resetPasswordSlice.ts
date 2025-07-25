@@ -1,11 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { sendResetCode, updatePassword, verifyCode } from "./resetPasswordThunk";
+import {
+  sendResetCode,
+  updatePassword,
+  verifyCode,
+} from "./resetPasswordThunk";
 
 const initialState = {
   email: "",
   isCodeVerified: false,
   isLoading: false,
   error: null as string | null,
+  remainingAttempts: null as number | null,
+  attemptsExceeded: false,
 };
 
 const resetPasswordSlice = createSlice({
@@ -30,13 +36,37 @@ const resetPasswordSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(verifyCode.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyCode.fulfilled, (state) => {
         state.isCodeVerified = true;
+        state.error = null;
+        state.remainingAttempts = null;
+      })
+      .addCase(verifyCode.rejected, (state, action) => {
+        const payload = action.payload as {
+          message?: string;
+          remainingAttempts?: number;
+          status?: number;
+        };
+
+        state.isLoading = false;
+        state.error = payload?.message || "Invalid code.";
+        state.remainingAttempts = payload?.remainingAttempts ?? null;
+        state.attemptsExceeded = payload?.status === 429;
       })
       .addCase(updatePassword.fulfilled, (state) => {
         state.isCodeVerified = false;
+        state.error = null;
+        state.remainingAttempts = null;
+        state.attemptsExceeded = false;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });
 
-export const {setEmail} = resetPasswordSlice.actions;
+export const { setEmail } = resetPasswordSlice.actions;
 export default resetPasswordSlice.reducer;
