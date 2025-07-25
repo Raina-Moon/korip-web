@@ -1,7 +1,10 @@
 "use client";
 
 import Modal from "@/components/ui/Modal";
-import { useSignUpMutation } from "@/lib/auth/authApi";
+import {
+  useSignUpMutation,
+  useVerifyEmailTokenMutation,
+} from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -20,6 +23,7 @@ const EmailVerifPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   const [signup, { isLoading }] = useSignUpMutation();
+  const [verifyEmailToken] = useVerifyEmailTokenMutation();
 
   const searchParams = useSearchParams();
 
@@ -47,23 +51,40 @@ const EmailVerifPage = () => {
     } catch (err) {
       console.error("Invalid token");
     }
+    verifyEmailToken({ token })
+      .unwrap()
+      .then(() => console.log("Successfully verified email"))
+      .catch((err:any) => console.error("Failed to verify email", err));
   }, []);
 
-  const handleSignUp = async () => {
-    if (!nickname || !email || !password || !confirmPassword) {
-      return alert(t("alert.empty"));
-    }
-
-    if (!agree) {
-      return alert(t("alert.agree"));
-    }
-
+  const handleSubmit = async (formData: {
+    nickname: string;
+    email: string;
+    password: string;
+  }) => {
     try {
-      await signup({ nickname, email, password }).unwrap();
-      alert(t("alert.success"));
+      await signup(formData).unwrap();
+      alert("Signup successful!");
       router.push(`/${locale}/login`);
-    } catch (err) {
-      alert(t("alert.error"));
+    } catch (err: any) {
+      const status = err?.status;
+      const message = err?.data?.message;
+
+      if (status === 403 && message === "Email not verified") {
+        alert("Please verify your email first.");
+        router.push(`/${locale}/signup/email`);
+      } else if (
+        status === 404 &&
+        message ===
+          "Email verification not found. Please request verification again."
+      ) {
+        alert("Verification expired. Request again.");
+        router.push(`/${locale}/signup/email`);
+      } else if (status === 409) {
+        alert("Nickname or email already taken.");
+      } else {
+        alert("Signup failed. Try again.");
+      }
     }
   };
 
@@ -146,7 +167,7 @@ const EmailVerifPage = () => {
 
       <button
         className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
-        onClick={handleSignUp}
+        onClick={() => handleSubmit({ nickname, email, password })}
         disabled={isLoading}
       >
         {isLoading ? t("loading") : t("button")}
