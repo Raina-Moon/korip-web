@@ -5,6 +5,7 @@ import {
   verifyCode,
 } from "@/lib/reset-password/resetPasswordThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
+import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -14,10 +15,14 @@ const VerifyandResetPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [attemptsExceeded, setAttemptsExceeded] = useState(false);
+
   const params = useSearchParams();
   const email = params.get("email") || "";
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const locale = useLocale();
 
   useEffect(() => {
     setPasswordMatch(newPassword === confirmPassword);
@@ -36,11 +41,23 @@ const VerifyandResetPage = () => {
   const handleVerify = async () => {
     const joinedCode = code.join("");
     const result = await dispatch(verifyCode({ email, code: joinedCode }));
+
     if (verifyCode.fulfilled.match(result)) {
       setIsCodeValid(true);
       alert("Code verified successfully. You can now reset your password.");
     } else {
-      alert(result.payload || "Invalid code. Please try again.");
+      const { message, status, remainingAttempts } = result.payload as {
+        message: string;
+        status: number;
+        remainingAttempts?: number;
+      };
+
+      if (status === 429) {
+        setAttemptsExceeded(true);
+        alert("Too many failed attempts. Please request a new reset code.");
+      } else {
+        alert(message || "Invalid code. Please try again.");
+      }
     }
     setCode(["", "", "", "", "", ""]);
   };
@@ -63,7 +80,7 @@ const VerifyandResetPage = () => {
     const result = await dispatch(updatePassword({ email, newPassword }));
     if (updatePassword.fulfilled.match(result)) {
       alert("Password updated successfully. Redirecting to login...");
-      router.push("/login");
+      router.push(`/${locale}/login`);
     } else {
       alert(result.payload || "Failed to update password. Please try again.");
     }
@@ -80,6 +97,7 @@ const VerifyandResetPage = () => {
             id={`code=${idx}`}
             maxLength={1}
             value={digit}
+            disabled={attemptsExceeded || isCodeValid}
             onChange={(e) => handleCodeChange(idx, e.target.value)}
             className="border border-primary-700 rounded-md px-2 py-1 outline-none w-12 text-center"
             required
@@ -88,10 +106,24 @@ const VerifyandResetPage = () => {
         <button
           className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
           onClick={handleVerify}
+          disabled={attemptsExceeded || isCodeValid}
         >
           Verify Code
         </button>
       </div>
+
+      {attemptsExceeded && (
+        <p className="text-red-600 text-sm text-center mt-2">
+          You've exceeded the maximum number of attempts. Please{" "}
+          <a
+            href={`/${locale}/reset-password`}
+            className="underline text-blue-600"
+          >
+            request a new reset code
+          </a>
+          .
+        </p>
+      )}
 
       <div>
         <p>New Password</p>
