@@ -58,6 +58,12 @@ const resetPasswordSlice = createSlice({
       })
       .addCase(updatePassword.fulfilled, (state) => {
         state.isCodeVerified = false;
+        state.error = null;
+        state.remainingAttempts = null;
+        state.attemptsExceeded = false;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });
