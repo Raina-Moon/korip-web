@@ -16,7 +16,7 @@ const VerifyandResetPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
 
-const { error, remainingAttempts, attemptsExceeded } = useAppSelector(
+  const { error, remainingAttempts, attemptsExceeded } = useAppSelector(
     (state) => state.resetPassword
   );
 
@@ -52,15 +52,20 @@ const { error, remainingAttempts, attemptsExceeded } = useAppSelector(
     const result = await dispatch(verifyCode({ email, code: joinedCode }));
 
     if (verifyCode.fulfilled.match(result)) {
-    setIsCodeValid(true);
-    alert("Code verified successfully. You can now reset your password.");
-  }
+      setIsCodeValid(true);
+      alert("Code verified successfully. You can now reset your password.");
+    }
 
     setCode(["", "", "", "", "", ""]);
   };
 
   const handleUpdatePassword = async () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
+
+    if (!isCodeValid) {
+      alert("Please verify your code first.");
+      return;
+    }
 
     if (!passwordRegex.test(newPassword)) {
       alert(
