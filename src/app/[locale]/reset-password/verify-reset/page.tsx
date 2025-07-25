@@ -15,9 +15,8 @@ const VerifyandResetPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [attemptsExceeded, setAttemptsExceeded] = useState(false);
 
-  const { error, remainingAttempts } = useAppSelector(
+const { error, remainingAttempts, attemptsExceeded } = useAppSelector(
     (state) => state.resetPassword
   );
 
@@ -56,7 +55,7 @@ const VerifyandResetPage = () => {
     setIsCodeValid(true);
     alert("Code verified successfully. You can now reset your password.");
   }
-  
+
     setCode(["", "", "", "", "", ""]);
   };
 
