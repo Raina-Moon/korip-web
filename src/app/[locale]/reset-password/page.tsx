@@ -20,15 +20,17 @@ const ResetPwdPage = () => {
     dispatch(showLoading());
 
     try {
-      const result = await dispatch(sendResetCode(email));
-      if (sendResetCode.fulfilled.match(result)) {
-        router.push(`/${locale}/reset-password/verify-reset?email=${email}`);
-      } else {
-        alert(result.payload);
-      }
+      await dispatch(sendResetCode({ email, locale })).unwrap();
+      router.push(`/${locale}/reset-password/verify-reset?email=${email}`);
     } catch (err) {
+      if (typeof err === "string") {
+        alert(err);
+      } else if (err && typeof err === "object" && "message" in err) {
+        alert((err as { message: string }).message);
+      } else {
+        alert(t("alert.error"));
+      }
       console.error("Error during password reset:", err);
-      alert(t("alert.error"));
     } finally {
       dispatch(hideLoading());
     }
