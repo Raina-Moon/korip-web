@@ -65,23 +65,6 @@ const VerifyandResetPage = () => {
   };
 
   const handleUpdatePassword = async () => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
-
-    if (!isCodeValid) {
-      alert(t("code_invalid"));
-      return;
-    }
-
-    if (!passwordRegex.test(newPassword)) {
-      alert(t("password_rule"));
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      alert(t("password_mismatch"));
-      return;
-    }
-
     dispatch(showLoading());
     const result = await dispatch(updatePassword({ email, newPassword }));
     dispatch(hideLoading());
@@ -93,6 +76,9 @@ const VerifyandResetPage = () => {
       alert(result.payload || t("error_generic"));
     }
   };
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{10,}$/;
+  const passwordValid = passwordRegex.test(newPassword);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -155,7 +141,9 @@ const VerifyandResetPage = () => {
       )}
 
       <div className="space-y-4 pt-2 w-full max-w-md ml-10">
-        <label className="block text-gray-700 mb-1">{t("new_password_label")}</label>
+        <label className="block text-gray-700 mb-1">
+          {t("new_password_label")}
+        </label>
         <input
           type="password"
           value={newPassword}
@@ -163,21 +151,39 @@ const VerifyandResetPage = () => {
           placeholder={
             isCodeValid ? t("password_placeholder") : t("verify_code_first")
           }
-          className="w-full px-3 py-2 border rounded-md border-gray-300 outline-none focus:ring-2 focus:ring-primary-500"
+          className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
+            !passwordValid && newPassword.length > 0
+              ? "border-red-700"
+              : "border-gray-300"
+          }`}
           onChange={(e) => setNewPassword(e.target.value)}
         />
+        {newPassword.length > 0 && !passwordValid && (
+          <p className="text-red-700 text-sm mt-1">{t("password_rule")}</p>
+        )}
 
-        <label className="block text-gray-700 mb-1">{t("confirm_password_label")}</label>
+        <label className="block text-gray-700 mb-1">
+          {t("confirm_password_label")}
+        </label>
         <input
           type="password"
           value={confirmPassword}
           disabled={!isCodeValid}
           placeholder={
-            isCodeValid ? t("confirm_password_placeholder") : t("verify_code_first")
+            isCodeValid
+              ? t("confirm_password_placeholder")
+              : t("verify_code_first")
           }
-          className="w-full px-3 py-2 border rounded-md border-gray-300 outline-none focus:ring-2 focus:ring-primary-500"
+          className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
+            confirmPassword.length > 0 && !passwordMatch
+              ? "border-red-700"
+              : "border-gray-300"
+          }`}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+        {confirmPassword.length > 0 && !passwordMatch && (
+          <p className="text-red-700 text-sm mt-1">{t("password_mismatch")}</p>
+        )}
 
         <button
           type="button"
