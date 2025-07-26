@@ -64,7 +64,7 @@ const EmailVerifPage = () => {
   }) => {
     try {
       await signup(formData).unwrap();
-      alert("Signup successful!");
+      alert(t("signupSuccess"));
       router.push(`/${locale}/login`);
     } catch (err: any) {
       const status = err?.status;
@@ -168,7 +168,7 @@ const EmailVerifPage = () => {
       <button
         className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
         onClick={() => handleSubmit({ nickname, email, password })}
-        disabled={isLoading}
+        disabled={isLoading || !agree}
       >
         {isLoading ? t("loading") : t("button")}
       </button>

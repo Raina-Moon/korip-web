@@ -11,6 +11,7 @@
   "privacyPolicy": "Privacy Policy",
   "button": "Sign Up",
   "loading": "Processing...",
+  "signupSuccess": "Signup successful! Let's dive in!",
   "alert": {
     "verifySuccess": "✅ Email verified successfully.",
     "verifyFail": "❌ Email verification failed. Token may be invalid or expired.",

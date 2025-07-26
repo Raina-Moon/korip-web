@@ -1,6 +1,10 @@
 {
   "title": "Email Verification",
   "placeholder": "example@mail.com",
+  "instruction": {
+    "short": "Enter your email address.",
+    "long": "Please enter the email address where you want to receive the verification code. This email will be used to verify your account and cannot be changed later."
+  },
   "button": {
     "default": "Send Verification Email",
     "loading": "Sending..."
