@@ -140,60 +140,64 @@ const VerifyandResetPage = () => {
         </p>
       )}
 
-      <div className="space-y-4 pt-2 w-full max-w-md ml-10">
-        <label className="block text-gray-700 mb-1">
-          {t("new_password_label")}
-        </label>
-        <input
-          type="password"
-          value={newPassword}
-          disabled={!isCodeValid}
-          placeholder={
-            isCodeValid ? t("password_placeholder") : t("verify_code_first")
-          }
-          className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
-            !passwordValid && newPassword.length > 0
-              ? "border-red-700"
-              : "border-gray-300"
-          }`}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        {newPassword.length > 0 && !passwordValid && (
-          <p className="text-red-700 text-sm mt-1">{t("password_rule")}</p>
-        )}
+      {isCodeValid && (
+        <div className="space-y-4 pt-2 w-full max-w-md ml-10">
+          <label className="block text-gray-700 mb-1">
+            {t("new_password_label")}
+          </label>
+          <input
+            type="password"
+            value={newPassword}
+            disabled={!isCodeValid}
+            placeholder={
+              isCodeValid ? t("password_placeholder") : t("verify_code_first")
+            }
+            className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
+              !passwordValid && newPassword.length > 0
+                ? "border-red-700"
+                : "border-gray-300"
+            }`}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          {newPassword.length > 0 && !passwordValid && (
+            <p className="text-red-700 text-sm mt-1">{t("password_rule")}</p>
+          )}
 
-        <label className="block text-gray-700 mb-1">
-          {t("confirm_password_label")}
-        </label>
-        <input
-          type="password"
-          value={confirmPassword}
-          disabled={!isCodeValid}
-          placeholder={
-            isCodeValid
-              ? t("confirm_password_placeholder")
-              : t("verify_code_first")
-          }
-          className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
-            confirmPassword.length > 0 && !passwordMatch
-              ? "border-red-700"
-              : "border-gray-300"
-          }`}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        {confirmPassword.length > 0 && !passwordMatch && (
-          <p className="text-red-700 text-sm mt-1">{t("password_mismatch")}</p>
-        )}
+          <label className="block text-gray-700 mb-1">
+            {t("confirm_password_label")}
+          </label>
+          <input
+            type="password"
+            value={confirmPassword}
+            disabled={!isCodeValid}
+            placeholder={
+              isCodeValid
+                ? t("confirm_password_placeholder")
+                : t("verify_code_first")
+            }
+            className={`w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-primary-500 ${
+              confirmPassword.length > 0 && !passwordMatch
+                ? "border-red-700"
+                : "border-gray-300"
+            }`}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          {confirmPassword.length > 0 && !passwordMatch && (
+            <p className="text-red-700 text-sm mt-1">
+              {t("password_mismatch")}
+            </p>
+          )}
 
-        <button
-          type="button"
-          disabled={!isCodeValid}
-          onClick={handleUpdatePassword}
-          className="w-full bg-primary-700 hover:bg-primary-500 text-white px-4 py-2 rounded-md"
-        >
-          {t("change_password_btn")}
-        </button>
-      </div>
+          <button
+            type="button"
+            disabled={!isCodeValid}
+            onClick={handleUpdatePassword}
+            className="w-full bg-primary-700 hover:bg-primary-500 text-white px-4 py-2 rounded-md"
+          >
+            {t("change_password_btn")}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
