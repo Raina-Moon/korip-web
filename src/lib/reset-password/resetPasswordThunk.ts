@@ -3,9 +3,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const sendResetCode = createAsyncThunk<
-  { message: string }, 
-  string, 
-  { rejectValue: string } 
+  { message: string },
+  string,
+  { rejectValue: string }
 >("resetPassword/sendResetCode", async (email, { rejectWithValue }) => {
   try {
     const res = await axios.post(
@@ -21,8 +21,8 @@ export const sendResetCode = createAsyncThunk<
 });
 
 export const verifyCode = createAsyncThunk<
-  { message: string }, 
-  { email: string; code: string }, 
+  { message: string },
+  { email: string; code: string },
   {
     rejectValue: {
       message: string;
@@ -32,33 +32,52 @@ export const verifyCode = createAsyncThunk<
   }
 >("resetPassword/verifyCode", async ({ email, code }, { rejectWithValue }) => {
   try {
-    const res = await axios.post(
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password/verify`,
-      { email, code }
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code }),
+      }
     );
-    return res.data; 
+    const data = await res.json();
+    if (!res.ok) {
+      return rejectWithValue({
+        message: data?.message || "Something went wrong",
+        status: res.status,
+        remainingAttempts: data?.remainingAttempts ?? null,
+      });
+    }
+    return data;
   } catch (err: any) {
-  console.log("axios error:", err);
-  console.log("axios error keys:", Object.keys(err));
-  if (err.toJSON) console.log("err.toJSON():", err.toJSON());
+    console.log("axios error:", err);
+    console.log("err.message: ", err?.message);
+    console.log("axios error keys:", Object.keys(err));
+    if (err.toJSON) console.log("err.toJSON():", err.toJSON());
 
-  for (const k in err) {
-    console.log("err["+k+"] =", err[k]);
+    for (const k in err) {
+      console.log("err[" + k + "] =", err[k]);
+    }
+    return rejectWithValue({
+      message:
+        err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : err.message
+          ? err.message
+          : "Something went wrong",
+      status: err.response && err.response.status ? err.response.status : 500,
+      remainingAttempts:
+        err.response && err.response.data && err.response.data.remainingAttempts
+          ? err.response.data.remainingAttempts
+          : null,
+    });
   }
-  return rejectWithValue({
-    message: (err.response && err.response.data && err.response.data.message)
-      ? err.response.data.message
-      : (err.message ? err.message : "Something went wrong"),
-    status: (err.response && err.response.status) ? err.response.status : 500,
-    remainingAttempts: (err.response && err.response.data && err.response.data.remainingAttempts)
-      ? err.response.data.remainingAttempts : null,
-  });
-}
-
 });
 
 export const updatePassword = createAsyncThunk<
-  { message: string }, 
+  { message: string },
   { email: string; newPassword: string },
   { rejectValue: string }
 >(
