@@ -11,6 +11,7 @@
   "privacyPolicy": "개인정보 처리방침",
   "button": "회원가입",
   "loading": "처리 중...",
+  "signupSuccess": "회원가입에 성공했습니다! 시작해볼까요!",
   "alert": {
     "verifySuccess": "✅ 이메일 인증에 성공했습니다.",
     "verifyFail": "❌ 이메일 인증에 실패했습니다. 토큰이 만료되었거나 잘못되었습니다.",

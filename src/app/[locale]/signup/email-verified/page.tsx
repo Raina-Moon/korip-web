@@ -64,7 +64,7 @@ const EmailVerifPage = () => {
   }) => {
     try {
       await signup(formData).unwrap();
-      alert("Signup successful!");
+      alert(t("signupSuccess"));
       router.push(`/${locale}/login`);
     } catch (err: any) {
       const status = err?.status;
