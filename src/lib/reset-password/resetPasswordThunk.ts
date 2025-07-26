@@ -52,14 +52,6 @@ export const verifyCode = createAsyncThunk<
     }
     return data;
   } catch (err: any) {
-    console.log("axios error:", err);
-    console.log("err.message: ", err?.message);
-    console.log("axios error keys:", Object.keys(err));
-    if (err.toJSON) console.log("err.toJSON():", err.toJSON());
-
-    for (const k in err) {
-      console.log("err[" + k + "] =", err[k]);
-    }
     return rejectWithValue({
       message:
         err.response && err.response.data && err.response.data.message
