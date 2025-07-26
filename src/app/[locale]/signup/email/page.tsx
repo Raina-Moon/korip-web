@@ -2,7 +2,8 @@
 
 import { useRequestVerificationMutation } from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
-import React, { useEffect, useState } from "react";
+import { Info } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const VERIFY_DURATION_SECONDS = 15 * 60;
@@ -14,6 +15,8 @@ const EmailPage = () => {
   const [requestVerification, { isLoading, isSuccess }] =
     useRequestVerificationMutation();
   const [remaining, setRemaining] = useState(0);
+  const [showTip, setShowTip] = useState(false);
+  const tipRef = useRef<HTMLDivElement>(null);
 
   const locale = useLocale();
 
@@ -73,6 +76,17 @@ const EmailPage = () => {
     return () => clearInterval(timer);
   }, [remaining]);
 
+  useEffect(() => {
+    if (!showTip) return;
+    const handler = (e: MouseEvent) => {
+      if (tipRef.current && !tipRef.current.contains(e.target as Node)) {
+        setShowTip(false);
+      }
+    };
+    window.addEventListener("mousedown", handler);
+    return () => window.removeEventListener("mousedown", handler);
+  }, [showTip]);
+
   const formatTime = (seconds: number) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, "0");
     const s = String(seconds % 60).padStart(2, "0");
@@ -86,8 +100,29 @@ const EmailPage = () => {
           {t("title")}
         </h1>
         <div className="w-full flex flex-col gap-2">
-          <div className="mb-1 font-semibold text-gray-800 text-base">
-            {t("instruction")}
+          <div className="flex items-center gap-1 mb-1 relative group">
+            <span className="text-gray-700 font-medium text-base">
+              {t("instruction.short")}
+            </span>
+            <button
+              type="button"
+              aria-label="More info"
+              tabIndex={0}
+              className="text-primary-600 hover:text-primary-800 outline-none focus-visible:text-primary-800"
+              onMouseEnter={() => setShowTip(true)}
+              onMouseLeave={() => setShowTip(false)}
+              onClick={() => setShowTip((v) => !v)}
+            >
+              <Info size={18} />
+            </button>
+            {(showTip) && (
+              <div
+                ref={tipRef}
+                className="absolute left-0 top-7 w-64 bg-white border border-gray-300 rounded-lg p-3 shadow-lg text-sm text-gray-700 z-20 animate-fadeIn"
+              >
+                {t("instruction.long")}
+              </div>
+            )}
           </div>
           <input
             id="email"
