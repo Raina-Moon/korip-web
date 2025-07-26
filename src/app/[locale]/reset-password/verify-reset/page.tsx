@@ -51,7 +51,6 @@ const VerifyandResetPage = () => {
   const handleVerify = async () => {
     const joinedCode = code.join("");
     const result = await dispatch(verifyCode({ email, code: joinedCode }));
-    console.log("verify request", { email, code: joinedCode });
 
     dispatch(hideLoading());
 
