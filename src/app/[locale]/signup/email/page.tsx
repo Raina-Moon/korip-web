@@ -80,33 +80,52 @@ const EmailPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-primary-800 font-semibold text-3xl mb-5">
-        {t("title")}
-      </h1>
-      <input
-        value={email}
-        type="email"
-        placeholder={t("placeholder")}
-        onChange={(e) => setEmail(e.target.value)}
-        className="border border-primary-700 rounded-md px-2 py-1 outline-none"
-      />
-      <button
-        onClick={handleSubmit}
-        disabled={isLoading || remaining > 0}
-        className="mt-4 bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
-      >
-        {isLoading ? t("button.loading") : t("button.default")}
-      </button>
-      {isSuccess && (
-        <div className="text-primary-800 mt-4 flex flex-col items-center">
-          <p>{t("success")}</p>
-          <p className="text-sm mt-1">
-            {t("timer.label")}{" "}
-            <span className="font-mono">{formatTime(remaining)}</span>
-          </p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="w-full max-w-md rounded-2xl shadow-xl bg-white px-8 py-10 flex flex-col items-center gap-6 border border-gray-200">
+        <h1 className="text-primary-800 font-bold text-2xl sm:text-3xl mb-3">
+          {t("title")}
+        </h1>
+        <div className="w-full flex flex-col gap-2">
+          <div className="mb-1 font-semibold text-gray-800 text-base">
+            {t("instruction")}
+          </div>
+          <input
+            id="email"
+            value={email}
+            type="email"
+            placeholder={t("placeholder")}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border border-gray-300 rounded-lg px-4 py-2 text-lg outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-200"
+            autoFocus
+          />
         </div>
-      )}{" "}
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading || remaining > 0}
+          className={`
+            mt-2 w-full py-2 rounded-lg font-semibold text-base transition
+            ${
+              isLoading || remaining > 0
+                ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+                : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md"
+            }
+          `}
+        >
+          {isLoading ? t("button.loading") : t("button.default")}
+        </button>
+
+        {(isSuccess || remaining > 0) && (
+          <div className="w-full text-center bg-blue-50 border border-blue-200 text-primary-800 rounded-lg p-3 animate-fadeIn">
+            <p className="font-medium">{t("success")}</p>
+            <p className="text-xs mt-1 text-primary-600">
+              {t("timer.label")}{" "}
+              <span className="font-mono tracking-wide">
+                {formatTime(remaining)}
+              </span>
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
