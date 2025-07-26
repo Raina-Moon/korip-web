@@ -4,13 +4,13 @@ import axios from "axios";
 
 export const sendResetCode = createAsyncThunk<
   { message: string },
-  string,
+  { email: string; locale: string },
   { rejectValue: string }
->("resetPassword/sendResetCode", async (email, { rejectWithValue }) => {
+>("resetPassword/sendResetCode", async ({ email, locale }, { rejectWithValue }) => {
   try {
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password`,
-      { email }
+      { email, locale }
     );
     return res.data;
   } catch (err: any) {
