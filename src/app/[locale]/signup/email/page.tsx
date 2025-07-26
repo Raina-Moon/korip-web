@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const VERIFY_DURATION_SECONDS = 15 * 60;
+const LOCALSTORAGE_KEY = "email_verif_last_req";
 
 const EmailPage = () => {
   const { t } = useTranslation("email");
@@ -21,21 +22,41 @@ const EmailPage = () => {
 
     try {
       await requestVerification({ email, locale }).unwrap();
+      const now = Date.now();
+      localStorage.setItem(
+        LOCALSTORAGE_KEY,
+        JSON.stringify({ email, at: now })
+      );
       setRemaining(VERIFY_DURATION_SECONDS);
+
       alert(t("alert.success"));
     } catch (err: any) {
-    const status = err?.status;
-    const msg = err?.data?.message || t("alert.error");
+      const status = err?.status;
+      const msg = err?.data?.message || t("alert.error");
 
-    if (status === 409) {
-      alert(t("alert.alreadyRegistered"));
-    } else if (status === 429) {
-      alert(t("alert.alreadyRequested"));
-    } else {
-      alert(msg);
+      if (status === 409) {
+        alert(t("alert.alreadyRegistered"));
+      } else if (status === 429) {
+        alert(t("alert.alreadyRequested"));
+      } else {
+        alert(msg);
+      }
     }
-  }
-};
+  };
+
+  useEffect(() => {
+    const item = localStorage.getItem(LOCALSTORAGE_KEY);
+    if (item) {
+      try {
+        const { email: reqEmail, at } = JSON.parse(item);
+        if (reqEmail === email) {
+          const passed = Math.floor((Date.now() - at) / 1000);
+          const remain = VERIFY_DURATION_SECONDS - passed;
+          setRemaining(remain > 0 ? remain : 0);
+        }
+      } catch {}
+    }
+  }, [email]);
 
   useEffect(() => {
     if (remaining === 0) return;
@@ -72,7 +93,7 @@ const EmailPage = () => {
       />
       <button
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={isLoading || remaining > 0}
         className="mt-4 bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
       >
         {isLoading ? t("button.loading") : t("button.default")}
