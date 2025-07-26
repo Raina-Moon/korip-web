@@ -1,0 +1,21 @@
+{
+  "title": "비밀번호 재설정",
+  "subtitle": "<email>{{email}}</email>로 전송된 6자리 코드를 입력하세요",
+  "code_label": "인증 코드",
+  "verify_btn": "코드 인증",
+  "code_success": "코드 인증에 성공했습니다. 이제 비밀번호를 변경할 수 있습니다.",
+  "attempts_remaining": "남은 시도 횟수: {{count}}회",
+  "attempts_exceeded": "최대 시도 횟수를 초과했습니다. 새 인증 코드를 {{link}}.",
+  "request_new_code": "다시 요청하세요",
+  "new_password_label": "새 비밀번호",
+  "confirm_password_label": "새 비밀번호 확인",
+  "password_placeholder": "새 비밀번호 입력",
+  "confirm_password_placeholder": "새 비밀번호 재입력",
+  "verify_code_first": "먼저 코드 인증을 해주세요",
+  "change_password_btn": "비밀번호 변경",
+  "password_updated": "비밀번호가 성공적으로 변경되었습니다. 로그인 페이지로 이동합니다.",
+  "password_rule": "비밀번호는 10자 이상, 대문자, 숫자, 특수문자를 모두 포함해야 합니다.",
+  "password_mismatch": "비밀번호가 일치하지 않습니다.",
+  "code_invalid": "먼저 인증 코드를 확인해주세요.",
+  "error_generic": "비밀번호 변경에 실패했습니다. 다시 시도해주세요."
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Reset Your Password",
+  "subtitle": "Enter the 6-digit code sent to <email>{{email}}</email>",
+  "code_label": "Verification Code",
+  "verify_btn": "Verify Code",
+  "code_success": "Code verified successfully. You can now reset your password.",
+  "attempts_remaining": "Attempts remaining: {{count}}",
+  "attempts_exceeded": "You've exceeded the maximum number of attempts. Please {{link}} to request a new reset code.",
+  "request_new_code": "request a new reset code",
+  "new_password_label": "New Password",
+  "confirm_password_label": "Confirm Password",
+  "password_placeholder": "Create new password",
+  "confirm_password_placeholder": "Confirm new password",
+  "verify_code_first": "Verify code first",
+  "change_password_btn": "Change Password",
+  "password_updated": "Password updated successfully. Redirecting to login...",
+  "password_rule": "Password must be at least 10 characters long, contain uppercase, numbers, and special characters.",
+  "password_mismatch": "Passwords do not match.",
+  "code_invalid": "Please verify your code first.",
+  "error_generic": "Failed to update password. Please try again."
+}
