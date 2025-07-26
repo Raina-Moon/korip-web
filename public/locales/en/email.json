@@ -1,6 +1,7 @@
 {
   "title": "Email Verification",
   "placeholder": "example@mail.com",
+  "instruction": "Please enter the email address where you want to receive the verification code.",
   "button": {
     "default": "Send Verification Email",
     "loading": "Sending..."

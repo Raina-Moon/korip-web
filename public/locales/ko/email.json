@@ -1,6 +1,7 @@
 {
   "title": "이메일 인증",
   "placeholder": "example@mail.com",
+  "instruction": "인증 코드를 받을 이메일 주소를 입력해 주세요.",
   "button": {
     "default": "인증 이메일 보내기",
     "loading": "전송 중..."
