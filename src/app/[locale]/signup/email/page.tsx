@@ -108,21 +108,25 @@ const EmailPage = () => {
               type="button"
               aria-label="More info"
               tabIndex={0}
-              className="text-primary-600 hover:text-primary-800 outline-none focus-visible:text-primary-800"
+              className="text-primary-600 hover:text-primary-800 outline-none focus-visible:text-primary-800 relative"
               onMouseEnter={() => setShowTip(true)}
               onMouseLeave={() => setShowTip(false)}
               onClick={() => setShowTip((v) => !v)}
             >
               <Info size={18} />
+              {showTip && (
+                <div
+                  ref={tipRef}
+                  className="absolute left-full top-1 z-20 ml-2 w-64 bg-white border border-gray-300 rounded-lg p-3 shadow-lg text-sm text-gray-700 animate-fadeIn"
+                  style={{
+                    minWidth: "220px",
+                    maxWidth: "300px",
+                  }}
+                >
+                  {t("instruction.long")}
+                </div>
+              )}
             </button>
-            {(showTip) && (
-              <div
-                ref={tipRef}
-                className="absolute left-0 top-7 w-64 bg-white border border-gray-300 rounded-lg p-3 shadow-lg text-sm text-gray-700 z-20 animate-fadeIn"
-              >
-                {t("instruction.long")}
-              </div>
-            )}
           </div>
           <input
             id="email"
