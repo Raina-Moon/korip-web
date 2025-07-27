@@ -19,13 +19,13 @@ export const setupAxiosInterceptor = () => {
 
         try {
           await store.dispatch<any>(refreshTokenThunk());
-          const newToken = store.getState().auth.token;
+          const newToken = store.getState().auth.accessToken;
 
           if (newToken) {
             originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
             return axios(originalRequest);
           }
-        } catch (err) {
+        } catch {
           store.dispatch(logout());
         }
 
