@@ -1,3 +1,4 @@
+import { TicketBookmark } from "@/types/ticket";
 import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
@@ -11,11 +12,11 @@ export const ticketBookmarkApi = createApi({
   }),
   tagTypes: ["TicketBookmarks"],
   endpoints: (builder) => ({
-    getMyTicketBookmarks: builder.query<any, void>({
+    getMyTicketBookmarks: builder.query<TicketBookmark[], void>({
       query: () => `/`,
       providesTags: ["TicketBookmarks"],
     }),
-    createTicketBookmark: builder.mutation<any, { ticketId: number }>({
+    createTicketBookmark: builder.mutation<TicketBookmark, { ticketId: number }>({
       query: (body) => ({
         url: `/`,
         method: "POST",
@@ -23,7 +24,7 @@ export const ticketBookmarkApi = createApi({
       }),
       invalidatesTags: ["TicketBookmarks"],
     }),
-    deleteTicketBookmark: builder.mutation<any, number>({
+    deleteTicketBookmark: builder.mutation<TicketBookmark, number>({
       query: (ticketId) => ({
         url: `/${ticketId}`,
         method: "DELETE",
