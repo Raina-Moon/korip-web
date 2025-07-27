@@ -3,7 +3,7 @@ import { TicketReservation } from "./ticketReservation";
 export interface TicketReview {
   id: number;
   ticketTypeId: number;
-  ticketReservationId: number;
+  ticketReservationId?: number;
   userId: number;
   rating: number;
   comment?: string;
@@ -13,4 +13,8 @@ export interface TicketReview {
     nickname: string;
   };
   reservation?: TicketReservation | null;
+  ticketType?: {
+    id: number;
+    name: string;
+  };
 }
