@@ -29,9 +29,7 @@ interface ReservationSearchBoxProps {
 }
 
 export default function ReservationSearchBox({
-  checkIn,
   setCheckIn,
-  checkOut,
   setCheckOut,
   dateRange,
   setDateRange,
@@ -40,11 +38,8 @@ export default function ReservationSearchBox({
   isActive,
   setIsActive,
   adults,
-  setAdults,
   room,
-  setRoom,
   children,
-  setChildren,
   handleAdultChange,
   handleRoomChange,
   handleChildrenChange,
