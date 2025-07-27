@@ -44,9 +44,11 @@ export const fetchAllUsers = createAsyncThunk<
         page: res.data.page,
         limit: res.data.limit,
       };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch users");
     } finally {
@@ -75,9 +77,11 @@ export const deleteUser = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete user");
     } finally {
@@ -106,9 +110,11 @@ export const updateUserRole = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to update user role");
     }
@@ -139,9 +145,11 @@ export const fetchUserReservations = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch user reservations");
     } finally {
@@ -174,9 +182,11 @@ export const fetchUserReviews = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch user reviews");
     } finally {
