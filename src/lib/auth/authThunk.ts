@@ -31,9 +31,11 @@ export const fetchCurrentUser = createAsyncThunk<
       const user = res.data as User;
       dispatch(setUserOnly(user));
       return user;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(setUserOnly(null));
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(setUserOnly(null));
+        }
       }
       return rejectWithValue("Failed to fetch current user");
     }
@@ -56,7 +58,7 @@ export const tryRefreshSession = createAsyncThunk<
     const newToken = res.data.accessToken;
     dispatch(setAccessToken(newToken));
     return newToken;
-  } catch (err: any) {
+  } catch {
     dispatch(logout());
     return rejectWithValue("Failed to refresh session");
   }
