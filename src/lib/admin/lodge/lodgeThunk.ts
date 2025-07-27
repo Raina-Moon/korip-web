@@ -170,7 +170,7 @@ type KeepRoomTypeImage = {
   imageId: number;
 };
 
-type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
+export type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
   roomTypes: Omit<RoomType, "seasonalPricing"> &
     {
       seasonalPricing?: SeasonalPricing[];
