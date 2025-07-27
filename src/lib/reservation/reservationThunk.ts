@@ -48,7 +48,7 @@ export const fetchReservation = createAsyncThunk<
         }
       );
       return response.data;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to fetch reservations");
     }
   }
@@ -74,7 +74,7 @@ export const createReservation = createAsyncThunk<
         }
       );
       return response.data as Reservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to create reservation");
     }
   }
@@ -100,7 +100,7 @@ export const confirmReservation = createAsyncThunk<
         }
       );
       return response.data as Reservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to confirm reservation");
     }
   }
@@ -126,7 +126,7 @@ export const cancelReservation = createAsyncThunk<
         }
       );
       return response.data as Reservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to cancel reservation");
     }
   }
