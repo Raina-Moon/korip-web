@@ -36,7 +36,7 @@ export default function RoomCard({
     const checkOutDate = new Date(checkOut);
 
     const dates: Date[] = [];
-    let current = new Date(checkInDate);
+    const current = new Date(checkInDate);
     while (current < checkOutDate) {
       dates.push(new Date(current));
       current.setDate(current.getDate() + 1);
