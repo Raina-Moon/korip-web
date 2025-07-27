@@ -5,10 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { getTicketReservationById } from "@/lib/admin/reservation/ticketReservationThunk";
 
-const Label = ({ children }: { children: React.ReactNode }) => (
-  <span className="font-medium text-gray-600">{children}</span>
-);
-
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="flex justify-between py-1 border-b border-gray-100">
     <span className="text-gray-500">{label}</span>
