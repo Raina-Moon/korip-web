@@ -18,6 +18,10 @@
   "lowest": "낮은 평점순",
   "noReviews": "아직 작성된 리뷰가 없습니다.",
   "deleteConfirm": "정말 삭제하시겠습니까?",
+  "delete": {
+    "yes": "네",
+    "no": "아니요"
+  },
   "deleteSuccess": "리뷰가 삭제되었습니다.",
   "deleteFailed": "리뷰 삭제에 실패했습니다.",
   "editFailed": "리뷰 수정에 실패했습니다.",

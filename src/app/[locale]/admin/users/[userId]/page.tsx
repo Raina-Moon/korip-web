@@ -10,6 +10,7 @@ import {
   fetchUserReviews,
 } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
+import { showConfirm } from "@/utils/showConfirm";
 
 export default function UserDetailPage() {
   const [reservationPage, setReservationPage] = useState(1);
@@ -45,9 +46,14 @@ export default function UserDetailPage() {
   };
 
   const handleDelete = () => {
-    if (window.confirm("정말 이 사용자를 삭제하시겠습니까?")) {
-      dispatch(deleteUser(id));
-    }
+    showConfirm({
+      message: "정말 이 사용자를 삭제하시겠습니까?",
+      confirmLabel: "삭제",
+      cancelLabel: "취소",
+      onConfirm: () => {
+        dispatch(deleteUser(id));
+      }
+    });
   };
 
   if (!user) {

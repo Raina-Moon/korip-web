@@ -15,6 +15,7 @@ import type { TicketReview } from "@/types/ticketReview";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const TicketReview = () => {
   const { t } = useTranslation("ticket-review");
@@ -74,16 +75,22 @@ const TicketReview = () => {
     }
   };
 
-  const handleDelete = async (review: TicketReview) => {
-    if (!confirm(t("confirmDelete"))) return;
-    try {
-      await deleteReview(review.id).unwrap();
-      toast.success(t("deleteSuccess"));
-      refetch();
-    } catch (error) {
-      console.error("리뷰 삭제 실패:", error);
-      toast.error(t("deleteFail"));
-    }
+  const handleDelete = (review: TicketReview) => {
+    showConfirm({
+      message: t("confirmDelete"),
+      confirmLabel: t("deleteAlert.yes"),
+      cancelLabel: t("deleteAlert.no"),
+      onConfirm: async () => {
+        try {
+          await deleteReview(review.id).unwrap();
+          toast.success(t("deleteSuccess"));
+          refetch();
+        } catch (error) {
+          console.error("리뷰 삭제 실패:", error);
+          toast.error(t("deleteFail"));
+        }
+      },
+    });
   };
 
   return (

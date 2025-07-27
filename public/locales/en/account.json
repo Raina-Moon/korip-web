@@ -14,5 +14,9 @@
   "deleting": "Deleting...",
   "deleted": "Your account has been deleted.",
   "deleteFailed": "Failed to delete account.",
-  "deleteConfirm": "Are you sure you want to delete your account? This cannot be undone."
+  "deleteConfirm": "Are you sure you want to delete your account? This cannot be undone.",
+  "delete": {
+    "yes": "Yes",
+    "no": "No"
+  }
 }

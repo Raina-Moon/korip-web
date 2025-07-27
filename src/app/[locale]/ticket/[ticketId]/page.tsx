@@ -35,6 +35,7 @@ import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const TicketDetailPage = () => {
   const { t } = useTranslation("ticket");
@@ -182,16 +183,21 @@ const TicketDetailPage = () => {
     setEditingRating(null);
   };
 
-  const handleDelete = async (review: GenericReview) => {
-    if (confirm(t("deleteConfirm"))) {
-      try {
-        await deleteReview(review.id).unwrap();
-        toast.success(t("deleteSuccess"));
-      } catch (error) {
-        console.error(error);
-        toast.error(t("deleteFailed"));
-      }
-    }
+  const handleDelete = (review: GenericReview) => {
+    showConfirm({
+      message: t("deleteConfirm"),
+      confirmLabel: t("delete.yes"),
+      cancelLabel: t("delete.no"),
+      onConfirm: async () => {
+        try {
+          await deleteReview(review.id).unwrap();
+          toast.success(t("deleteSuccess"));
+        } catch (error) {
+          console.error(error);
+          toast.error(t("deleteFailed"));
+        }
+      },
+    });
   };
 
   const handleReport = (reviewId: number) => {

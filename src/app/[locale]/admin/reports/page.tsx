@@ -14,6 +14,7 @@ import {
   deleteTicketReviewOnly,
   hideTicketReportReview,
 } from "@/lib/admin/reports/ticketReportsThunk";
+import { showConfirm } from "@/utils/showConfirm";
 
 export default function ReportReviewsPage() {
   const [filter, setFilter] = useState<"all" | "lodges" | "tickets">("all");
@@ -37,11 +38,18 @@ export default function ReportReviewsPage() {
   }, [dispatch, filter, lodgePage, ticketPage, limit]);
 
   const handleDeleteFromReports = (reviewId: number, isTicket: boolean) => {
-    if (isTicket) {
-      dispatch(deleteTicketReportedReview(reviewId));
-    } else {
-      dispatch(deleteReportedReview(reviewId));
-    }
+    showConfirm({
+      message: "이 신고를 처리하시겠습니까? 신고내역이 삭제됩니다.",
+      confirmLabel: "신고 해결",
+      cancelLabel: "취소",
+      onConfirm: () => {
+        if (isTicket) {
+          dispatch(deleteTicketReportedReview(reviewId));
+        } else {
+          dispatch(deleteReportedReview(reviewId));
+        }
+      },
+    });
   };
 
   const handleHide = (
@@ -49,23 +57,33 @@ export default function ReportReviewsPage() {
     isHidden: boolean,
     isTicket: boolean
   ) => {
-    if (confirm("리뷰를 숨기거나 표시하시겠습니까?")) {
-      if (isTicket) {
-        dispatch(hideTicketReportReview({ reviewId, isHidden }));
-      } else {
-        dispatch(hideReportReview({ reviewId, isHidden }));
-      }
-    }
+    showConfirm({
+      message: "리뷰를 숨기거나 표시하시겠습니까?",
+      confirmLabel: isHidden ? "숨기기" : "표시하기",
+      cancelLabel: "취소",
+      onConfirm: () => {
+        if (isTicket) {
+          dispatch(hideTicketReportReview({ reviewId, isHidden }));
+        } else {
+          dispatch(hideReportReview({ reviewId, isHidden }));
+        }
+      },
+    });
   };
 
   const handleDeleteReview = (reviewId: number, isTicket: boolean) => {
-    if (confirm("리뷰를 정말 삭제하시겠습니까?")) {
-      if (isTicket) {
-        dispatch(deleteTicketReviewOnly(reviewId));
-      } else {
-        dispatch(deleteReviewOnly(reviewId));
-      }
-    }
+    showConfirm({
+      message: "리뷰를 정말 삭제하시겠습니까?",
+      confirmLabel: "삭제",
+      cancelLabel: "취소",
+      onConfirm: () => {
+        if (isTicket) {
+          dispatch(deleteTicketReviewOnly(reviewId));
+        } else {
+          dispatch(deleteReviewOnly(reviewId));
+        }
+      },
+    });
   };
 
   const combinedList =
