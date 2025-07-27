@@ -67,9 +67,11 @@ export const fetchReports = createAsyncThunk<
       );
 
       return res.data as ReportReviewsPagination;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch reports");
     } finally {
@@ -97,9 +99,11 @@ export const deleteReportedReview = createAsyncThunk<
         }
       );
       return res.data as { message: string; reviewId: number };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete reported review");
     }
@@ -133,9 +137,11 @@ export const hideReportReview = createAsyncThunk<
         message: data.message,
         updated: { id: data.updated.id, isHidden: data.updated.isHidden },
       };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to hide reported review");
     }
@@ -161,9 +167,11 @@ export const deleteReviewOnly = createAsyncThunk<
         }
       );
       return res.data as { message: string; reviewId: number };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete review");
     }
