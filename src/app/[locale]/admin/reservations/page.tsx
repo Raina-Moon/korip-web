@@ -6,7 +6,6 @@ import {
   getAllReservations,
   updateReservationStatus,
 } from "@/lib/admin/reservation/reservationThunk";
-import { Reservation } from "@/types/reservation";
 import { useRouter } from "next/navigation";
 import {
   getAllTicketReservations,

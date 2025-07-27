@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchAllUsers, deleteUser } from "@/lib/admin/user/adminUserThunk";
+import { fetchAllUsers } from "@/lib/admin/user/adminUserThunk";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/utils/useLocale";
