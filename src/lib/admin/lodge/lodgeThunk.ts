@@ -28,9 +28,11 @@ export const fetchLodges = createAsyncThunk<
       }
     );
     return res.data as Lodge[];
-  } catch (err: any) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
-      dispatch(logout());
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        dispatch(logout());
+      }
     }
     return rejectWithValue("Failed to fetch lodges");
   }
@@ -128,9 +130,11 @@ export const createLodge = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to create lodge");
     }
@@ -156,9 +160,11 @@ export const fetchLodgeById = createAsyncThunk<
         }
       );
       return res.data as Lodge;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch lodge by ID");
     }
@@ -246,9 +252,11 @@ export const updateLodge = createAsyncThunk<
         }
       );
       return res.data as { message: string; lodge: Lodge };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to update lodge");
     }
@@ -274,9 +282,11 @@ export const deleteLodge = createAsyncThunk<
         }
       );
       return res.data as { message: string; lodge: Lodge };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete lodge");
     }
@@ -302,8 +312,11 @@ export const fetchLodgeInventories = createAsyncThunk<
         }
       );
       return res.data;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(err.message ?? "Failed to fetch inventories");
+      }
+      return rejectWithValue("Failed to fetch inventories");
     }
   }
 );
