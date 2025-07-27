@@ -56,7 +56,10 @@ const EmailVerifPage = () => {
     verifyEmailToken({ token })
       .unwrap()
       .then(() => console.log("Successfully verified email"))
-      .catch((err: any) => console.error("Failed to verify email", err));
+      .catch(() => {
+        toast.error(t("alert.expired"));
+        router.push(`/${locale}/signup/email`);
+      });
   }, []);
 
   const handleSubmit = async (formData: {
@@ -90,7 +93,7 @@ const EmailVerifPage = () => {
     }
   };
 
- return (
+  return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="w-full max-w-md rounded-2xl shadow-xl bg-white px-8 py-10 flex flex-col gap-7 border border-gray-200">
         <h1 className="text-2xl sm:text-3xl font-bold text-primary-800 text-center mb-2">
@@ -99,7 +102,10 @@ const EmailVerifPage = () => {
 
         {/* Email (disabled) */}
         <div>
-          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="email">
+          <label
+            className="text-primary-700 text-sm font-medium mb-1 block"
+            htmlFor="email"
+          >
             {t("email")}
           </label>
           <div className="relative">
@@ -114,7 +120,10 @@ const EmailVerifPage = () => {
         </div>
         {/* Nickname */}
         <div>
-          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="nickname">
+          <label
+            className="text-primary-700 text-sm font-medium mb-1 block"
+            htmlFor="nickname"
+          >
             {t("nickname")}
           </label>
           <div className="relative">
@@ -135,7 +144,10 @@ const EmailVerifPage = () => {
         </div>
         {/* Password */}
         <div>
-          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="password">
+          <label
+            className="text-primary-700 text-sm font-medium mb-1 block"
+            htmlFor="password"
+          >
             {t("password")}
           </label>
           <div className="relative">
@@ -157,7 +169,10 @@ const EmailVerifPage = () => {
         </div>
         {/* Confirm Password */}
         <div>
-          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="confirmPassword">
+          <label
+            className="text-primary-700 text-sm font-medium mb-1 block"
+            htmlFor="confirmPassword"
+          >
             {t("confirmPassword")}
           </label>
           <div className="relative">
@@ -171,7 +186,10 @@ const EmailVerifPage = () => {
               type="password"
               autoComplete="new-password"
             />
-            <Check className="absolute left-3 top-2.5 text-gray-400" size={20} />
+            <Check
+              className="absolute left-3 top-2.5 text-gray-400"
+              size={20}
+            />
           </div>
           {!passwordMatch && (
             <p className="text-red-600 text-xs mt-1">{t("passwordMismatch")}</p>
@@ -187,7 +205,10 @@ const EmailVerifPage = () => {
             onChange={(e) => setAgree(e.target.checked)}
             className="w-4 h-4 accent-primary-700 focus:ring-2 focus:ring-primary-200"
           />
-          <label htmlFor="agree" className="text-sm text-gray-800 cursor-pointer">
+          <label
+            htmlFor="agree"
+            className="text-sm text-gray-800 cursor-pointer"
+          >
             {t("privacyAgree")}
             <button
               type="button"
@@ -202,9 +223,10 @@ const EmailVerifPage = () => {
         <button
           className={`
             mt-2 w-full py-2 rounded-lg font-semibold text-base transition
-            ${isLoading || !agree
-              ? "bg-gray-300 text-gray-400 cursor-not-allowed"
-              : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md"
+            ${
+              isLoading || !agree
+                ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+                : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md"
             }
           `}
           onClick={() => handleSubmit({ nickname, email, password })}
