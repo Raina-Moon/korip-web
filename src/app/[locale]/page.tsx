@@ -57,7 +57,7 @@ const Page = () => {
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
-        toast.success(t("selectCheckinCheckoutWarning"));
+        toast.error(t("selectCheckinCheckoutWarning"));
         setIsNavigating(false);
         return;
       }
@@ -75,7 +75,7 @@ const Page = () => {
       router.push(`/${locale}/list/lodge?${query.toString()}`);
     } else {
       if (!date) {
-        alert(t("selectDateWarning"));
+        toast.error(t("selectDateWarning"));
         setIsNavigating(false);
         return;
       }

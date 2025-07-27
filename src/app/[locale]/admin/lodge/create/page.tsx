@@ -8,6 +8,7 @@ import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
 import { RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
 
 interface CreateLodgeFormData {
   name: string;
@@ -54,10 +55,10 @@ const CreateLodgePage = () => {
     );
 
     if (createLodge.fulfilled.match(lodgeData)) {
-      alert("숙소가 성공적으로 등록되었습니다.");
+      toast.success("숙소가 성공적으로 등록되었습니다.");
       router.push(`/${locale}/admin/lodge`);
     } else {
-      alert("숙소 등록에 실패했습니다. 다시 시도해주세요.");
+      toast.error("숙소 등록에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

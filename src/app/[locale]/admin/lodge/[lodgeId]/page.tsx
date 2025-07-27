@@ -15,6 +15,7 @@ import Image from "next/image";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import InventoryCalendar from "@/components/ui/InventoryCalendar";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -66,10 +67,10 @@ const LodgeDetailPage = () => {
     const resultAction = await dispatch(deleteLodge(lodgeId));
     if (deleteLodge.fulfilled.match(resultAction)) {
       dispatch(fetchLodges());
-      alert("숙소가 성공적으로 삭제되었습니다.");
+      toast.success("숙소가 성공적으로 삭제되었습니다.");
       router.push(`/${locale}/admin/lodge`);
     } else {
-      alert("숙소 삭제에 실패했습니다.");
+      toast.error("숙소 삭제에 실패했습니다.");
       console.error("Failed to delete lodge:", error);
     }
   };

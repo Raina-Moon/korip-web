@@ -9,6 +9,7 @@ import { useLocale } from "@/utils/useLocale";
 import { Check, Lock, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 const EmailVerifPage = () => {
@@ -65,26 +66,26 @@ const EmailVerifPage = () => {
   }) => {
     try {
       await signup(formData).unwrap();
-      alert(t("signupSuccess"));
+      toast.success(t("signupSuccess"));
       router.push(`/${locale}/login`);
     } catch (err: any) {
       const status = err?.status;
       const message = err?.data?.message;
 
       if (status === 403 && message === "Email not verified") {
-        alert(t("alert.notVerified"));
+        toast.error(t("alert.notVerified"));
         router.push(`/${locale}/signup/email`);
       } else if (
         status === 404 &&
         message ===
           "Email verification not found. Please request verification again."
       ) {
-        alert(t("alert.notVerified"));
+        toast.error(t("alert.notVerified"));
         router.push(`/${locale}/signup/email`);
       } else if (status === 409) {
-        alert(t("alert.expired"));
+        toast.error(t("alert.expired"));
       } else {
-        alert(t("alert.signupFail"));
+        toast.error(t("alert.signupFail"));
       }
     }
   };

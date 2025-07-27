@@ -10,6 +10,7 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Review } from "@/types/reivew";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 interface Props {
   onClose: () => void;
@@ -50,15 +51,15 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (!lodgeId) return alert(t("alert.noLodge"));
+    if (!lodgeId) return toast.error(t("alert.noLodge"));
 
     try {
       await createReview({ lodgeId, comment, rating, reservationId }).unwrap();
-      alert(t("alert.success"));
+      toast.success(t("alert.success"));
       onClose();
     } catch (error) {
       console.error("리뷰 생성 실패:", error);
-      alert(t("alert.fail"));
+      toast.error(t("alert.fail"));
     }
   };
 

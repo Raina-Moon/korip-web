@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/lib/i18n/i18n";
 import { setRedirectAfterLogin } from "@/lib/auth/authSlice";
 import { isValidRedirectPath } from "@/utils/getRedirectPath";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const { t } = useTranslation("login");
@@ -98,7 +99,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      return alert(t("fillAllFields"));
+      return toast.error(t("fillAllFields"));
     }
 
     if (rememberMe) {
@@ -145,7 +146,7 @@ const LoginPage = () => {
         router.push(`/${locale}`);
       }
     } catch (err) {
-      alert(t("loginFailed"));
+      toast.error(t("loginFailed"));
     } finally {
       dispatch(hideLoading());
     }
@@ -154,7 +155,7 @@ const LoginPage = () => {
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     const { credential } = credentialResponse;
     if (!credential) {
-      alert(t("googleLoginFailed"));
+      toast.error(t("googleLoginFailed"));
       return;
     }
     try {
@@ -205,7 +206,7 @@ const LoginPage = () => {
 
             router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
           } else {
-            alert(t("loginFailed"));
+            toast.error(t("loginFailed"));
           }
         } else {
           router.push(`/${locale}${redirectPath}`);
@@ -213,7 +214,7 @@ const LoginPage = () => {
         dispatch(setRedirectAfterLogin(null));
       }
     } catch (err) {
-      alert(t("googleLoginFailed"));
+      toast.error(t("googleLoginFailed"));
     } finally {
       dispatch(hideLoading());
     }
@@ -221,7 +222,7 @@ const LoginPage = () => {
 
   const handleGoogleLoginError = () => {
     console.error("Login failed:");
-    alert(t("loginFailed"));
+    toast.error(t("loginFailed"));
   };
 
   return (

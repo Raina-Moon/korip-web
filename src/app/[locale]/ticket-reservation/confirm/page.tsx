@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
 
 const TicketReservationConfirmPage = () => {
   const { t } = useTranslation("ticket-reservation-confirm");
@@ -93,7 +94,7 @@ const TicketReservationConfirmPage = () => {
 
       const customerMobilePhone = normalizeKoreanPhone(phoneNumber);
       if (!customerMobilePhone) {
-        alert(t("alertInvalidPhone"));
+        toast.error(t("alertInvalidPhone"));
         return;
       }
 
@@ -108,7 +109,7 @@ const TicketReservationConfirmPage = () => {
       });
     } catch (error) {
       console.error("Payment failed:", error);
-      alert(t("alertPaymentFail"));
+      toast.error(t("alertPaymentFail"));
       router.push(`/${locale}/ticket-reservation/fail`);
     }
   };

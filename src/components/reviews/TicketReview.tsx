@@ -14,6 +14,7 @@ import { formattedDate } from "@/utils/date";
 import type { TicketReview } from "@/types/ticketReview";
 import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const TicketReview = () => {
   const { t } = useTranslation("ticket-review");
@@ -65,11 +66,11 @@ const TicketReview = () => {
         },
       }).unwrap();
       cancelEditing();
-      alert(t("updateSuccess"));
+      toast.success(t("updateSuccess"));
       refetch();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert(t("updateFail"));
+      toast.error(t("updateFail"));
     }
   };
 
@@ -77,11 +78,11 @@ const TicketReview = () => {
     if (!confirm(t("confirmDelete"))) return;
     try {
       await deleteReview(review.id).unwrap();
-      alert(t("deleteSuccess"));
+      toast.success(t("deleteSuccess"));
       refetch();
     } catch (error) {
       console.error("리뷰 삭제 실패:", error);
-      alert(t("deleteFail"));
+      toast.error(t("deleteFail"));
     }
   };
 
