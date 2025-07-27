@@ -54,7 +54,7 @@ export const fetchTicketReservations = createAsyncThunk<
         page: number;
         totalPages: number;
       };
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to fetch ticket reservations");
     }
   }
@@ -80,7 +80,7 @@ export const createTicketReservation = createAsyncThunk<
         }
       );
       return response.data as TicketReservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to create ticket reservation");
     }
   }
@@ -106,7 +106,7 @@ export const confirmTicketReservation = createAsyncThunk<
         }
       );
       return response.data as TicketReservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to confirm ticket reservation");
     }
   }
@@ -132,7 +132,7 @@ export const cancelTicketReservation = createAsyncThunk<
         }
       );
       return response.data as TicketReservation;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to cancel ticket reservation");
     }
   }
