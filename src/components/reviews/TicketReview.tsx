@@ -24,7 +24,7 @@ const TicketReview = () => {
   const pageSize = 5;
 
   const nickname = useAppSelector((state) => state.auth.user?.nickname);
-  const { data, isLoading, isError, refetch } = useGetMyTicketReviewsQuery({
+  const { data, isError, refetch } = useGetMyTicketReviewsQuery({
     page,
     pageSize,
   });
