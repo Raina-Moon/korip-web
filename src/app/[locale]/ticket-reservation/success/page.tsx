@@ -2,6 +2,7 @@
 
 import { useAppDispatch } from "@/lib/store/hooks";
 import { confirmTicketReservation } from "@/lib/ticket-reservation/ticketReservationThunk";
+import { TicketReservation } from "@/types/ticketReservation";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -11,7 +12,9 @@ const TicketReservationSuccessPage = () => {
   const { t } = useTranslation("ticket-success");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [pending, setPending] = useState<any>(null);
+  const [pending, setPending] = useState<Partial<TicketReservation> | null>(
+    null
+  );
 
   const reservationId = searchParams.get("reservationId");
 
@@ -22,7 +25,7 @@ const TicketReservationSuccessPage = () => {
   useEffect(() => {
     const data = localStorage.getItem("pendingTicketReservation") || "{}";
     if (data) {
-      setPending(JSON.parse(data));
+      setPending(JSON.parse(data) as Partial<TicketReservation>);
     }
   }, []);
 
@@ -60,7 +63,7 @@ const TicketReservationSuccessPage = () => {
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">{t("lodge")}</td>
-              <td className="py-2 px-4">{pending.lodgeName}</td>
+              <td className="py-2 px-4">{pending.ticketType?.lodge.name}</td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">{t("date")}</td>
@@ -76,13 +79,17 @@ const TicketReservationSuccessPage = () => {
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("adults")}
               </td>
-              <td className="py-2 px-4">{t("adultsWithUnit", { count: pending.adults })}</td>
+              <td className="py-2 px-4">
+                {t("adultsWithUnit", { count: pending.adults })}
+              </td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("children")}
               </td>
-              <td className="py-2 px-4">{t("childrenWithUnit", { count: pending.children })}</td>
+              <td className="py-2 px-4">
+                {t("childrenWithUnit", { count: pending.children })}
+              </td>
             </tr>
 
             <tr className="bg-gray-100">
@@ -116,7 +123,8 @@ const TicketReservationSuccessPage = () => {
                 {t("requestInfo")}
               </td>
             </tr>
-            {pending.specialRequests?.length > 0 ? (
+            {Array.isArray(pending.specialRequests) &&
+            pending.specialRequests.length > 0 ? (
               pending.specialRequests.map((req: string, idx: number) => (
                 <tr key={idx} className="border-t">
                   <td className="py-2 px-4 font-medium bg-gray-50">{`요청 ${
@@ -125,6 +133,12 @@ const TicketReservationSuccessPage = () => {
                   <td className="py-2 px-4">{req}</td>
                 </tr>
               ))
+            ) : pending.specialRequests ? (
+              // specialRequests가 string 하나일 때
+              <tr className="border-t">
+                <td className="py-2 px-4 font-medium bg-gray-50">요청 1</td>
+                <td className="py-2 px-4">{pending.specialRequests}</td>
+              </tr>
             ) : (
               <tr className="border-t">
                 <td className="py-2 px-4 font-medium bg-gray-50">
