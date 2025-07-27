@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 
 const Page = () => {
   const { t } = useTranslation("page");
-  const [calendar, setCalendar] = useState(false);
   const [range, setRange] = useState<[Date, Date] | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [region, setRegion] = useState("전체");
@@ -205,9 +204,6 @@ const Page = () => {
                 <input
                   className="mt-1 border border-primary-800 rounded-md outline-none px-3 py-2 w-full"
                   readOnly
-                  onClick={() => {
-                    setCalendar(true);
-                  }}
                   value={formatDate(range?.[1] ?? null)}
                   placeholder={t("checkoutDatePlaceholder")}
                 />
