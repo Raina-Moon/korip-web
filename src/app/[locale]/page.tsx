@@ -10,6 +10,7 @@ import CheckinInput from "@/components/CheckInInput";
 import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -56,7 +57,7 @@ const Page = () => {
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
-        alert(t("selectCheckinCheckoutWarning"));
+        toast.success(t("selectCheckinCheckoutWarning"));
         setIsNavigating(false);
         return;
       }
