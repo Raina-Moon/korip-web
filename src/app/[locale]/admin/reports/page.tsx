@@ -15,6 +15,10 @@ import {
   hideTicketReportReview,
 } from "@/lib/admin/reports/ticketReportsThunk";
 import { showConfirm } from "@/utils/showConfirm";
+import { ReviewReport } from "@/types/ReviewReport";
+import { TicketReport } from "@/types/ticketReport";
+
+type CombinedReport = ReviewReport | TicketReport;
 
 export default function ReportReviewsPage() {
   const [filter, setFilter] = useState<"all" | "lodges" | "tickets">("all");
@@ -86,15 +90,15 @@ export default function ReportReviewsPage() {
     });
   };
 
-  const combinedList =
+  const combinedList: CombinedReport[] =
     filter === "all"
       ? [
-          ...lodgeReports.list.map((r) => ({ ...r, isTicket: false })),
-          ...ticketReports.list.map((r) => ({ ...r, isTicket: true })),
+          ...lodgeReports.list.map((r) => ({ ...r, isTicket: false as const })),
+          ...ticketReports.list.map((r) => ({ ...r, isTicket: true as const })),
         ]
       : filter === "lodges"
-      ? lodgeReports.list.map((r) => ({ ...r, isTicket: false }))
-      : ticketReports.list.map((r) => ({ ...r, isTicket: true }));
+      ? lodgeReports.list.map((r) => ({ ...r, isTicket: false as const }))
+      : ticketReports.list.map((r) => ({ ...r, isTicket: true as const }));
 
   const loading =
     lodgeReports.state === "loading" || ticketReports.state === "loading";
@@ -156,16 +160,18 @@ export default function ReportReviewsPage() {
                 <strong>신고된 댓글:</strong> {report.review.comment}
               </div>
               <div className="mb-2">
-                <strong>댓글 작성자:</strong> {report.review.user.nickname}
+                <strong>댓글 작성자:</strong>{" "}
+                {report.review.user?.nickname ?? "알 수 없음"}
               </div>
               {report.isTicket ? (
                 <div className="mb-2">
                   <strong>티켓 타입:</strong>{" "}
-                  {(report.review as any).ticketType?.name}
+                  {report.review.ticketType?.name ?? "알 수 없음"}
                 </div>
               ) : (
                 <div className="mb-2">
-                  <strong>숙소명:</strong> {(report.review as any).lodge?.name}
+                  <strong>숙소명:</strong>{" "}
+                  {report.review.lodge?.name ?? "알 수 없음"}
                 </div>
               )}
               <div className="mb-2">
