@@ -3,6 +3,7 @@
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
+import { Lodge, RoomType } from "@/types/lodge";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -26,11 +27,7 @@ export default function LodgeListPage() {
   const children = searchParams.get("children") || "0";
   const sort = searchParams.get("sort") || "popularity";
 
-  const {
-    data: lodges,
-    isLoading,
-    isError,
-  } = useGetAvailableLodgeQuery({
+  const { data: lodges, isLoading } = useGetAvailableLodgeQuery({
     region,
     checkIn,
     checkOut,
@@ -62,7 +59,7 @@ export default function LodgeListPage() {
     router.push(`/${locale}/lodge/${lodgeId}?${search}`);
   };
 
-  const handleSortChange = (e: any) => {
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSort(e.target.value);
     const newQuery = new URLSearchParams({
       region,
@@ -91,7 +88,7 @@ export default function LodgeListPage() {
       {lodges?.length === 0 ? (
         <p className="text-lg text-gray-600">{t("noResults")}</p>
       ) : (
-        lodges?.map((lodge: any) => (
+        lodges?.map((lodge: Lodge) => (
           <div
             key={lodge.id}
             className="border p-4 mb-4 rounded-lg flex gap-4 hover:shadow cursor-pointer transition"
@@ -125,7 +122,7 @@ export default function LodgeListPage() {
                 {t("region", { address: lodge.address })}
               </p>
 
-              {lodge.roomTypes?.map((room: any) => (
+              {lodge.roomTypes?.map((room: RoomType) => (
                 <div
                   key={room.id}
                   className="mt-2 border p-2 bg-gray-50 rounded"

@@ -9,6 +9,8 @@ export interface Lodge {
   roomTypes: RoomType[];
   images: LodgeImage[];
   ticketTypes?: TicketType[];
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 export interface LodgeImage {
@@ -29,6 +31,7 @@ export interface RoomType {
   totalRooms: number;
   seasonalPricing?: SeasonalPricing[];
   images?: RoomTypeImage[];
+  pricePerNight?: number;
 }
 
 export interface RoomTypeImage {
