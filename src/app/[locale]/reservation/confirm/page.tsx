@@ -10,8 +10,8 @@ import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
 
 const ReservationConfirmPage = () => {
-  const {t} = useTranslation("reservation-confirm");
-  const [widgets, setWidgets] = useState<any>(null);
+  const { t } = useTranslation("reservation-confirm");
+  const [widgets, setWidgets] = useState<unknown>(null);
   const [ready, setReady] = useState(false);
 
   const searchParams = useSearchParams();
@@ -48,14 +48,14 @@ const ReservationConfirmPage = () => {
     const render = async () => {
       if (!widgets) return;
 
-      await widgets.setAmount({ value: Number(totalPrice), currency: "KRW" });
+      await (widgets as any).setAmount({ value: Number(totalPrice), currency: "KRW" });
 
       await Promise.all([
-        widgets.renderPaymentMethods({
+        (widgets as any).renderPaymentMethods({
           selector: "#payment-methods",
           variantKey: "DEFAULT",
         }),
-        widgets.renderAgreement({
+        (widgets as any).renderAgreement({
           selector: "#agreement",
           variantKey: "AGREEMENT",
         }),
@@ -107,13 +107,11 @@ const ReservationConfirmPage = () => {
       const customerMobilePhone = normalizeKoreanPhone(phoneNumber);
 
       if (!customerMobilePhone || !/^010\d{7,8}$/.test(customerMobilePhone)) {
-        toast.error(
-          t("payment.invalidPhoneAlert")
-        );
+        toast.error(t("payment.invalidPhoneAlert"));
         return;
       }
 
-      await widgets.requestPayment({
+      await (widgets as any).requestPayment({
         orderId: `reservation-${Date.now()}`,
         orderName: "숙소 예약",
         customerName: `${firstName} ${lastName}`,
@@ -133,7 +131,8 @@ const ReservationConfirmPage = () => {
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       <p>
-        {t("totalPrice")}: {totalPrice ? Number(totalPrice).toLocaleString() : "0"} ₩
+        {t("totalPrice")}:{" "}
+        {totalPrice ? Number(totalPrice).toLocaleString() : "0"} ₩
       </p>
 
       <div id="payment-methods" />
