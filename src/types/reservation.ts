@@ -18,6 +18,7 @@ export interface Reservation {
   roomType: {
     id: number;
     name: string;
+    images?: RoomTypeImage[] | string[];
   };
   user: {
     id: number;
@@ -30,4 +31,9 @@ export interface Reservation {
   email?: string | null;
   totalPrice: number;
   specialRequests?: string | null;
+}
+
+export interface RoomTypeImage {
+  id: number;
+  imageUrl: string;
 }
