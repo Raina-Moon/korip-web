@@ -145,7 +145,7 @@ const LoginPage = () => {
       } else {
         router.push(`/${locale}`);
       }
-    } catch (err) {
+    } catch {
       toast.error(t("loginFailed"));
     } finally {
       dispatch(hideLoading());
@@ -213,7 +213,7 @@ const LoginPage = () => {
         }
         dispatch(setRedirectAfterLogin(null));
       }
-    } catch (err) {
+    } catch {
       toast.error(t("googleLoginFailed"));
     } finally {
       dispatch(hideLoading());

@@ -329,7 +329,7 @@ const LodgeDetailPage = () => {
         try {
           await deleteReview(review.id).unwrap();
           toast.success(t("deleteSuccess"));
-        } catch (error) {
+        } catch {
           toast.error(t("deleteFailed"));
         }
       },
