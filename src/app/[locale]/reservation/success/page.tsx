@@ -2,6 +2,7 @@
 
 import { confirmReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
+import { Reservation } from "@/types/reservation";
 import { getNights } from "@/utils/getNights";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +13,7 @@ const ReservationSuccessPage = () => {
   const { t } = useTranslation("reservation-success");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [pending, setPending] = useState<any>(null);
+  const [pending, setPending] = useState<Reservation | null>(null);
 
   const reservationId = searchParams.get("reservationId");
 
@@ -46,6 +47,19 @@ const ReservationSuccessPage = () => {
 
   const nights = getNights(pending.checkIn, pending.checkOut);
 
+  const parseSpecialRequests = (sr?: string | null): string[] => {
+    if (!sr) return [];
+    try {
+      if (Array.isArray(sr)) return sr;
+      const parsed = JSON.parse(sr);
+      return Array.isArray(parsed) ? parsed : [sr];
+    } catch {
+      return [sr];
+    }
+  };
+
+  const requests = parseSpecialRequests(pending.specialRequests);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
       <h1 className="text-3xl font-bold text-primary-800">
@@ -65,13 +79,13 @@ const ReservationSuccessPage = () => {
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("success.labels.lodge")}
               </td>
-              <td className="py-2 px-4">{pending.lodgeName}</td>
+              <td className="py-2 px-4">{pending.lodge.name}</td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("success.labels.roomType")}
               </td>
-              <td className="py-2 px-4">{pending.roomName}</td>
+              <td className="py-2 px-4">{pending.roomType.name}</td>
             </tr>
 
             <tr className="bg-gray-100">
@@ -110,17 +124,29 @@ const ReservationSuccessPage = () => {
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("success.labels.adults")}
               </td>
-<td className="py-2 px-4">{t("success.labels.adultsWithUnit", { count: pending.adults })}</td>
+              <td className="py-2 px-4">
+                {t("success.labels.adultsWithUnit", { count: pending.adults })}
+              </td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">
                 {t("success.labels.children")}
               </td>
-              <td className="py-2 px-4">{t("success.labels.childrenWithUnit", { count: pending.children })}</td>
+              <td className="py-2 px-4">
+                {t("success.labels.childrenWithUnit", {
+                  count: pending.children,
+                })}
+              </td>
             </tr>
             <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">{t("success.labels.roomCount")}</td>
-              <td className="py-2 px-4">{t("success.labels.roomsWithUnit", { count: pending.roomCount })}</td>
+              <td className="py-2 px-4 font-medium bg-gray-50">
+                {t("success.labels.roomCount")}
+              </td>
+              <td className="py-2 px-4">
+                {t("success.labels.roomsWithUnit", {
+                  count: pending.roomCount,
+                })}
+              </td>
             </tr>
 
             <tr className="bg-gray-100">
@@ -160,8 +186,8 @@ const ReservationSuccessPage = () => {
                 {t("success.sections.requests")}
               </td>
             </tr>
-            {pending.specialRequests?.length > 0 ? (
-              pending.specialRequests.map((req: string, idx: number) => (
+            {requests.length > 0 ? (
+              requests.map((req, idx) => (
                 <tr key={idx} className="border-t">
                   <td className="py-2 px-4 font-medium bg-gray-50">{`요청 ${
                     idx + 1
