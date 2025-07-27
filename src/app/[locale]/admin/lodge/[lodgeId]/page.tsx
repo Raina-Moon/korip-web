@@ -15,6 +15,8 @@ import Image from "next/image";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import InventoryCalendar from "@/components/ui/InventoryCalendar";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const LodgeDetailPage = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -59,20 +61,24 @@ const LodgeDetailPage = () => {
     return <p className="p-8 text-red-600">Error: {error}</p>;
   if (!lodge) return <p className="p-8">No lodge found with ID {lodgeId}</p>;
 
-  const handleDeleteLodge = async (lodgeId: number) => {
-    const confirmed = confirm("정말로 이 숙소를 삭제하시겠습니까?");
-    if (!confirmed) return;
 
-    const resultAction = await dispatch(deleteLodge(lodgeId));
-    if (deleteLodge.fulfilled.match(resultAction)) {
-      dispatch(fetchLodges());
-      alert("숙소가 성공적으로 삭제되었습니다.");
-      router.push(`/${locale}/admin/lodge`);
-    } else {
-      alert("숙소 삭제에 실패했습니다.");
-      console.error("Failed to delete lodge:", error);
-    }
-  };
+const handleDeleteLodge = (lodgeId: number) => {
+  showConfirm({
+    message: "정말로 이 숙소를 삭제하시겠습니까?",
+    onConfirm: async () => {
+      const resultAction = await dispatch(deleteLodge(lodgeId));
+      if (deleteLodge.fulfilled.match(resultAction)) {
+        dispatch(fetchLodges());
+        toast.success("숙소가 성공적으로 삭제되었습니다.");
+        router.push(`/${locale}/admin/lodge`);
+      } else {
+        toast.error("숙소 삭제에 실패했습니다.");
+        console.error("Failed to delete lodge:", error);
+      }
+    },
+  });
+};
+
 
   const handlePrevImage = () => {
     if (!lodge.images) return;

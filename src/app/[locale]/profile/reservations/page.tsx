@@ -15,6 +15,7 @@ import {
 import TicketReservationCard from "../../../../components/reservations/TicketReservationCard";
 import { TicketReservation } from "@/types/ticketReservation";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 export default function ReservationListPage() {
   const { t } = useTranslation("reservations");
@@ -112,7 +113,7 @@ export default function ReservationListPage() {
         })
       );
     } catch (err) {
-      alert(t("alert.cancelFailed"));
+      toast.error(t("alert.cancelFailed"));
     } finally {
       setIsCancelling(false);
     }
@@ -131,9 +132,9 @@ export default function ReservationListPage() {
       setShowTicketCancelModal(false);
       setTicketModalOpen(false);
       dispatch(fetchTicketReservations({ page: ticketCurrentPage }));
-      alert(t("alert.ticketCancelSuccess"));
+      toast.success(t("alert.ticketCancelSuccess"));
     } catch (err) {
-      alert(t("alert.ticketCancelFailed"));
+      toast.error(t("alert.ticketCancelFailed"));
     } finally {
       setIsTicketCancelling(false);
     }

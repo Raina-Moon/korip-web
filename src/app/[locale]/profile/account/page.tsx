@@ -10,6 +10,7 @@ import { logout, updateNickname } from "@/lib/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import { showConfirm } from "@/utils/showConfirm";
 
 const AccountPage = () => {
   const { t } = useTranslation("account");
@@ -49,22 +50,22 @@ const AccountPage = () => {
   };
 
   const handleDeleteAccount = async () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (!confirm(t("deleteConfirm"))) {
-      return;
-    }
-
-    try {
-      await deleteUser().unwrap();
-      setSuccessMessage(t("deleted"));
-      dispatch(logout());
-      router.push(`/${locale}/`);
-    } catch (err: any) {
-      console.error(err);
-      setErrorMessage(err?.data?.message || t("deleteFailed"));
-    }
+    showConfirm({
+      message: t("deleteConfirm"),
+      confirmLabel: t("delete.yes"),
+      cancelLabel: t("delete.no"),
+      onConfirm: async () => {
+        try {
+          await deleteUser().unwrap();
+          setSuccessMessage(t("deleted"));
+          dispatch(logout());
+          router.push(`/${locale}/`);
+        } catch (err: any) {
+          setErrorMessage(err?.data?.message || t("deleteFailed"));
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   return (

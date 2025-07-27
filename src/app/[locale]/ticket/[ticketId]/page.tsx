@@ -34,6 +34,8 @@ import ImageModal from "@/components/ui/ImageModal";
 import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const TicketDetailPage = () => {
   const { t } = useTranslation("ticket");
@@ -160,7 +162,7 @@ const TicketDetailPage = () => {
 
   const saveEdit = async (review: GenericReview) => {
     if (!editingRating || editingRating < 1) {
-      alert(t("ratingAlert"));
+      toast.error(t("ratingAlert"));
       return;
     }
     try {
@@ -171,7 +173,7 @@ const TicketDetailPage = () => {
       setEditingId(null);
     } catch (error) {
       console.error(error);
-      alert(t("editFailed"));
+      toast.error(t("editFailed"));
     }
   };
 
@@ -181,16 +183,21 @@ const TicketDetailPage = () => {
     setEditingRating(null);
   };
 
-  const handleDelete = async (review: GenericReview) => {
-    if (confirm(t("deleteConfirm"))) {
-      try {
-        await deleteReview(review.id).unwrap();
-        alert(t("deleteSuccess"));
-      } catch (error) {
-        console.error(error);
-        alert(t("deleteFailed"));
-      }
-    }
+  const handleDelete = (review: GenericReview) => {
+    showConfirm({
+      message: t("deleteConfirm"),
+      confirmLabel: t("delete.yes"),
+      cancelLabel: t("delete.no"),
+      onConfirm: async () => {
+        try {
+          await deleteReview(review.id).unwrap();
+          toast.success(t("deleteSuccess"));
+        } catch (error) {
+          console.error(error);
+          toast.error(t("deleteFailed"));
+        }
+      },
+    });
   };
 
   const handleReport = (reviewId: number) => {
@@ -235,7 +242,7 @@ const TicketDetailPage = () => {
 
   const handleReportSubmit = async () => {
     if (!selectedReviewId || !reason.trim()) {
-      alert(t("reportReasonRequired"));
+      toast.error(t("reportReasonRequired"));
       return;
     }
 
@@ -248,10 +255,10 @@ const TicketDetailPage = () => {
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
-      alert(t("reportSuccess"));
+      toast.success(t("reportSuccess"));
     } catch (error) {
       console.error("신고 실패:", error);
-      alert(t("reportFailed"));
+      toast.error(t("reportFailed"));
     }
   };
 

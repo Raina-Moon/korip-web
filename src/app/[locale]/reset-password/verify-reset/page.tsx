@@ -9,6 +9,7 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Trans, useTranslation } from "react-i18next";
 
 const VerifyandResetPage = () => {
@@ -36,7 +37,7 @@ const VerifyandResetPage = () => {
 
   useEffect(() => {
     if (error) {
-      alert(error);
+      toast.error(error);
     }
   }, [error]);
 
@@ -58,7 +59,7 @@ const VerifyandResetPage = () => {
 
     if (verifyCode.fulfilled.match(result)) {
       setIsCodeValid(true);
-      alert("Code verified successfully. You can now reset your password.");
+      toast.success("Code verified successfully. You can now reset your password.");
     }
 
     setCode(["", "", "", "", "", ""]);
@@ -70,10 +71,10 @@ const VerifyandResetPage = () => {
     dispatch(hideLoading());
 
     if (updatePassword.fulfilled.match(result)) {
-      alert(t("password_updated"));
+      toast.success(t("password_updated"));
       router.push(`/${locale}/login`);
     } else {
-      alert(result.payload || t("error_generic"));
+      toast.error(result.payload || t("error_generic"));
     }
   };
 

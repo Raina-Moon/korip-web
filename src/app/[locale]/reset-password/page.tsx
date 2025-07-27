@@ -7,6 +7,7 @@ import { sendResetCode } from "@/lib/reset-password/resetPasswordThunk";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { showLoading, hideLoading } from "@/lib/store/loadingSlice";
+import toast from "react-hot-toast";
 
 const ResetPwdPage = () => {
   const { t } = useTranslation("reset-pwd");
@@ -24,11 +25,11 @@ const ResetPwdPage = () => {
       router.push(`/${locale}/reset-password/verify-reset?email=${email}`);
     } catch (err) {
       if (typeof err === "string") {
-        alert(err);
+       toast.error(err);
       } else if (err && typeof err === "object" && "message" in err) {
-        alert((err as { message: string }).message);
+        toast.error((err as { message: string }).message);
       } else {
-        alert(t("alert.error"));
+        toast.error(t("alert.error"));
       }
       console.error("Error during password reset:", err);
     } finally {

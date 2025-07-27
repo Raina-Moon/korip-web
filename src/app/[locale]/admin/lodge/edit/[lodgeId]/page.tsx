@@ -7,6 +7,7 @@ import { useLocale } from "@/utils/useLocale";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const LodgeEditPage = () => {
   const { lodgeId } = useParams();
@@ -29,10 +30,10 @@ const LodgeEditPage = () => {
     const updateData = await dispatch(updateLodge({ id, ...data }));
 
     if (updateLodge.fulfilled.match(updateData)) {
-      alert("숙소가 성공적으로 수정되었습니다.");
+      toast.success("숙소가 성공적으로 수정되었습니다.");
       router.push(`/${locale}/admin/lodge/${id}`);
     } else {
-      alert("숙소 수정에 실패했습니다. 다시 시도해주세요.");
+      toast.error("숙소 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

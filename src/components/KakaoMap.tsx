@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
+import toast from "react-hot-toast";
 
 declare global {
   interface Window {
@@ -143,7 +144,7 @@ const KakaoMap = ({
   const handleSearch = () => {
     const keyword = inputRef.current?.value;
     if (!keyword || keyword.trim() === "") {
-      alert("검색어를 입력해주세요.");
+      toast.error("검색어를 입력해주세요.");
       return;
     }
 
@@ -166,7 +167,7 @@ const KakaoMap = ({
 
         onLocationChange(lat, lng, place.address_name); // 부모 컴포넌트로 좌표와 주소 전달
       } else {
-        alert("검색 결과가 없습니다.");
+        toast.error("검색 결과가 없습니다.");
       }
     });
   };

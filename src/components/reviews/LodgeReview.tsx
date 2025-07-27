@@ -16,6 +16,8 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { formattedDate } from "@/utils/date";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const LodgeReview = () => {
   const {t} = useTranslation("lodge-review");
@@ -79,20 +81,27 @@ const LodgeReview = () => {
       cancelEditing();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert(t("updateFail"));
+      toast.error(t("updateFail"));
     }
   };
 
-  const handleDelete = async (review: Review) => {
-    if (!confirm(t("confirmDelete"))) return;
-    try {
-      await deleteReview(review.id).unwrap();
-      alert(t("deleteSuccess"));
-    } catch (error) {
-      console.error("리뷰 삭제 실패:", error);
-      alert(t("deleteFail"));
-    }
-  };
+  const handleDelete = (review: Review) => {
+  showConfirm({
+    message: t("confirmDelete"),
+    confirmLabel: t("deleteAlert.yes"),
+    cancelLabel: t("deleteAlert.no"),
+    onConfirm: async () => {
+      try {
+        await deleteReview(review.id).unwrap();
+        toast.success(t("deleteSuccess"));
+      } catch (error) {
+        console.error("리뷰 삭제 실패:", error);
+        toast.error(t("deleteFail"));
+      }
+    },
+  });
+};
+
 
   return (
     <div>

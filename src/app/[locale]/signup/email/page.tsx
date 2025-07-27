@@ -4,6 +4,7 @@ import { useRequestVerificationMutation } from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
 import { Info } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 const VERIFY_DURATION_SECONDS = 15 * 60;
@@ -21,7 +22,7 @@ const EmailPage = () => {
   const locale = useLocale();
 
   const handleSubmit = async () => {
-    if (!email) return alert(t("alert.empty"));
+    if (!email) return toast.error(t("alert.empty"));
 
     try {
       await requestVerification({ email, locale }).unwrap();
@@ -32,17 +33,17 @@ const EmailPage = () => {
       );
       setRemaining(VERIFY_DURATION_SECONDS);
 
-      alert(t("alert.success"));
+      toast.success(t("alert.success"));
     } catch (err: any) {
       const status = err?.status;
       const msg = err?.data?.message || t("alert.error");
 
       if (status === 409) {
-        alert(t("alert.alreadyRegistered"));
+        toast.error(t("alert.alreadyRegistered"));
       } else if (status === 429) {
-        alert(t("alert.alreadyRequested"));
+        toast.error(t("alert.alreadyRequested"));
       } else {
-        alert(msg);
+        toast.error(msg);
       }
     }
   };

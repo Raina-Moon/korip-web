@@ -10,6 +10,7 @@ import CheckinInput from "@/components/CheckInInput";
 import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import toast from "react-hot-toast";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -56,7 +57,7 @@ const Page = () => {
 
     if (productType === "숙박") {
       if (!range || !range[0] || !range[1]) {
-        alert(t("selectCheckinCheckoutWarning"));
+        toast.error(t("selectCheckinCheckoutWarning"));
         setIsNavigating(false);
         return;
       }
@@ -74,7 +75,7 @@ const Page = () => {
       router.push(`/${locale}/list/lodge?${query.toString()}`);
     } else {
       if (!date) {
-        alert(t("selectDateWarning"));
+        toast.error(t("selectDateWarning"));
         setIsNavigating(false);
         return;
       }

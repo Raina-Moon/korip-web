@@ -35,6 +35,8 @@ import ImageModal from "@/components/ui/ImageModal";
 import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
 import RoomCard from "@/components/lodge/RoomCard";
 import { isValidRedirectPath, useRedirectPath } from "@/utils/getRedirectPath";
+import toast from "react-hot-toast";
+import { showConfirm } from "@/utils/showConfirm";
 
 const LodgeDetailPage = () => {
   const { t } = useTranslation("lodge");
@@ -314,20 +316,24 @@ const LodgeDetailPage = () => {
       }).unwrap();
     } catch (error) {
       console.error("Failed to update review:", error);
-      alert(t("editFailed"));
+      toast.error(t("editFailed"));
     }
   };
 
   const handleDelete = async (review: GenericReview) => {
-    if (confirm("Are you sure you want to delete this review?")) {
-      try {
-        await deleteReview(review.id).unwrap();
-        alert(t("deleteSuccess"));
-      } catch (error) {
-        console.error("Failed to delete review:", error);
-        alert(t("deleteFailed"));
-      }
-    }
+    showConfirm({
+      message: t("deleteConfirm"),
+      confirmLabel: t("delete.yes"),
+      cancelLabel: t("delete.no"),
+      onConfirm: async () => {
+        try {
+          await deleteReview(review.id).unwrap();
+          toast.success(t("deleteSuccess"));
+        } catch (error) {
+          toast.error(t("deleteFailed"));
+        }
+      },
+    });
   };
 
   const cancelEditing = () => {
@@ -451,7 +457,7 @@ const LodgeDetailPage = () => {
 
   const submitReport = async () => {
     if (!selectedReviewId || !reason.trim()) {
-      alert(t("reportReasonRequired"));
+      toast.error(t("reportReasonRequired"));
       return;
     }
 
@@ -461,13 +467,13 @@ const LodgeDetailPage = () => {
         reason: reason.trim(),
       }).unwrap();
 
-      alert(t("reportSuccess"));
+      toast.success(t("reportSuccess"));
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
     } catch (error) {
       console.error("Failed to report review:", error);
-      alert(t("reportFailed"));
+      toast.error(t("reportFailed"));
     }
   };
 
@@ -615,7 +621,6 @@ const LodgeDetailPage = () => {
               isOpen={showingLoginModal}
               context={loginModalContext}
               onLogin={() => {
-
                 const reservationData = {
                   type: "lodge",
                   lodgeId: Number(lodgeId),

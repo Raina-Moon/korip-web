@@ -11,6 +11,7 @@ import "@smastrom/react-rating/style.css";
 import { TicketReview } from "@/types/ticketReview";
 import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 interface Props {
   onClose: () => void;
@@ -74,7 +75,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (!ticketTypeId) return alert(t("alert.noTicket"));
+    if (!ticketTypeId) return toast.error(t("alert.noTicket"));
 
     try {
       await createReview({
@@ -86,11 +87,11 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
 
       await refetch();
 
-      alert(t("alert.success"));
+      toast.success(t("alert.success"));
       onClose();
     } catch (error) {
       console.error("티켓 리뷰 등록 실패:", error);
-      alert(t("alert.fail"));
+      toast.error(t("alert.fail"));
     }
   };
 

@@ -7,6 +7,10 @@
   "edit": "수정",
   "delete": "삭제",
   "confirmDelete": "리뷰를 삭제할까요?",
+  "deleteAlert" : {
+    "yes": "네",
+    "no": "아니요"
+  },
   "deleteSuccess": "리뷰가 삭제되었습니다",
   "deleteFail": "리뷰 삭제 실패",
   "updateFail": "리뷰 수정 실패",
