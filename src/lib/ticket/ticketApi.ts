@@ -3,6 +3,26 @@ import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { Ticket } from "@/types/ticket";
 import { TicketReview } from "@/types/ticketReview";
 
+interface TicketSearchParams {
+  lodgeId?: number;
+  date?: string;
+}
+
+interface TicketReviewCreateResponse {
+  message: string;
+  review: TicketReview;
+}
+
+interface TicketReviewUpdateResponse {
+  message: string;
+  review: TicketReview;
+}
+
+interface TicketReviewDeleteResponse {
+  message: string;
+  reviewId: number;
+}
+
 export const ticketApi = createApi({
   reducerPath: "ticketApi",
   baseQuery: fetchBaseQuery({
@@ -12,9 +32,13 @@ export const ticketApi = createApi({
   }),
   tagTypes: ["TicketReviews"],
   endpoints: (builder) => ({
-    getAvailableTicket: builder.query<Ticket[], any>({
+    getAvailableTicket: builder.query<Ticket[], TicketSearchParams>({
       query: (params) => {
-        const query = new URLSearchParams(params).toString();
+        const query = new URLSearchParams(
+          Object.entries(params || {})
+            .filter(([, v]) => v !== undefined && v !== null)
+            .map(([k, v]) => [k, String(v)]) as [string, string][]
+        ).toString();
         return `/search?${query}`;
       },
     }),
@@ -24,7 +48,7 @@ export const ticketApi = createApi({
 
     getTicketReviews: builder.query<TicketReview[], number | string>({
       query: (ticketId) => `/${ticketId}/reviews`,
-      providesTags: (result, error, id) =>
+      providesTags: (result) =>
         result
           ? [
               ...result.map((r) => ({
@@ -36,7 +60,7 @@ export const ticketApi = createApi({
           : [{ type: "TicketReviews", id: "LIST" }],
     }),
     createTicketReview: builder.mutation<
-      any,
+      TicketReviewCreateResponse,
       { id: number | string; data: { rating: number; comment?: string } }
     >({
       query: ({ id, data }) => ({
@@ -47,7 +71,7 @@ export const ticketApi = createApi({
       invalidatesTags: [{ type: "TicketReviews", id: "LIST" }],
     }),
     updateTicketReview: builder.mutation<
-      any,
+      TicketReviewUpdateResponse,
       { reviewId: number; data: { rating: number; comment?: string } }
     >({
       query: ({ reviewId, data }) => ({
@@ -61,7 +85,7 @@ export const ticketApi = createApi({
       ],
     }),
 
-    deleteTicketReview: builder.mutation<any, number>({
+    deleteTicketReview: builder.mutation<TicketReviewDeleteResponse, number>({
       query: (reviewId) => ({
         url: `/review/${reviewId}`,
         method: "DELETE",
