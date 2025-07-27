@@ -6,6 +6,7 @@ import {
   useVerifyEmailTokenMutation,
 } from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
+import { Check, Lock, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -88,106 +89,144 @@ const EmailVerifPage = () => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4">
-      <div className="flex flex-col gap-4">
+ return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="w-full max-w-md rounded-2xl shadow-xl bg-white px-8 py-10 flex flex-col gap-7 border border-gray-200">
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800 text-center mb-2">
+          {t("title")}
+        </h1>
+
+        {/* Email (disabled) */}
         <div>
-          <p className="text-primary-800 font-medium text-sm">{t("email")}</p>
-          <input
-            value={email}
-            disabled
-            className="border border-primary-700 rounded-md px-2 py-1 outline-none bg-gray-100 cursor-not-allowed text-gray-600"
-          />
+          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="email">
+            {t("email")}
+          </label>
+          <div className="relative">
+            <input
+              value={email}
+              disabled
+              id="email"
+              className="pl-10 border border-gray-300 rounded-lg px-4 py-2 outline-none bg-gray-100 text-gray-500 w-full cursor-not-allowed"
+            />
+            <User className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          </div>
         </div>
+        {/* Nickname */}
         <div>
-          <p className="text-primary-800 font-medium text-sm">
+          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="nickname">
             {t("nickname")}
-          </p>
-          <input
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="border border-primary-700 rounded-md px-2 py-1 outline-none"
-          />
+          </label>
+          <div className="relative">
+            <input
+              id="nickname"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              className={`pl-10 border ${
+                nicknameValid ? "border-gray-300" : "border-red-400"
+              } rounded-lg px-4 py-2 outline-none w-full focus:border-primary-500`}
+              autoComplete="off"
+            />
+            <User className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          </div>
           {!nicknameValid && (
-            <p className="text-red-700 text-sm mt-1">{t("nicknameError")}</p>
+            <p className="text-red-600 text-xs mt-1">{t("nicknameError")}</p>
           )}
         </div>
+        {/* Password */}
         <div>
-          <p className="text-primary-800 font-medium text-sm">
+          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="password">
             {t("password")}
-          </p>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={`border ${
-              passwordValid ? "border-primary-700" : "border-red-700"
-            } rounded-md px-2 py-1 outline-none`}
-            type="password"
-          />
+          </label>
+          <div className="relative">
+            <input
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`pl-10 border ${
+                passwordValid ? "border-gray-300" : "border-red-400"
+              } rounded-lg px-4 py-2 outline-none w-full focus:border-primary-500`}
+              type="password"
+              autoComplete="new-password"
+            />
+            <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          </div>
           {!passwordValid && (
-            <p className="text-red-700 text-sm mt-1">{t("passwordError")}</p>
+            <p className="text-red-600 text-xs mt-1">{t("passwordError")}</p>
           )}
         </div>
+        {/* Confirm Password */}
         <div>
-          <p className="text-primary-800 font-medium text-sm">
+          <label className="text-primary-700 text-sm font-medium mb-1 block" htmlFor="confirmPassword">
             {t("confirmPassword")}
-          </p>
-          <input
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className={`border ${
-              passwordMatch ? "border-primary-700" : "border-red-700"
-            } rounded-md px-2 py-1 outline-none`}
-            type="password"
-          />
+          </label>
+          <div className="relative">
+            <input
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`pl-10 border ${
+                passwordMatch ? "border-gray-300" : "border-red-400"
+              } rounded-lg px-4 py-2 outline-none w-full focus:border-primary-500`}
+              type="password"
+              autoComplete="new-password"
+            />
+            <Check className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          </div>
           {!passwordMatch && (
-            <p className="text-red-700 text-sm mt-1">{t("passwordMismatch")}</p>
+            <p className="text-red-600 text-xs mt-1">{t("passwordMismatch")}</p>
           )}
         </div>
+
+        {/* Privacy Agree */}
+        <div className="flex flex-row gap-2 items-center mt-2 mb-2">
+          <input
+            id="agree"
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="w-4 h-4 accent-primary-700 focus:ring-2 focus:ring-primary-200"
+          />
+          <label htmlFor="agree" className="text-sm text-gray-800 cursor-pointer">
+            {t("privacyAgree")}
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="text-primary-700 underline ml-1"
+            >
+              {t("privacyPolicy")}
+            </button>
+          </label>
+        </div>
+
+        <button
+          className={`
+            mt-2 w-full py-2 rounded-lg font-semibold text-base transition
+            ${isLoading || !agree
+              ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+              : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md"
+            }
+          `}
+          onClick={() => handleSubmit({ nickname, email, password })}
+          disabled={isLoading || !agree}
+        >
+          {isLoading ? t("loading") : t("button")}
+        </button>
       </div>
 
-      <div className="flex flex-row gap-2 items-center">
-        <input
-          type="checkbox"
-          checked={agree}
-          onChange={(e) => setAgree(e.target.checked)}
-          className="w-4 h-4"
-        />
-
-        <label htmlFor="agree" className="text-sm text-gray-800">
-          {t("privacyAgree")}
-          <button
-            onClick={() => setShowModal(true)}
-            className="text-primary-700 underline"
-          >
-            {t("privacyPolicy")}
-          </button>
-        </label>
-      </div>
-
-      <button
-        className="bg-primary-700 text-white px-2 py-1 rounded-md hover:bg-primary-500"
-        onClick={() => handleSubmit({ nickname, email, password })}
-        disabled={isLoading || !agree}
-      >
-        {isLoading ? t("loading") : t("button")}
-      </button>
-
+      {/* Modal */}
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <div className="p-4">
+          <div className="p-4 max-w-xl">
             <h2 className="text-lg font-semibold text-primary-800 mb-2">
               {t("privacy.title")}
             </h2>
             <p className="text-sm text-gray-700 mb-2">{t("privacy.intro")}</p>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.collection.title")}
             </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.collection.content")}
             </p>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.usage.title")}
             </h3>
@@ -199,30 +238,25 @@ const EmailVerifPage = () => {
                 <li>{t("privacy.sections.usage.content.list.2")}</li>
               </ul>
             </div>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.storage.title")}
             </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.storage.content")}
             </p>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.sharing.title")}
             </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.sharing.content")}
             </p>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.rights.title")}
             </h3>
             <p className="text-sm text-gray-700 mb-2">
               {t("privacy.sections.rights.content")}
               <br />
-              {t("privacy.sections.rights.contact")}
             </p>
-
             <h3 className="text-md font-semibold mt-4 mb-1">
               {t("privacy.sections.consent.title")}
             </h3>
