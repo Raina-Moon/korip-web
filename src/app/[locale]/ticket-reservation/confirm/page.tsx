@@ -8,10 +8,11 @@ import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
+import type { TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 
 const TicketReservationConfirmPage = () => {
   const { t } = useTranslation("ticket-reservation-confirm");
-  const [widgets, setWidgets] = useState<any>(null);
+  const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
   const [ready, setReady] = useState(false);
 
   const locale = useLocale();
@@ -118,7 +119,8 @@ const TicketReservationConfirmPage = () => {
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       <p>
-        {t("totalPrice")}: {totalPrice ? Number(totalPrice).toLocaleString() : "0"} KRW
+        {t("totalPrice")}:{" "}
+        {totalPrice ? Number(totalPrice).toLocaleString() : "0"} KRW
       </p>
       <div id="payment-methods" />
       <div id="agreement" />
