@@ -1,5 +1,13 @@
+import { TicketReview } from "@/types/ticketReview";
 import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+interface PaginatedTicketReviews {
+  data: TicketReview[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
 export const ticketReviewApi = createApi({
   reducerPath: "ticketReviewApi",
@@ -11,7 +19,7 @@ export const ticketReviewApi = createApi({
   tagTypes: ["TicketReviews"],
   endpoints: (builder) => ({
     getReviewsByTicketTypeId: builder.query<
-      any,
+      PaginatedTicketReviews,
       { ticketTypeId: number; page?: number; pageSize?: number }
     >({
       query: ({ ticketTypeId, page = 1, pageSize = 5 }) =>
@@ -22,7 +30,7 @@ export const ticketReviewApi = createApi({
     }),
 
     getMyTicketReviews: builder.query<
-      any,
+      PaginatedTicketReviews,
       { page?: number; pageSize?: number }
     >({
       query: ({ page = 1, pageSize = 5 }) =>
@@ -45,7 +53,7 @@ export const ticketReviewApi = createApi({
       query: ({ reviewId, data }) => ({
         url: `ticket-review/${reviewId}`,
         method: "PATCH",
-        body:data,
+        body: data,
       }),
       invalidatesTags: ["TicketReviews"],
     }),
