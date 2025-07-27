@@ -26,9 +26,11 @@ export const fetchRoomInventory = createAsyncThunk<
         withCredentials: true,
       });
       return res.data as RoomInventory[];
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch room inventory");
     }
@@ -60,9 +62,11 @@ export const createRoomInventory = createAsyncThunk<
         }
       );
       return res.data as { message: string; inventory: RoomInventory };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to create room inventory");
     }
@@ -96,9 +100,11 @@ export const updateRoomInventory = createAsyncThunk<
         message: string;
         inventory: RoomInventory;
       };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to update room inventory");
     }
@@ -124,9 +130,11 @@ export const deleteRoomInventory = createAsyncThunk<
         }
       );
       return res.data as { message: string };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete room inventory");
     }
