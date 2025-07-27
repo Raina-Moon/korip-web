@@ -1,3 +1,4 @@
+import { Reservation } from "@/types/reservation";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -5,8 +6,8 @@ function ReservationCard({
   reservation,
   onClick,
 }: {
-  reservation: any;
-  onClick: (r: any) => void;
+  reservation: Reservation;
+  onClick: (r: Reservation) => void;
 }) {
   const { t } = useTranslation("reservation-card");
   const getStatusBadge = (status: string) => {

@@ -16,11 +16,12 @@ import TicketReservationCard from "../../../../components/reservations/TicketRes
 import { TicketReservation } from "@/types/ticketReservation";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { Reservation } from "@/types/reservation";
 
 export default function ReservationListPage() {
   const { t } = useTranslation("reservations");
   const [showingModal, setShowingModal] = useState(false);
-  const [pending, setPending] = useState<any | null>(null);
+  const [pending, setPending] = useState<Reservation | null>(null);
   const [filter, setFilter] = useState<
     "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED"
   >("ALL");
@@ -78,16 +79,16 @@ export default function ReservationListPage() {
     setTicketCurrentPage(1);
   }, [typeFilter]);
 
-  const openModal = (reservation: any) => {
+  const openModal = (reservation: Reservation) => {
     setShowingModal(true);
     setPending(reservation);
   };
 
-  const parsedSpecialRequests = (input: any): string[] => {
+  const parsedSpecialRequests = (input: unknown): string[] => {
     if (!input) return [];
     if (Array.isArray(input)) return input;
     try {
-      const parsed = JSON.parse(input);
+      const parsed = JSON.parse(input as string);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
@@ -112,7 +113,7 @@ export default function ReservationListPage() {
           status: filter === "ALL" ? undefined : filter,
         })
       );
-    } catch (err) {
+    } catch {
       toast.error(t("alert.cancelFailed"));
     } finally {
       setIsCancelling(false);
@@ -133,7 +134,7 @@ export default function ReservationListPage() {
       setTicketModalOpen(false);
       dispatch(fetchTicketReservations({ page: ticketCurrentPage }));
       toast.success(t("alert.ticketCancelSuccess"));
-    } catch (err) {
+    } catch {
       toast.error(t("alert.ticketCancelFailed"));
     } finally {
       setIsTicketCancelling(false);
@@ -475,11 +476,11 @@ export default function ReservationListPage() {
             </p>
             <p className="mb-2">
               <strong>{t("modal.adults")}:</strong>{" "}
-              {t("modal.adultsWithCount", { count: pending.adults })}
+              {t("modal.adultsWithCount", { count: pending?.adults })}
             </p>
             <p className="mb-2">
               <strong>{t("modal.children")}:</strong>{" "}
-              {t("modal.childrenWithCount", { count: pending.children })}
+              {t("modal.childrenWithCount", { count: pending?.children })}
             </p>
             <p className="mb-2">
               <strong>{t("ticketModal.totalPrice")}:</strong>{" "}

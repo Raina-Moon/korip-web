@@ -50,7 +50,7 @@ const EmailVerifPage = () => {
       if (payload?.email) {
         setEmail(payload.email);
       }
-    } catch (err) {
+    } catch {
       console.error("Invalid token");
     }
     verifyEmailToken({ token })
@@ -71,9 +71,9 @@ const EmailVerifPage = () => {
       await signup(formData).unwrap();
       toast.success(t("signupSuccess"));
       router.push(`/${locale}/login`);
-    } catch (err: any) {
-      const status = err?.status;
-      const message = err?.data?.message;
+    } catch (err: unknown) {
+      const status = (err as any)?.status;
+      const message = (err as any)?.data?.message;
 
       if (status === 403 && message === "Email not verified") {
         toast.error(t("alert.notVerified"));

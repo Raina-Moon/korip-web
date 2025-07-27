@@ -25,7 +25,7 @@ export const getAllTicketReservations = createAsyncThunk<
         }
       );
       return response.data;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to fetch ticket reservations");
     } finally {
       dispatch(hideLoading());
@@ -52,7 +52,7 @@ export const getTicketReservationById = createAsyncThunk<
         }
       );
       return response.data;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to fetch ticket reservation");
     }
   }
@@ -85,7 +85,7 @@ export const updateTicketReservationStatus = createAsyncThunk<
         }
       );
       return response.data;
-    } catch (error) {
+    } catch {
       return rejectWithValue("Failed to update ticket reservation status");
     } finally {
       dispatch(hideLoading());

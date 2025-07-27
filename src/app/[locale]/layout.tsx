@@ -5,6 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { dir } from "i18next";
 import i18nConfig from "@/lib/i18n/settings";
 import ClientApp from "@/components/ClientApp";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,12 +38,14 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={htmlDir}>
-      <head>
-        <script src="https://js.tosspayments.com/v2/standard"></script>
-      </head>
+      <head></head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script
+          src="https://js.tosspayments.com/v2/standard"
+          strategy="afterInteractive"
+        />
         <ClientApp>{children}</ClientApp>
       </body>
     </html>

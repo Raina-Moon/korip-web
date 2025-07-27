@@ -2,9 +2,24 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
+type RoomInventory = {
+  id: number;
+  date: string;
+  roomType: { name: string };
+  availableRooms: number;
+};
+
+type TicketInventory = {
+  id: number;
+  date: string;
+  ticketType: { name: string };
+  availableAdultTickets: number;
+  availableChildTickets: number;
+};
+
 type InventoryCalendarProps = {
-  roomInventories: Record<string, any>[];
-  ticketInventories: Record<string, any>[];
+  roomInventories: RoomInventory[];
+  ticketInventories: TicketInventory[];
 };
 
 type CalendarValue = Date | null | [Date | null, Date | null];

@@ -43,9 +43,22 @@ const AccountPage = () => {
       dispatch(updateNickname(nickname));
       setSuccessMessage("Nickname updated successfully!");
       setNickname("");
-    } catch (err: any) {
-      console.error(err);
-      setErrorMessage(err?.data?.message || "Failed to update nickname.");
+    } catch (err: unknown) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "data" in err &&
+        typeof (err as any).data === "object" &&
+        (err as any).data !== null &&
+        "message" in (err as any).data
+      ) {
+        setErrorMessage(
+          (err as { data: { message?: string } }).data.message ||
+            "Failed to update nickname."
+        );
+      } else {
+        setErrorMessage("Failed to update nickname.");
+      }
     }
   };
 
@@ -60,8 +73,22 @@ const AccountPage = () => {
           setSuccessMessage(t("deleted"));
           dispatch(logout());
           router.push(`/${locale}/`);
-        } catch (err: any) {
-          setErrorMessage(err?.data?.message || t("deleteFailed"));
+        } catch (err: unknown) {
+          if (
+            typeof err === "object" &&
+            err !== null &&
+            "data" in err &&
+            typeof (err as any).data === "object" &&
+            (err as any).data !== null &&
+            "message" in (err as any).data
+          ) {
+            setErrorMessage(
+              (err as { data: { message?: string } }).data.message ||
+                t("deleteFailed")
+            );
+          } else {
+            setErrorMessage(t("deleteFailed"));
+          }
         }
       },
       onCancel: () => {},

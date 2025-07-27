@@ -6,19 +6,25 @@ export const sendResetCode = createAsyncThunk<
   { message: string },
   { email: string; locale: string },
   { rejectValue: string }
->("resetPassword/sendResetCode", async ({ email, locale }, { rejectWithValue }) => {
-  try {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password`,
-      { email, locale }
-    );
-    return res.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Something went wrong"
-    );
+>(
+  "resetPassword/sendResetCode",
+  async ({ email, locale }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/v1/reset-password`,
+        { email, locale }
+      );
+      return res.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Something went wrong"
+        );
+      }
+      return rejectWithValue("Something went wrong");
+    }
   }
-});
+);
 
 export const verifyCode = createAsyncThunk<
   { message: string },
@@ -51,19 +57,15 @@ export const verifyCode = createAsyncThunk<
       });
     }
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
+    let errorMessage = "Something went wrong";
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    }
     return rejectWithValue({
-      message:
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : err.message
-          ? err.message
-          : "Something went wrong",
-      status: err.response && err.response.status ? err.response.status : 500,
-      remainingAttempts:
-        err.response && err.response.data && err.response.data.remainingAttempts
-          ? err.response.data.remainingAttempts
-          : null,
+      message: errorMessage,
+      status: 500,
+      remainingAttempts: undefined,
     });
   }
 });
@@ -81,10 +83,13 @@ export const updatePassword = createAsyncThunk<
         { email, newPassword }
       );
       return res.data;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || "Something went wrong"
-      );
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(
+          err.response?.data?.message || "Something went wrong"
+        );
+      }
+      return rejectWithValue("Something went wrong");
     }
   }
 );

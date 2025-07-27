@@ -34,16 +34,26 @@ const EmailPage = () => {
       setRemaining(VERIFY_DURATION_SECONDS);
 
       toast.success(t("alert.success"));
-    } catch (err: any) {
-      const status = err?.status;
-      const msg = err?.data?.message || t("alert.error");
+    } catch (err: unknown) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "status" in err &&
+        "data" in err &&
+        typeof (err as any).data === "object"
+      ) {
+        const status = (err as any).status;
+        const msg = (err as any).data?.message || t("alert.error");
 
-      if (status === 409) {
-        toast.error(t("alert.alreadyRegistered"));
-      } else if (status === 429) {
-        toast.error(t("alert.alreadyRequested"));
+        if (status === 409) {
+          toast.error(t("alert.alreadyRegistered"));
+        } else if (status === 429) {
+          toast.error(t("alert.alreadyRequested"));
+        } else {
+          toast.error(msg);
+        }
       } else {
-        toast.error(msg);
+        toast.error(t("alert.error"));
       }
     }
   };

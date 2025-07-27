@@ -89,7 +89,7 @@ const reportsSlice = createSlice({
           }>
         ) => {
           state.state = "succeeded";
-          const { id: hiddenReviewId, isHidden } = action.payload.updated;
+          const { id: hiddenReviewId } = action.payload.updated;
           const updatedReport = state.list.findIndex(
             (item) => item.review.id === hiddenReviewId
           );

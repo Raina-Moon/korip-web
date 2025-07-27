@@ -1,5 +1,4 @@
 import axios from "axios";
-import { AppDispatch } from "../store/store";
 import { setCredential } from "./authSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

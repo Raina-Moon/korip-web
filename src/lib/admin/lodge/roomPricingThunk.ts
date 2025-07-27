@@ -24,9 +24,11 @@ export const fetchRoomPrice = createAsyncThunk<
       });
 
       return res.data as RoomPricing[];
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch room pricing");
     }
@@ -58,9 +60,11 @@ export const createRoomPrice = createAsyncThunk<
         }
       );
       return res.data as { message: string; roomPricing: RoomPricing };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to create room price");
     }
@@ -92,9 +96,11 @@ export const updateRoomPrice = createAsyncThunk<
         }
       );
       return res.data as { message: string; updated: RoomPricing };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to update room price");
     }
@@ -120,9 +126,11 @@ export const deleteRoomPrice = createAsyncThunk<
         }
       );
       return res.data as { message: string };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete room price");
     }

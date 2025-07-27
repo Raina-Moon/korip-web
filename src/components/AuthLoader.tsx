@@ -16,12 +16,12 @@ export default function AuthLoader() {
         dispatch(setAccessToken(storedToken));
         try {
           await dispatch(fetchCurrentUser()).unwrap();
-        } catch (error) {
+        } catch {
           try {
             const newToken = await dispatch(tryRefreshSession()).unwrap();
             dispatch(setAccessToken(newToken));
             await dispatch(fetchCurrentUser()).unwrap();
-          } catch (refreshErr) {
+          } catch {
             dispatch(logout());
           }
         }

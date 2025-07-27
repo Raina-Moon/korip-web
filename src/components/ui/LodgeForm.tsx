@@ -13,7 +13,7 @@ import Image from "next/image";
 type LodgeFormProps = {
   mode: "create" | "edit";
   initialData?: Lodge;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Partial<Lodge>) => void;
 };
 
 const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {

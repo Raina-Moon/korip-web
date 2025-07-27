@@ -220,7 +220,11 @@ const ReservationPage = () => {
               {t("checkInOut", { checkIn, checkOut })}
             </p>
             <p className="text-gray-700">
-              {t("guests", { adults, children, roomCount })}
+              {t("guests", {
+                adults,
+                children,
+                roomCount: roomCount ?? resolvedRoomCount,
+              })}
             </p>
           </div>
         </div>

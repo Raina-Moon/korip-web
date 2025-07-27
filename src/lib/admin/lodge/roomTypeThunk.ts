@@ -23,9 +23,11 @@ export const fetchRoomTypes = createAsyncThunk<
         }
       );
       return res.data as RoomType[];
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch room types");
     }
@@ -60,9 +62,11 @@ export const createRoomType = createAsyncThunk<
         }
       );
       return res.data as { message: string; roomType: RoomType };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to create room type");
     }
@@ -98,9 +102,11 @@ export const updateRoomType = createAsyncThunk<
         }
       );
       return res.data as { message: string; roomType: RoomType };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to update room type");
     }
@@ -126,9 +132,11 @@ export const deleteRoomType = createAsyncThunk<
         }
       );
       return res.data as { message: string };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete room type");
     }

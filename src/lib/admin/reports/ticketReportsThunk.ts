@@ -63,9 +63,11 @@ export const fetchTicketReports = createAsyncThunk<
         }
       );
       return res.data as TicketReportReviewsPagination;
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to fetch ticket reports");
     } finally {
@@ -93,9 +95,11 @@ export const deleteTicketReportedReview = createAsyncThunk<
         }
       );
       return res.data as { message: string; reviewId: number };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete ticket reported review");
     }
@@ -134,9 +138,11 @@ export const hideTicketReportReview = createAsyncThunk<
           isHidden: data.updated.isHidden,
         },
       };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to hide ticket review");
     }
@@ -162,9 +168,11 @@ export const deleteTicketReviewOnly = createAsyncThunk<
         }
       );
       return res.data as { message: string; reviewId: number };
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        dispatch(logout());
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          dispatch(logout());
+        }
       }
       return rejectWithValue("Failed to delete ticket review");
     }

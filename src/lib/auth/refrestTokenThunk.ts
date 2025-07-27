@@ -1,8 +1,11 @@
 import axios from "axios";
 import { logout, setCredential } from "./authSlice";
+import { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
 
-export const refreshTokenThunk = () => async (dispatch: any) => {
-  try {
+export const refreshTokenThunk =
+  () => async (dispatch: ThunkDispatch<RootState, unknown, UnknownAction>) => {
+    try {
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/refresh`,
       {},
@@ -21,7 +24,7 @@ export const refreshTokenThunk = () => async (dispatch: any) => {
       })
     const user = userRes.data;
       dispatch(setCredential({ token: newToken, user }));
-  } catch (err) {
+  } catch {
     dispatch(logout());
   }
 };

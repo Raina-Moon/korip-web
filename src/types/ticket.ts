@@ -1,6 +1,6 @@
 export interface Ticket {
-  lodgeImage: any;
-  averageRating: any;
+  lodgeImage: string | null;
+  averageRating: number | null;
   reviewCount: number;
   id: number;
   name: string;

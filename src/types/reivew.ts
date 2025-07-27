@@ -9,7 +9,7 @@ export interface Review {
   createdAt: string;
   isHidden: boolean;
   lodge: LodgeSummary;
-  reservationId: number;
+  reservationId?: number;
   user?: {
     id: number;
     nickname: string;
@@ -20,6 +20,6 @@ export interface Review {
 export interface LodgeSummary {
   id: number;
   name: string;
-  address: string;
-  images: { imageUrl: string }[];
+  address?: string;
+  images?: { imageUrl: string }[];
 }

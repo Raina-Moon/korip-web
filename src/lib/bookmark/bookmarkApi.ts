@@ -1,6 +1,16 @@
+import { Bookmark } from "@/types/bookmark";
 import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
+
+export interface BookmarkCreateResponse {
+  message: string;
+  bookmark: Bookmark;
+}
+
+export interface BookmarkDeleteResponse {
+  message: string;
+}
 
 export const bookmarkApi = createApi({
     reducerPath: "bookmarkApi",
@@ -11,11 +21,11 @@ export const bookmarkApi = createApi({
     }),
     tagTypes: ["Bookmarks"],
     endpoints: (builder) => ({
-        getMyBookmarks: builder.query<any,void>({
+        getMyBookmarks: builder.query<Bookmark[], void>({
             query: () => `bookmark`,
             providesTags: ["Bookmarks"],
         }),
-        createBookmark: builder.mutation<any,{lodgeId:number}>({
+        createBookmark: builder.mutation<BookmarkCreateResponse, { lodgeId: number }>({
             query: (body) => ({
                 url: `bookmark`,
                 method: "POST",
@@ -23,7 +33,7 @@ export const bookmarkApi = createApi({
             }),
             invalidatesTags: ["Bookmarks"],
         }),
-        deleteBookmark: builder.mutation<any, number>({
+        deleteBookmark: builder.mutation<BookmarkDeleteResponse, number>({
             query: (lodgeId) => ({
                 url: `bookmark/${lodgeId}`,
                 method: "DELETE",

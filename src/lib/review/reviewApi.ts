@@ -1,5 +1,13 @@
+import { Review } from "@/types/reivew";
 import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+interface GetMyReviewsResponse {
+  data: Review[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
@@ -13,12 +21,10 @@ export const reviewApi = createApi({
     getReviewsByLodgeId: builder.query({
       query: ({ lodgeId, page = 1, pageSize = 5 }) =>
         `review/lodge/${lodgeId}?page=${page}&pageSize=${pageSize}`,
-      providesTags: (result, error, lodgeId) => [
-        { type: "Reviews", id: lodgeId },
-      ],
+      providesTags: (lodgeId) => [{ type: "Reviews", id: lodgeId }],
     }),
     getReviewsByUserId: builder.query<
-      any,
+      GetMyReviewsResponse,
       { page?: number; pageSize?: number }
     >({
       query: ({ page = 1, pageSize = 5 }) =>
