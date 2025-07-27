@@ -1,7 +1,11 @@
 "use client";
 
 import LodgeForm from "@/components/ui/LodgeForm";
-import { fetchLodgeById, updateLodge } from "@/lib/admin/lodge/lodgeThunk";
+import {
+  fetchLodgeById,
+  updateLodge,
+  UpdateLodgePayload,
+} from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useLocale } from "@/utils/useLocale";
 import { ArrowLeft } from "lucide-react";
@@ -26,8 +30,8 @@ const LodgeEditPage = () => {
     }
   }, [dispatch, id]);
 
-  const handleUpdateLodge = async (data: any) => {
-    const updateData = await dispatch(updateLodge({ id, ...data }));
+  const handleUpdateLodge = async (data: UpdateLodgePayload) => {
+    const updateData = await dispatch(updateLodge(data));
 
     if (updateLodge.fulfilled.match(updateData)) {
       toast.success("숙소가 성공적으로 수정되었습니다.");
