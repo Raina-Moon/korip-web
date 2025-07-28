@@ -1,4 +1,6 @@
+
 "use client";
+export const runtime = 'edge';
 
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";

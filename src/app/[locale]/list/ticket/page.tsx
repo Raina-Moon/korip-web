@@ -1,4 +1,6 @@
+
 "use client";
+export const runtime = 'edge';
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetAvailableTicketQuery } from "@/lib/ticket/ticketApi";

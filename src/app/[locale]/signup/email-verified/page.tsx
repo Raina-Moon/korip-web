@@ -1,4 +1,6 @@
+
 "use client";
+export const runtime = 'edge';
 
 import Modal from "@/components/ui/Modal";
 import {
