@@ -27,15 +27,16 @@ export function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({
-  children,
-  params,
-}: {
+interface LocaleLayoutProps {
   children: React.ReactNode;
-  params: { locale: string };
-}) {
+  params: {
+    locale: string;
+  };
+}
+
+export default function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const locale = params.locale;
-  const htmlDir = dir(locale ?? "en"); // fallback 제공
+  const htmlDir = dir(locale ?? "en");
 
   return (
     <html lang={locale} dir={htmlDir}>
