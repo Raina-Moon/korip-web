@@ -6,6 +6,10 @@ import { TicketReview } from "@/types/ticketReview";
 interface TicketSearchParams {
   lodgeId?: number;
   date?: string;
+  region?: string;
+  adults?: number;
+  children?: number;
+  sort?: string;
 }
 
 interface TicketReviewCreateResponse {
