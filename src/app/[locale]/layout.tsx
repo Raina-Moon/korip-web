@@ -29,14 +29,16 @@ export function generateStaticParams() {
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
-  params: {
-    locale: string;
-  };
+  params: Promise<{ locale: string }>;
 }
 
-export default function LocaleLayout({ children, params }: LocaleLayoutProps) {
-  const locale = params.locale;
+export default async function LocaleLayout({
+  children,
+  params,
+}: LocaleLayoutProps) {
+  const { locale } = await params;
   const htmlDir = dir(locale ?? "en");
+
 
   return (
     <html lang={locale} dir={htmlDir}>
