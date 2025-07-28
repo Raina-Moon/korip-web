@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import {

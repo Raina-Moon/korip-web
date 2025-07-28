@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { useLocale } from "@/utils/useLocale";
 import { useSearchParams, useRouter } from "next/navigation";

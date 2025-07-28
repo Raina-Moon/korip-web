@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { useGetLodgeByIdQuery } from "@/lib/lodge/lodgeApi";
 import { usePriceCalcMutation } from "@/lib/price/priceApi";

@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
