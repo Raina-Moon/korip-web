@@ -33,8 +33,8 @@ const LodgeReview = () => {
     pageSize,
   });
 
-  const reviews = data?.reviews || [];
-  const totalCount = data?.totalCount || 0;
+  const reviews = data?.data || [];
+  const totalCount = data?.total || 0;
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const [deleteReview] = useDeleteReviewMutation();
