@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import LodgeForm from "@/components/ui/LodgeForm";
 import {

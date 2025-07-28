@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
