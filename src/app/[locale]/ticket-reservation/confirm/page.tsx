@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 "use client";
 
 import { createTicketReservation } from "@/lib/ticket-reservation/ticketReservationThunk";

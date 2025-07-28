@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 "use client";
 
 import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
