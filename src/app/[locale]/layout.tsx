@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
@@ -27,18 +26,15 @@ export function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
 }
 
-interface LocaleLayoutProps {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}
-
-export default async function LocaleLayout({
+export default function LocaleLayout({
   children,
   params,
-}: LocaleLayoutProps) {
-  const { locale } = await params;
+}: {
+  children: React.ReactNode;
+  params: any;
+}) {
+  const locale = params.locale;
   const htmlDir = dir(locale ?? "en");
-
 
   return (
     <html lang={locale} dir={htmlDir}>
