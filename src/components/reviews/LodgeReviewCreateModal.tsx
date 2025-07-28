@@ -29,7 +29,9 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   });
 
   const reviewedReservationIds = new Set<number>(
-    (myReviews?.reviews ?? []).map((r: Review) => r.reservationId)
+    (myReviews?.data ?? [])
+      .map((r: Review) => r.reservationId)
+      .filter((id): id is number => typeof id === "number")
   );
 
   const [lodgeId, setLodgeId] = useState<number | null>(null);

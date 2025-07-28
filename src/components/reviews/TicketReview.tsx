@@ -36,8 +36,8 @@ const TicketReview = () => {
   const [editingRating, setEditingRating] = useState<number | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  const reviews = data?.reviews || [];
-  const totalCount = data?.totalCount || 0;
+  const reviews = data?.data || [];
+  const totalCount = data?.total || 0;
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const toggleMenu = (id: string) => {

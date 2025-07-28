@@ -61,24 +61,22 @@ const LodgeDetailPage = () => {
     return <p className="p-8 text-red-600">Error: {error}</p>;
   if (!lodge) return <p className="p-8">No lodge found with ID {lodgeId}</p>;
 
-
-const handleDeleteLodge = (lodgeId: number) => {
-  showConfirm({
-    message: "정말로 이 숙소를 삭제하시겠습니까?",
-    onConfirm: async () => {
-      const resultAction = await dispatch(deleteLodge(lodgeId));
-      if (deleteLodge.fulfilled.match(resultAction)) {
-        dispatch(fetchLodges());
-        toast.success("숙소가 성공적으로 삭제되었습니다.");
-        router.push(`/${locale}/admin/lodge`);
-      } else {
-        toast.error("숙소 삭제에 실패했습니다.");
-        console.error("Failed to delete lodge:", error);
-      }
-    },
-  });
-};
-
+  const handleDeleteLodge = (lodgeId: number) => {
+    showConfirm({
+      message: "정말로 이 숙소를 삭제하시겠습니까?",
+      onConfirm: async () => {
+        const resultAction = await dispatch(deleteLodge(lodgeId));
+        if (deleteLodge.fulfilled.match(resultAction)) {
+          dispatch(fetchLodges());
+          toast.success("숙소가 성공적으로 삭제되었습니다.");
+          router.push(`/${locale}/admin/lodge`);
+        } else {
+          toast.error("숙소 삭제에 실패했습니다.");
+          console.error("Failed to delete lodge:", error);
+        }
+      },
+    });
+  };
 
   const handlePrevImage = () => {
     if (!lodge.images) return;
@@ -142,7 +140,9 @@ const handleDeleteLodge = (lodgeId: number) => {
         <div className="gap-4 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={() => router.push(`/${locale}/admin/lodge/edit/${lodge.id}`)}
+            onClick={() =>
+              router.push(`/${locale}/admin/lodge/edit/${lodge.id}`)
+            }
           >
             수정
           </button>
@@ -449,8 +449,24 @@ const handleDeleteLodge = (lodgeId: number) => {
             <h2 className="text-2xl font-bold mb-4">날짜별 재고 현황</h2>
 
             <InventoryCalendar
-              roomInventories={roomInventories}
-              ticketInventories={ticketInventories}
+              roomInventories={roomInventories.map((inv) => {
+                const found = lodge.roomTypes?.find(
+                  (rt) => rt.id === inv.roomTypeId
+                );
+                return {
+                  ...inv,
+                  roomType: { name: found?.name ?? "알수없음" },
+                };
+              })}
+              ticketInventories={ticketInventories.map((inv) => {
+                const found = lodge.ticketTypes?.find(
+                  (tt) => tt.id === inv.ticketTypeId
+                );
+                return {
+                  ...inv,
+                  ticketType: { name: found?.name ?? "알수없음" },
+                };
+              })}
             />
           </div>
         </div>

@@ -20,6 +20,11 @@ export interface TicketBookmark {
   ticketTypeId: number;
   userId: number;
   createdAt: string;
+  ticketType: {
+    id: number;
+    name: string;
+    description?: string;
+  };
 }
 
 export interface TicketImage {
