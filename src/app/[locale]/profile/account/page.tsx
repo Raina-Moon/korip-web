@@ -69,7 +69,7 @@ const AccountPage = () => {
       cancelLabel: t("delete.no"),
       onConfirm: async () => {
         try {
-          await deleteUser().unwrap();
+          await deleteUser({}).unwrap();
           setSuccessMessage(t("deleted"));
           dispatch(logout());
           router.push(`/${locale}/`);
