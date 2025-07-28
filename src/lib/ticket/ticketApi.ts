@@ -3,15 +3,6 @@ import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
 import { Ticket } from "@/types/ticket";
 import { TicketReview } from "@/types/ticketReview";
 
-interface TicketSearchParams {
-  lodgeId?: number;
-  date?: string;
-  region?: string;
-  adults?: number;
-  children?: number;
-  sort?: string;
-}
-
 interface TicketReviewCreateResponse {
   message: string;
   review: TicketReview;
@@ -36,7 +27,7 @@ export const ticketApi = createApi({
   }),
   tagTypes: ["TicketReviews"],
   endpoints: (builder) => ({
-    getAvailableTicket: builder.query<Ticket[], TicketSearchParams>({
+    getAvailableTicket: builder.query<Ticket[], any>({
       query: (params) => {
         const query = new URLSearchParams(
           Object.entries(params || {})
