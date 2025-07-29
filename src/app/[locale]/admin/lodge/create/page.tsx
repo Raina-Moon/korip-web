@@ -1,6 +1,5 @@
 
 "use client";
-export const runtime = 'edge';
 
 import React from "react";
 import { createLodge } from "@/lib/admin/lodge/lodgeThunk";

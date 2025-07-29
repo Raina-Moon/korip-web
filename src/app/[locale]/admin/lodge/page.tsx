@@ -1,6 +1,5 @@
 
 "use client";
-export const runtime = 'edge';
 
 import { fetchLodges } from "@/lib/admin/lodge/lodgeThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";

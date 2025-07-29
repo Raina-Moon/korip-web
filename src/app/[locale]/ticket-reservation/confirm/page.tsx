@@ -1,6 +1,4 @@
-
 "use client";
-export const runtime = 'edge';
 
 import { createTicketReservation } from "@/lib/ticket-reservation/ticketReservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
