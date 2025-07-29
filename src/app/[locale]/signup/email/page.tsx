@@ -1,6 +1,4 @@
-
 "use client";
-export const runtime = 'edge';
 
 import { useRequestVerificationMutation } from "@/lib/auth/authApi";
 import { useLocale } from "@/utils/useLocale";
