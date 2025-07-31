@@ -1,0 +1,27 @@
+name: Deploy Frontend to EC2
+
+on:
+  push:
+    branches: [ master ] # 또는 배포할 브랜치명
+
+jobs:
+  deploy:
+    name: Deploy via SSH
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to EC2 Server
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+            cd ~/app/frontend
+            git pull origin master
+            docker compose -f ../docker-compose.yml up -d --build
+          EOF
