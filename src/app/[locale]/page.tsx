@@ -96,7 +96,7 @@ const Page = () => {
     <div className="h-screen">
       <div className="relative w-full h-[60vh] z-0">
         <Image
-          src="/images/hero_section.jpg"
+          src="/images/hero_section.webp"
           alt="Hero Section"
           fill
           style={{ objectFit: "cover" }}

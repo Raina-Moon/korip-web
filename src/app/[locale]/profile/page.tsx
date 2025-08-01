@@ -24,7 +24,7 @@ const ProfilePage = () => {
 
       <div className="bg-white rounded-xl shadow p-6 mb-8 flex items-center gap-4">
         <img
-          src="/images/default-profile.png"
+          src="/images/default-profile.webp"
           alt="Profile"
           className="w-16 h-16 rounded-full object-cover"
         />
