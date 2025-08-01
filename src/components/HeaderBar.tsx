@@ -55,7 +55,7 @@ const HeaderBar = () => {
     <div className="flex justify-between items-center px-5 border-b border-primary-800">
       <div>
         <Image
-          src="/images/koriplogo.png"
+          src="/images/koripsLogo.webp"
           alt="korip logo"
           onClick={() => router.push(`/${locale}/`)}
           width={100}
