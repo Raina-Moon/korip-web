@@ -1,5 +1,5 @@
 "use client";
-export const runtime = 'edge';
+export const runtime = "edge";
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import {
@@ -38,6 +38,7 @@ import RoomCard from "@/components/lodge/RoomCard";
 import { isValidRedirectPath, useRedirectPath } from "@/utils/getRedirectPath";
 import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
+import KakaoMapModal from "@/components/ui/KakaoMapModal";
 
 const LodgeDetailPage = () => {
   const { t } = useTranslation("lodge");
@@ -53,6 +54,7 @@ const LodgeDetailPage = () => {
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [calendar, setCalendar] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -567,7 +569,12 @@ const LodgeDetailPage = () => {
           )}
         </button>
       </div>
-      <p className="text-gray-600 mb-4">{lodge.address}</p>
+      <p
+        className="text-gray-600 mb-4 underline cursor-pointer hover:text-primary-500"
+        onClick={() => setIsMapModalOpen(true)}
+      >
+        {lodge.address}
+      </p>
 
       {/* 설명 */}
       {lodge.description && (
@@ -665,6 +672,14 @@ const LodgeDetailPage = () => {
         setReason={setReason}
         selectedReviewId={selectedReviewId}
         onSubmit={submitReport}
+      />
+
+      <KakaoMapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        lat={lodge.latitude}
+        lng={lodge.longitude}
+        address={lodge.address}
       />
     </div>
   );
