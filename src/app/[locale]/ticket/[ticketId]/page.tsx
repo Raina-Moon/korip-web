@@ -36,6 +36,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
+import KakaoMapModal from "@/components/ui/KakaoMapModal";
 
 const TicketDetailPage = () => {
   const { t } = useTranslation("ticket");
@@ -46,6 +47,7 @@ const TicketDetailPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 
   const searchParams = useSearchParams();
   const locale = useLocale();
@@ -322,6 +324,12 @@ const TicketDetailPage = () => {
 
       <div className="flex items-center gap-2 mb-4">
         <h1 className="text-3xl font-bold text-primary-900">{ticket.name}</h1>
+        <p
+          className="text-gray-600 mb-4 underline cursor-pointer hover:text-primary-500"
+          onClick={() => setIsMapModalOpen(true)}
+        >
+          {ticket.lodge.address}
+        </p>
         <button
           onClick={handleBookmarkToggle}
           className={`text-2xl ${
@@ -493,6 +501,14 @@ const TicketDetailPage = () => {
         onNext={handleNextImage}
         onClose={closeModal}
         setCurrentIndex={setCurrentModalImage}
+      />
+
+      <KakaoMapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        address={ticket.lodge?.address || ""}
+        lat={ticket.lodge?.latitude || 0}
+        lng={ticket.lodge?.longitude || 0}
       />
     </div>
   );

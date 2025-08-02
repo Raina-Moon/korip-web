@@ -37,6 +37,8 @@ export interface Lodge {
   name: string;
   address: string;
   images: TicketImage[];
+  latitude: number;
+  longitude: number;
 }
 
 export interface TicketInventory {
