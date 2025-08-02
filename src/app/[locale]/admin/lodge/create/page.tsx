@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -36,19 +35,13 @@ const CreateLodgePage = () => {
       createLodge({
         ...dataWithoutImages,
         description: dataWithoutImages.description ?? null,
-        roomTypes: dataWithoutImages.roomTypes.map(
-          (
-            room
-          ): Omit<RoomType, "seasonalPricing"> & {
-            seasonalPricing?: SeasonalPricing[];
-          } => {
-            const { seasonalPricing, ...roomWithoutSeasonal } = room;
-            return {
-              ...roomWithoutSeasonal,
-              seasonalPricing: seasonalPricing ?? [],
-            };
-          }
-        ),
+        roomTypes: dataWithoutImages.roomTypes.map((room) => {
+          const { seasonalPricing, images, ...roomWithoutExtras } = room;
+          return {
+            ...roomWithoutExtras,
+            seasonalPricing: seasonalPricing ?? [],
+          };
+        }),
         lodgeImageFile: newImageFiles,
         roomTypeImages,
         ticketTypes: ticketTypes ?? [],
