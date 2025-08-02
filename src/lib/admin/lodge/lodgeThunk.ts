@@ -90,11 +90,12 @@ export const createLodge = createAsyncThunk<
         !Array.isArray(newLodgeData.roomTypeImages) ||
         newLodgeData.roomTypeImages.length === 0
       ) {
-        console.error(
-          "roomTypeImages is not an array or is empty",
-          newLodgeData.roomTypeImages
-        );
-        throw new Error("roomTypeImages must be an array of File arrays");
+        //console.error(
+        //  "roomTypeImages is not an array or is empty",
+        //  newLodgeData.roomTypeImages
+        //);
+        // throw new Error("roomTypeImages must be an array of File arrays");
+        return;
       }
       newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
         if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
