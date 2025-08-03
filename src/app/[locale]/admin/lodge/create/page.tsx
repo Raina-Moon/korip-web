@@ -62,7 +62,7 @@ const CreateLodgePage = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col min-h-screen">
       {isSubmitting && (
         <div className="absolute z-50 inset-0 bg-black bg-opacity-60 flex items-center justify-center pointer-events-none">
           <div className="text-white text-3xl font-bold animate-pulse pointer-events-auto">
