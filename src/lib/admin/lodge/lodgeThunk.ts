@@ -120,8 +120,6 @@ export const createLodge = createAsyncThunk<
         throw new Error("Response missing data");
       }
 
-      console.log("res data = ", res.data);
-
       if (!res.data.message || !res.data.lodge) {
         throw new Error("Response data is missing required fields");
       }
