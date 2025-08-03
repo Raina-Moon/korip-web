@@ -46,7 +46,7 @@ type CreateLodgePayload = Omit<
   roomTypes: (Omit<RoomType, "seasonalPricing"> & {
     seasonalPricing?: SeasonalPricing[];
   })[];
-  roomTypeImages: File[][];
+  roomTypeImages?: File[][];
   ticketTypes: TicketType[];
 };
 
@@ -86,45 +86,16 @@ export const createLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       });
 
-      if (
-        Array.isArray(newLodgeData.roomTypeImages) &&
-        newLodgeData.roomTypeImages.length > 0
-      ) {
+      if (Array.isArray(newLodgeData.roomTypeImages)) {
         newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-          if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
-            console.warn(`roomTypeImages[${idx}] is empty or invalid`);
-            return;
-          }
+          if (!Array.isArray(roomFiles) || roomFiles.length === 0) return;
+
           roomFiles.forEach((file: File, i: number) => {
-            if (!(file instanceof File)) {
-              console.warn(`roomTypeImages[${idx}][${i}] is not a File`);
-              return;
-            }
+            if (!(file instanceof File)) return;
             formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
           });
         });
       }
-
-      newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-        if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
-          console.error(
-            `roomTypeImages[${idx}] is not an array or is empty`,
-            roomFiles
-          );
-          throw new Error(
-            `roomTypeImages[${idx}] must be an array of File objects`
-          );
-        }
-        roomFiles.forEach((file: File, i: number) => {
-          if (!(file instanceof File)) {
-            console.error(`roomTypeImages[${idx}][${i}] is not a File`, file);
-            throw new Error(
-              `roomTypeImages[${idx}][${i}] must be a File object`
-            );
-          }
-          formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
-        });
-      });
 
       const token = getState().auth.accessToken;
       const res = await axios.post(
@@ -139,8 +110,17 @@ export const createLodge = createAsyncThunk<
         }
       );
 
-      console.log("res data = ", res.data);
-      if (!res.data || !res.data.message || !res.data.lodge) {
+      if (!res) {
+        console.error("Response object is undefined or null:", res);
+        throw new Error("No response received");
+      }
+
+      if (!res.data) {
+        console.error("Response received but missing data:", res);
+        throw new Error("Response missing data");
+      }
+
+      if (!res.data.message || !res.data.lodge) {
         throw new Error("Response data is missing required fields");
       }
 
@@ -152,10 +132,13 @@ export const createLodge = createAsyncThunk<
       if (axios.isAxiosError(err)) {
         const backendMsg =
           err.response?.data?.message || err.response?.data?.error || "";
+        console.error("Axios Error:", backendMsg, err);
+
         return rejectWithValue(
           backendMsg || "Failed to create lodge (Unknown reason)"
         );
       }
+      console.error("Unknown error during createLodge:", err);
 
       return rejectWithValue("Failed to create lodge");
     }
