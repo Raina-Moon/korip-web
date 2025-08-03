@@ -138,16 +138,25 @@ export const createLodge = createAsyncThunk<
           withCredentials: true,
         }
       );
+
+      console.log("res data = ", res.data);
+      if (!res.data || !res.data.message || !res.data.lodge) {
+        throw new Error("Response data is missing required fields");
+      }
+
       return {
         message: res.data.message,
         lodge: res.data.lodge,
       };
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          dispatch(logout());
-        }
+        const backendMsg =
+          err.response?.data?.message || err.response?.data?.error || "";
+        return rejectWithValue(
+          backendMsg || "Failed to create lodge (Unknown reason)"
+        );
       }
+
       return rejectWithValue("Failed to create lodge");
     }
   }
