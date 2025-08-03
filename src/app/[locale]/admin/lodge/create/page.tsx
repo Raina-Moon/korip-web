@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { createLodge } from "@/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
-import { RoomType, SeasonalPricing, TicketType } from "@/types/lodge";
+import { RoomType, TicketType } from "@/types/lodge";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
 
@@ -24,11 +24,15 @@ interface CreateLodgeFormData {
 }
 
 const CreateLodgePage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const dispatch = useAppDispatch();
   const router = useRouter();
   const locale = useLocale();
+  const lodgeState = useAppSelector((state) => state["admin/lodge"].state);
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
+    setIsSubmitting(true);
     const { newImageFiles, roomTypeImages, ticketTypes, ...dataWithoutImages } =
       data;
     const lodgeData = await dispatch(
@@ -48,6 +52,7 @@ const CreateLodgePage = () => {
       })
     );
 
+    setIsSubmitting(false);
     if (createLodge.fulfilled.match(lodgeData)) {
       toast.success("숙소가 성공적으로 등록되었습니다.");
       router.push(`/${locale}/admin/lodge`);
@@ -58,6 +63,14 @@ const CreateLodgePage = () => {
 
   return (
     <div className="flex flex-col">
+      {isSubmitting && (
+        <div className="absolute z-50 inset-0 bg-black bg-opacity-60 flex items-center justify-center pointer-events-none">
+          <div className="text-white text-3xl font-bold animate-pulse pointer-events-auto">
+            숙소 등록 중...
+          </div>
+        </div>
+      )}
+
       <div className="relative flex items-center justify-center mx-24 mt-10">
         <div
           className="absolute left-0 p-2 cursor-pointer"
