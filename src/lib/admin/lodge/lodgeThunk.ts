@@ -46,7 +46,7 @@ type CreateLodgePayload = Omit<
   roomTypes: (Omit<RoomType, "seasonalPricing"> & {
     seasonalPricing?: SeasonalPricing[];
   })[];
-  roomTypeImages: File[][];
+  roomTypeImages?: File[][];
   ticketTypes: TicketType[];
 };
 
@@ -86,45 +86,16 @@ export const createLodge = createAsyncThunk<
         formData.append("hotSpringLodgeImages", file);
       });
 
-      if (
-        Array.isArray(newLodgeData.roomTypeImages) &&
-        newLodgeData.roomTypeImages.length > 0
-      ) {
+      if (Array.isArray(newLodgeData.roomTypeImages)) {
         newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-          if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
-            console.warn(`roomTypeImages[${idx}] is empty or invalid`);
-            return;
-          }
+          if (!Array.isArray(roomFiles) || roomFiles.length === 0) return;
+
           roomFiles.forEach((file: File, i: number) => {
-            if (!(file instanceof File)) {
-              console.warn(`roomTypeImages[${idx}][${i}] is not a File`);
-              return;
-            }
+            if (!(file instanceof File)) return;
             formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
           });
         });
       }
-
-      newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-        if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
-          console.error(
-            `roomTypeImages[${idx}] is not an array or is empty`,
-            roomFiles
-          );
-          throw new Error(
-            `roomTypeImages[${idx}] must be an array of File objects`
-          );
-        }
-        roomFiles.forEach((file: File, i: number) => {
-          if (!(file instanceof File)) {
-            console.error(`roomTypeImages[${idx}][${i}] is not a File`, file);
-            throw new Error(
-              `roomTypeImages[${idx}][${i}] must be a File object`
-            );
-          }
-          formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
-        });
-      });
 
       const token = getState().auth.accessToken;
       const res = await axios.post(
