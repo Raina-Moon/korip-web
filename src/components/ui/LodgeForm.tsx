@@ -9,6 +9,7 @@ import {
   TicketType,
 } from "@/types/lodge";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 type LodgeFormProps = {
   mode: "create" | "edit";
@@ -293,12 +294,33 @@ const LodgeForm = ({ mode, initialData, onSubmit }: LodgeFormProps) => {
       </div>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit(submitData);
-        }}
-        className="flex flex-col gap-4 p-6 max-w-2xl w-full"
-      >
+  onSubmit={(e) => {
+    e.preventDefault();
+
+    if (uploadedImages.length === 0 && lodgeImages.length === 0) {
+      toast.error("숙소 이미지를 최소 1장 업로드해주세요.");
+      return;
+    }
+
+    if (!name || !name.trim()) {
+      toast.error("숙소 이름을 입력해주세요.");
+      return;
+    }
+
+    if (!address || !address.trim()) {
+      toast.error("숙소 주소를 입력해주세요.");
+      return;
+    }
+
+    if (!description || !description.trim()) {
+      toast.error("숙소 설명을 입력해주세요.");
+      return;
+    }
+
+    onSubmit(submitData);
+  }}
+  className="flex flex-col gap-4 p-6 max-w-2xl w-full"
+>
         <p className="font-bold text-lg">숙소명</p>
         <input
           value={name}
