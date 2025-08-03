@@ -110,8 +110,19 @@ export const createLodge = createAsyncThunk<
         }
       );
 
+      if (!res) {
+        console.error("Response object is undefined or null:", res);
+        throw new Error("No response received");
+      }
+
+      if (!res.data) {
+        console.error("Response received but missing data:", res);
+        throw new Error("Response missing data");
+      }
+
       console.log("res data = ", res.data);
-      if (!res.data || !res.data.message || !res.data.lodge) {
+
+      if (!res.data.message || !res.data.lodge) {
         throw new Error("Response data is missing required fields");
       }
 
