@@ -152,10 +152,13 @@ export const createLodge = createAsyncThunk<
       if (axios.isAxiosError(err)) {
         const backendMsg =
           err.response?.data?.message || err.response?.data?.error || "";
+        console.error("Axios Error:", backendMsg, err);
+
         return rejectWithValue(
           backendMsg || "Failed to create lodge (Unknown reason)"
         );
       }
+      console.error("Unknown error during createLodge:", err);
 
       return rejectWithValue("Failed to create lodge");
     }
