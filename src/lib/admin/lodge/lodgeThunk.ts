@@ -87,16 +87,24 @@ export const createLodge = createAsyncThunk<
       });
 
       if (
-        !Array.isArray(newLodgeData.roomTypeImages) ||
-        newLodgeData.roomTypeImages.length === 0
+        Array.isArray(newLodgeData.roomTypeImages) &&
+        newLodgeData.roomTypeImages.length > 0
       ) {
-        //console.error(
-        //  "roomTypeImages is not an array or is empty",
-        //  newLodgeData.roomTypeImages
-        //);
-        // throw new Error("roomTypeImages must be an array of File arrays");
-        return;
+        newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
+          if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
+            console.warn(`roomTypeImages[${idx}] is empty or invalid`);
+            return;
+          }
+          roomFiles.forEach((file: File, i: number) => {
+            if (!(file instanceof File)) {
+              console.warn(`roomTypeImages[${idx}][${i}] is not a File`);
+              return;
+            }
+            formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+          });
+        });
       }
+
       newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
         if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
           console.error(
@@ -130,7 +138,10 @@ export const createLodge = createAsyncThunk<
           withCredentials: true,
         }
       );
-      return res.data;
+      return {
+        message: res.data.message,
+        lodge: res.data.lodge,
+      };
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401 || err.response?.status === 403) {
