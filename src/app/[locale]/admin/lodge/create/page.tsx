@@ -19,7 +19,7 @@ interface CreateLodgeFormData {
   accommodationType: string;
   roomTypes: RoomType[];
   newImageFiles: File[];
-  roomTypeImages: File[][];
+  newRoomTypeImageFiles: File[][];
   ticketTypes: TicketType[];
 }
 
@@ -32,7 +32,7 @@ const CreateLodgePage = () => {
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
     setIsSubmitting(true);
-    const { newImageFiles, roomTypeImages, ticketTypes, ...dataWithoutImages } =
+    const { newImageFiles, newRoomTypeImageFiles, ticketTypes, ...dataWithoutImages } =
       data;
     const lodgeData = await dispatch(
       createLodge({
@@ -46,7 +46,7 @@ const CreateLodgePage = () => {
           };
         }),
         lodgeImageFile: newImageFiles,
-        roomTypeImages,
+        roomTypeImages: newRoomTypeImageFiles,
         ticketTypes: ticketTypes ?? [],
       })
     );
