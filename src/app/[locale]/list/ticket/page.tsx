@@ -199,7 +199,7 @@ const TicketListPage = () => {
                     </span>
                   </div>
                   <p className="text-sm text-gray-600">
-                    {t("region", { address: ticket.region })}
+                    {ticket.region}
                   </p>
                   <p className="text-sm text-gray-600">
                     {t("adultPrice", {
@@ -209,16 +209,6 @@ const TicketListPage = () => {
                   <p className="text-sm text-gray-600">
                     {t("childPrice", {
                       price: ticket.childPrice?.toLocaleString(),
-                    })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("availableAdultTickets", {
-                      count: ticket.availableAdultTickets,
-                    })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("availableChildTickets", {
-                      count: ticket.availableChildTickets,
                     })}
                   </p>
                 </div>
