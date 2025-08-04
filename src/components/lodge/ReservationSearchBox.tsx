@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useTranslation } from "react-i18next";
@@ -29,7 +29,9 @@ interface ReservationSearchBoxProps {
 }
 
 export default function ReservationSearchBox({
+  checkIn,
   setCheckIn,
+  checkOut,
   setCheckOut,
   dateRange,
   setDateRange,
@@ -46,6 +48,8 @@ export default function ReservationSearchBox({
   handleSearch,
 }: ReservationSearchBoxProps) {
   const { t } = useTranslation("lodge");
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+
   const formatDate = (date: Date | null) => {
     if (!date) return "";
     const year = date.getFullYear();
@@ -55,24 +59,51 @@ export default function ReservationSearchBox({
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-lg relative flex flex-row items-center justify-center gap-5 px-5 py-5 mt-5 mb-8">
-      <input
-        className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        readOnly
-        onClick={() => setCalendar(true)}
-        value={formatDate(dateRange?.[0] ?? null)}
-        placeholder={t("checkInPlaceholder")}
-      />
-      <input
-        className="border border-primary-800 rounded-md outline-none px-3 py-1"
-        readOnly
-        onClick={() => setCalendar(true)}
-        value={formatDate(dateRange?.[1] ?? null)}
-        placeholder={t("checkOutPlaceholder")}
-      />
+    <><div className="w-full bg-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 animate-fade-in">
+      <div className="flex flex-col w-full sm:w-auto">
+        <label
+          htmlFor="checkIn"
+          className="text-sm font-medium text-gray-900 mb-1"
+        >
+          {t("checkInPlaceholder")}
+        </label>
+        <input
+          id="checkIn"
+          className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          readOnly
+          onClick={() => setCalendar(true)}
+          value={formatDate(dateRange?.[0] ?? null)}
+          placeholder={t("checkInPlaceholder")}
+          aria-label={t("checkInPlaceholder")} />
+      </div>
+      <div className="flex flex-col w-full sm:w-auto">
+        <label
+          htmlFor="checkOut"
+          className="text-sm font-medium text-gray-900 mb-1"
+        >
+          {t("checkOutPlaceholder")}
+        </label>
+        <input
+          id="checkOut"
+          className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          readOnly
+          onClick={() => setCalendar(true)}
+          value={formatDate(dateRange?.[1] ?? null)}
+          placeholder={t("checkOutPlaceholder")}
+          aria-label={t("checkOutPlaceholder")} />
+      </div>
 
       {calendar && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 z-50">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+          onMouseEnter={() => {
+            if (hoverTimeout) clearTimeout(hoverTimeout);
+            setCalendar(true);
+          } }
+          onMouseLeave={() => {
+            const timeout = setTimeout(() => setCalendar(false), 200);
+            setHoverTimeout(timeout);
+          } }
+        >
           <Calendar
             calendarType="gregory"
             onChange={(value) => {
@@ -82,60 +113,99 @@ export default function ReservationSearchBox({
                 setCheckOut(formatDate(value[1]));
                 setCalendar(false);
               }
-            }}
+            } }
             selectRange
             showDoubleView
             value={dateRange}
-            minDate={new Date()}
-          />
+            minDate={new Date()} />
         </div>
       )}
 
-      <div
-        onClick={() => setIsActive(!isActive)}
-        className="flex flex-row border-primary-800 border rounded-md px-3 py-1 gap-2 cursor-pointer"
-      >
-        <p>{t("room")} : {room}</p>
-        <p>{t("adult")} : {adults}</p>
-        <p>{t("children")} : {children}</p>
+      <div className="flex flex-col w-full sm:w-auto">
+        <button
+          id="guests"
+          onClick={() => setIsActive(!isActive)}
+          className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full group"
+          aria-label={t("guests")}
+        >
+          <span className="flex gap-2">
+            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+              {t("room")} {room}
+            </span>
+            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+              {t("adult")} {adults}
+            </span>
+            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+              {t("children")} {children}
+            </span>
+          </span>
+        </button>
       </div>
+
       <button
-        className="bg-primary-700 text-white px-4 py-1 rounded-md hover:bg-primary-500"
+        className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto"
         onClick={handleSearch}
+        aria-label={t("search")}
       >
+        <i className="bi bi-search mr-2"></i>
         {t("search")}
       </button>
 
       {isActive && (
-        <div className="absolute left-2/3 top-14 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
+        <div
+          className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+          onMouseEnter={() => {
+            if (hoverTimeout) clearTimeout(hoverTimeout);
+            setIsActive(true);
+          } }
+          onMouseLeave={() => {
+            const timeout = setTimeout(() => setIsActive(false), 200);
+            setHoverTimeout(timeout);
+          } }
+        >
           <div className="flex justify-end mb-3">
             <button
               onClick={() => setIsActive(false)}
-              className="text-primary-900 font-bold text-xl hover:text-primary-500"
+              className="text-primary-600 hover:text-primary-700 text-lg font-semibold transition-colors duration-200"
+              aria-label={t("closeDropdown")}
             >
-              X
+              <i className="bi bi-x"></i>
             </button>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="space-y-4">
             <QuantitySelector
-              label="Room"
+              label={t("room")}
               value={room}
               onChange={handleRoomChange}
-            />
+              min={1} />
             <QuantitySelector
-              label="Adult"
+              label={t("adult")}
               value={adults}
               onChange={handleAdultChange}
-            />
+              min={1} />
             <QuantitySelector
-              label="Children"
+              label={t("children")}
               value={children}
               onChange={handleChildrenChange}
-            />
+              min={0} />
           </div>
         </div>
       )}
-    </div>
+    </div><style jsx>{`
+      @keyframes dropdown {
+        0% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-dropdown {
+        animation: dropdown 0.2s ease-out forwards;
+      }
+    `}</style></>
   );
 }
 
@@ -143,25 +213,38 @@ const QuantitySelector = ({
   label,
   value,
   onChange,
+  min,
 }: {
   label: string;
   value: number;
   onChange: (delta: number) => void;
-}) => (
-  <div className="flex flex-row items-center justify-center p-5 gap-4">
-    <p className="text-lg font-semibold text-primary-900">{label}</p>
-    <button
-      onClick={() => onChange(-1)}
-      className="border border-primary-800 p-3 rounded-full text-2xl"
-    >
-      -
-    </button>
-    <p className="text-lg text-primary-900 font-semibold">{value}</p>
-    <button
-      onClick={() => onChange(1)}
-      className="border border-primary-800 p-3 rounded-full text-2xl"
-    >
-      +
-    </button>
+  min: number;
+}) => {
+  const { t } = useTranslation("lodge");
+
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <p className="text-sm font-medium text-gray-900">{label}</p>
+      <div className="flex items-center gap-3">
+        <button
+        onClick={() => onChange(-1)}
+        className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+        aria-label={t("decrease", { label })}
+        disabled={value <= min}
+      >
+        <i className="bi bi-dash text-lg"></i>
+      </button>
+      <p className="text-sm font-medium text-gray-700 w-8 text-center">
+        {value}
+      </p>
+      <button
+        onClick={() => onChange(1)}
+        className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+        aria-label={t("increase", { label })}
+      >
+        <i className="bi bi-plus text-lg"></i>
+      </button>
+    </div>
   </div>
-);
+  );
+};
