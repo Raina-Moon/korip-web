@@ -61,7 +61,7 @@ export default function ReservationSearchBox({
   return (
     <div className="w-full bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex flex-col w-full sm:w-60">
+        <div className="flex flex-col w-full sm:w-80">
           <label
             htmlFor="checkIn"
             className="text-sm font-medium text-gray-900 mb-1"
@@ -78,7 +78,7 @@ export default function ReservationSearchBox({
             aria-label={t("checkInPlaceholder")}
           />
         </div>
-        <div className="flex flex-col w-full sm:w-60">
+        <div className="flex flex-col w-full sm:w-80">
           <label
             htmlFor="checkOut"
             className="text-sm font-medium text-gray-900 mb-1"
@@ -95,7 +95,7 @@ export default function ReservationSearchBox({
             aria-label={t("checkOutPlaceholder")}
           />
         </div>
-        <div className="flex flex-col w-full sm:w-60">
+        <div className="flex flex-col w-full sm:w-80 relative">
           <label
             htmlFor="guests"
             className="text-sm font-medium text-gray-900 mb-1"
@@ -120,6 +120,49 @@ export default function ReservationSearchBox({
               </span>
             </span>
           </button>
+          {isActive && (
+            <div
+              className="absolute left-0 top-full mt-2 w-full sm:w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+              onMouseEnter={() => {
+                if (hoverTimeout) clearTimeout(hoverTimeout);
+                setIsActive(true);
+              }}
+              onMouseLeave={() => {
+                const timeout = setTimeout(() => setIsActive(false), 200);
+                setHoverTimeout(timeout);
+              }}
+            >
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={() => setIsActive(false)}
+                  className="text-primary-600 hover:text-primary-700 text-lg font-semibold transition-colors duration-200"
+                  aria-label={t("closeDropdown")}
+                >
+                  <i className="bi bi-x"></i>
+                </button>
+              </div>
+              <div className="space-y-4">
+                <QuantitySelector
+                  label={t("room")}
+                  value={room}
+                  onChange={handleRoomChange}
+                  min={1}
+                />
+                <QuantitySelector
+                  label={t("adult")}
+                  value={adults}
+                  onChange={handleAdultChange}
+                  min={1}
+                />
+                <QuantitySelector
+                  label={t("children")}
+                  value={children}
+                  onChange={handleChildrenChange}
+                  min={0}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <button
           className="h-10 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto"
@@ -133,7 +176,7 @@ export default function ReservationSearchBox({
 
       {calendar && (
         <div
-          className="absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full sm:w-[37.5rem]"
+          className="absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full sm:w-[49.5rem]"
           onMouseEnter={() => {
             if (hoverTimeout) clearTimeout(hoverTimeout);
             setCalendar(true);
@@ -158,50 +201,6 @@ export default function ReservationSearchBox({
             value={dateRange}
             minDate={new Date()}
           />
-        </div>
-      )}
-
-      {isActive && (
-        <div
-          className="absolute right-0 top-[8.5rem] sm:top-[7rem] mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
-          onMouseEnter={() => {
-            if (hoverTimeout) clearTimeout(hoverTimeout);
-            setIsActive(true);
-          }}
-          onMouseLeave={() => {
-            const timeout = setTimeout(() => setIsActive(false), 200);
-            setHoverTimeout(timeout);
-          }}
-        >
-          <div className="flex justify-end mb-3">
-            <button
-              onClick={() => setIsActive(false)}
-              className="text-primary-600 hover:text-primary-700 text-lg font-semibold transition-colors duration-200"
-              aria-label={t("closeDropdown")}
-            >
-              <i className="bi bi-x"></i>
-            </button>
-          </div>
-          <div className="space-y-4">
-            <QuantitySelector
-              label={t("room")}
-              value={room}
-              onChange={handleRoomChange}
-              min={1}
-            />
-            <QuantitySelector
-              label={t("adult")}
-              value={adults}
-              onChange={handleAdultChange}
-              min={1}
-            />
-            <QuantitySelector
-              label={t("children")}
-              value={children}
-              onChange={handleChildrenChange}
-              min={0}
-            />
-          </div>
         </div>
       )}
 
