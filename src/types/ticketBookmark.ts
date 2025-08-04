@@ -7,6 +7,7 @@ export interface TicketBookmark {
     description?: string;
     lodge?: {
       name: string;
+      address: string;
     };
   };
 }
