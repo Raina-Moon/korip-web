@@ -93,10 +93,10 @@ const TicketListPage = () => {
       <div className="max-w-7xl mx-auto animate-fade-in">
         <div className="relative z-50">
           <TicketSearchBox
-            region={region}
-            date={date}
-            adults={Number(adults)}
-            children={Number(children)}
+            region={newRegion}
+            date={newDate}
+            adults={newAdults}
+            children={newChildren}
             setRegion={handleRegionChange}
             setDate={handleDateChange}
             setAdults={handleAdultsChange}
