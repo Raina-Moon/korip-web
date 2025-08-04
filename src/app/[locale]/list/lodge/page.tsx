@@ -16,6 +16,7 @@ export default function LodgeListPage() {
   const searchParams = useSearchParams();
 
   const region = searchParams.get("region") || "전체";
+  const accommodationType = searchParams.get("accommodationType") || "전체";
   const checkIn = searchParams.get("checkIn") || "";
   const checkOut = searchParams.get("checkOut") || "";
   const room = searchParams.get("room") || "1";
@@ -32,6 +33,8 @@ export default function LodgeListPage() {
     new Date(checkIn),
     new Date(checkOut),
   ]);
+  const [newRegion, setNewRegion] = useState(region);
+  const [newAccommodationType, setNewAccommodationType] = useState(accommodationType);
 
   const [adultCount, setAdults] = useState(Number(adults));
   const [childCount, setChildren] = useState(Number(children));
@@ -47,16 +50,23 @@ export default function LodgeListPage() {
     setAdults((prev) => Math.max(1, prev + delta));
   const handleChildrenChange = (delta: number) =>
     setChildren((prev) => Math.max(0, prev + delta));
+  const handleRegionChange = (newRegion: string) => {
+    setNewRegion(newRegion);
+  };
+  const handleAccommodationTypeChange = (newType: string) => {
+    setNewAccommodationType(newType);
+  };
 
   const handleSearch = () => {
     const query = new URLSearchParams({
-      region,
+      region: newRegion,
+      accommodationType: newAccommodationType,
       checkIn: checkInDate,
       checkOut: checkOutDate,
       room: String(roomCount),
       adults: String(adultCount),
       children: String(childCount),
-      sort,
+      sort: selectedSort,
     }).toString();
 
     router.push(`/${locale}/list/lodge?${query}`);
@@ -64,6 +74,7 @@ export default function LodgeListPage() {
 
   const { data: lodges, isLoading } = useGetAvailableLodgeQuery({
     region,
+    accommodationType,
     checkIn,
     checkOut,
     adults,
@@ -98,6 +109,7 @@ export default function LodgeListPage() {
     setSelectedSort(e.target.value);
     const newQuery = new URLSearchParams({
       region,
+      accommodationType,
       checkIn,
       checkOut,
       adults,
@@ -112,6 +124,10 @@ export default function LodgeListPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
         <ReservationSearchBox
+          region={newRegion}
+          setRegion={handleRegionChange}
+          accommodationType={newAccommodationType}
+          setAccommodationType={handleAccommodationTypeChange}
           checkIn={checkInDate}
           setCheckIn={setCheckIn}
           checkOut={checkOutDate}
