@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useTranslation } from "react-i18next";
@@ -49,6 +49,8 @@ export default function ReservationSearchBox({
 }: ReservationSearchBoxProps) {
   const { t } = useTranslation("lodge");
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const guestDropdownRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -57,6 +59,27 @@ export default function ReservationSearchBox({
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      // Close calendar dropdown if click is outside
+      if (calendarRef.current && !calendarRef.current.contains(target)) {
+        setCalendar(false);
+      }
+
+      // Close guest dropdown if click is outside
+      if (guestDropdownRef.current && !guestDropdownRef.current.contains(target)) {
+        setIsActive(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setCalendar, setIsActive]);
 
   return (
     <div className="w-full bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
@@ -122,6 +145,7 @@ export default function ReservationSearchBox({
           </button>
           {isActive && (
             <div
+              ref={guestDropdownRef}
               className="absolute left-0 top-full mt-2 w-full sm:w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
               onMouseEnter={() => {
                 if (hoverTimeout) clearTimeout(hoverTimeout);
@@ -176,6 +200,7 @@ export default function ReservationSearchBox({
 
       {calendar && (
         <div
+          ref={calendarRef}
           className="absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full sm:w-[49.5rem]"
           onMouseEnter={() => {
             if (hoverTimeout) clearTimeout(hoverTimeout);
