@@ -1,6 +1,7 @@
 {
   "title": "Search Results",
   "resultsCount": "Search Results {{count}}",
+  "sortLabel": "Sort By",
   "sort": {
     "popularity": "Popularity",
     "reviews": "Most Reviews",

@@ -58,84 +58,131 @@ const TicketListPage = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold text-primary-900">
-        {t("title")} {tickets ? tickets.length : 0}
-      </h1>
-
-      <select
-        value={selectedSort}
-        onChange={handleSortChange}
-        className="border rounded-md p-2 my-4"
-      >
-        <option value="popularity">{t("sort.popularity")}</option>
-        <option value="reviews">{t("sort.reviews")}</option>
-        <option value="adult_price_asc">{t("sort.adult_price_asc")}</option>
-        <option value="adult_price_desc">{t("sort.adult_price_desc")}</option>
-        <option value="child_price_asc">{t("sort.child_price_asc")}</option>
-        <option value="child_price_desc">{t("sort.child_price_desc")}</option>
-      </select>
-
-      {tickets?.length === 0 ? (
-        <p className="text-lg text-gray-600">{t("noResults")}</p>
-      ) : (
-        tickets?.map((ticket:Ticket) => (
-          <div
-            key={ticket.id}
-            className="flex border p-4 mb-4 rounded-lg hover:shadow transition cursor-pointer gap-4"
-            onClick={() => {
-              const query = new URLSearchParams({
-                region,
-                date,
-                adults,
-                children,
-                sort,
-              }).toString();
-              router.push(`/${locale}/ticket/${ticket.id}?${query}`);
-            }}
-          >
-            <div className="w-32 h-24 flex-shrink-0">
-              {ticket.lodgeImage ? (
-                <img
-                  src={ticket.lodgeImage}
-                  alt={ticket.name}
-                  className="w-full h-full object-cover rounded"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm rounded">
-                  No image
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1">
-              <h2 className="text-lg font-bold text-primary-900">
-                {ticket.name}
-              </h2>
-              <div className="flex gap-2 text-sm text-yellow-600 mb-1">
-                <span>⭐ {ticket.averageRating?.toFixed(1) ?? "0.0"}</span>
-                <span className="text-gray-500">
-                  {t("reviewsCount", { count: ticket.reviewCount || 0 })}
-                </span>
-              </div>
-
-              <p className="text-gray-700">{t("region", { address: ticket.region })}</p>
-              <p className="text-gray-700">
-                {t("adultPrice", { price: ticket.adultPrice?.toLocaleString() })}
-              </p>
-              <p className="text-gray-700">
-                {t("childPrice", { price: ticket.childPrice?.toLocaleString() })}
-              </p>
-              <p className="text-gray-700">
-                {t("availableAdultTickets", { count: ticket.availableAdultTickets })}
-              </p>
-              <p className="text-gray-700">
-                {t("availableChildTickets", { count: ticket.availableChildTickets })}
-              </p>
-            </div>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto animate-fade-in">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">
+            {t("title")} {tickets ? tickets.length : 0}
+          </h1>
+          <div className="flex flex-col">
+            <label
+              htmlFor="sort"
+              className="text-sm font-medium text-gray-900 mb-1"
+            >
+              {t("sortLabel")}
+            </label>
+            <select
+              id="sort"
+              value={selectedSort}
+              onChange={handleSortChange}
+              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+              aria-label={t("sortLabel")}
+            >
+              <option value="popularity">{t("sort.popularity")}</option>
+              <option value="reviews">{t("sort.reviews")}</option>
+              <option value="adult_price_asc">{t("sort.adult_price_asc")}</option>
+              <option value="adult_price_desc">{t("sort.adult_price_desc")}</option>
+              <option value="child_price_asc">{t("sort.child_price_asc")}</option>
+              <option value="child_price_desc">{t("sort.child_price_desc")}</option>
+            </select>
           </div>
-        ))
-      )}
+        </div>
+
+        {tickets?.length === 0 ? (
+          <p className="text-lg text-gray-600 text-center">{t("noResults")}</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tickets?.map((ticket: Ticket) => (
+              <div
+                key={ticket.id}
+                className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                onClick={() => {
+                  const query = new URLSearchParams({
+                    region,
+                    date,
+                    adults,
+                    children,
+                    sort,
+                  }).toString();
+                  router.push(`/${locale}/ticket/${ticket.id}?${query}`);
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={t("selectTicket", { name: ticket.name })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    const query = new URLSearchParams({
+                      region,
+                      date,
+                      adults,
+                      children,
+                      sort,
+                    }).toString();
+                    router.push(`/${locale}/ticket/${ticket.id}?${query}`);
+                  }
+                }}
+              >
+                <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
+                  {ticket.lodgeImage ? (
+                    <img
+                      src={ticket.lodgeImage}
+                      alt={ticket.name}
+                      className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                      {t("noImage")}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {ticket.name}
+                  </h2>
+                  <div className="flex gap-2 text-sm text-yellow-600">
+                    <span>⭐ {ticket.averageRating?.toFixed(1) ?? "0.0"}</span>
+                    <span className="text-gray-600">
+                      {t("reviewsCount", { count: ticket.reviewCount || 0 })}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {t("region", { address: ticket.region })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("adultPrice", { price: ticket.adultPrice?.toLocaleString() })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("childPrice", { price: ticket.childPrice?.toLocaleString() })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("availableAdultTickets", { count: ticket.availableAdultTickets })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("availableChildTickets", { count: ticket.availableChildTickets })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };

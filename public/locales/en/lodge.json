@@ -39,5 +39,22 @@
   "editFailed": "Failed to update review.",
   "reportSuccess": "Review has been reported.",
   "reportFailed": "Failed to report review.",
-  "reportReasonRequired": "Please enter a reason for the report."
+  "reportReasonRequired": "Please enter a reason for the report.",
+  "selectRegion": "Region",
+  "all": "All",
+  "seoul": "Seoul",
+  "busan": "Busan",
+  "gyeonggi": "Gyeonggi-do",
+  "chungcheong": "Chungcheong-do",
+  "jeolla": "Jeolla-do",
+  "gyeongsang": "Gyeongsang-do",
+  "jeju": "Jeju-do",
+  "gangwon": "Gangwon-do",
+  "accommodationType": "Accommodation Type",
+  "allAccommodationTypes": "All Types",
+  "hotel": "Hotel",
+  "motel": "Motel",
+  "resort": "Resort",
+  "pension": "Pension",
+  "etc": "Etc"
 }
