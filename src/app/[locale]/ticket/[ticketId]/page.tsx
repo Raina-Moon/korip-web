@@ -332,90 +332,108 @@ const TicketDetailPage = () => {
           />
         </div>
 
-        <div className="flex items-center gap-2 mb-6 animate-fade-in">
-          <h1 className="text-3xl font-bold text-gray-900">{ticket.name}</h1>
-          <p
-            className="text-sm text-gray-600 underline cursor-pointer hover:text-primary-500 transition-colors duration-200"
-            onClick={() => setIsMapModalOpen(true)}
-            aria-label={t("viewMap")}
-          >
-            {ticket.lodge.address}
-          </p>
-          <button
-            onClick={handleBookmarkToggle}
-            className={`text-2xl ${
-              isBookmarked ? "text-red-500" : "text-gray-400"
-            } hover:text-red-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-colors duration-200`}
-            aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
-          >
-            {isBookmarked ? (
-              <Heart fill="red" stroke="red" className="w-6 h-6" />
-            ) : (
-              <HeartOff className="w-6 h-6 text-gray-400" />
-            )}
-          </button>
+        <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                <h1 className="text-2xl font-bold text-gray-900" aria-label={t("ticketName")}>
+                  {ticket.lodge.name}
+                </h1>
+                <button
+                  onClick={handleBookmarkToggle}
+                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
+                    isBookmarked ? "text-red-500" : "text-gray-400"
+                  } hover:text-primary-500`}
+                  aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
+                  role="button"
+                >
+                  {isBookmarked ? (
+                    <Heart fill="red" stroke="red" className="w-5 h-5" />
+                  ) : (
+                    <HeartOff className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              <div
+                className="flex items-center gap-1.5 text-base text-gray-600 cursor-pointer hover:text-primary-500 transition-colors duration-200 animate-fade-in"
+                style={{ animationDelay: "0.2s" }}
+                onClick={() => setIsMapModalOpen(true)}
+                role="button"
+                aria-label={t("viewMap")}
+              >
+                <i className="bi bi-geo-alt text-primary-500"></i>
+                {ticket.lodge.address}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in" style={{ animationDelay: "0.3s" }} role="region" aria-describedby="ticket-details">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2" id="ticket-details">
+                  {ticket.name}
+                </h3>
+                <p className="text-sm text-gray-600 italic mb-4">{ticket.description || t("noDescription")}</p>
+                <p className="text-base text-gray-700">
+                  <span className="font-medium">{t("adult")}:</span>{" "}
+                  {ticket.adultPrice
+                    ? `${ticket.adultPrice.toLocaleString()} KRW`
+                    : t("priceUnavailable")}
+                </p>
+                <p className="text-base text-gray-700">
+                  <span className="font-medium">{t("children")}:</span>{" "}
+                  {ticket.childPrice
+                    ? `${ticket.childPrice.toLocaleString()} KRW`
+                    : t("priceUnavailable")}
+                </p>
+              </div>
+              <div className="flex items-end animate-fade-in" style={{ animationDelay: "0.4s" }}>
+                <button
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      localStorage.setItem(
+                        "pendingReservation",
+                        JSON.stringify({
+                          type: "ticket",
+                          ticketId,
+                          date,
+                          adults,
+                          children,
+                        })
+                      );
+
+                      dispatch(
+                        setRedirectAfterLogin(
+                          `/${locale}/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
+                        )
+                      );
+
+                      dispatch(openLoginModal("ticket/reserve"));
+                      return;
+                    }
+
+                    const query = new URLSearchParams({
+                      ticketTypeId: String(ticket.id),
+                      date,
+                      adults: String(adults),
+                      children: String(children),
+                      lodgeName: ticket.lodge.name,
+                      ticketTypeName: ticket.name,
+                      adultPrice: String(ticket.adultPrice),
+                      childPrice: String(ticket.childPrice),
+                    }).toString();
+
+                    router.push(`/${locale}/ticket-reservation?${query}`);
+                  }}
+                  className="h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
+                  aria-label={t("reserveButton")}
+                  role="button"
+                >
+                  <i className="bi bi-ticket text-xs"></i>
+                  {t("reserveButton")}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {t("priceTitle")}
-          </h3>
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">{t("adult")}:</span>{" "}
-            {ticket.adultPrice
-              ? `${ticket.adultPrice.toLocaleString()} KRW`
-              : t("priceUnavailable")}
-          </p>
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">{t("children")}:</span>{" "}
-            {ticket.childPrice
-              ? `${ticket.childPrice.toLocaleString()} KRW`
-              : t("priceUnavailable")}
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            if (!isAuthenticated) {
-              localStorage.setItem(
-                "pendingReservation",
-                JSON.stringify({
-                  type: "ticket",
-                  ticketId,
-                  date,
-                  adults,
-                  children,
-                })
-              );
-
-              dispatch(
-                setRedirectAfterLogin(
-                  `/${locale}/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
-                )
-              );
-
-              dispatch(openLoginModal("ticket/reserve"));
-              return;
-            }
-
-            const query = new URLSearchParams({
-              ticketTypeId: String(ticket.id),
-              date,
-              adults: String(adults),
-              children: String(children),
-              lodgeName: ticket.lodge.name,
-              ticketTypeName: ticket.name,
-              adultPrice: String(ticket.adultPrice),
-              childPrice: String(ticket.childPrice),
-            }).toString();
-
-            router.push(`/${locale}/ticket-reservation?${query}`);
-          }}
-          className="mt-8 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium"
-          aria-label={t("reserveButton")}
-        >
-          {t("reserveButton")}
-        </button>
 
         <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
           <div className="flex justify-between items-center mb-4">
