@@ -289,7 +289,12 @@ const TicketDetailPage = () => {
     return 0;
   });
 
-  if (!ticket) return <div className="p-6 text-gray-600 text-center">{t("loadingOrNotFound")}</div>;
+  if (!ticket)
+    return (
+      <div className="p-6 text-gray-600 text-center">
+        {t("loadingOrNotFound")}
+      </div>
+    );
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
 
@@ -315,15 +320,17 @@ const TicketDetailPage = () => {
           )}
         </div>
 
-        <TicketSearchBox
-          date={date}
-          setDate={setDate}
-          adults={adults}
-          setAdults={setAdults}
-          children={children}
-          setChildren={setChildren}
-          handleSearch={handleSearch}
-        />
+        <div className="relative z-20">
+          <TicketSearchBox
+            date={date}
+            setDate={setDate}
+            adults={adults}
+            setAdults={setAdults}
+            children={children}
+            setChildren={setChildren}
+            handleSearch={handleSearch}
+          />
+        </div>
 
         <div className="flex items-center gap-2 mb-6 animate-fade-in">
           <h1 className="text-3xl font-bold text-gray-900">{ticket.name}</h1>
@@ -471,7 +478,9 @@ const TicketDetailPage = () => {
               ))}
             </div>
           ) : (
-            <p className="text-lg text-gray-600 text-center">{t("noReviews")}</p>
+            <p className="text-lg text-gray-600 text-center">
+              {t("noReviews")}
+            </p>
           )}
         </div>
 
