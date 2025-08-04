@@ -33,5 +33,15 @@
   "submitReport": "신고 제출",
   "cancel": "취소",
   "notFound": "불러오지 못했거나 존재하지 않습니다.",
-  "ratingAlert": "평점을 입력해주세요."
+  "ratingAlert": "평점을 입력해주세요.",
+  "selectRegion": "지역",
+  "all": "전체",
+  "seoul": "서울",
+  "busan": "부산",
+  "gyeonggi": "경기도",
+  "chungcheong": "충청도",
+  "jeolla": "전라도",
+  "gyeongsang": "경상도",
+  "jeju": "제주도",
+  "gangwon": "강원도"
 }

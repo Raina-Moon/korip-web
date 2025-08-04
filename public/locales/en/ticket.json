@@ -32,5 +32,15 @@
   "reportReason": "Reason for Reporting",
   "submitReport": "Submit Report",
   "cancel": "Cancel",
-  "notFound": "Loading or not found..."
+  "notFound": "Loading or not found...",
+  "selectRegion": "Region",
+  "all": "All",
+  "seoul": "Seoul",
+  "busan": "Busan",
+  "gyeonggi": "Gyeonggi-do",
+  "chungcheong": "Chungcheong-do",
+  "jeolla": "Jeolla-do",
+  "gyeongsang": "Gyeongsang-do",
+  "jeju": "Jeju-do",
+  "gangwon": "Gangwon-do"
 }
