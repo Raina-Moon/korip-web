@@ -8,9 +8,10 @@ import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
 
 const HeaderBar = () => {
-  const {t} = useTranslation("header");
+  const { t } = useTranslation("header");
   const [select, setSelect] = useState(i18n.language || "ko");
   const [isHover, setIsHover] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -51,6 +52,21 @@ const HeaderBar = () => {
     router.push(`/${locale}/`);
   };
 
+  const handleMouseEnter = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setIsHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setIsHover(false);
+    }, 200);
+    setHoverTimeout(timeout);
+  };
+
   return (
     <div className="flex justify-between items-center px-5 py-3 border-b border-primary-800 bg-white">
       <div>
@@ -76,16 +92,20 @@ const HeaderBar = () => {
           ))}
         </select>
 
-        <div className="relative">
+        <div
+          className="relative group"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <div
-            onClick={() => router.push(user ? `/${locale}/profile` : `/${locale}/login`)}
-            onMouseEnter={() => setIsHover(true)}
-            onMouseLeave={() => setIsHover(false)}
-            className="relative flex items-center justify-center"
+            onClick={() =>
+              router.push(user ? `/${locale}/profile` : `/${locale}/login`)
+            }
+            className="relative flex items-center justify-center p-2"
           >
             {isHover && (
               <div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[70px] h-[70px] rounded-full transition-all duration-300 ease-out scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] rounded-full transition-all duration-300 ease-out scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100"
                 style={{
                   background:
                     "radial-gradient(circle, rgba(59,130,246,0.3) 20%, rgba(59,130,246,0.05) 70%, transparent 100%)",
@@ -100,10 +120,16 @@ const HeaderBar = () => {
           </div>
 
           {isHover && (
-            <div className="absolute right-0 top-12 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-4 space-y-3 z-50 animate-dropdown">
+            <div
+              className="absolute right-0 top-14 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-4 space-y-3 z-50 animate-dropdown"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               {!user ? (
                 <div className="space-y-3">
-                  <p className="text-gray-900 text-sm font-medium">{t("loginPrompt")}</p>
+                  <p className="text-gray-900 text-sm font-medium">
+                    {t("loginPrompt")}
+                  </p>
                   <button
                     onClick={() => router.push(`/${locale}/login`)}
                     className="w-full bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
@@ -113,7 +139,9 @@ const HeaderBar = () => {
                 </div>
               ) : user.role !== "ADMIN" ? (
                 <div className="space-y-3">
-                  <p className="text-gray-900 text-sm font-medium">{user.nickname}</p>
+                  <p className="text-gray-900 text-sm font-medium">
+                    {user.nickname}
+                  </p>
                   <p className="text-gray-600 text-sm">{user.email}</p>
                   <button
                     onClick={(e) => {
@@ -127,7 +155,9 @@ const HeaderBar = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-gray-900 text-sm font-medium">{user.nickname}</p>
+                  <p className="text-gray-900 text-sm font-medium">
+                    {user.nickname}
+                  </p>
                   <p className="text-gray-600 text-sm">{user.email}</p>
                   <button
                     onClick={(e) => {
@@ -167,6 +197,15 @@ const HeaderBar = () => {
         }
         .animate-dropdown {
           animation: dropdown 0.2s ease-out forwards;
+        }
+        .group:focus-within .group-hover\\:scale-100 {
+          scale: 1;
+        }
+        .group:focus-within .group-hover\\:opacity-100 {
+          opacity: 1;
+        }
+        .group:focus-within + .animate-dropdown {
+          display: block;
         }
       `}</style>
     </div>
