@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { createLodge } from "@/lib/admin/lodge/lodgeThunk";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { useRouter } from "next/navigation";
 import LodgeForm from "@/components/ui/LodgeForm";
 import { ArrowLeft } from "lucide-react";
@@ -29,7 +29,6 @@ const CreateLodgePage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const locale = useLocale();
-  const lodgeState = useAppSelector((state) => state["admin/lodge"].state);
 
   const handleCreateLodge = async (data: CreateLodgeFormData) => {
     setIsSubmitting(true);
