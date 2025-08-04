@@ -7,7 +7,7 @@
   "nicknameUpdated": "Nickname updated successfully!",
   "nicknameError": "Please enter a nickname.",
   "nicknameUpdateFailed": "Failed to update nickname.",
-
+  "nicknameLengthError": "Nickname must be at least 4 characters long.",
   "dangerZone": "Danger Zone",
   "deleteWarning": "Deleting your account is permanent and cannot be undone.",
   "deleteAccount": "Delete My Account",
