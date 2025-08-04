@@ -11,9 +11,8 @@
   },
   "noResults": "No search results found.",
   "reviewsCount": "({{count}} reviews)",
-  "region": "Region: {{address}}",
-  "adultPrice": "Adult Price: {{price}} KRW",
-  "childPrice": "Child Price: {{price}} KRW",
+  "adultPrice": "Adult : {{price}} KRW",
+  "childPrice": "Child : {{price}} KRW",
   "availableAdultTickets": "Available Adult Tickets: {{count}}",
   "availableChildTickets": "Available Child Tickets: {{count}}"
 }

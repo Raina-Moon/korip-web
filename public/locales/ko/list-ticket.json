@@ -11,9 +11,8 @@
   },
   "noResults": "검색 결과가 없습니다.",
   "reviewsCount": "({{count}}개 리뷰)",
-  "region": "지역: {{address}}",
-  "adultPrice": "성인 가격: {{price}}원",
-  "childPrice": "아동 가격: {{price}}원",
+  "adultPrice": "성인 : {{price}}원",
+  "childPrice": "아동 : {{price}}원",
   "availableAdultTickets": "남은 성인 티켓: {{count}}",
   "availableChildTickets": "남은 아동 티켓: {{count}}"
 }
