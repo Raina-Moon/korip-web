@@ -8,23 +8,30 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
 import { Ticket } from "@/types/ticket";
+import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 
 const TicketListPage = () => {
   const { t } = useTranslation("list-ticket");
   const [selectedSort, setSelectedSort] = useState<string>("popularity");
 
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
-
-  const router = useRouter();
-
-  const locale = useLocale();
 
   const region = searchParams.get("region") || "전체";
   const date = searchParams.get("date") || "";
   const adults = searchParams.get("adults") || "1";
   const children = searchParams.get("children") || "0";
   const sort = searchParams.get("sort") || "popularity";
+
+  const [newRegion, setNewRegion] = useState(region);
+  const [newDate, setNewDate] = useState(date);
+  const [newAdults, setNewAdults] = useState(Number(adults));
+  const [newChildren, setNewChildren] = useState(Number(children));
+
+  const dispatch = useAppDispatch();
+
+  const router = useRouter();
+
+  const locale = useLocale();
 
   const { data: tickets, isLoading } = useGetAvailableTicketQuery({
     region,
@@ -57,9 +64,44 @@ const TicketListPage = () => {
     router.push(`/${locale}/list/ticket?${newQuery}`);
   };
 
+  const handleRegionChange = (newRegion: string) => {
+    setNewRegion(newRegion);
+  };
+  const handleDateChange = (newDate: string) => {
+    setNewDate(newDate);
+  };
+  const handleAdultsChange = (newAdults: number) => {
+    setNewAdults(newAdults);
+  };
+  const handleChildrenChange = (newChildren: number) => {
+    setNewChildren(newChildren);
+  };
+
+  const handleSearch = () => {
+    const newQuery = new URLSearchParams({
+      region: newRegion,
+      date: newDate,
+      adults: newAdults.toString(),
+      children: newChildren.toString(),
+      sort: selectedSort,
+    }).toString();
+    router.push(`/${locale}/list/ticket?${newQuery}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
+        <TicketSearchBox
+          region={region}
+          date={date}
+          adults={Number(adults)}
+          children={Number(children)}
+          setRegion={handleRegionChange}
+          setDate={handleDateChange}
+          setAdults={handleAdultsChange}
+          setChildren={handleChildrenChange}
+          handleSearch={handleSearch}
+        />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
             {t("title")} {tickets ? tickets.length : 0}
@@ -80,10 +122,18 @@ const TicketListPage = () => {
             >
               <option value="popularity">{t("sort.popularity")}</option>
               <option value="reviews">{t("sort.reviews")}</option>
-              <option value="adult_price_asc">{t("sort.adult_price_asc")}</option>
-              <option value="adult_price_desc">{t("sort.adult_price_desc")}</option>
-              <option value="child_price_asc">{t("sort.child_price_asc")}</option>
-              <option value="child_price_desc">{t("sort.child_price_desc")}</option>
+              <option value="adult_price_asc">
+                {t("sort.adult_price_asc")}
+              </option>
+              <option value="adult_price_desc">
+                {t("sort.adult_price_desc")}
+              </option>
+              <option value="child_price_asc">
+                {t("sort.child_price_asc")}
+              </option>
+              <option value="child_price_desc">
+                {t("sort.child_price_desc")}
+              </option>
             </select>
           </div>
         </div>
@@ -150,16 +200,24 @@ const TicketListPage = () => {
                     {t("region", { address: ticket.region })}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t("adultPrice", { price: ticket.adultPrice?.toLocaleString() })}
+                    {t("adultPrice", {
+                      price: ticket.adultPrice?.toLocaleString(),
+                    })}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t("childPrice", { price: ticket.childPrice?.toLocaleString() })}
+                    {t("childPrice", {
+                      price: ticket.childPrice?.toLocaleString(),
+                    })}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t("availableAdultTickets", { count: ticket.availableAdultTickets })}
+                    {t("availableAdultTickets", {
+                      count: ticket.availableAdultTickets,
+                    })}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t("availableChildTickets", { count: ticket.availableChildTickets })}
+                    {t("availableChildTickets", {
+                      count: ticket.availableChildTickets,
+                    })}
                   </p>
                 </div>
               </div>
