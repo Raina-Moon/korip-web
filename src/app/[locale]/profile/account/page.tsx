@@ -96,55 +96,63 @@ const AccountPage = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 space-y-8">
-      <h1 className="text-2xl font-bold">{t("title")}</h1>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+        <h1 className="text-3xl font-bold text-gray-900 text-center">
+          {t("title")}
+        </h1>
 
-      <section className="border p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-2">{t("changeNickname")}</h2>
-        <form onSubmit={handleNicknameSubmit} className="space-y-3">
-          <input
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder={t("nicknamePlaceholder")}
-            className="border rounded px-3 py-2 w-full"
-            disabled={isUpdating}
-          />
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-md">
+          <h2 className="text-xl font-semibold text-primary-700">
+            {t("changeNickname")}
+          </h2>
+          <form onSubmit={handleNicknameSubmit} className="space-y-4">
+            <div>
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder={t("nicknamePlaceholder")}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
+                disabled={isUpdating}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isUpdating}
+              className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isUpdating ? t("updating") : t("updateNickname")}
+            </button>
+          </form>
+        </section>
+
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-md">
+          <h2 className="text-xl font-semibold text-red-600">
+            {t("dangerZone")}
+          </h2>
+          <p className="text-sm text-gray-600">{t("deleteWarning")}</p>
           <button
-            type="submit"
-            disabled={isUpdating}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            onClick={handleDeleteAccount}
+            disabled={isDeleting}
+            className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isUpdating ? t("updating") : t("updateNickname")}
+            {isDeleting ? t("deleting") : t("deleteAccount")}
           </button>
-        </form>
-      </section>
+        </section>
 
-      <section className="border p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-2 text-red-600">
-          {t("dangerZone")}
-        </h2>
-        <p className="mb-3 text-sm text-gray-600">{t("deleteWarning")}</p>
-        <button
-          onClick={handleDeleteAccount}
-          disabled={isDeleting}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
-        >
-          {isDeleting ? t("deleting") : t("deleteAccount")}
-        </button>
-      </section>
-
-      {(successMessage || errorMessage) && (
-        <div
-          className={`p-3 rounded ${
-            successMessage
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {successMessage || errorMessage}
-        </div>
-      )}
+        {(successMessage || errorMessage) && (
+          <div
+            className={`p-4 rounded-lg flex items-center justify-center transition-all duration-300 ${
+              successMessage
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-red-100 text-red-700 border border-red-300"
+            }`}
+          >
+            <span>{successMessage || errorMessage}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
