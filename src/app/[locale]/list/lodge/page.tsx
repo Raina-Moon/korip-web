@@ -1,5 +1,6 @@
 "use client";
 
+import ReservationSearchBox from "@/components/lodge/ReservationSearchBox";
 import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
@@ -11,21 +12,55 @@ import { useTranslation } from "react-i18next";
 
 export default function LodgeListPage() {
   const { t } = useTranslation("list-lodge");
-  const [selectedSort, setSelectedSort] = useState<string>("popularity");
 
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-
-  const locale = useLocale();
 
   const region = searchParams.get("region") || "전체";
-  const checkIn = searchParams.get("checkIn") || "Not specified";
-  const checkOut = searchParams.get("checkOut") || "Not specified";
+  const checkIn = searchParams.get("checkIn") || "";
+  const checkOut = searchParams.get("checkOut") || "";
   const room = searchParams.get("room") || "1";
   const adults = searchParams.get("adults") || "1";
   const children = searchParams.get("children") || "0";
   const sort = searchParams.get("sort") || "popularity";
+  const [selectedSort, setSelectedSort] = useState<string>("popularity");
+
+  const [checkInDate, setCheckIn] = useState(checkIn);
+  const [checkOutDate, setCheckOut] = useState(checkOut);
+  const [calendar, setCalendar] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>([
+    new Date(checkIn),
+    new Date(checkOut),
+  ]);
+
+  const [adultCount, setAdults] = useState(Number(adults));
+  const [childCount, setChildren] = useState(Number(children));
+  const [roomCount, setRoom] = useState(Number(room));
+
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const locale = useLocale();
+
+  const handleRoomChange = (delta: number) =>
+    setRoom((prev) => Math.max(1, prev + delta));
+  const handleAdultChange = (delta: number) =>
+    setAdults((prev) => Math.max(1, prev + delta));
+  const handleChildrenChange = (delta: number) =>
+    setChildren((prev) => Math.max(0, prev + delta));
+
+  const handleSearch = () => {
+    const query = new URLSearchParams({
+      region,
+      checkIn: checkInDate,
+      checkOut: checkOutDate,
+      room: String(roomCount),
+      adults: String(adultCount),
+      children: String(childCount),
+      sort,
+    }).toString();
+
+    router.push(`/${locale}/list/lodge?${query}`);
+  };
 
   const { data: lodges, isLoading } = useGetAvailableLodgeQuery({
     region,
@@ -76,6 +111,29 @@ export default function LodgeListPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
+        <ReservationSearchBox
+          checkIn={checkInDate}
+          setCheckIn={setCheckIn}
+          checkOut={checkOutDate}
+          setCheckOut={setCheckOut}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+          calendar={calendar}
+          setCalendar={setCalendar}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          adults={adultCount}
+          setAdults={setAdults}
+          room={roomCount}
+          setRoom={setRoom}
+          children={childCount}
+          setChildren={setChildren}
+          handleAdultChange={handleAdultChange}
+          handleRoomChange={handleRoomChange}
+          handleChildrenChange={handleChildrenChange}
+          handleSearch={handleSearch}
+        />
+
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
             {t("resultsCount", { count: lodges ? lodges.length : 0 })}
