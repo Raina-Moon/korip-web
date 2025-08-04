@@ -1,4 +1,5 @@
 {
+  "title": "Login",
   "email": "Email",
   "password": "Password",
   "rememberMe": "Remember Me",
@@ -7,7 +8,7 @@
   "signupLink": "Sign Up",
   "forgotPassword": "Forgot your password?",
   "resetPassword": "Reset Password",
-  "socialLogin": "Social Login",
+  "orSignInWith": "Sign in with a social account",
   "googleLoginFailed": "Google login failed. Please try again.",
   "loginFailed": "Login failed. Please check your credentials and try again.",
   "fillAllFields": "Please fill in all fields"
