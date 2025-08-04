@@ -6,6 +6,10 @@ import "react-calendar/dist/Calendar.css";
 import { useTranslation } from "react-i18next";
 
 interface ReservationSearchBoxProps {
+  region?: string;
+  setRegion?: (value: string) => void;
+  accommodationType?: string;
+  setAccommodationType?: (value: string) => void;
   checkIn: string;
   setCheckIn: (value: string) => void;
   checkOut: string;
@@ -29,6 +33,10 @@ interface ReservationSearchBoxProps {
 }
 
 export default function ReservationSearchBox({
+  region,
+  setRegion,
+  accommodationType,
+  setAccommodationType,
   checkIn,
   setCheckIn,
   checkOut,
@@ -64,12 +72,10 @@ export default function ReservationSearchBox({
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      // Close calendar dropdown if click is outside
       if (calendarRef.current && !calendarRef.current.contains(target)) {
         setCalendar(false);
       }
 
-      // Close guest dropdown if click is outside
       if (guestDropdownRef.current && !guestDropdownRef.current.contains(target)) {
         setIsActive(false);
       }
@@ -81,9 +87,65 @@ export default function ReservationSearchBox({
     };
   }, [setCalendar, setIsActive]);
 
+  const hasRegion = region !== undefined && setRegion !== undefined;
+  const hasAccommodationType =
+    accommodationType !== undefined && setAccommodationType !== undefined;
+  const calendarWidthClass = hasRegion && hasAccommodationType ? "sm:w-[61.5rem]" : "sm:w-[49.5rem]";
+
   return (
     <div className="w-full bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
       <div className="flex items-center justify-between gap-4 flex-wrap">
+        {hasRegion && (
+          <div className="flex flex-col w-full sm:w-80">
+            <label
+              htmlFor="region"
+              className="text-sm font-medium text-gray-900 mb-1"
+            >
+              {t("selectRegion")}
+            </label>
+            <select
+              id="region"
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              className="h-10 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+              aria-label={t("selectRegion")}
+            >
+              <option value="전체">{t("all")}</option>
+              <option value="서울">{t("seoul")}</option>
+              <option value="부산">{t("busan")}</option>
+              <option value="경기">{t("gyeonggi")}</option>
+              <option value="충청">{t("chungcheong")}</option>
+              <option value="전라">{t("jeolla")}</option>
+              <option value="경상">{t("gyeongsang")}</option>
+              <option value="제주">{t("jeju")}</option>
+              <option value="강원">{t("gangwon")}</option>
+            </select>
+          </div>
+        )}
+        {hasAccommodationType && (
+          <div className="flex flex-col w-full sm:w-80">
+            <label
+              htmlFor="accommodationType"
+              className="text-sm font-medium text-gray-900 mb-1"
+            >
+              {t("accommodationType")}
+            </label>
+            <select
+              id="accommodationType"
+              value={accommodationType}
+              onChange={(e) => setAccommodationType(e.target.value)}
+              className="h-10 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+              aria-label={t("accommodationType")}
+            >
+              <option value="All">{t("allAccommodationTypes")}</option>
+              <option value="호텔">{t("hotel")}</option>
+              <option value="모텔">{t("motel")}</option>
+              <option value="리조트">{t("resort")}</option>
+              <option value="펜션">{t("pension")}</option>
+              <option value="기타">{t("etc")}</option>
+            </select>
+          </div>
+        )}
         <div className="flex flex-col w-full sm:w-80">
           <label
             htmlFor="checkIn"
@@ -201,7 +263,7 @@ export default function ReservationSearchBox({
       {calendar && (
         <div
           ref={calendarRef}
-          className="absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full sm:w-[49.5rem]"
+          className={`absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full ${calendarWidthClass}`}
           onMouseEnter={() => {
             if (hoverTimeout) clearTimeout(hoverTimeout);
             setCalendar(true);
