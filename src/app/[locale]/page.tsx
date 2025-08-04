@@ -24,6 +24,7 @@ const Page = () => {
   const [isActive, setIsActive] = useState(false);
   const [productType, setProductType] = useState<"숙박" | "티켓">("숙박");
   const [isNavigationg, setIsNavigating] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -244,80 +245,104 @@ const Page = () => {
                 </button>
 
                 {isActive && (
-                  <>
-                    <div className="absolute left-2/3 top-3/4 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-                      <div className="flex justify-end mb-3">
-                        <button
-                          onClick={() => setIsActive(false)}
-                          className="text-primary-900 font-bold text-xl hover:text-primary-500"
-                        >
-                          X
-                        </button>
-                      </div>
-                      <div className="flex flex-row items-center justify-center p-5 gap-4">
-                        <p className="text-lg font-semibold text-primary-900">
-                          {t("room")}{" "}
+                  <div
+                    className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+                    onMouseEnter={() => {
+                      if (hoverTimeout) clearTimeout(hoverTimeout);
+                      setIsActive(true);
+                    }}
+                    onMouseLeave={() => {
+                      const timeout = setTimeout(() => setIsActive(false), 200);
+                      setHoverTimeout(timeout);
+                    }}
+                  >
+                    <div className="flex justify-end mb-3">
+                      <button
+                        onClick={() => setIsActive(false)}
+                        className="text-primary-600 hover:text-primary-700 text-lg font-semibold transition-colors duration-200"
+                        aria-label={t("closeDropdown")}
+                      >
+                        <i className="bi bi-x"></i>
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-sm font-medium text-gray-900">
+                          {t("room")}
                         </p>
-                        <button
-                          onClick={() => handleRoomChange(-1)}
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                        >
-                          -
-                        </button>
-                        <p className="text-lg text-primary-900 font-semibold">
-                          {room}
-                        </p>
-                        <button
-                          onClick={() => handleRoomChange(1)}
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                        >
-                          +
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleRoomChange(-1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("decreaseRoomCount")}
+                            disabled={room <= 1}
+                          >
+                            <i className="bi bi-dash text-lg"></i>
+                          </button>
+                          <p className="text-sm font-medium text-gray-700 w-8 text-center">
+                            {room}
+                          </p>
+                          <button
+                            onClick={() => handleRoomChange(1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("increaseRoomCount")}
+                          >
+                            <i className="bi bi-plus text-lg"></i>
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex flex-row items-center justify-center p-5 gap-4">
-                        <p className="text-lg font-semibold text-primary-900">
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-sm font-medium text-gray-900">
                           {t("adults")}
                         </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleAdultChange(-1)}
-                        >
-                          -
-                        </button>
-                        <p className="text-lg text-primary-900 font-semibold">
-                          {" "}
-                          {adults}
-                        </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleAdultChange(1)}
-                        >
-                          +
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleAdultChange(-1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("decreaseAdultCount")}
+                            disabled={adults <= 1}
+                          >
+                            <i className="bi bi-dash text-lg"></i>
+                          </button>
+                          <p className="text-sm font-medium text-gray-700 w-8 text-center">
+                            {adults}
+                          </p>
+                          <button
+                            onClick={() => handleAdultChange(1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("increaseAdultCount")}
+                          >
+                            <i className="bi bi-plus text-lg"></i>
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex flex-row items-center justify-center p-5 gap-4">
-                        <p className="text-lg font-semibold text-primary-900">
-                          {t("children")}{" "}
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-sm font-medium text-gray-900">
+                          {t("children")}
                         </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleChildrenChange(-1)}
-                        >
-                          -
-                        </button>
-                        <p className="text-lg text-primary-900 font-semibold">
-                          {" "}
-                          {children}
-                        </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleChildrenChange(1)}
-                        >
-                          +
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleChildrenChange(-1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("decreaseChildrenCount")}
+                            disabled={children <= 0}
+                          >
+                            <i className="bi bi-dash text-lg"></i>
+                          </button>
+                          <p className="text-sm font-medium text-gray-700 w-8 text-center">
+                            {children}
+                          </p>
+                          <button
+                            onClick={() => handleChildrenChange(1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("increaseChildrenCount")}
+                          >
+                            <i className="bi bi-plus text-lg"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </>
@@ -378,61 +403,79 @@ const Page = () => {
                 </button>
 
                 {isActive && (
-                  <>
-                    <div className="absolute left-2/3 top-3/4 mt-2 bg-white shadow-lg rounded-lg border border-primary-300 p-4 z-50">
-                      <div className="flex justify-end mb-3">
-                        <button
-                          onClick={() => setIsActive(false)}
-                          className="text-primary-900 font-bold text-xl hover:text-primary-500"
-                        >
-                          X
-                        </button>
-                      </div>
-
-                      <div className="flex flex-row items-center justify-center p-5 gap-4">
-                        <p className="text-lg font-semibold text-primary-900">
+                  <div
+                    className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+                    onMouseEnter={() => {
+                      if (hoverTimeout) clearTimeout(hoverTimeout);
+                      setIsActive(true);
+                    }}
+                    onMouseLeave={() => {
+                      const timeout = setTimeout(() => setIsActive(false), 200);
+                      setHoverTimeout(timeout);
+                    }}
+                  >
+                    <div className="flex justify-end mb-3">
+                      <button
+                        onClick={() => setIsActive(false)}
+                        className="text-primary-600 hover:text-primary-700 text-lg font-semibold transition-colors duration-200"
+                        aria-label={t("closeDropdown")}
+                      >
+                        <i className="bi bi-x"></i>
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-sm font-medium text-gray-900">
                           {t("adults")}
                         </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleAdultChange(-1)}
-                        >
-                          -
-                        </button>
-                        <p className="text-lg text-primary-900 font-semibold">
-                          {" "}
-                          {adults}
-                        </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleAdultChange(1)}
-                        >
-                          +
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleAdultChange(-1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("decreaseAdultCount")}
+                            disabled={adults <= 1}
+                          >
+                            <i className="bi bi-dash text-lg"></i>
+                          </button>
+                          <p className="text-sm font-medium text-gray-700 w-8 text-center">
+                            {adults}
+                          </p>
+                          <button
+                            onClick={() => handleAdultChange(1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("increaseAdultCount")}
+                          >
+                            <i className="bi bi-plus text-lg"></i>
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex flex-row items-center justify-center p-5 gap-4">
-                        <p className="text-lg font-semibold text-primary-900">
-                          {t("children")}{" "}
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-sm font-medium text-gray-900">
+                          {t("children")}
                         </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleChildrenChange(-1)}
-                        >
-                          -
-                        </button>
-                        <p className="text-lg text-primary-900 font-semibold">
-                          {" "}
-                          {children}
-                        </p>
-                        <button
-                          className="border border-primary-800 p-3 rounded-full text-2xl"
-                          onClick={() => handleChildrenChange(1)}
-                        >
-                          +
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleChildrenChange(-1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("decreaseChildrenCount")}
+                            disabled={children <= 0}
+                          >
+                            <i className="bi bi-dash text-lg"></i>
+                          </button>
+                          <p className="text-sm font-medium text-gray-700 w-8 text-center">
+                            {children}
+                          </p>
+                          <button
+                            onClick={() => handleChildrenChange(1)}
+                            className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+                            aria-label={t("increaseChildrenCount")}
+                          >
+                            <i className="bi bi-plus text-lg"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </>
@@ -463,5 +506,21 @@ const Page = () => {
     </div>
   );
 };
+
+<style jsx>{`
+  @keyframes dropdown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-dropdown {
+    animation: dropdown 0.2s ease-out forwards;
+  }
+`}</style>
 
 export default Page;
