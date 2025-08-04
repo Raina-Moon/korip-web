@@ -12,6 +12,7 @@ import {
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { Bookmark } from "@/types/bookmark";
 import { TicketBookmark } from "@/types/ticketBookmark";
+import { useLocale } from "@/utils/useLocale";
 import { HeartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ import { useTranslation } from "react-i18next";
 
 const FavoritesPage = () => {
   const {t} = useTranslation("favorites");
+  const locale = useLocale();
   const [selectedType, setSelectedType] = useState<"LODGING" | "TICKET">(
     "LODGING"
   );
@@ -107,7 +109,7 @@ const FavoritesPage = () => {
                   key={bookmark.id}
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/lodge/${bookmark.lodgeId}`);
+                    router.push(`/${locale}/lodge/${bookmark.lodgeId}`);
                   }}
                   className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                 >
@@ -116,9 +118,6 @@ const FavoritesPage = () => {
                       {bookmark.lodge?.name}
                     </h2>
                     <p className="text-gray-600">{bookmark.lodge?.address}</p>
-                    <p className="text-gray-500 text-sm">
-                      {bookmark.lodge?.description}
-                    </p>
                   </div>
 
                   <button
@@ -156,7 +155,7 @@ const FavoritesPage = () => {
                 <li
                   key={bookmark.id}
                   onClick={() =>
-                    router.push(`/ticket/${bookmark.ticketType?.id}`)
+                    router.push(`/${locale}/ticket/${bookmark.ticketType?.id}`)
                   }
                   className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                 >
@@ -165,7 +164,7 @@ const FavoritesPage = () => {
                       {bookmark.ticketType?.name}
                     </h2>
                     <p className="text-gray-600">
-                      {bookmark.ticketType?.description}
+                      {bookmark.ticketType?.lodge?.address}
                     </p>
                   </div>
 
