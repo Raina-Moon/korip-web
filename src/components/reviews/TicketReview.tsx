@@ -94,18 +94,26 @@ const TicketReview = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">{t("title", { nickname })}</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-semibold text-primary-700">
+        {t("title", { nickname })}
+      </h2>
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-4 py-2 bg-primary-700 text-white rounded mb-4 hover:bg-primary-800 transition-colors"
+        className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
       >
         {t("createButton")}
       </button>
-      {isError && <p className="text-red-500">{t("loadError")}</p>}
+
+      {isError && (
+        <p className="text-red-600 bg-red-100 p-4 rounded-lg text-center">
+          {t("loadError")}
+        </p>
+      )}
+
       {reviews && reviews.length === 0 && (
-        <p className="text-gray-500">{t("empty")}</p>
+        <p className="text-gray-500 text-center">{t("empty")}</p>
       )}
 
       {isModalOpen && (
@@ -121,11 +129,13 @@ const TicketReview = () => {
         {reviews?.map((review: TicketReview) => (
           <li
             key={review.id}
-            className="relative border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2"
+            className="relative bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200"
           >
             <div className="flex justify-between items-start">
-              <div>
-                <span className="font-semibold">{review.user?.nickname}</span>
+              <div className="space-y-2">
+                <span className="font-semibold text-gray-900">
+                  {review.user?.nickname}
+                </span>
                 {review.reservation && (
                   <p className="text-md text-primary-900">
                     <span className="text-lg font-semibold mr-3">
@@ -143,31 +153,34 @@ const TicketReview = () => {
                   value={review.rating}
                   readOnly
                   style={{ maxWidth: 100 }}
-                />{" "}
+                />
                 <p className="text-sm text-gray-500">
                   {formattedDate(review.createdAt)}
                 </p>
                 {review.isHidden && (
-                  <p className="text-white bg-red-500 px-2 py-1 rounded-sm">
+                  <p className="text-white bg-red-600 px-2 py-1 rounded-sm text-xs inline-block">
                     {t("hidden")}
                   </p>
                 )}
               </div>
               <div className="relative">
-                <button onClick={() => toggleMenu(String(review.id))}>
-                  <MoreVertical />
+                <button
+                  onClick={() => toggleMenu(String(review.id))}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <MoreVertical size={20} />
                 </button>
                 {openMenuId === String(review.id) && (
-                  <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
+                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                     <button
                       onClick={() => startEditing(review)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       {t("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(review)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition-colors"
                     >
                       {t("delete")}
                     </button>
@@ -177,61 +190,64 @@ const TicketReview = () => {
             </div>
 
             {editingId === String(review.id) ? (
-              <div className="mt-2 flex flex-col gap-2">
+              <div className="mt-4 space-y-4">
                 <input
                   type="text"
                   value={editingComment}
                   onChange={(e) => setEditingComment(e.target.value)}
-                  className="border rounded px-3 py-2"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
                 />
-                <Rating
-                  value={editingRating ?? 0}
-                  onChange={setEditingRating}
-                  style={{ maxWidth: 100 }}
-                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">{t("editRatingLabel")}</span>
+                  <Rating
+                    value={editingRating ?? 0}
+                    onChange={setEditingRating}
+                    style={{ maxWidth: 100 }}
+                  />
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => saveEdit(review)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
                   >
                     {t("save")}
                   </button>
                   <button
                     onClick={cancelEditing}
-                    className="px-4 py-2 border rounded"
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
                   >
                     {t("cancel")}
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="mt-2 text-gray-700">{review.comment}</p>
+              <p className="mt-4 text-gray-700">{review.comment}</p>
             )}
           </li>
         ))}
-
-        {totalPages > 1 && (
-          <div className="mt-4 flex gap-2 justify-center items-center">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span className="px-2">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={page === totalPages}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
       </ul>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-center items-center gap-2">
+          <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          >
+            Prev
+          </button>
+          <span className="px-4 py-2 text-gray-700">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
