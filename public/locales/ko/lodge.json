@@ -39,5 +39,22 @@
   "editFailed": "리뷰 수정에 실패했습니다.",
   "reportSuccess": "리뷰가 신고되었습니다.",
   "reportFailed": "리뷰 신고에 실패했습니다.",
-  "reportReasonRequired": "신고 사유를 입력해주세요."
+  "reportReasonRequired": "신고 사유를 입력해주세요.",
+  "selectRegion": "지역",
+  "all": "전체",
+  "seoul": "서울",
+  "busan": "부산",
+  "gyeonggi": "경기도",
+  "chungcheong": "충청도",
+  "jeolla": "전라도",
+  "gyeongsang": "경상도",
+  "jeju": "제주도",
+  "gangwon": "강원도",
+  "accommodationType": "숙소 유형",
+  "allAccommodationTypes": "숙소 유형 전체",
+  "hotel": "호텔",
+  "motel": "모텔",
+  "resort": "리조트",
+  "pension": "펜션",
+  "etc": "기타"
 }
