@@ -8,7 +8,6 @@ import {
 } from "@/lib/ticket-review/ticketReviewApi";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
-import { TicketReview } from "@/types/ticketReview";
 import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -96,47 +95,64 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">{t("title")}</h3>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
+        <h3 className="text-2xl font-semibold text-primary-700">
+          {t("title")}
+        </h3>
 
-        <label className="block mb-2 font-medium">{t("selectLabel")}</label>
-        <select
-          value={ticketReservationId ?? ""}
-          onChange={(e) => {
-            const selectedId = Number(e.target.value);
-            const selected = tickets?.find((t) => t.id === selectedId);
-            setTicketReservationId(selectedId);
-            setTicketTypeId(selected?.ticketType.id ?? null);
-          }}
-          className="w-full border px-3 py-2 rounded mb-4"
-        >
-          <option value="">{t("selectPlaceholder")}</option>
-          {eligibleTickets?.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.ticketType.name} - {formatDate(t.date)}
-            </option>
-          ))}
-        </select>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            {t("selectLabel")}
+          </label>
+          <select
+            value={ticketReservationId ?? ""}
+            onChange={(e) => {
+              const selectedId = Number(e.target.value);
+              const selected = tickets?.find((t) => t.id === selectedId);
+              setTicketReservationId(selectedId);
+              setTicketTypeId(selected?.ticketType.id ?? null);
+            }}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
+          >
+            <option value="">{t("selectPlaceholder")}</option>
+            {eligibleTickets?.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.ticketType.name} - {formatDate(t.date)}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label className="block mb-2 font-medium">{t("ratingLabel")}</label>
-        <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            {t("ratingLabel")}
+          </label>
+          <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
+        </div>
 
-        <label className="block mb-2 font-medium">{t("commentLabel")}</label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="w-full border px-3 py-2 rounded mb-4"
-          rows={4}
-        />
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            {t("commentLabel")}
+          </label>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
+            rows={4}
+          />
+        </div>
 
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 border rounded">
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          >
             {t("cancel")}
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
           >
             {t("submit")}
           </button>
