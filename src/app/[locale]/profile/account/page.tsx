@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { showConfirm } from "@/utils/showConfirm";
+import toast from "react-hot-toast";
 
 const AccountPage = () => {
   const { t } = useTranslation("account");
@@ -33,15 +34,22 @@ const AccountPage = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!nickname.trim()) {
-      setErrorMessage("Please enter a nickname.");
+    const trimmedNickname = nickname.trim();
+
+    if (!trimmedNickname) {
+      setErrorMessage(t("nicknameError"));
+      return;
+    }
+
+    if (trimmedNickname.length < 4) {
+      setErrorMessage(t("nicknameLengthError"));
       return;
     }
 
     try {
-      await updateNicknameMutation(nickname).unwrap();
-      dispatch(updateNickname(nickname));
-      setSuccessMessage("Nickname updated successfully!");
+      await updateNicknameMutation(trimmedNickname).unwrap();
+      dispatch(updateNickname(trimmedNickname));
+      toast.success(t("nicknameUpdated"));
       setNickname("");
     } catch (err: unknown) {
       if (
@@ -116,6 +124,9 @@ const AccountPage = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
                 disabled={isUpdating}
               />
+              {errorMessage && (
+                <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+              )}
             </div>
             <button
               type="submit"
@@ -140,18 +151,6 @@ const AccountPage = () => {
             {isDeleting ? t("deleting") : t("deleteAccount")}
           </button>
         </section>
-
-        {(successMessage || errorMessage) && (
-          <div
-            className={`p-4 rounded-lg flex items-center justify-center transition-all duration-300 ${
-              successMessage
-                ? "bg-green-100 text-green-700 border border-green-300"
-                : "bg-red-100 text-red-700 border border-red-300"
-            }`}
-          >
-            <span>{successMessage || errorMessage}</span>
-          </div>
-        )}
       </div>
     </div>
   );
