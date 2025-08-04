@@ -1,6 +1,7 @@
 {
   "title": "검색 결과",
   "resultsCount": "검색 결과 {{count}}",
+  "sortLabel": "정렬 기준",
   "sort": {
     "popularity": "인기순",
     "reviews": "리뷰많은순",

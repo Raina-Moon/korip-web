@@ -1,5 +1,6 @@
 {
   "title": "Search Results",
+  "sortLabel": "Sort By",
   "sort": {
     "popularity": "Popularity",
     "reviews": "Most Reviews",
