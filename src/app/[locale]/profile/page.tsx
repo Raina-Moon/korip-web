@@ -1,10 +1,11 @@
 "use client";
-export const runtime = 'edge';
+export const runtime = "edge";
 
 import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
+import { useAppSelector } from "@/lib/store/hooks";
 
 const sections = [
   { href: "/profile/reservations", label: "Reservations", emoji: "📅" },
@@ -16,6 +17,8 @@ const sections = [
 
 const ProfilePage = () => {
   const { t } = useTranslation("profile");
+  const user = useAppSelector((state) => state.auth.user);
+
   const locale = useLocale();
 
   return (
@@ -29,8 +32,8 @@ const ProfilePage = () => {
           className="w-16 h-16 rounded-full object-cover"
         />
         <div>
-          <h2 className="text-xl font-semibold">{t("name")}</h2>
-          <p className="text-gray-500">{t("email")}</p>
+          <h2 className="text-xl font-semibold">{user?.nickname}</h2>
+          <p className="text-gray-500">{user?.email}</p>
         </div>
       </div>
 
