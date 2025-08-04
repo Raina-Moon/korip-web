@@ -59,50 +59,89 @@ export default function ReservationSearchBox({
   };
 
   return (
-    <><div className="w-full bg-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 animate-fade-in">
-      <div className="flex flex-col w-full sm:w-auto">
-        <label
-          htmlFor="checkIn"
-          className="text-sm font-medium text-gray-900 mb-1"
+    <div className="w-full bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex flex-col w-full sm:w-60">
+          <label
+            htmlFor="checkIn"
+            className="text-sm font-medium text-gray-900 mb-1"
+          >
+            {t("checkInPlaceholder")}
+          </label>
+          <input
+            id="checkIn"
+            className="h-10 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+            readOnly
+            onClick={() => setCalendar(true)}
+            value={formatDate(dateRange?.[0] ?? null)}
+            placeholder={t("checkInPlaceholder")}
+            aria-label={t("checkInPlaceholder")}
+          />
+        </div>
+        <div className="flex flex-col w-full sm:w-60">
+          <label
+            htmlFor="checkOut"
+            className="text-sm font-medium text-gray-900 mb-1"
+          >
+            {t("checkOutPlaceholder")}
+          </label>
+          <input
+            id="checkOut"
+            className="h-10 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+            readOnly
+            onClick={() => setCalendar(true)}
+            value={formatDate(dateRange?.[1] ?? null)}
+            placeholder={t("checkOutPlaceholder")}
+            aria-label={t("checkOutPlaceholder")}
+          />
+        </div>
+        <div className="flex flex-col w-full sm:w-60">
+          <label
+            htmlFor="guests"
+            className="text-sm font-medium text-gray-900 mb-1"
+          >
+            {t("guests")}
+          </label>
+          <button
+            id="guests"
+            onClick={() => setIsActive(!isActive)}
+            className="h-10 border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full group"
+            aria-label={t("guests")}
+          >
+            <span className="flex gap-2">
+              <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+                {t("room")} {room}
+              </span>
+              <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+                {t("adult")} {adults}
+              </span>
+              <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
+                {t("children")} {children}
+              </span>
+            </span>
+          </button>
+        </div>
+        <button
+          className="h-10 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto"
+          onClick={handleSearch}
+          aria-label={t("search")}
         >
-          {t("checkInPlaceholder")}
-        </label>
-        <input
-          id="checkIn"
-          className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-          readOnly
-          onClick={() => setCalendar(true)}
-          value={formatDate(dateRange?.[0] ?? null)}
-          placeholder={t("checkInPlaceholder")}
-          aria-label={t("checkInPlaceholder")} />
-      </div>
-      <div className="flex flex-col w-full sm:w-auto">
-        <label
-          htmlFor="checkOut"
-          className="text-sm font-medium text-gray-900 mb-1"
-        >
-          {t("checkOutPlaceholder")}
-        </label>
-        <input
-          id="checkOut"
-          className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-          readOnly
-          onClick={() => setCalendar(true)}
-          value={formatDate(dateRange?.[1] ?? null)}
-          placeholder={t("checkOutPlaceholder")}
-          aria-label={t("checkOutPlaceholder")} />
+          <i className="bi bi-search mr-2"></i>
+          {t("search")}
+        </button>
       </div>
 
       {calendar && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+        <div
+          className="absolute left-0 top-[8.5rem] sm:top-[7rem] mt-2 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group w-full sm:w-[37.5rem]"
           onMouseEnter={() => {
             if (hoverTimeout) clearTimeout(hoverTimeout);
             setCalendar(true);
-          } }
+          }}
           onMouseLeave={() => {
             const timeout = setTimeout(() => setCalendar(false), 200);
             setHoverTimeout(timeout);
-          } }
+          }}
         >
           <Calendar
             calendarType="gregory"
@@ -113,55 +152,26 @@ export default function ReservationSearchBox({
                 setCheckOut(formatDate(value[1]));
                 setCalendar(false);
               }
-            } }
+            }}
             selectRange
             showDoubleView
             value={dateRange}
-            minDate={new Date()} />
+            minDate={new Date()}
+          />
         </div>
       )}
 
-      <div className="flex flex-col w-full sm:w-auto">
-        <button
-          id="guests"
-          onClick={() => setIsActive(!isActive)}
-          className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full group"
-          aria-label={t("guests")}
-        >
-          <span className="flex gap-2">
-            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
-              {t("room")} {room}
-            </span>
-            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
-              {t("adult")} {adults}
-            </span>
-            <span className="bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full text-sm font-medium">
-              {t("children")} {children}
-            </span>
-          </span>
-        </button>
-      </div>
-
-      <button
-        className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto"
-        onClick={handleSearch}
-        aria-label={t("search")}
-      >
-        <i className="bi bi-search mr-2"></i>
-        {t("search")}
-      </button>
-
       {isActive && (
         <div
-          className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
+          className="absolute right-0 top-[8.5rem] sm:top-[7rem] mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50 animate-dropdown group"
           onMouseEnter={() => {
             if (hoverTimeout) clearTimeout(hoverTimeout);
             setIsActive(true);
-          } }
+          }}
           onMouseLeave={() => {
             const timeout = setTimeout(() => setIsActive(false), 200);
             setHoverTimeout(timeout);
-          } }
+          }}
         >
           <div className="flex justify-end mb-3">
             <button
@@ -177,35 +187,40 @@ export default function ReservationSearchBox({
               label={t("room")}
               value={room}
               onChange={handleRoomChange}
-              min={1} />
+              min={1}
+            />
             <QuantitySelector
               label={t("adult")}
               value={adults}
               onChange={handleAdultChange}
-              min={1} />
+              min={1}
+            />
             <QuantitySelector
               label={t("children")}
               value={children}
               onChange={handleChildrenChange}
-              min={0} />
+              min={0}
+            />
           </div>
         </div>
       )}
-    </div><style jsx>{`
-      @keyframes dropdown {
-        0% {
-          opacity: 0;
-          transform: translateY(-10px);
+
+      <style jsx>{`
+        @keyframes dropdown {
+          0% {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
+        .animate-dropdown {
+          animation: dropdown 0.2s ease-out forwards;
         }
-      }
-      .animate-dropdown {
-        animation: dropdown 0.2s ease-out forwards;
-      }
-    `}</style></>
+      `}</style>
+    </div>
   );
 }
 
@@ -227,24 +242,24 @@ const QuantitySelector = ({
       <p className="text-sm font-medium text-gray-900">{label}</p>
       <div className="flex items-center gap-3">
         <button
-        onClick={() => onChange(-1)}
-        className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-        aria-label={t("decrease", { label })}
-        disabled={value <= min}
-      >
-        <i className="bi bi-dash text-lg"></i>
-      </button>
-      <p className="text-sm font-medium text-gray-700 w-8 text-center">
-        {value}
-      </p>
-      <button
-        onClick={() => onChange(1)}
-        className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-        aria-label={t("increase", { label })}
-      >
-        <i className="bi bi-plus text-lg"></i>
-      </button>
+          onClick={() => onChange(-1)}
+          className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          aria-label={t("decrease", { label })}
+          disabled={value <= min}
+        >
+          <i className="bi bi-dash text-lg"></i>
+        </button>
+        <p className="text-sm font-medium text-gray-700 w-8 text-center">
+          {value}
+        </p>
+        <button
+          onClick={() => onChange(1)}
+          className="flex items-center justify-center w-10 h-10 bg-gray-100 text-primary-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          aria-label={t("increase", { label })}
+        >
+          <i className="bi bi-plus text-lg"></i>
+        </button>
+      </div>
     </div>
-  </div>
   );
 };
