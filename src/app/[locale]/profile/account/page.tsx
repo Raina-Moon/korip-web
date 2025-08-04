@@ -62,10 +62,10 @@ const AccountPage = () => {
       ) {
         setErrorMessage(
           (err as { data: { message?: string } }).data.message ||
-            "Failed to update nickname."
+          t("nicknameUpdateFailed")
         );
       } else {
-        setErrorMessage("Failed to update nickname.");
+        setErrorMessage(t("nicknameUpdateFailed"));
       }
     }
   };
