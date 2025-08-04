@@ -87,14 +87,32 @@ export const createLodge = createAsyncThunk<
       });
 
       if (Array.isArray(newLodgeData.roomTypeImages)) {
+        console.log("Processing roomTypeImages:", newLodgeData.roomTypeImages); // 디버깅용
+
         newLodgeData.roomTypeImages.forEach((roomFiles, idx) => {
-          if (!Array.isArray(roomFiles) || roomFiles.length === 0) return;
+          if (!Array.isArray(roomFiles) || roomFiles.length === 0) {
+            console.log(`Room ${idx}: no files`);
+            return;
+          }
+
+          console.log(`Room ${idx}: ${roomFiles.length} files`); // 디버깅용
 
           roomFiles.forEach((file: File, i: number) => {
-            if (!(file instanceof File)) return;
-            formData.append("roomTypeImages", file, `roomType_${idx}_${i}`);
+            if (!(file instanceof File)) {
+              console.log(
+                `Appending roomTypeImages: roomType_${idx}_${i}`,
+                file
+              );
+              return;
+            }
+
+            const fileName = `roomType_${idx}_${i}_${file.name}`;
+            formData.append("roomTypeImages", file, fileName);
+            console.log(`Added file: ${fileName}`);
           });
         });
+      } else {
+        console.log("No roomTypeImages to process");
       }
 
       const token = getState().auth.accessToken;
