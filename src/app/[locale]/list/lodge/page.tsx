@@ -29,12 +29,17 @@ export default function LodgeListPage() {
   const [checkOutDate, setCheckOut] = useState(checkOut);
   const [calendar, setCalendar] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [dateRange, setDateRange] = useState<[Date, Date] | null>([
-    new Date(checkIn),
-    new Date(checkOut),
-  ]);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(
+    checkIn &&
+      checkOut &&
+      !isNaN(new Date(checkIn).getTime()) &&
+      !isNaN(new Date(checkOut).getTime())
+      ? [new Date(checkIn), new Date(checkOut)]
+      : null
+  );
   const [newRegion, setNewRegion] = useState(region);
-  const [newAccommodationType, setNewAccommodationType] = useState(accommodationType);
+  const [newAccommodationType, setNewAccommodationType] =
+    useState(accommodationType);
 
   const [adultCount, setAdults] = useState(Number(adults));
   const [childCount, setChildren] = useState(Number(children));
@@ -121,34 +126,36 @@ export default function LodgeListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
-        <ReservationSearchBox
-          region={newRegion}
-          setRegion={handleRegionChange}
-          accommodationType={newAccommodationType}
-          setAccommodationType={handleAccommodationTypeChange}
-          checkIn={checkInDate}
-          setCheckIn={setCheckIn}
-          checkOut={checkOutDate}
-          setCheckOut={setCheckOut}
-          dateRange={dateRange}
-          setDateRange={setDateRange}
-          calendar={calendar}
-          setCalendar={setCalendar}
-          isActive={isActive}
-          setIsActive={setIsActive}
-          adults={adultCount}
-          setAdults={setAdults}
-          room={roomCount}
-          setRoom={setRoom}
-          children={childCount}
-          setChildren={setChildren}
-          handleAdultChange={handleAdultChange}
-          handleRoomChange={handleRoomChange}
-          handleChildrenChange={handleChildrenChange}
-          handleSearch={handleSearch}
-        />
+        <div className="relative z-50">
+          <ReservationSearchBox
+            region={newRegion}
+            setRegion={handleRegionChange}
+            accommodationType={newAccommodationType}
+            setAccommodationType={handleAccommodationTypeChange}
+            checkIn={checkInDate}
+            setCheckIn={setCheckIn}
+            checkOut={checkOutDate}
+            setCheckOut={setCheckOut}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            calendar={calendar}
+            setCalendar={setCalendar}
+            isActive={isActive}
+            setIsActive={setIsActive}
+            adults={adultCount}
+            setAdults={setAdults}
+            room={roomCount}
+            setRoom={setRoom}
+            children={childCount}
+            setChildren={setChildren}
+            handleAdultChange={handleAdultChange}
+            handleRoomChange={handleRoomChange}
+            handleChildrenChange={handleChildrenChange}
+            handleSearch={handleSearch}
+          />
+        </div>
 
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -184,17 +191,17 @@ export default function LodgeListPage() {
               <div
                 key={lodge.id}
                 className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                onClick={() => handleLodgeClick(lodge.id)}
                 role="button"
                 tabIndex={0}
                 aria-label={t("selectLodge", { name: lodge.name })}
+                onClick={() => handleLodgeClick(lodge.id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     handleLodgeClick(lodge.id);
                   }
                 }}
               >
-                <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
+                <div className="relative w-full h-48 rounded-lg mb-4">
                   {lodge.images?.[0]?.imageUrl ? (
                     <img
                       src={lodge.images[0].imageUrl}
