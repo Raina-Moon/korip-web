@@ -6,6 +6,7 @@
   "updating": "수정 중...",
   "nicknameUpdated": "닉네임이 성공적으로 변경되었습니다!",
   "nicknameError": "닉네임을 입력해주세요.",
+  "nicknameLengthError": "닉네임은 최소 4자 이상이어야 합니다.",
   "nicknameUpdateFailed": "닉네임 변경에 실패했습니다.",
   "dangerZone": "위험 구역",
   "deleteWarning": "계정을 삭제하면 복구할 수 없습니다.",
