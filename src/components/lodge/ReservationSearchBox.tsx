@@ -76,7 +76,10 @@ export default function ReservationSearchBox({
         setCalendar(false);
       }
 
-      if (guestDropdownRef.current && !guestDropdownRef.current.contains(target)) {
+      if (
+        guestDropdownRef.current &&
+        !guestDropdownRef.current.contains(target)
+      ) {
         setIsActive(false);
       }
     };
@@ -90,11 +93,16 @@ export default function ReservationSearchBox({
   const hasRegion = region !== undefined && setRegion !== undefined;
   const hasAccommodationType =
     accommodationType !== undefined && setAccommodationType !== undefined;
-  const calendarWidthClass = hasRegion || hasAccommodationType ? "sm:w-[49.5rem]" : "sm:w-[37.5rem]";
+  const calendarWidthClass =
+    hasRegion || hasAccommodationType ? "sm:w-[49.5rem]" : "sm:w-[37.5rem]";
 
   return (
     <div className="w-full max-w-[72rem] mx-auto bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200 animate-fade-in">
-      <div className="flex flex-row items-end gap-3 flex-nowrap" role="group" aria-label={t("searchForm")}>
+      <div
+        className="flex flex-row items-end gap-3 flex-nowrap"
+        role="group"
+        aria-label={t("searchForm")}
+      >
         {hasRegion && (
           <div className="flex flex-col w-full sm:w-48">
             <label
@@ -284,6 +292,7 @@ export default function ReservationSearchBox({
               }
             }}
             selectRange
+            showDoubleView
             value={dateRange}
             minDate={new Date()}
           />
