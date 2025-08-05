@@ -6,10 +6,14 @@ import {
   updateNewsThunk,
   deleteNewsThunk,
   News,
+  NewsPagination,
 } from "./newsThunk";
 
 interface NewsState {
   list: News[];
+  total: number;
+  page: number;
+  limit: number;
   current: News | null;
   state: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
@@ -17,6 +21,9 @@ interface NewsState {
 
 const initialState: NewsState = {
   list: [],
+  total: 0,
+  page: 1,
+  limit: 10,
   current: null,
   state: "idle",
   error: null,
@@ -36,10 +43,16 @@ const newsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(fetchAllNews.fulfilled, (state, action: PayloadAction<News[]>) => {
-        state.state = "succeeded";
-        state.list = action.payload;
-      })
+      .addCase(
+        fetchAllNews.fulfilled,
+        (state, action: PayloadAction<NewsPagination>) => {
+          state.state = "succeeded";
+          state.list = action.payload.data;
+          state.total = action.payload.total;
+          state.page = action.payload.page;
+          state.limit = action.payload.limit;
+        }
+      )
       .addCase(fetchAllNews.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
@@ -49,10 +62,13 @@ const newsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(fetchNewsById.fulfilled, (state, action: PayloadAction<News>) => {
-        state.state = "succeeded";
-        state.current = action.payload;
-      })
+      .addCase(
+        fetchNewsById.fulfilled,
+        (state, action: PayloadAction<News>) => {
+          state.state = "succeeded";
+          state.current = action.payload;
+        }
+      )
       .addCase(fetchNewsById.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
@@ -62,10 +78,13 @@ const newsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(createNewsThunk.fulfilled, (state, action: PayloadAction<News>) => {
-        state.state = "succeeded";
-        state.list.unshift(action.payload);
-      })
+      .addCase(
+        createNewsThunk.fulfilled,
+        (state, action: PayloadAction<News>) => {
+          state.state = "succeeded";
+          state.list.unshift(action.payload);
+        }
+      )
       .addCase(createNewsThunk.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
@@ -75,16 +94,19 @@ const newsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(updateNewsThunk.fulfilled, (state, action: PayloadAction<News>) => {
-        state.state = "succeeded";
-        const index = state.list.findIndex((n) => n.id === action.payload.id);
-        if (index !== -1) {
-          state.list[index] = action.payload;
+      .addCase(
+        updateNewsThunk.fulfilled,
+        (state, action: PayloadAction<News>) => {
+          state.state = "succeeded";
+          const index = state.list.findIndex((n) => n.id === action.payload.id);
+          if (index !== -1) {
+            state.list[index] = action.payload;
+          }
+          if (state.current?.id === action.payload.id) {
+            state.current = action.payload;
+          }
         }
-        if (state.current?.id === action.payload.id) {
-          state.current = action.payload;
-        }
-      })
+      )
       .addCase(updateNewsThunk.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
@@ -94,13 +116,16 @@ const newsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(deleteNewsThunk.fulfilled, (state, action: PayloadAction<number>) => {
-        state.state = "succeeded";
-        state.list = state.list.filter((news) => news.id !== action.payload);
-        if (state.current?.id === action.payload) {
-          state.current = null;
+      .addCase(
+        deleteNewsThunk.fulfilled,
+        (state, action: PayloadAction<number>) => {
+          state.state = "succeeded";
+          state.list = state.list.filter((news) => news.id !== action.payload);
+          if (state.current?.id === action.payload) {
+            state.current = null;
+          }
         }
-      })
+      )
       .addCase(deleteNewsThunk.rejected, (state, action) => {
         state.state = "failed";
         state.error = action.payload as string;
