@@ -28,7 +28,7 @@ import {
   useDeleteTicketBookmarkMutation,
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
-import { TicketBookmark } from "@/types/ticket";
+import { LodgeWithTickets, Ticket, TicketBookmark } from "@/types/ticket";
 import ImageModal from "@/components/ui/ImageModal";
 import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
 import { useTranslation } from "react-i18next";
@@ -93,12 +93,10 @@ const TicketDetailPage = () => {
   const { data: ticket, isLoading } = useGetTicketByIdQuery(ticketId);
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
   const [createReview] = useCreateTicketReviewMutation();
-
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
-
-  const { data: tickets } = useGetAvailableTicketQuery({
+  const { data: lodgesWithTickets } = useGetAvailableTicketQuery({
     region,
     date,
     adults,
@@ -108,13 +106,19 @@ const TicketDetailPage = () => {
 
   const [createBookmark] = useCreateTicketBookmarkMutation();
   const [deleteBookmark] = useDeleteTicketBookmarkMutation();
-
   const [updateReview] = useUpdateTicketReviewMutation();
   const [deleteReview] = useDeleteTicketReviewMutation();
 
   const isBookmarked = (myBookmarks as TicketBookmark[] | undefined)?.some(
     (b) => b.ticketTypeId === Number(ticketId)
   );
+
+  // Find the lodge containing the current ticket
+  const currentLodge = lodgesWithTickets?.find((lodge) =>
+    lodge.ticketTypes.some((t) => t.id === Number(ticketId))
+  );
+  const relatedTickets =
+    currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -148,6 +152,7 @@ const TicketDetailPage = () => {
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      toast.error(t("bookmarkFailed"));
     }
   };
 
@@ -173,6 +178,7 @@ const TicketDetailPage = () => {
         data: { comment: editingComment, rating: editingRating },
       }).unwrap();
       setEditingId(null);
+      toast.success(t("editSuccess"));
     } catch (error) {
       console.error(error);
       toast.error(t("editFailed"));
@@ -218,6 +224,17 @@ const TicketDetailPage = () => {
     router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
+  const handleTicketClick = (ticketId: number) => {
+    const query = new URLSearchParams({
+      region,
+      date,
+      adults: String(adults),
+      children: String(children),
+      sort,
+    }).toString();
+    router.push(`/${locale}/ticket/${ticketId}?${query}`);
+  };
+
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
     setCurrentModalImage(index);
@@ -253,7 +270,6 @@ const TicketDetailPage = () => {
         reviewId: selectedReviewId,
         reason: reason.trim(),
       }).unwrap();
-
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
@@ -335,8 +351,14 @@ const TicketDetailPage = () => {
         <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                <h1 className="text-2xl font-bold text-gray-900" aria-label={t("ticketName")}>
+              <div
+                className="flex justify-between items-center animate-fade-in"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <h1
+                  className="text-2xl font-bold text-gray-900"
+                  aria-label={t("ticketName")}
+                >
                   {ticket.lodge.name}
                 </h1>
                 <button
@@ -344,7 +366,9 @@ const TicketDetailPage = () => {
                   className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
                     isBookmarked ? "text-red-500" : "text-gray-400"
                   } hover:text-primary-500`}
-                  aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
+                  aria-label={
+                    isBookmarked ? t("removeBookmark") : t("addBookmark")
+                  }
                   role="button"
                 >
                   {isBookmarked ? (
@@ -367,11 +391,21 @@ const TicketDetailPage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in" style={{ animationDelay: "0.3s" }} role="region" aria-describedby="ticket-details">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2" id="ticket-details">
+              <div
+                className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in"
+                style={{ animationDelay: "0.3s" }}
+                role="region"
+                aria-describedby="ticket-details"
+              >
+                <h3
+                  className="text-xl font-semibold text-gray-900 mb-2"
+                  id="ticket-details"
+                >
                   {ticket.name}
                 </h3>
-                <p className="text-sm text-gray-600 italic mb-4">{ticket.description || t("noDescription")}</p>
+                <p className="text-sm text-gray-600 italic mb-4">
+                  {ticket.description || t("noDescription")}
+                </p>
                 <p className="text-base text-gray-700">
                   <span className="font-medium">{t("adult")}:</span>{" "}
                   {ticket.adultPrice
@@ -385,7 +419,10 @@ const TicketDetailPage = () => {
                     : t("priceUnavailable")}
                 </p>
               </div>
-              <div className="flex items-end animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              <div
+                className="flex items-end animate-fade-in"
+                style={{ animationDelay: "0.4s" }}
+              >
                 <button
                   onClick={() => {
                     if (!isAuthenticated) {
@@ -399,17 +436,14 @@ const TicketDetailPage = () => {
                           children,
                         })
                       );
-
                       dispatch(
                         setRedirectAfterLogin(
                           `/${locale}/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
                         )
                       );
-
                       dispatch(openLoginModal("ticket/reserve"));
                       return;
                     }
-
                     const query = new URLSearchParams({
                       ticketTypeId: String(ticket.id),
                       date,
@@ -420,7 +454,6 @@ const TicketDetailPage = () => {
                       adultPrice: String(ticket.adultPrice),
                       childPrice: String(ticket.childPrice),
                     }).toString();
-
                     router.push(`/${locale}/ticket-reservation?${query}`);
                   }}
                   className="h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
@@ -433,6 +466,46 @@ const TicketDetailPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Related Tickets Section */}
+          {relatedTickets.length > 0 && (
+            <div className="mt-6 border-t border-gray-200 pt-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                {t("relatedTickets")} ({relatedTickets.length})
+              </h2>
+              <div className="grid gap-4">
+                {relatedTickets.map((ticket) => (
+                  <div
+                    key={ticket.id}
+                    className="border border-gray-200 bg-gray-50 rounded-lg p-3 space-y-1 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                    onClick={() => handleTicketClick(ticket.id)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={t("selectTicket", { name: ticket.name })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleTicketClick(ticket.id);
+                      }
+                    }}
+                  >
+                    <p className="text-sm font-medium text-gray-900">
+                      {ticket.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {t("adultPrice", {
+                        price: ticket.adultPrice.toLocaleString(),
+                      })}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {t("childPrice", {
+                        price: ticket.childPrice.toLocaleString(),
+                      })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
