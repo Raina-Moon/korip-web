@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
+import { useGetAllNewsQuery } from "@/lib/news/newsApi";
+import { useGetAllEventsQuery } from "@/lib/events/eventsApi";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -30,6 +32,9 @@ const Page = () => {
   const dispatch = useAppDispatch();
 
   const locale = useLocale();
+
+  const { data: newsData, isLoading: isNewsLoading } = useGetAllNewsQuery({ page: 1, limit: 5 });
+  const { data: eventsData, isLoading: isEventsLoading } = useGetAllEventsQuery({ page: 1, limit: 5 });
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -490,18 +495,74 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-20 mb-20 px-5 w-[60%] gap-10">
-        <div className="border-b border-primary-800 w-full">
-          <p className="text-primary-800 font-bold text-3xl">News</p>
-        </div>
+     <div className="container mx-auto mt-20 mb-20 px-5">
+        <div className="flex flex-col md:flex-row gap-10">
+          {/* News Section */}
+          <div className="w-full md:w-1/2">
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-primary-800 font-bold text-3xl">{t("news")}</p>
+              <p
+                onClick={() => router.push(`/${locale}/news/list/page`)}
+                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
+              >
+                {t("seeMore")} <i className="bi bi-chevron-right ml-1"></i>
+              </p>
+            </div>
+            <div className="border-b border-primary-800 mb-4"></div>
+            {isNewsLoading ? (
+              <p className="text-gray-600">{t("loading")}</p>
+            ) : (
+              <ul className="space-y-3">
+                {newsData?.items?.slice(0, 5).map((news) => (
+                  <li key={news.id} className="border-b border-gray-200 pb-2">
+                    <p
+                      onClick={() => router.push(`/${locale}/news/${news.id}`)}
+                      className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
+                    >
+                      <p className="text-sm font-medium">{news.title}</p>
+                      <p className="text-xs text-gray-600">
+                        {new Date(news.createdAt).toLocaleDateString(locale)}
+                      </p>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-        <div className="border-b border-primary-800 w-full">
-          <p className="text-primary-800 font-bold text-3xl">Events</p>
+          {/* Events Section */}
+          <div className="w-full md:w-1/2">
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-primary-800 font-bold text-3xl">{t("events")}</p>
+              <p
+                onClick={() => router.push(`/${locale}/events/list/page`)}
+                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
+              >
+                {t("seeMore")} <i className="bi bi-chevron-right ml-1"></i>
+              </p>
+            </div>
+            <div className="border-b border-primary-800 mb-4"></div>
+            {isEventsLoading ? (
+              <p className="text-gray-600">{t("loading")}</p>
+            ) : (
+              <ul className="space-y-3">
+                {eventsData?.items?.slice(0, 5).map((event) => (
+                  <li key={event.id} className="border-b border-gray-200 pb-2">
+                    <p
+                      onClick={() => router.push(`/${locale}/events/${event.id}`)}
+                      className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
+                    >
+                      <p className="text-sm font-medium">{event.title}</p>
+                      <p className="text-xs text-gray-600">
+                        {new Date(event.createdAt).toLocaleDateString(locale)}
+                      </p>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-      </div>
-
-      <div>
-        <p>page</p>
       </div>
     </div>
   );

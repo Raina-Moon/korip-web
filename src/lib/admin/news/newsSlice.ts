@@ -5,9 +5,9 @@ import {
   createNewsThunk,
   updateNewsThunk,
   deleteNewsThunk,
-  News,
   NewsPagination,
 } from "./newsThunk";
+import { News } from "@/types/news";
 
 interface NewsState {
   list: News[];

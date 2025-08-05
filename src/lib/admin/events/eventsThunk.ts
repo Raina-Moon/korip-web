@@ -2,17 +2,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "@/lib/store/store";
 import { logout } from "@/lib/auth/authSlice";
-
-export interface EventItem {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Event } from "@/types/events";
 
 export interface EventPagination {
-  data: EventItem[];
+  data: Event[];
   total: number;
   page: number;
   limit: number;
@@ -45,7 +38,7 @@ export const fetchEvents = createAsyncThunk<
 });
 
 export const fetchEventById = createAsyncThunk<
-  EventItem,
+  Event,
   number,
   { rejectValue: string; state: RootState }
 >("admin/events/fetchById", async (id, { dispatch, rejectWithValue, getState }) => {
@@ -68,7 +61,7 @@ export const fetchEventById = createAsyncThunk<
 });
 
 export const createEventThunk = createAsyncThunk<
-  EventItem,
+  Event,
   { title: string; content: string },
   { rejectValue: string; state: RootState }
 >("admin/events/create", async (data, { dispatch, rejectWithValue, getState }) => {
@@ -92,7 +85,7 @@ export const createEventThunk = createAsyncThunk<
 });
 
 export const updateEventThunk = createAsyncThunk<
-  EventItem,
+  Event,
   { id: number; data: { title: string; content: string } },
   { rejectValue: string; state: RootState }
 >("admin/events/update", async ({ id, data }, { dispatch, rejectWithValue, getState }) => {

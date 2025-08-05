@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  EventItem,
   EventPagination,
   fetchEvents,
   fetchEventById,
@@ -8,10 +7,11 @@ import {
   updateEventThunk,
   deleteEventThunk,
 } from "./eventsThunk";
+import { Event } from "@/types/events";
 
 interface EventsState {
-  list: EventItem[];
-  current: EventItem | null;
+  list: Event[];
+  current: Event | null;
   total: number;
   page: number;
   limit: number;
@@ -59,7 +59,7 @@ const eventsSlice = createSlice({
         state.state = "loading";
         state.error = null;
       })
-      .addCase(fetchEventById.fulfilled, (state, action: PayloadAction<EventItem>) => {
+      .addCase(fetchEventById.fulfilled, (state, action: PayloadAction<Event>) => {
         state.state = "succeeded";
         state.current = action.payload;
       })
@@ -68,11 +68,11 @@ const eventsSlice = createSlice({
         state.error = action.payload ?? "Failed to fetch event";
       })
 
-      .addCase(createEventThunk.fulfilled, (state, action: PayloadAction<EventItem>) => {
+      .addCase(createEventThunk.fulfilled, (state, action: PayloadAction<Event>) => {
         state.list.unshift(action.payload);
       })
 
-      .addCase(updateEventThunk.fulfilled, (state, action: PayloadAction<EventItem>) => {
+      .addCase(updateEventThunk.fulfilled, (state, action: PayloadAction<Event>) => {
         const idx = state.list.findIndex((e) => e.id === action.payload.id);
         if (idx !== -1) state.list[idx] = action.payload;
         if (state.current?.id === action.payload.id) state.current = action.payload;

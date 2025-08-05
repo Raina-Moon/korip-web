@@ -2,14 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "@/lib/store/store";
 import { logout } from "@/lib/auth/authSlice";
-
-export interface News {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { News } from "@/types/news";
 
 export interface NewsPagination {
   data: News[];
