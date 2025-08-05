@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   useGetTicketByIdQuery,
   useGetTicketReviewsQuery,
-  useCreateTicketReviewMutation,
   useUpdateTicketReviewMutation,
   useDeleteTicketReviewMutation,
   useGetAvailableTicketQuery,
@@ -28,7 +27,7 @@ import {
   useDeleteTicketBookmarkMutation,
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
-import { LodgeWithTickets, Ticket, TicketBookmark } from "@/types/ticket";
+import { TicketBookmark } from "@/types/ticket";
 import ImageModal from "@/components/ui/ImageModal";
 import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
 import { useTranslation } from "react-i18next";
@@ -39,7 +38,7 @@ import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 
 const TicketDetailPage = () => {
-  const { t } = useTranslation("list-lodge");
+  const { t } = useTranslation("ticket");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
@@ -90,7 +89,6 @@ const TicketDetailPage = () => {
 
   const { data: ticket, isLoading, isError: isTicketError } = useGetTicketByIdQuery(ticketId);
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
-  const [createReview] = useCreateTicketReviewMutation();
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
