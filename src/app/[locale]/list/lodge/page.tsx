@@ -5,8 +5,9 @@ import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Lodge, RoomType } from "@/types/lodge";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 import { useLocale } from "@/utils/useLocale";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -45,7 +46,7 @@ export default function LodgeListPage() {
   const [childCount, setChildren] = useState(Number(children));
   const [roomCount, setRoom] = useState(Number(room));
 
-  const router = useRouter();
+  const router = useLoadingRouter();
   const dispatch = useAppDispatch();
   const locale = useLocale();
 
