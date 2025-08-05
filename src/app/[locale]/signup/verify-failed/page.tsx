@@ -1,5 +1,4 @@
 "use client";
-export const runtime = 'edge';
 
 import { useLocale } from "@/utils/useLocale";
 import { useRouter } from "next/navigation";
