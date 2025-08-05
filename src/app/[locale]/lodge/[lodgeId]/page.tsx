@@ -1,5 +1,4 @@
 "use client";
-export const runtime = "edge";
 
 import ReviewCard, { GenericReview } from "@/components/ui/ReviewCard";
 import {
@@ -569,12 +568,16 @@ const LodgeDetailPage = () => {
           )}
         </button>
       </div>
-      <p
-        className="text-gray-600 mb-4 underline cursor-pointer hover:text-primary-500"
+      <div
+        className="flex items-center gap-1.5 text-base text-gray-600 cursor-pointer hover:text-primary-500 transition-colors duration-200 animate-fade-in"
+        style={{ animationDelay: "0.2s" }}
         onClick={() => setIsMapModalOpen(true)}
+        role="button"
+        aria-label={t("viewMap")}
       >
+        <i className="bi bi-geo-alt text-primary-500"></i>
         {lodge.address}
-      </p>
+      </div>
 
       {/* 설명 */}
       {lodge.description && (
