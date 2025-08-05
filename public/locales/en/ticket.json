@@ -9,7 +9,7 @@
   "date": "Date",
   "adult": "Adult",
   "children": "Children",
-  "totalReviews": "{{count}} Reviews",
+  "totalReviews": "{{totalVisible}} Reviews",
   "averageRating": "{{rating}} / 5",
   "sortBy": "Sort by:",
   "latest": "Latest",
@@ -42,5 +42,6 @@
   "jeolla": "Jeolla-do",
   "gyeongsang": "Gyeongsang-do",
   "jeju": "Jeju-do",
-  "gangwon": "Gangwon-do"
+  "gangwon": "Gangwon-do",
+  "relatedTickets": "Other Tickets"
 }

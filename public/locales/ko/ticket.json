@@ -9,7 +9,7 @@
   "date": "날짜",
   "adult": "성인",
   "children": "어린이",
-  "totalReviews": "총 {{count}}개의 리뷰",
+  "totalReviews": "총 {{totalVisible}}개의 리뷰",
   "averageRating": "{{rating}} / 5",
   "sortBy": "정렬 기준:",
   "latest": "최신순",
@@ -43,5 +43,6 @@
   "jeolla": "전라도",
   "gyeongsang": "경상도",
   "jeju": "제주도",
-  "gangwon": "강원도"
+  "gangwon": "강원도",
+  "relatedTickets": "관련 티켓"
 }
