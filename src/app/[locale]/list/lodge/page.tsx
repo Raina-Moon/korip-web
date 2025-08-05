@@ -195,11 +195,6 @@ export default function LodgeListPage() {
                 tabIndex={0}
                 aria-label={t("selectLodge", { name: lodge.name })}
                 onClick={() => handleLodgeClick(lodge.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleLodgeClick(lodge.id);
-                  }
-                }}
               >
                 <div className="relative w-full h-48 rounded-lg mb-4">
                   {lodge.images?.[0]?.imageUrl ? (
