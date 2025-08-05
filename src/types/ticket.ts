@@ -51,3 +51,27 @@ export interface TicketInventory {
   totalChildTickets: number;
   availableChildTickets: number;
 }
+
+export interface TicketType {
+  id: number;
+  name: string;
+  description: string;
+  adultPrice: number;
+  childPrice: number;
+  availableAdultTickets: number;
+  availableChildTickets: number;
+  date: string;
+  reviewCount: number;
+  averageRating: number;
+}
+
+export interface LodgeWithTickets {
+  id: number;
+  name: string;
+  address: string;
+  images: { imageUrl: string }[];
+  ticketTypes: TicketType[];
+  reviewCount: number;
+  averageRating: number;
+  reservationCount: number;
+}
