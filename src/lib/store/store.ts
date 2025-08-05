@@ -27,6 +27,8 @@ import { ticketReviewApi } from "../ticket-review/ticketReviewApi";
 import { reportTicketReviewApi } from "../report-ticket-review/reportTicketReviewApi";
 import newsSliceReducer from "../admin/news/newsSlice";
 import eventsSliceReducer from "../admin/events/eventsSlice";
+import { newsApi } from "../news/newsApi";
+import { eventsApi } from "../events/eventsApi";
 
 export const store = configureStore({
   reducer: {
@@ -58,6 +60,8 @@ export const store = configureStore({
     ticketReservation: ticketReservationReducer,
     [ticketReviewApi.reducerPath]: ticketReviewApi.reducer,
     [reportTicketReviewApi.reducerPath]: reportTicketReviewApi.reducer,
+    [newsApi.reducerPath]: newsApi.reducer,
+    [eventsApi.reducerPath]: eventsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -72,7 +76,9 @@ export const store = configureStore({
       ticketApi.middleware,
       ticketBookmarkApi.middleware,
       ticketReviewApi.middleware,
-      reportTicketReviewApi.middleware
+      reportTicketReviewApi.middleware,
+      newsApi.middleware,
+      eventsApi.middleware
     ),
 });
 
