@@ -1,8 +1,8 @@
 {
   "reservation": "Reserve",
   "priceTitle": "Pricing",
-  "adultPrice": "Adult",
-  "childPrice": "Child",
+  "adultPrice": "Adult : {{price}} KRW",
+  "childPrice": "Child : {{price}} KRW",
   "priceUnavailable": "Not available",
   "loginPrompt": "Please log in to continue.",
   "search": "Search",

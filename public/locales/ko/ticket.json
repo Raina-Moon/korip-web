@@ -1,8 +1,8 @@
 {
   "reservation": "예약",
   "priceTitle": "이용 요금",
-  "adultPrice": "성인",
-  "childPrice": "아동",
+  "adultPrice": "성인 : {{price}}원",
+  "childPrice": "아동 : {{price}}원",
   "priceUnavailable": "정보 없음",
   "loginPrompt": "계속하려면 로그인해주세요.",
   "search": "검색",
