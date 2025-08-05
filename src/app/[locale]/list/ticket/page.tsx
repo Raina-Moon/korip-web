@@ -7,7 +7,7 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
-import { Ticket } from "@/types/ticket";
+import { LodgeWithTickets } from "@/types/ticket";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 
 const TicketListPage = () => {
@@ -28,12 +28,10 @@ const TicketListPage = () => {
   const [newChildren, setNewChildren] = useState(Number(children));
 
   const dispatch = useAppDispatch();
-
   const router = useRouter();
-
   const locale = useLocale();
 
-  const { data: tickets, isLoading } = useGetAvailableTicketQuery({
+  const { data: lodgesWithTickets, isLoading } = useGetAvailableTicketQuery({
     region,
     date,
     adults,
@@ -52,7 +50,6 @@ const TicketListPage = () => {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSort(e.target.value);
-
     const newQuery = new URLSearchParams({
       region,
       date,
@@ -60,7 +57,6 @@ const TicketListPage = () => {
       children,
       sort: e.target.value,
     }).toString();
-
     router.push(`/${locale}/list/ticket?${newQuery}`);
   };
 
@@ -88,6 +84,17 @@ const TicketListPage = () => {
     router.push(`/${locale}/list/ticket?${newQuery}`);
   };
 
+  const handleTicketClick = (ticketId: number) => {
+    const query = new URLSearchParams({
+      region,
+      date,
+      adults,
+      children,
+      sort,
+    }).toString();
+    router.push(`/${locale}/ticket/${ticketId}?${query}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
@@ -106,7 +113,7 @@ const TicketListPage = () => {
         </div>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
-            {t("title")} {tickets ? tickets.length : 0}
+            {t("title")} {lodgesWithTickets ? lodgesWithTickets.length : 0}
           </h1>
           <div className="flex flex-col">
             <label
@@ -140,45 +147,23 @@ const TicketListPage = () => {
           </div>
         </div>
 
-        {tickets?.length === 0 ? (
+        {lodgesWithTickets?.length === 0 ? (
           <p className="text-lg text-gray-600 text-center">{t("noResults")}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tickets?.map((ticket: Ticket) => (
+            {lodgesWithTickets?.map((lodge: LodgeWithTickets) => (
               <div
-                key={ticket.id}
-                className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                onClick={() => {
-                  const query = new URLSearchParams({
-                    region,
-                    date,
-                    adults,
-                    children,
-                    sort,
-                  }).toString();
-                  router.push(`/${locale}/ticket/${ticket.id}?${query}`);
-                }}
+                key={lodge.id}
+                className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300"
                 role="button"
                 tabIndex={0}
-                aria-label={t("selectTicket", { name: ticket.name })}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    const query = new URLSearchParams({
-                      region,
-                      date,
-                      adults,
-                      children,
-                      sort,
-                    }).toString();
-                    router.push(`/${locale}/ticket/${ticket.id}?${query}`);
-                  }
-                }}
+                aria-label={t("selectLodge", { name: lodge.name })}
               >
                 <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
-                  {ticket.lodgeImage ? (
+                  {lodge.images?.[0]?.imageUrl ? (
                     <img
-                      src={ticket.lodgeImage}
-                      alt={ticket.name}
+                      src={lodge.images[0].imageUrl}
+                      alt={lodge.name}
                       className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
                     />
                   ) : (
@@ -188,29 +173,45 @@ const TicketListPage = () => {
                   )}
                 </div>
 
-                <div className="space-y-1">
-                  <h2 className="text-lg font-bold text-gray-900">
-                    {ticket.name}
-                  </h2>
+                <div className="space-y-2">
+                  <h2 className="text-lg font-bold text-gray-900">{lodge.name}</h2>
                   <div className="flex gap-2 text-sm text-yellow-600">
-                    <span>⭐ {ticket.averageRating?.toFixed(1) ?? "0.0"}</span>
+                    <span>⭐ {lodge.averageRating.toFixed(1)}</span>
                     <span className="text-gray-600">
-                      {t("reviewsCount", { count: ticket.reviewCount || 0 })}
+                      {t("reviewsCount", { count: lodge.reviewCount })}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {ticket.region}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("adultPrice", {
-                      price: ticket.adultPrice?.toLocaleString(),
-                    })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("childPrice", {
-                      price: ticket.childPrice?.toLocaleString(),
-                    })}
-                  </p>
+                  <p className="text-sm text-gray-600">{lodge.address}</p>
+
+                  {lodge.ticketTypes.map((ticket) => (
+                    <div
+                      key={ticket.id}
+                      className="border border-gray-200 bg-gray-50 rounded-lg p-3 space-y-1 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                      onClick={() => handleTicketClick(ticket.id)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={t("selectTicket", { name: ticket.name })}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handleTicketClick(ticket.id);
+                        }
+                      }}
+                    >
+                      <p className="text-sm font-medium text-gray-900">{ticket.name}</p>
+                      <p className="text-sm text-gray-600">
+                        {t("adultPrice", { price: ticket.adultPrice.toLocaleString() })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("childPrice", { price: ticket.childPrice.toLocaleString() })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("availableAdultTickets", { count: ticket.availableAdultTickets })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("availableChildTickets", { count: ticket.availableChildTickets })}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
