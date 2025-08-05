@@ -11,23 +11,31 @@ export interface News {
   updatedAt: string;
 }
 
+export interface NewsPagination {
+  data: News[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export const fetchAllNews = createAsyncThunk<
-  News[],
-  void,
+  NewsPagination,
+  { page?: number; limit?: number },
   { rejectValue: string; state: RootState }
->("news/fetchAll", async (_, { dispatch, rejectWithValue, getState }) => {
+>("news/fetchList", async ({ page = 1, limit = 10 }, { dispatch, rejectWithValue, getState }) => {
   try {
     const token = getState().auth.accessToken;
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/admin/news`,
       {
+        params: { page, limit },
         headers: {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       }
     );
-    return res.data;
+    return res.data as NewsPagination;
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       if (err.response?.status === 401 || err.response?.status === 403) {
