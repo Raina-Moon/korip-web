@@ -6,45 +6,36 @@ import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { useLocale } from "@/utils/useLocale";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 
 const NewsAdminPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const locale = useLocale();
 
-  const newsList = useAppSelector((state) => state["admin/news"].list);
-  const status = useAppSelector((state) => state["admin/news"].state);
-  const error = useAppSelector((state) => state["admin/news"].error);
+  const { list, page, limit, total, state, error } = useAppSelector(
+    (state) => state["admin/news"]
+  );
 
-  const paginatedNews = useMemo(() => {
-    const start = (currentPage - 1) * 10;
-    return newsList.slice(start, start + 10);
-  }, [newsList, currentPage]);
-
-  const totalPages = Math.ceil(newsList.length / 10);
+  const totalPages = Math.ceil(total / limit);
 
   useEffect(() => {
-    if (status === "idle" || status === "failed") {
-      dispatch(fetchAllNews());
+    if (state === "idle" || state === "failed") {
+      dispatch(fetchAllNews({ page: 1, limit: 10 }));
     }
-  }, [dispatch, status]);
+  }, [dispatch, state]);
 
   useEffect(() => {
-    if (status === "loading") {
-      dispatch(showLoading());
-    } else {
-      dispatch(hideLoading());
-    }
-  }, [status, dispatch]);
+    if (state === "loading") dispatch(showLoading());
+    else dispatch(hideLoading());
+  }, [state, dispatch]);
 
-  if (status === "failed") {
-    return (
-      <div className="p-8">
-        <p className="text-red-600">Error: {error}</p>
-      </div>
-    );
+  const handlePageChange = (p: number) => {
+    dispatch(fetchAllNews({ page: p, limit }));
+  };
+
+  if (state === "failed") {
+    return <div className="p-8 text-red-500">Error: {error}</div>;
   }
 
   return (
@@ -63,11 +54,11 @@ const NewsAdminPage = () => {
         </button>
       </div>
 
-      {paginatedNews.length === 0 ? (
+      {list.length === 0 ? (
         <p className="text-gray-500">등록된 뉴스가 없습니다.</p>
       ) : (
         <ul className="space-y-4">
-          {paginatedNews.map((news) => (
+          {list.map((news) => (
             <li
               key={news.id}
               className="flex justify-between items-center border rounded-lg p-4 hover:shadow-lg transition-shadow"
@@ -95,17 +86,17 @@ const NewsAdminPage = () => {
 
       {totalPages > 1 && (
         <div className="mt-6 flex justify-center gap-2">
-          {Array.from({ length: totalPages }, (_, index) => (
+          {Array.from({ length: totalPages }, (_, idx) => (
             <button
-              key={index}
-              onClick={() => setCurrentPage(index + 1)}
+              key={idx}
+              onClick={() => handlePageChange(idx + 1)}
               className={`px-3 py-1 rounded ${
-                currentPage === index + 1
+                page === idx + 1
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-800"
               }`}
             >
-              {index + 1}
+              {idx + 1}
             </button>
           ))}
         </div>
