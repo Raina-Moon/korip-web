@@ -38,6 +38,7 @@ import { isValidRedirectPath, useRedirectPath } from "@/utils/getRedirectPath";
 import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
 import KakaoMapModal from "@/components/ui/KakaoMapModal";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 
 const LodgeDetailPage = () => {
   const { t } = useTranslation("lodge");
@@ -73,6 +74,7 @@ const LodgeDetailPage = () => {
   const { lodgeId } = useParams() as { lodgeId: string };
 
   const router = useRouter();
+  const routerWithLoading = useLoadingRouter();
 
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
 
@@ -660,7 +662,7 @@ const LodgeDetailPage = () => {
                 if (path && isValidRedirectPath(`/${path}`)) {
                   dispatch(setRedirectAfterLogin(path));
                 }
-                router.push(`/${locale}/login`);
+                routerWithLoading.push(`/${locale}/login`);
               }}
             />
           </div>
