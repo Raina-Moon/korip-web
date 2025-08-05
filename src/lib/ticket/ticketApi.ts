@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { prepareAuthHeaders } from "@/utils/prepareAuthHeaders";
-import { Ticket } from "@/types/ticket";
+import { LodgeWithTickets, Ticket } from "@/types/ticket";
 import { TicketReview } from "@/types/ticketReview";
 
 interface TicketReviewCreateResponse {
@@ -27,7 +27,7 @@ export const ticketApi = createApi({
   }),
   tagTypes: ["TicketReviews"],
   endpoints: (builder) => ({
-    getAvailableTicket: builder.query<Ticket[], any>({
+    getAvailableTicket: builder.query<LodgeWithTickets[], any>({
       query: (params) => {
         const query = new URLSearchParams(
           Object.entries(params || {})
