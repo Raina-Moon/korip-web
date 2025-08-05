@@ -71,8 +71,6 @@ const TicketDetailPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [reason, setReason] = useState("");
-  const [reviewComment, setReviewComment] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
   const [sortOption, setSortOption] = useState<
     "latest" | "oldest" | "highest" | "lowest"
   >("latest");
@@ -90,13 +88,13 @@ const TicketDetailPage = () => {
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { data: ticket, isLoading } = useGetTicketByIdQuery(ticketId);
+  const { data: ticket, isLoading, isError: isTicketError } = useGetTicketByIdQuery(ticketId);
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
   const [createReview] = useCreateTicketReviewMutation();
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
-  const { data: lodgesWithTickets } = useGetAvailableTicketQuery({
+  const { data: lodgesWithTickets, isError: isSearchError } = useGetAvailableTicketQuery({
     region,
     date,
     adults,
@@ -113,11 +111,31 @@ const TicketDetailPage = () => {
     (b) => b.ticketTypeId === Number(ticketId)
   );
 
+  // Log API responses for debugging
+  useEffect(() => {
+    console.log("Ticket:", ticket);
+    console.log("Lodges with Tickets:", lodgesWithTickets);
+    console.log("Current Lodge:", lodgesWithTickets?.find((lodge) =>
+      lodge.ticketTypes.some((t) => t.id === Number(ticketId))
+    ));
+  }, [ticket, lodgesWithTickets, ticketId]);
+
   // Find the lodge containing the current ticket
   const currentLodge = lodgesWithTickets?.find((lodge) =>
     lodge.ticketTypes.some((t) => t.id === Number(ticketId))
   );
-  const lodgeTickets = currentLodge?.ticketTypes || [];
+
+  // Current ticket (either from currentLodge or fallback)
+  const currentTicket = currentLodge?.ticketTypes.find((t) => t.id === Number(ticketId)) || {
+    id: Number(ticketId),
+    name: ticket?.name || "Unknown Ticket",
+    description: ticket?.description || "",
+    adultPrice: ticket?.adultPrice ?? 0,
+    childPrice: ticket?.childPrice ?? 0,
+  };
+
+  // Related tickets (other tickets from the same lodge, excluding current ticket)
+  const relatedTickets = currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -223,17 +241,6 @@ const TicketDetailPage = () => {
     router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
-  const handleTicketClick = (ticketId: number) => {
-    const query = new URLSearchParams({
-      region,
-      date,
-      adults: String(adults),
-      children: String(children),
-      sort,
-    }).toString();
-    router.push(`/${locale}/ticket/${ticketId}?${query}`);
-  };
-
   const handleReserve = (ticket: { id: number; name: string; adultPrice: number; childPrice: number }) => {
     if (!isAuthenticated) {
       localStorage.setItem(
@@ -259,10 +266,10 @@ const TicketDetailPage = () => {
       date,
       adults: String(adults),
       children: String(children),
-      lodgeName: currentLodge?.name || "",
+      lodgeName: currentLodge?.name || ticket.name || "Unknown Lodge",
       ticketTypeName: ticket.name,
-      adultPrice: String(ticket.adultPrice),
-      childPrice: String(ticket.childPrice),
+      adultPrice: String(ticket.adultPrice ?? 0),
+      childPrice: String(ticket.childPrice ?? 0),
     }).toString();
     router.push(`/${locale}/ticket-reservation?${query}`);
   };
@@ -337,12 +344,17 @@ const TicketDetailPage = () => {
     return 0;
   });
 
-  if (!ticket || !currentLodge)
+  if (isTicketError || isSearchError) {
+    return <p className="text-red-600 text-center">{t("error")}</p>;
+  }
+
+  if (!ticket) {
     return (
       <div className="p-6 text-gray-600 text-center">
         {t("loadingOrNotFound")}
       </div>
     );
+  }
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
 
@@ -414,65 +426,66 @@ const TicketDetailPage = () => {
               </div>
             </div>
 
-            <div className="grid gap-4">
-              {lodgeTickets.map((lodgeTicket) => (
-                <div
-                  key={lodgeTicket.id}
-                  className={`border border-gray-200 rounded-lg p-4 space-y-2 ${
-                    lodgeTicket.id === Number(ticketId)
-                      ? "bg-primary-50 border-primary-500"
-                      : "bg-gray-50 hover:bg-gray-100"
-                  } transition-colors duration-200 cursor-pointer`}
-                  onClick={() => handleTicketClick(lodgeTicket.id)}
+            <div className="border-b border-gray-200 pb-4 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                {t("selectedTicket")}
+              </h2>
+              <div className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {currentTicket.name}
+                </h3>
+                <p className="text-sm text-gray-600 italic">
+                  {currentTicket.description || t("noDescription")}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {t("adultPrice", { price: (currentTicket.adultPrice ?? 0).toLocaleString() })}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {t("childPrice", { price: (currentTicket.childPrice ?? 0).toLocaleString() })}
+                </p>
+                <button
+                  onClick={() => handleReserve(currentTicket)}
+                  className="mt-2 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
+                  aria-label={t("reserveButton")}
                   role="button"
-                  tabIndex={0}
-                  aria-label={t("selectTicket", { name: lodgeTicket.name })}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      handleTicketClick(lodgeTicket.id);
-                    }
-                  }}
                 >
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {lodgeTicket.name}
-                    </h3>
-                    {lodgeTicket.id === Number(ticketId) && (
-                      <span className="text-sm font-medium text-primary-600">
-                        {t("selected")}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600 italic">
-                    {lodgeTicket.description || t("noDescription")}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("adultPrice", { price: lodgeTicket.adultPrice.toLocaleString() })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("childPrice", { price: lodgeTicket.childPrice.toLocaleString() })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("availableAdultTickets", { count: lodgeTicket.availableAdultTickets })}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t("availableChildTickets", { count: lodgeTicket.availableChildTickets })}
-                  </p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent card click from navigating
-                      handleReserve(lodgeTicket);
-                    }}
-                    className="mt-2 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
-                    aria-label={t("reserveButton")}
-                    role="button"
-                  >
-                    <i className="bi bi-ticket text-xs"></i>
-                    {t("reserveButton")}
-                  </button>
-                </div>
-              ))}
+                  <i className="bi bi-ticket text-xs"></i>
+                  {t("reserveButton")}
+                </button>
+              </div>
             </div>
+
+            {relatedTickets.length > 0 && (
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  {t("relatedTickets")}
+                </h2>
+                <div className="grid gap-4">
+                  {relatedTickets.map((relatedTicket) => (
+                    <div
+                      key={relatedTicket.id}
+                      className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                      onClick={() => router.push(`/${locale}/ticket/${relatedTicket.id}?${searchParams.toString()}`)}
+                      role="button"
+                      aria-label={t("selectTicket", { name: relatedTicket.name })}
+                    >
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {relatedTicket.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 italic">
+                        {relatedTicket.description || t("noDescription")}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("adultPrice", { price: (relatedTicket.adultPrice ?? 0).toLocaleString() })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("childPrice", { price: (relatedTicket.childPrice ?? 0).toLocaleString() })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -502,7 +515,7 @@ const TicketDetailPage = () => {
                     e.target.value as "latest" | "oldest" | "highest" | "lowest"
                   )
                 }
-                className="h-9 border border-gray-300 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200"
+                className="h-9 border border-gray-200 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200"
                 aria-label={t("sortBy")}
               >
                 <option value="latest">{t("latest")}</option>
