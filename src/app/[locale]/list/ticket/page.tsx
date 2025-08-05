@@ -9,6 +9,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useTranslation } from "react-i18next";
 import { LodgeWithTickets } from "@/types/ticket";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 
 const TicketListPage = () => {
   const { t } = useTranslation("list-ticket");
@@ -28,7 +29,7 @@ const TicketListPage = () => {
   const [newChildren, setNewChildren] = useState(Number(children));
 
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const router = useLoadingRouter();
   const locale = useLocale();
 
   const { data: lodgesWithTickets, isLoading } = useGetAvailableTicketQuery({
