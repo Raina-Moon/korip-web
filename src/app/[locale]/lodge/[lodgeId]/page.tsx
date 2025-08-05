@@ -582,7 +582,6 @@ const LodgeDetailPage = () => {
       {/* 설명 */}
       {lodge.description && (
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">{t("description")}</h2>
           <p className="text-gray-700">{lodge.description}</p>
         </div>
       )}
