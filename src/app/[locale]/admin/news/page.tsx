@@ -62,22 +62,13 @@ const NewsAdminPage = () => {
             <li
               key={news.id}
               className="flex justify-between items-center border rounded-lg p-4 hover:shadow-lg transition-shadow"
+              onClick={() => router.push(`/${locale}/admin/news/${news.id}`)}
             >
               <div className="space-y-1">
                 <p className="text-xl font-medium">{news.title}</p>
                 <p className="text-sm text-gray-600">
                   {new Date(news.createdAt).toLocaleString()}
                 </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    router.push(`/${locale}/admin/news/${news.id}`)
-                  }
-                  className="px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-50"
-                >
-                  수정하기
-                </button>
               </div>
             </li>
           ))}
