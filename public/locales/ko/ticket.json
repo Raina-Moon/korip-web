@@ -1,15 +1,15 @@
 {
   "reservation": "예약",
   "priceTitle": "이용 요금",
-  "adultPrice": "성인",
-  "childPrice": "아동",
+  "adultPrice": "성인 : {{price}}원",
+  "childPrice": "아동 : {{price}}원",
   "priceUnavailable": "정보 없음",
   "loginPrompt": "계속하려면 로그인해주세요.",
   "search": "검색",
   "date": "날짜",
   "adult": "성인",
   "children": "어린이",
-  "totalReviews": "총 {{count}}개의 리뷰",
+  "totalReviews": "총 {{totalVisible}}개의 리뷰",
   "averageRating": "{{rating}} / 5",
   "sortBy": "정렬 기준:",
   "latest": "최신순",
@@ -43,5 +43,6 @@
   "jeolla": "전라도",
   "gyeongsang": "경상도",
   "jeju": "제주도",
-  "gangwon": "강원도"
+  "gangwon": "강원도",
+  "relatedTickets": "관련 티켓"
 }

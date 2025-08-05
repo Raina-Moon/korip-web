@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   useGetTicketByIdQuery,
   useGetTicketReviewsQuery,
-  useCreateTicketReviewMutation,
   useUpdateTicketReviewMutation,
   useDeleteTicketReviewMutation,
   useGetAvailableTicketQuery,
@@ -39,7 +38,7 @@ import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 
 const TicketDetailPage = () => {
-  const { t } = useTranslation("list-lodge");
+  const { t } = useTranslation("ticket");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
@@ -71,8 +70,6 @@ const TicketDetailPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [reason, setReason] = useState("");
-  const [reviewComment, setReviewComment] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
   const [sortOption, setSortOption] = useState<
     "latest" | "oldest" | "highest" | "lowest"
   >("latest");
@@ -90,31 +87,64 @@ const TicketDetailPage = () => {
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { data: ticket, isLoading } = useGetTicketByIdQuery(ticketId);
+  const {
+    data: ticket,
+    isLoading,
+    isError: isTicketError,
+  } = useGetTicketByIdQuery(ticketId);
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
-  const [createReview] = useCreateTicketReviewMutation();
-
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
-
-  const { data: tickets } = useGetAvailableTicketQuery({
-    region,
-    date,
-    adults,
-    children,
-    sort,
-  });
+  const { data: lodgesWithTickets, isError: isSearchError } =
+    useGetAvailableTicketQuery({
+      region,
+      date,
+      adults,
+      children,
+      sort,
+    });
 
   const [createBookmark] = useCreateTicketBookmarkMutation();
   const [deleteBookmark] = useDeleteTicketBookmarkMutation();
-
   const [updateReview] = useUpdateTicketReviewMutation();
   const [deleteReview] = useDeleteTicketReviewMutation();
 
   const isBookmarked = (myBookmarks as TicketBookmark[] | undefined)?.some(
     (b) => b.ticketTypeId === Number(ticketId)
   );
+
+  // Log API responses for debugging
+  useEffect(() => {
+    console.log("Ticket:", ticket);
+    console.log("Lodges with Tickets:", lodgesWithTickets);
+    console.log(
+      "Current Lodge:",
+      lodgesWithTickets?.find((lodge) =>
+        lodge.ticketTypes.some((t) => t.id === Number(ticketId))
+      )
+    );
+  }, [ticket, lodgesWithTickets, ticketId]);
+
+  // Find the lodge containing the current ticket
+  const currentLodge = lodgesWithTickets?.find((lodge) =>
+    lodge.ticketTypes.some((t) => t.id === Number(ticketId))
+  );
+
+  // Current ticket (either from currentLodge or fallback)
+  const currentTicket = currentLodge?.ticketTypes.find(
+    (t) => t.id === Number(ticketId)
+  ) || {
+    id: Number(ticketId),
+    name: ticket?.name || "Unknown Ticket",
+    description: ticket?.description || "",
+    adultPrice: ticket?.adultPrice ?? 0,
+    childPrice: ticket?.childPrice ?? 0,
+  };
+
+  // Related tickets (other tickets from the same lodge, excluding current ticket)
+  const relatedTickets =
+    currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -148,6 +178,7 @@ const TicketDetailPage = () => {
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      toast.error(t("bookmarkFailed"));
     }
   };
 
@@ -173,6 +204,7 @@ const TicketDetailPage = () => {
         data: { comment: editingComment, rating: editingRating },
       }).unwrap();
       setEditingId(null);
+      toast.success(t("editSuccess"));
     } catch (error) {
       console.error(error);
       toast.error(t("editFailed"));
@@ -218,6 +250,44 @@ const TicketDetailPage = () => {
     router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
+  const handleReserve = (ticket: {
+    id: number;
+    name: string;
+    adultPrice: number;
+    childPrice: number;
+  }) => {
+    if (!isAuthenticated) {
+      localStorage.setItem(
+        "pendingReservation",
+        JSON.stringify({
+          type: "ticket",
+          ticketId: ticket.id,
+          date,
+          adults,
+          children,
+        })
+      );
+      dispatch(
+        setRedirectAfterLogin(
+          `/${locale}/ticket/${ticket.id}?date=${date}&adults=${adults}&children=${children}`
+        )
+      );
+      dispatch(openLoginModal("ticket/reserve"));
+      return;
+    }
+    const query = new URLSearchParams({
+      ticketTypeId: String(ticket.id),
+      date,
+      adults: String(adults),
+      children: String(children),
+      lodgeName: currentLodge?.name || ticket.name || "Unknown Lodge",
+      ticketTypeName: ticket.name,
+      adultPrice: String(ticket.adultPrice ?? 0),
+      childPrice: String(ticket.childPrice ?? 0),
+    }).toString();
+    router.push(`/${locale}/ticket-reservation?${query}`);
+  };
+
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
     setCurrentModalImage(index);
@@ -253,7 +323,6 @@ const TicketDetailPage = () => {
         reviewId: selectedReviewId,
         reason: reason.trim(),
       }).unwrap();
-
       setIsReportModalOpen(false);
       setReason("");
       setSelectedReviewId(null);
@@ -289,12 +358,17 @@ const TicketDetailPage = () => {
     return 0;
   });
 
-  if (!ticket)
+  if (isTicketError || isSearchError) {
+    return <p className="text-red-600 text-center">{t("error")}</p>;
+  }
+
+  if (!ticket) {
     return (
       <div className="p-6 text-gray-600 text-center">
         {t("loadingOrNotFound")}
       </div>
     );
+  }
 
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
 
@@ -335,8 +409,14 @@ const TicketDetailPage = () => {
         <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                <h1 className="text-2xl font-bold text-gray-900" aria-label={t("ticketName")}>
+              <div
+                className="flex justify-between items-center animate-fade-in"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <h1
+                  className="text-2xl font-bold text-gray-900"
+                  aria-label={t("ticketName")}
+                >
                   {ticket.lodge.name}
                 </h1>
                 <button
@@ -344,7 +424,9 @@ const TicketDetailPage = () => {
                   className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
                     isBookmarked ? "text-red-500" : "text-gray-400"
                   } hover:text-primary-500`}
-                  aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
+                  aria-label={
+                    isBookmarked ? t("removeBookmark") : t("addBookmark")
+                  }
                   role="button"
                 >
                   {isBookmarked ? (
@@ -366,64 +448,27 @@ const TicketDetailPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in" style={{ animationDelay: "0.3s" }} role="region" aria-describedby="ticket-details">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2" id="ticket-details">
-                  {ticket.name}
+            <div className="border-b border-gray-200 pb-4 mb-4">
+              <div className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {currentTicket.name}
                 </h3>
-                <p className="text-sm text-gray-600 italic mb-4">{ticket.description || t("noDescription")}</p>
-                <p className="text-base text-gray-700">
-                  <span className="font-medium">{t("adult")}:</span>{" "}
-                  {ticket.adultPrice
-                    ? `${ticket.adultPrice.toLocaleString()} KRW`
-                    : t("priceUnavailable")}
+                <p className="text-sm text-gray-600 italic">
+                  {currentTicket.description || t("noDescription")}
                 </p>
-                <p className="text-base text-gray-700">
-                  <span className="font-medium">{t("children")}:</span>{" "}
-                  {ticket.childPrice
-                    ? `${ticket.childPrice.toLocaleString()} KRW`
-                    : t("priceUnavailable")}
+                <p className="text-sm text-gray-600">
+                  {t("adultPrice", {
+                    price: (currentTicket.adultPrice ?? 0).toLocaleString(),
+                  })}
                 </p>
-              </div>
-              <div className="flex items-end animate-fade-in" style={{ animationDelay: "0.4s" }}>
+                <p className="text-sm text-gray-600">
+                  {t("childPrice", {
+                    price: (currentTicket.childPrice ?? 0).toLocaleString(),
+                  })}
+                </p>
                 <button
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      localStorage.setItem(
-                        "pendingReservation",
-                        JSON.stringify({
-                          type: "ticket",
-                          ticketId,
-                          date,
-                          adults,
-                          children,
-                        })
-                      );
-
-                      dispatch(
-                        setRedirectAfterLogin(
-                          `/${locale}/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
-                        )
-                      );
-
-                      dispatch(openLoginModal("ticket/reserve"));
-                      return;
-                    }
-
-                    const query = new URLSearchParams({
-                      ticketTypeId: String(ticket.id),
-                      date,
-                      adults: String(adults),
-                      children: String(children),
-                      lodgeName: ticket.lodge.name,
-                      ticketTypeName: ticket.name,
-                      adultPrice: String(ticket.adultPrice),
-                      childPrice: String(ticket.childPrice),
-                    }).toString();
-
-                    router.push(`/${locale}/ticket-reservation?${query}`);
-                  }}
-                  className="h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
+                  onClick={() => handleReserve(currentTicket)}
+                  className="mt-2 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
                   aria-label={t("reserveButton")}
                   role="button"
                 >
@@ -432,13 +477,61 @@ const TicketDetailPage = () => {
                 </button>
               </div>
             </div>
+
+            {relatedTickets.length > 0 && (
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  {t("relatedTickets")}
+                </h2>
+                <div className="grid gap-4">
+                  {relatedTickets.map((relatedTicket) => (
+                    <div
+                      key={relatedTicket.id}
+                      className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                      onClick={() =>
+                        router.push(
+                          `/${locale}/ticket/${
+                            relatedTicket.id
+                          }?${searchParams.toString()}`
+                        )
+                      }
+                      role="button"
+                      aria-label={t("selectTicket", {
+                        name: relatedTicket.name,
+                      })}
+                    >
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {relatedTicket.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 italic">
+                        {relatedTicket.description || t("noDescription")}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("adultPrice", {
+                          price: (
+                            relatedTicket.adultPrice ?? 0
+                          ).toLocaleString(),
+                        })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {t("childPrice", {
+                          price: (
+                            relatedTicket.childPrice ?? 0
+                          ).toLocaleString(),
+                        })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
-              {t("totalReviews")} ({totalVisible})
+              {t("totalReviews", { totalVisible })}
               {averageRating && (
                 <span className="font-bold text-yellow-600">
                   {" "}
@@ -461,7 +554,7 @@ const TicketDetailPage = () => {
                     e.target.value as "latest" | "oldest" | "highest" | "lowest"
                   )
                 }
-                className="h-9 border border-gray-300 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200"
+                className="h-9 border border-gray-200 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200"
                 aria-label={t("sortBy")}
               >
                 <option value="latest">{t("latest")}</option>

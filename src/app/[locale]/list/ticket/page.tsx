@@ -155,7 +155,7 @@ const TicketListPage = () => {
               <div
                 key={lodge.id}
                 className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300"
-                role="button"
+                role="presentation"
                 tabIndex={0}
                 aria-label={t("selectLodge", { name: lodge.name })}
               >
@@ -174,7 +174,9 @@ const TicketListPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h2 className="text-lg font-bold text-gray-900">{lodge.name}</h2>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {lodge.name}
+                  </h2>
                   <div className="flex gap-2 text-sm text-yellow-600">
                     <span>⭐ {lodge.averageRating.toFixed(1)}</span>
                     <span className="text-gray-600">
@@ -197,18 +199,18 @@ const TicketListPage = () => {
                         }
                       }}
                     >
-                      <p className="text-sm font-medium text-gray-900">{ticket.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {t("adultPrice", { price: ticket.adultPrice.toLocaleString() })}
+                      <p className="text-sm font-medium text-gray-900">
+                        {ticket.name}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {t("childPrice", { price: ticket.childPrice.toLocaleString() })}
+                        {t("adultPrice", {
+                          price: ticket.adultPrice.toLocaleString(),
+                        })}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {t("availableAdultTickets", { count: ticket.availableAdultTickets })}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {t("availableChildTickets", { count: ticket.availableChildTickets })}
+                        {t("childPrice", {
+                          price: ticket.childPrice.toLocaleString(),
+                        })}
                       </p>
                     </div>
                   ))}
