@@ -199,10 +199,9 @@ type KeepRoomTypeImage = {
 };
 
 export type UpdateLodgePayload = Omit<Lodge, "roomTypes"> & {
-  roomTypes: Omit<RoomType, "seasonalPricing"> &
-    {
-      seasonalPricing?: SeasonalPricing[];
-    }[];
+  roomTypes?: (Omit<RoomType, "seasonalPricing"> & {
+    seasonalPricing?: SeasonalPricing[];
+  })[];
   keepImgIds?: number[];
   newImageFiles: File[];
   newRoomTypeImageFiles?: File[][];
@@ -226,11 +225,26 @@ export const updateLodge = createAsyncThunk<
       formData.append("longitude", updatedLodgeData.longitude.toString());
       formData.append("description", updatedLodgeData.description || "");
       formData.append("accommodationType", updatedLodgeData.accommodationType);
-      formData.append("roomTypes", JSON.stringify(updatedLodgeData.roomTypes));
-      formData.append(
-        "ticketTypes",
-        JSON.stringify(updatedLodgeData.ticketTypes || [])
-      );
+      
+      if (
+        updatedLodgeData.roomTypes &&
+        Array.isArray(updatedLodgeData.roomTypes)
+      ) {
+        formData.append(
+          "roomTypes",
+          JSON.stringify(updatedLodgeData.roomTypes)
+        );
+      }
+
+
+      if (updatedLodgeData.ticketTypes) {
+        formData.append(
+          "ticketTypes",
+          JSON.stringify(updatedLodgeData.ticketTypes)
+        );
+      } else {
+        formData.append("ticketTypes", JSON.stringify([]));
+      }
 
       formData.append(
         "keepImgIds",
@@ -242,6 +256,7 @@ export const updateLodge = createAsyncThunk<
       );
 
       if (
+        updatedLodgeData.roomTypes &&
         updatedLodgeData.newRoomTypeImageFiles &&
         updatedLodgeData.newRoomTypeImageFiles.length > 0
       ) {
@@ -256,7 +271,7 @@ export const updateLodge = createAsyncThunk<
           });
         });
       }
-
+      
       updatedLodgeData.newImageFiles.forEach((file) => {
         formData.append("hotSpringLodgeImages", file);
       });
