@@ -117,8 +117,7 @@ const TicketDetailPage = () => {
   const currentLodge = lodgesWithTickets?.find((lodge) =>
     lodge.ticketTypes.some((t) => t.id === Number(ticketId))
   );
-  const relatedTickets =
-    currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
+  const lodgeTickets = currentLodge?.ticketTypes || [];
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -235,6 +234,39 @@ const TicketDetailPage = () => {
     router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
+  const handleReserve = (ticket: { id: number; name: string; adultPrice: number; childPrice: number }) => {
+    if (!isAuthenticated) {
+      localStorage.setItem(
+        "pendingReservation",
+        JSON.stringify({
+          type: "ticket",
+          ticketId: ticket.id,
+          date,
+          adults,
+          children,
+        })
+      );
+      dispatch(
+        setRedirectAfterLogin(
+          `/${locale}/ticket/${ticket.id}?date=${date}&adults=${adults}&children=${children}`
+        )
+      );
+      dispatch(openLoginModal("ticket/reserve"));
+      return;
+    }
+    const query = new URLSearchParams({
+      ticketTypeId: String(ticket.id),
+      date,
+      adults: String(adults),
+      children: String(children),
+      lodgeName: currentLodge?.name || "",
+      ticketTypeName: ticket.name,
+      adultPrice: String(ticket.adultPrice),
+      childPrice: String(ticket.childPrice),
+    }).toString();
+    router.push(`/${locale}/ticket-reservation?${query}`);
+  };
+
   const openModal = (images: string[], index: number) => {
     setModalImages(images);
     setCurrentModalImage(index);
@@ -305,7 +337,7 @@ const TicketDetailPage = () => {
     return 0;
   });
 
-  if (!ticket)
+  if (!ticket || !currentLodge)
     return (
       <div className="p-6 text-gray-600 text-center">
         {t("loadingOrNotFound")}
@@ -351,14 +383,8 @@ const TicketDetailPage = () => {
         <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <div
-                className="flex justify-between items-center animate-fade-in"
-                style={{ animationDelay: "0.1s" }}
-              >
-                <h1
-                  className="text-2xl font-bold text-gray-900"
-                  aria-label={t("ticketName")}
-                >
+              <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                <h1 className="text-2xl font-bold text-gray-900" aria-label={t("ticketName")}>
                   {ticket.lodge.name}
                 </h1>
                 <button
@@ -366,9 +392,7 @@ const TicketDetailPage = () => {
                   className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
                     isBookmarked ? "text-red-500" : "text-gray-400"
                   } hover:text-primary-500`}
-                  aria-label={
-                    isBookmarked ? t("removeBookmark") : t("addBookmark")
-                  }
+                  aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
                   role="button"
                 >
                   {isBookmarked ? (
@@ -390,122 +414,66 @@ const TicketDetailPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div
-                className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm animate-fade-in"
-                style={{ animationDelay: "0.3s" }}
-                role="region"
-                aria-describedby="ticket-details"
-              >
-                <h3
-                  className="text-xl font-semibold text-gray-900 mb-2"
-                  id="ticket-details"
-                >
-                  {ticket.name}
-                </h3>
-                <p className="text-sm text-gray-600 italic mb-4">
-                  {ticket.description || t("noDescription")}
-                </p>
-                <p className="text-base text-gray-700">
-                  <span className="font-medium">{t("adult")}:</span>{" "}
-                  {ticket.adultPrice
-                    ? `${ticket.adultPrice.toLocaleString()} KRW`
-                    : t("priceUnavailable")}
-                </p>
-                <p className="text-base text-gray-700">
-                  <span className="font-medium">{t("children")}:</span>{" "}
-                  {ticket.childPrice
-                    ? `${ticket.childPrice.toLocaleString()} KRW`
-                    : t("priceUnavailable")}
-                </p>
-              </div>
-              <div
-                className="flex items-end animate-fade-in"
-                style={{ animationDelay: "0.4s" }}
-              >
-                <button
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      localStorage.setItem(
-                        "pendingReservation",
-                        JSON.stringify({
-                          type: "ticket",
-                          ticketId,
-                          date,
-                          adults,
-                          children,
-                        })
-                      );
-                      dispatch(
-                        setRedirectAfterLogin(
-                          `/${locale}/ticket/${ticketId}?date=${date}&adults=${adults}&children=${children}`
-                        )
-                      );
-                      dispatch(openLoginModal("ticket/reserve"));
-                      return;
-                    }
-                    const query = new URLSearchParams({
-                      ticketTypeId: String(ticket.id),
-                      date,
-                      adults: String(adults),
-                      children: String(children),
-                      lodgeName: ticket.lodge.name,
-                      ticketTypeName: ticket.name,
-                      adultPrice: String(ticket.adultPrice),
-                      childPrice: String(ticket.childPrice),
-                    }).toString();
-                    router.push(`/${locale}/ticket-reservation?${query}`);
-                  }}
-                  className="h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
-                  aria-label={t("reserveButton")}
+            <div className="grid gap-4">
+              {lodgeTickets.map((lodgeTicket) => (
+                <div
+                  key={lodgeTicket.id}
+                  className={`border border-gray-200 rounded-lg p-4 space-y-2 ${
+                    lodgeTicket.id === Number(ticketId)
+                      ? "bg-primary-50 border-primary-500"
+                      : "bg-gray-50 hover:bg-gray-100"
+                  } transition-colors duration-200 cursor-pointer`}
+                  onClick={() => handleTicketClick(lodgeTicket.id)}
                   role="button"
+                  tabIndex={0}
+                  aria-label={t("selectTicket", { name: lodgeTicket.name })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleTicketClick(lodgeTicket.id);
+                    }
+                  }}
                 >
-                  <i className="bi bi-ticket text-xs"></i>
-                  {t("reserveButton")}
-                </button>
-              </div>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {lodgeTicket.name}
+                    </h3>
+                    {lodgeTicket.id === Number(ticketId) && (
+                      <span className="text-sm font-medium text-primary-600">
+                        {t("selected")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600 italic">
+                    {lodgeTicket.description || t("noDescription")}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("adultPrice", { price: lodgeTicket.adultPrice.toLocaleString() })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("childPrice", { price: lodgeTicket.childPrice.toLocaleString() })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("availableAdultTickets", { count: lodgeTicket.availableAdultTickets })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("availableChildTickets", { count: lodgeTicket.availableChildTickets })}
+                  </p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click from navigating
+                      handleReserve(lodgeTicket);
+                    }}
+                    className="mt-2 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
+                    aria-label={t("reserveButton")}
+                    role="button"
+                  >
+                    <i className="bi bi-ticket text-xs"></i>
+                    {t("reserveButton")}
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Related Tickets Section */}
-          {relatedTickets.length > 0 && (
-            <div className="mt-6 border-t border-gray-200 pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {t("relatedTickets")} ({relatedTickets.length})
-              </h2>
-              <div className="grid gap-4">
-                {relatedTickets.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className="border border-gray-200 bg-gray-50 rounded-lg p-3 space-y-1 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
-                    onClick={() => handleTicketClick(ticket.id)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={t("selectTicket", { name: ticket.name })}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleTicketClick(ticket.id);
-                      }
-                    }}
-                  >
-                    <p className="text-sm font-medium text-gray-900">
-                      {ticket.name}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {t("adultPrice", {
-                        price: ticket.adultPrice.toLocaleString(),
-                      })}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {t("childPrice", {
-                        price: ticket.childPrice.toLocaleString(),
-                      })}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
