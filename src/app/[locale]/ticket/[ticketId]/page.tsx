@@ -87,18 +87,23 @@ const TicketDetailPage = () => {
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const { data: ticket, isLoading, isError: isTicketError } = useGetTicketByIdQuery(ticketId);
+  const {
+    data: ticket,
+    isLoading,
+    isError: isTicketError,
+  } = useGetTicketByIdQuery(ticketId);
   const { data: reviews } = useGetTicketReviewsQuery(ticketId);
   const { data: myBookmarks } = useGetMyTicketBookmarksQuery(undefined, {
     skip: !isAuthenticated,
   });
-  const { data: lodgesWithTickets, isError: isSearchError } = useGetAvailableTicketQuery({
-    region,
-    date,
-    adults,
-    children,
-    sort,
-  });
+  const { data: lodgesWithTickets, isError: isSearchError } =
+    useGetAvailableTicketQuery({
+      region,
+      date,
+      adults,
+      children,
+      sort,
+    });
 
   const [createBookmark] = useCreateTicketBookmarkMutation();
   const [deleteBookmark] = useDeleteTicketBookmarkMutation();
@@ -113,9 +118,12 @@ const TicketDetailPage = () => {
   useEffect(() => {
     console.log("Ticket:", ticket);
     console.log("Lodges with Tickets:", lodgesWithTickets);
-    console.log("Current Lodge:", lodgesWithTickets?.find((lodge) =>
-      lodge.ticketTypes.some((t) => t.id === Number(ticketId))
-    ));
+    console.log(
+      "Current Lodge:",
+      lodgesWithTickets?.find((lodge) =>
+        lodge.ticketTypes.some((t) => t.id === Number(ticketId))
+      )
+    );
   }, [ticket, lodgesWithTickets, ticketId]);
 
   // Find the lodge containing the current ticket
@@ -124,7 +132,9 @@ const TicketDetailPage = () => {
   );
 
   // Current ticket (either from currentLodge or fallback)
-  const currentTicket = currentLodge?.ticketTypes.find((t) => t.id === Number(ticketId)) || {
+  const currentTicket = currentLodge?.ticketTypes.find(
+    (t) => t.id === Number(ticketId)
+  ) || {
     id: Number(ticketId),
     name: ticket?.name || "Unknown Ticket",
     description: ticket?.description || "",
@@ -133,7 +143,8 @@ const TicketDetailPage = () => {
   };
 
   // Related tickets (other tickets from the same lodge, excluding current ticket)
-  const relatedTickets = currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
+  const relatedTickets =
+    currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
 
   useEffect(() => {
     if (isLoading) dispatch(showLoading());
@@ -239,7 +250,12 @@ const TicketDetailPage = () => {
     router.push(`/${locale}/ticket/${ticketId}?${query}`);
   };
 
-  const handleReserve = (ticket: { id: number; name: string; adultPrice: number; childPrice: number }) => {
+  const handleReserve = (ticket: {
+    id: number;
+    name: string;
+    adultPrice: number;
+    childPrice: number;
+  }) => {
     if (!isAuthenticated) {
       localStorage.setItem(
         "pendingReservation",
@@ -393,8 +409,14 @@ const TicketDetailPage = () => {
         <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                <h1 className="text-2xl font-bold text-gray-900" aria-label={t("ticketName")}>
+              <div
+                className="flex justify-between items-center animate-fade-in"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <h1
+                  className="text-2xl font-bold text-gray-900"
+                  aria-label={t("ticketName")}
+                >
                   {ticket.lodge.name}
                 </h1>
                 <button
@@ -402,7 +424,9 @@ const TicketDetailPage = () => {
                   className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
                     isBookmarked ? "text-red-500" : "text-gray-400"
                   } hover:text-primary-500`}
-                  aria-label={isBookmarked ? t("removeBookmark") : t("addBookmark")}
+                  aria-label={
+                    isBookmarked ? t("removeBookmark") : t("addBookmark")
+                  }
                   role="button"
                 >
                   {isBookmarked ? (
@@ -425,9 +449,6 @@ const TicketDetailPage = () => {
             </div>
 
             <div className="border-b border-gray-200 pb-4 mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {t("selectedTicket")}
-              </h2>
               <div className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {currentTicket.name}
@@ -436,10 +457,14 @@ const TicketDetailPage = () => {
                   {currentTicket.description || t("noDescription")}
                 </p>
                 <p className="text-sm text-gray-600">
-                  {t("adultPrice", { price: (currentTicket.adultPrice ?? 0).toLocaleString() })}
+                  {t("adultPrice", {
+                    price: (currentTicket.adultPrice ?? 0).toLocaleString(),
+                  })}
                 </p>
                 <p className="text-sm text-gray-600">
-                  {t("childPrice", { price: (currentTicket.childPrice ?? 0).toLocaleString() })}
+                  {t("childPrice", {
+                    price: (currentTicket.childPrice ?? 0).toLocaleString(),
+                  })}
                 </p>
                 <button
                   onClick={() => handleReserve(currentTicket)}
@@ -463,9 +488,17 @@ const TicketDetailPage = () => {
                     <div
                       key={relatedTicket.id}
                       className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
-                      onClick={() => router.push(`/${locale}/ticket/${relatedTicket.id}?${searchParams.toString()}`)}
+                      onClick={() =>
+                        router.push(
+                          `/${locale}/ticket/${
+                            relatedTicket.id
+                          }?${searchParams.toString()}`
+                        )
+                      }
                       role="button"
-                      aria-label={t("selectTicket", { name: relatedTicket.name })}
+                      aria-label={t("selectTicket", {
+                        name: relatedTicket.name,
+                      })}
                     >
                       <h3 className="text-lg font-semibold text-gray-900">
                         {relatedTicket.name}
@@ -474,10 +507,18 @@ const TicketDetailPage = () => {
                         {relatedTicket.description || t("noDescription")}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {t("adultPrice", { price: (relatedTicket.adultPrice ?? 0).toLocaleString() })}
+                        {t("adultPrice", {
+                          price: (
+                            relatedTicket.adultPrice ?? 0
+                          ).toLocaleString(),
+                        })}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {t("childPrice", { price: (relatedTicket.childPrice ?? 0).toLocaleString() })}
+                        {t("childPrice", {
+                          price: (
+                            relatedTicket.childPrice ?? 0
+                          ).toLocaleString(),
+                        })}
                       </p>
                     </div>
                   ))}
@@ -490,7 +531,7 @@ const TicketDetailPage = () => {
         <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
-              {t("totalReviews")} ({totalVisible})
+              {t("totalReviews", { totalVisible })}
               {averageRating && (
                 <span className="font-bold text-yellow-600">
                   {" "}
