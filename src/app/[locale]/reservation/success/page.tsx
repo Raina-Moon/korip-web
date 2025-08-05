@@ -8,6 +8,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Home, Calendar, Users, User, MessageSquare } from "lucide-react";
 
 const ReservationSuccessPage = () => {
   const { t } = useTranslation("reservation-success");
@@ -36,11 +37,14 @@ const ReservationSuccessPage = () => {
 
   if (!pending || !pending.checkIn || !pending.checkOut) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-6">
-        <h1 className="text-3xl font-bold text-primary-800">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50">
+        <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mb-4"></div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">
           {t("loading.title")}
         </h1>
-        <p className="text-lg text-gray-700 mb-6">{t("loading.message")}</p>
+        <p className="text-base sm:text-lg text-gray-600 mt-2">
+          {t("loading.message")}
+        </p>
       </div>
     );
   }
@@ -61,162 +65,193 @@ const ReservationSuccessPage = () => {
   const requests = parseSpecialRequests(pending.specialRequests);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <h1 className="text-3xl font-bold text-primary-800">
-        {t("success.title")}
-      </h1>
-      <p className="text-lg text-gray-700 mb-6">{t("success.subtitle")}</p>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50">
+      <div className="text-center mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">
+          {t("success.title")}
+        </h1>
+        <p className="text-base sm:text-lg text-gray-600 mt-2">
+          {t("success.subtitle")}
+        </p>
+      </div>
 
-      <div className="w-full max-w-3xl border rounded-lg shadow bg-white">
-        <table className="min-w-full border-collapse">
-          <tbody>
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-4 font-semibold text-lg">
-                {t("success.sections.lodge")}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+      <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6 sm:p-8 transition-all duration-300">
+        {/* Lodge Section */}
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <Home className="w-5 h-5 text-primary-500 mr-2" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              {t("success.sections.lodge")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.lodge")}
-              </td>
-              <td className="py-2 px-4">{pending.lodge.name}</td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </span>
+              <p className="text-gray-800">{pending.lodge?.name}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.roomType")}
-              </td>
-              <td className="py-2 px-4">{pending.roomType.name}</td>
-            </tr>
+              </span>
+              <p className="text-gray-800">{pending.roomType?.name}</p>
+            </div>
+          </div>
+        </div>
 
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-4 font-semibold text-lg">
-                {t("success.sections.schedule")}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+        {/* Schedule Section */}
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <Calendar className="w-5 h-5 text-primary-500 mr-2" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              {t("success.sections.schedule")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.checkIn")}
-              </td>
-              <td className="py-2 px-4">{pending.checkIn}</td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </span>
+              <p className="text-gray-800">{pending.checkIn}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.checkOut")}
-              </td>
-              <td className="py-2 px-4">{pending.checkOut}</td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </span>
+              <p className="text-gray-800">{pending.checkOut}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.nights")}
-              </td>
-              <td className="py-2 px-4">
-                {" "}
+              </span>
+              <p className="text-gray-800">
                 {t("success.labels.nightsWithUnit", { count: Number(nights) })}
-              </td>
-            </tr>
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-4 font-semibold text-lg">
-                {t("success.sections.guests")}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+        {/* Guests Section */}
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <Users className="w-5 h-5 text-primary-500 mr-2" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              {t("success.sections.guests")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.adults")}
-              </td>
-              <td className="py-2 px-4">
+              </span>
+              <p className="text-gray-800">
                 {t("success.labels.adultsWithUnit", { count: pending.adults })}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.children")}
-              </td>
-              <td className="py-2 px-4">
+              </span>
+              <p className="text-gray-800">
                 {t("success.labels.childrenWithUnit", {
                   count: pending.children,
                 })}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.roomCount")}
-              </td>
-              <td className="py-2 px-4">
+              </span>
+              <p className="text-gray-800">
                 {t("success.labels.roomsWithUnit", {
                   count: pending.roomCount,
                 })}
-              </td>
-            </tr>
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-4 font-semibold text-lg">
-                {t("success.sections.user")}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+        {/* User Section */}
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <User className="w-5 h-5 text-primary-500 mr-2" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              {t("success.sections.user")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.name")}
-              </td>
-              <td className="py-2 px-4">
+              </span>
+              <p className="text-gray-800">
                 {pending.lastName} {pending.firstName}
-              </td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.email")}
-              </td>
-              <td className="py-2 px-4">{pending.email}</td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </span>
+              <p className="text-gray-800">{pending.email}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.phone")}
-              </td>
-              <td className="py-2 px-4">{pending.phoneNumber}</td>
-            </tr>
-            <tr className="border-t">
-              <td className="py-2 px-4 font-medium bg-gray-50">
+              </span>
+              <p className="text-gray-800">{pending.phoneNumber}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.nationality")}
-              </td>
-              <td className="py-2 px-4">{pending.nationality}</td>
-            </tr>
+              </span>
+              <p className="text-gray-800">{pending.nationality}</p>
+            </div>
+          </div>
+        </div>
 
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-4 font-semibold text-lg">
-                {t("success.sections.requests")}
-              </td>
-            </tr>
-            {requests.length > 0 ? (
-              requests.map((req, idx) => (
-                <tr key={idx} className="border-t">
-                  <td className="py-2 px-4 font-medium bg-gray-50">{`요청 ${
+        {/* Requests Section */}
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <MessageSquare className="w-5 h-5 text-primary-500 mr-2" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+              {t("success.sections.requests")}
+            </h2>
+          </div>
+          {requests.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4">
+              {requests.map((req, idx) => (
+                <div key={idx}>
+                  <span className="text-sm font-medium text-gray-500">{`요청 ${
                     idx + 1
-                  }`}</td>
-                  <td className="py-2 px-4">{req}</td>
-                </tr>
-              ))
-            ) : (
-              <tr className="border-t">
-                <td className="py-2 px-4 font-medium bg-gray-50">
-                  {t("success.labels.request")}
-                </td>
-                <td className="py-2 px-4">{t("success.labels.requestNone")}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  }`}</span>
+                  <p className="text-gray-800">{req}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <span className="text-sm font-medium text-gray-500">
+                {t("success.labels.request")}
+              </span>
+              <p className="text-gray-800">{t("success.labels.requestNone")}</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="flex gap-4 mt-6">
+      <div className="flex flex-col sm:flex-row gap-4 mt-8">
         <button
           onClick={() => router.push(`/${locale}`)}
-          className="bg-primary-700 text-white px-4 py-2 rounded hover:bg-white hover:border hover:border-primary-700 hover:text-primary-700 cursor-pointer"
+          className="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 focus:ring-2 focus:ring-primary-400 focus:outline-none transition-all duration-200"
+          aria-label={t("success.buttons.goHome")}
         >
           {t("success.buttons.goHome")}
         </button>
         <button
           onClick={() => router.push(`/${locale}/profile/reservations`)}
-          className="border border-primary-700 text-primary-800 px-4 py-2 rounded hover:bg-primary-700 hover:text-white cursor-pointer"
+          className="border border-primary-500 text-primary-500 px-6 py-3 rounded-lg hover:bg-primary-500 hover:text-white focus:ring-2 focus:ring-primary-400 focus:outline-none transition-all duration-200"
+          aria-label={t("success.buttons.goToReservations")}
         >
           {t("success.buttons.goToReservations")}
         </button>
