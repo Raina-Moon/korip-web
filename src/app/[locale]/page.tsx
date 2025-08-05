@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import "react-calendar/dist/Calendar.css";
-import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
