@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import "react-calendar/dist/Calendar.css";
-import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { showLoading } from "@/lib/store/loadingSlice";
 import CheckinInput from "@/components/CheckInInput";
@@ -11,6 +10,7 @@ import TicketDateInput from "@/components/TicketDateInput";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import toast from "react-hot-toast";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -26,7 +26,7 @@ const Page = () => {
   const [isNavigationg, setIsNavigating] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  const router = useRouter();
+  const router = useLoadingRouter();
   const dispatch = useAppDispatch();
 
   const locale = useLocale();

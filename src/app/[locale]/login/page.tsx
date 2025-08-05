@@ -3,7 +3,6 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React, { useEffect, useState } from "react";
 import { loginUser } from "@/lib/auth/loginThunk";
-import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { socialLoginThunk } from "@/lib/auth/socialLoginThunk";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
@@ -13,6 +12,7 @@ import i18n from "@/lib/i18n/i18n";
 import { setRedirectAfterLogin } from "@/lib/auth/authSlice";
 import { isValidRedirectPath } from "@/utils/getRedirectPath";
 import toast from "react-hot-toast";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 
 const LoginPage = () => {
   const { t } = useTranslation("login");
@@ -22,7 +22,7 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const router = useLoadingRouter();
   const locale = useLocale();
 
   const redirectPath = useAppSelector((state) => state.auth.redirectAfterLogin);
@@ -180,7 +180,6 @@ const LoginPage = () => {
             });
             router.push(`/${locale}/ticket/${ticketId}?${query.toString()}`);
           } else if (parsed.lodgeId) {
-
             const {
               lodgeId,
               roomTypeId,
@@ -202,7 +201,6 @@ const LoginPage = () => {
               lodgeName: lodgeName ? encodeURIComponent(lodgeName) : "",
               roomName: roomName ? encodeURIComponent(roomName) : "",
             });
-           
 
             router.push(`/${locale}/lodge/${lodgeId}?${query.toString()}`);
           } else {
@@ -234,7 +232,10 @@ const LoginPage = () => {
 
         <div className="space-y-4">
           <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-900"
+            >
               {t("email")}
             </label>
             <input

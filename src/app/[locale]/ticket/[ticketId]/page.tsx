@@ -36,6 +36,7 @@ import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
 import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
+import { useLoadingRouter } from "@/utils/useLoadingRouter";
 
 const TicketDetailPage = () => {
   const { t } = useTranslation("ticket");
@@ -66,6 +67,7 @@ const TicketDetailPage = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const routerWithLoading = useLoadingRouter();
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
@@ -606,7 +608,7 @@ const TicketDetailPage = () => {
                 context={loginModalContext}
                 onLogin={() => {
                   dispatch(closeLoginModal());
-                  router.push(`/${locale}/login`);
+                  routerWithLoading.push(`/${locale}/login`);
                 }}
               />
             </div>
