@@ -46,7 +46,7 @@ const EventDetailPage = () => {
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.push(`/${locale}/admin/events/list`)}
+            onClick={() => router.push(`/${locale}/admin/events`)}
             className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="Back to events list"
           >
