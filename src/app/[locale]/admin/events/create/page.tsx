@@ -44,7 +44,7 @@ const EventCreatePage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border px-4 py-2 rounded"
         />
-        <SimpleEditor />
+        <SimpleEditor onChange={setContent} />
         <button
           type="submit"
           disabled={isLoading}

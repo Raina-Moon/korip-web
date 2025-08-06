@@ -48,7 +48,7 @@ const NewsCreatePage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border border-gray-300 rounded px-4 py-2"
         />
-        <SimpleEditor />
+        <SimpleEditor onChange={setContent} />
         <button
           type="submit"
           disabled={isLoading}
