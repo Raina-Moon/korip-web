@@ -53,7 +53,7 @@ const EventListPage = () => {
             <li
               key={event.id}
               onClick={() => router.push(`/${locale}/admin/events/${event.id}`)}
-              className="cursor-pointer border p-4 rounded hover:shadow"
+              className="border p-4 rounded hover:shadow cursor-pointer"
             >
               <p className="text-lg font-medium">{event.title}</p>
               <p className="text-sm text-gray-500">

@@ -61,7 +61,7 @@ const NewsAdminPage = () => {
           {list.map((news) => (
             <li
               key={news.id}
-              className="flex justify-between items-center border rounded-lg p-4 hover:shadow-lg transition-shadow"
+              className="flex justify-between items-center border rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => router.push(`/${locale}/admin/news/${news.id}`)}
             >
               <div className="space-y-1">

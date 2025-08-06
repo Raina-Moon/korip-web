@@ -39,7 +39,7 @@ const NewsListPage = () => {
           {data.items.map((news) => (
             <li
               key={news.id}
-              className="border-b border-gray-200 pb-4 last:border-b-0"
+              className="border-b border-gray-200 pb-4 last:border-b-0 cursor-pointer"
             >
               <div
                 onClick={() => router.push(`/${locale}/news/${news.id}`)}

@@ -39,7 +39,7 @@ const EventsListPage = () => {
           {data.items.map((event) => (
             <li
               key={event.id}
-              className="border-b border-gray-200 pb-4 last:border-b-0"
+              className="border-b border-gray-200 pb-4 last:border-b-0 cursor-pointer"
             >
               <div
                 onClick={() => router.push(`/${locale}/events/${event.id}`)}
