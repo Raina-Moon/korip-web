@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { useGetEventByIdQuery } from "@/lib/events/eventsApi";
 import { useParams, useRouter } from "next/navigation";
+import HTMLViewer from "@/components/HTMLViewer";
 
 const EventDetailPage = () => {
   const { t } = useTranslation("page");
