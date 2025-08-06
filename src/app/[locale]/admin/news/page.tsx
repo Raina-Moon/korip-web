@@ -41,7 +41,7 @@ const NewsAdminPage = () => {
   return (
     <div className="flex justify-center flex-col py-8 px-24 max-w-[1200px] mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <div className="cursor-pointer" onClick={() => router.back()}>
+        <div className="cursor-pointer" onClick={() => router.push(`/${locale}/admin`)}>
           <ArrowLeft />
         </div>
         <h1 className="text-3xl font-bold">관리자 – 뉴스 목록</h1>
