@@ -41,7 +41,7 @@ const EventsListPage = () => {
               key={event.id}
               className="border-b border-gray-200 pb-4 last:border-b-0"
             >
-              <p
+              <div
                 onClick={() => router.push(`/${locale}/events/${event.id}`)}
                 className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
               >
@@ -49,7 +49,7 @@ const EventsListPage = () => {
                 <p className="text-sm text-gray-600">
                   {new Date(event.createdAt).toLocaleDateString(locale)}
                 </p>
-              </p>
+              </div>
             </li>
           ))}
         </ul>
