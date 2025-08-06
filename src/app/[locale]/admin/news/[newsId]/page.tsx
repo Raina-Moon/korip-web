@@ -12,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import HTMLViewer from "@/components/HTMLViewer";
+import { ArrowLeft } from "lucide-react";
 
 const NewsDetailPage = () => {
   const { newsId } = useParams();
@@ -63,7 +64,16 @@ const NewsDetailPage = () => {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push(`/${locale}/admin/news/list`)}
+            className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Back to news list"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
         <h1 className="text-2xl font-bold">{news.title}</h1>
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() =>
