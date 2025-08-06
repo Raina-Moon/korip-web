@@ -35,7 +35,7 @@ const EventListPage = () => {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
-        <ArrowLeft className="cursor-pointer" onClick={() => router.back()} />
+        <ArrowLeft className="cursor-pointer" onClick={() => router.push(`/${locale}/admin`)} />
         <h1 className="text-2xl font-bold">이벤트 목록</h1>
         <button
           onClick={() => router.push(`/${locale}/admin/events/create`)}
@@ -53,7 +53,7 @@ const EventListPage = () => {
             <li
               key={event.id}
               onClick={() => router.push(`/${locale}/admin/events/${event.id}`)}
-              className="cursor-pointer border p-4 rounded hover:shadow"
+              className="border p-4 rounded hover:shadow cursor-pointer"
             >
               <p className="text-lg font-medium">{event.title}</p>
               <p className="text-sm text-gray-500">

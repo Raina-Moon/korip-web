@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { useGetEventByIdQuery } from "@/lib/events/eventsApi";
 import { useParams, useRouter } from "next/navigation";
+import HTMLViewer from "@/components/HTMLViewer";
 
 const EventDetailPage = () => {
   const { t } = useTranslation("page");
@@ -43,7 +44,7 @@ const EventDetailPage = () => {
             {new Date(event.createdAt).toLocaleDateString(locale)}
           </p>
           <div className="prose prose-primary max-w-none text-gray-800">
-            {event.content}
+            <HTMLViewer html={event.content} />
           </div>
         </div>
       )}

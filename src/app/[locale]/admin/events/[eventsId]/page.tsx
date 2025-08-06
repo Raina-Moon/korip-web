@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { deleteEventThunk, fetchEventById } from "@/lib/admin/events/eventsThunk";
 import { clearCurrentEvent } from "@/lib/admin/events/eventsSlice";
 import { useLocale } from "@/utils/useLocale";
+import HTMLViewer from "@/components/HTMLViewer";
+import { ArrowLeft } from "lucide-react";
 
 const EventDetailPage = () => {
   const { eventId } = useParams();
@@ -42,7 +44,16 @@ const EventDetailPage = () => {
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push(`/${locale}/admin/events`)}
+            className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Back to events list"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
         <h1 className="text-2xl font-bold">{event.title}</h1>
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => router.push(`/${locale}/admin/events/${event.id}/edit`)}
@@ -62,7 +73,7 @@ const EventDetailPage = () => {
         작성일: {new Date(event.createdAt).toLocaleString()}
       </p>
       <div className="whitespace-pre-wrap leading-relaxed text-gray-800">
-        {event.content}
+        <HTMLViewer html={event.content} />
       </div>
     </div>
   );
