@@ -1,11 +1,13 @@
 "use client";
 
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { createEventThunk } from "@/lib/admin/events/eventsThunk";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+
 
 const EventCreatePage = () => {
   const dispatch = useAppDispatch();
@@ -42,13 +44,7 @@ const EventCreatePage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border px-4 py-2 rounded"
         />
-        <textarea
-          placeholder="내용"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
-          rows={10}
-        />
+        <SimpleEditor />
         <button
           type="submit"
           disabled={isLoading}
