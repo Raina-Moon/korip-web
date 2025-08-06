@@ -11,6 +11,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import HTMLViewer from "@/components/HTMLViewer";
 
 const NewsDetailPage = () => {
   const { newsId } = useParams();
@@ -84,7 +85,7 @@ const NewsDetailPage = () => {
         작성일: {new Date(news.createdAt).toLocaleString()}
       </p>
       <div className="whitespace-pre-wrap leading-relaxed text-gray-800">
-        {news.content}
+        <HTMLViewer html={news.content} />
       </div>
     </div>
   );

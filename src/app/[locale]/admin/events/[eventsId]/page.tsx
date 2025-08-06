@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { deleteEventThunk, fetchEventById } from "@/lib/admin/events/eventsThunk";
 import { clearCurrentEvent } from "@/lib/admin/events/eventsSlice";
 import { useLocale } from "@/utils/useLocale";
+import HTMLViewer from "@/components/HTMLViewer";
 
 const EventDetailPage = () => {
   const { eventId } = useParams();
@@ -62,7 +63,7 @@ const EventDetailPage = () => {
         작성일: {new Date(event.createdAt).toLocaleString()}
       </p>
       <div className="whitespace-pre-wrap leading-relaxed text-gray-800">
-        {event.content}
+        <HTMLViewer html={event.content} />
       </div>
     </div>
   );
