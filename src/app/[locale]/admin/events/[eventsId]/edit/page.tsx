@@ -4,9 +4,13 @@ import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { fetchEventById, updateEventThunk } from "@/lib/admin/events/eventsThunk";
+import {
+  fetchEventById,
+  updateEventThunk,
+} from "@/lib/admin/events/eventsThunk";
 import { clearCurrentEvent } from "@/lib/admin/events/eventsSlice";
 import { useLocale } from "@/utils/useLocale";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const EventEditPage = () => {
   const { eventId } = useParams();
@@ -15,7 +19,9 @@ const EventEditPage = () => {
   const locale = useLocale();
 
   const event = useAppSelector((state) => state["admin/events"].current);
-  const isLoading = useAppSelector((state) => state["admin/events"].state === "loading");
+  const isLoading = useAppSelector(
+    (state) => state["admin/events"].state === "loading"
+  );
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -65,12 +71,7 @@ const EventEditPage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border px-4 py-2 rounded"
         />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={10}
-          className="w-full border px-4 py-2 rounded"
-        />
+        <SimpleEditor content={content} onChange={setContent} />
         <button
           type="submit"
           disabled={isLoading}
