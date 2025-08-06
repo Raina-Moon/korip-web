@@ -274,8 +274,14 @@ export async function handleImageUpload(file: File): Promise<string> {
   );
 
   if (!res.ok) {
-    const errorText = await res.text();
-    console.error("Cloudinary response error:", errorText);
+    try {
+      const errorData = await res.json();
+      console.error("❗Cloudinary response error (json):", errorData);
+    } catch {
+      const errorText = await res.text();
+      console.error("❗Cloudinary response error (text):", errorText);
+    }
+
     throw new Error("Upload failed");
   }
 
