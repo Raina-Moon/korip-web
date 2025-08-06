@@ -33,8 +33,13 @@ const Page = () => {
 
   const locale = useLocale();
 
-  const { data: newsData, isLoading: isNewsLoading } = useGetAllNewsQuery({ page: 1, limit: 5 });
-  const { data: eventsData, isLoading: isEventsLoading } = useGetAllEventsQuery({ page: 1, limit: 5 });
+  const { data: newsData, isLoading: isNewsLoading } = useGetAllNewsQuery({
+    page: 1,
+    limit: 5,
+  });
+  const { data: eventsData, isLoading: isEventsLoading } = useGetAllEventsQuery(
+    { page: 1, limit: 5 }
+  );
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -495,7 +500,7 @@ const Page = () => {
         </div>
       </div>
 
-     <div className="container mx-auto mt-20 mb-20 px-5">
+      <div className="container mx-auto mt-20 mb-20 px-5">
         <div className="flex flex-col md:flex-row gap-10">
           {/* News Section */}
           <div className="w-full md:w-1/2">
@@ -515,15 +520,15 @@ const Page = () => {
               <ul className="space-y-3">
                 {newsData?.items?.slice(0, 5).map((news) => (
                   <li key={news.id} className="border-b border-gray-200 pb-2">
-                    <p
+                    <div
                       onClick={() => router.push(`/${locale}/news/${news.id}`)}
-                      className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
+                      className="cursor-pointer text-primary-900 hover:text-primary-600 transition-colors duration-200"
                     >
                       <p className="text-sm font-medium">{news.title}</p>
                       <p className="text-xs text-gray-600">
                         {new Date(news.createdAt).toLocaleDateString(locale)}
                       </p>
-                    </p>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -533,7 +538,9 @@ const Page = () => {
           {/* Events Section */}
           <div className="w-full md:w-1/2">
             <div className="flex justify-between items-center mb-4">
-              <p className="text-primary-800 font-bold text-3xl">{t("events")}</p>
+              <p className="text-primary-800 font-bold text-3xl">
+                {t("events")}
+              </p>
               <p
                 onClick={() => router.push(`/${locale}/events/list`)}
                 className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
@@ -548,15 +555,17 @@ const Page = () => {
               <ul className="space-y-3">
                 {eventsData?.items?.slice(0, 5).map((event) => (
                   <li key={event.id} className="border-b border-gray-200 pb-2">
-                    <p
-                      onClick={() => router.push(`/${locale}/events/${event.id}`)}
-                      className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
+                    <div
+                      onClick={() =>
+                        router.push(`/${locale}/events/${event.id}`)
+                      }
+                      className="cursor-pointer text-primary-900 hover:text-primary-600 transition-colors duration-200"
                     >
                       <p className="text-sm font-medium">{event.title}</p>
                       <p className="text-xs text-gray-600">
                         {new Date(event.createdAt).toLocaleDateString(locale)}
                       </p>
-                    </p>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -582,6 +591,6 @@ const Page = () => {
   .animate-dropdown {
     animation: dropdown 0.2s ease-out forwards;
   }
-`}</style>
+`}</style>;
 
 export default Page;

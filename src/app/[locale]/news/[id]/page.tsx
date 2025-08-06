@@ -19,7 +19,7 @@ const NewsDetailPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-primary-800 font-bold text-3xl">{t("news")}</h1>
         <p
-          onClick={() => router.push(`/${locale}/news/list/page`)}
+          onClick={() => router.push(`/${locale}/news/list`)}
           className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200 cursor-pointer"
         >
           <i className="bi bi-arrow-left mr-2"></i>
