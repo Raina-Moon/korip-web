@@ -43,7 +43,7 @@ const EventDetailPage = () => {
             {new Date(event.createdAt).toLocaleDateString(locale)}
           </p>
           <div className="prose prose-primary max-w-none text-gray-800">
-            {event.content}
+            <HTMLViewer html={event.content} />
           </div>
         </div>
       )}

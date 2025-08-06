@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { useGetNewsByIdQuery } from "@/lib/news/newsApi";
 import { useParams, useRouter } from "next/navigation";
+import HTMLViewer from "@/components/HTMLViewer";
 
 const NewsDetailPage = () => {
   const { t } = useTranslation("page");
@@ -43,7 +44,7 @@ const NewsDetailPage = () => {
             {new Date(news.createdAt).toLocaleDateString(locale)}
           </p>
           <div className="prose prose-primary max-w-none text-gray-800">
-            {news.content}
+            <HTMLViewer html={news.content} />
           </div>
         </div>
       )}
