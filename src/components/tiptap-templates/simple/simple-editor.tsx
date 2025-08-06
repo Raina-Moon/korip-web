@@ -184,8 +184,10 @@ const MobileToolbarContent = ({
 );
 
 export function SimpleEditor({
+    content,
   onChange,
 }: {
+  content?: string;
   onChange: (html: string) => void;
 }) {
   const isMobile = useIsMobile();
@@ -239,6 +241,12 @@ export function SimpleEditor({
     },
     content,
   });
+
+    React.useEffect(() => {
+    if (editor && typeof content === "string" && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
 
   const rect = useCursorVisibility({
     editor,
