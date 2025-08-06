@@ -6,6 +6,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const NewsCreatePage = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +16,9 @@ const NewsCreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const isLoading = useAppSelector((state) => state["admin/news"].state === "loading");
+  const isLoading = useAppSelector(
+    (state) => state["admin/news"].state === "loading"
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,13 +48,7 @@ const NewsCreatePage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border border-gray-300 rounded px-4 py-2"
         />
-        <textarea
-          placeholder="내용"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={10}
-          className="w-full border border-gray-300 rounded px-4 py-2"
-        />
+        <SimpleEditor onChange={setContent} />
         <button
           type="submit"
           disabled={isLoading}
