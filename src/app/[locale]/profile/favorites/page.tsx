@@ -12,6 +12,7 @@ import {
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
 import { Bookmark } from "@/types/bookmark";
 import { TicketBookmark } from "@/types/ticketBookmark";
+import { getLocalizedLodgeName } from "@/utils/getLocalizedBookmarkField";
 import { useLocale } from "@/utils/useLocale";
 import { HeartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const FavoritesPage = () => {
-  const {t} = useTranslation("favorites");
+  const { t, i18n } = useTranslation("favorites");
   const locale = useLocale();
   const [selectedType, setSelectedType] = useState<"LODGING" | "TICKET">(
     "LODGING"
@@ -104,33 +105,37 @@ const FavoritesPage = () => {
 
           {bookmarks && bookmarks.length > 0 && (
             <ul className="space-y-4">
-              {bookmarks.map((bookmark: Bookmark) => (
-                <li
-                  key={bookmark.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/${locale}/lodge/${bookmark.lodgeId}`);
-                  }}
-                  className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
-                >
-                  <div>
-                    <h2 className="text-lg font-bold">
-                      {bookmark.lodge?.name}
-                    </h2>
-                    <p className="text-gray-600">{bookmark.lodge?.address}</p>
-                  </div>
-
-                  <button
+              {bookmarks.map((bookmark: Bookmark) => {
+                const lodgeName = getLocalizedLodgeName(
+                  bookmark.lodge,
+                  i18n.language
+                );
+                return (
+                  <li
+                    key={bookmark.id}
                     onClick={(e) => {
-                      e.preventDefault();
-                      handleDeleteBookmark(bookmark.lodgeId);
+                      e.stopPropagation();
+                      router.push(`/${locale}/lodge/${bookmark.lodgeId}`);
                     }}
-                    className="text-red-500 hover:text-red-700 ml-4"
+                    className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
                   >
-                    <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
-                  </button>
-                </li>
-              ))}
+                    <div>
+                      <h2 className="text-lg font-bold">{lodgeName}</h2>
+                      <p className="text-gray-600">{bookmark.lodge?.address}</p>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteBookmark(bookmark.lodgeId);
+                      }}
+                      className="text-red-500 hover:text-red-700 ml-4"
+                    >
+                      <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </>
@@ -141,9 +146,7 @@ const FavoritesPage = () => {
           {isTicketLoading && (
             <p className="text-gray-500">{t("loadingTickets")}</p>
           )}
-          {isTicketError && (
-            <p className="text-red-500">{t("ticketError")}</p>
-          )}
+          {isTicketError && <p className="text-red-500">{t("ticketError")}</p>}
 
           {ticketBookmarks && ticketBookmarks.length === 0 && (
             <p className="text-gray-500">{t("ticketEmpty")}</p>
@@ -169,9 +172,9 @@ const FavoritesPage = () => {
                   </div>
 
                   <button
-                    onClick={(e) =>{
+                    onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteTicketBookmark(bookmark.ticketTypeId)
+                      handleDeleteTicketBookmark(bookmark.ticketTypeId);
                     }}
                     className="text-red-500 hover:text-red-700 ml-4"
                   >
