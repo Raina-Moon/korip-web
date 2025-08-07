@@ -39,9 +39,10 @@ import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
 import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
+import { getLocalizedLodgeDescription, getLocalizedLodgeName } from "@/utils/getLocalizedLodgeField";
 
 const LodgeDetailPage = () => {
-  const { t } = useTranslation("lodge");
+  const { t, i18n } = useTranslation("lodge");
   const [isOpen, setIsOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(0);
   const [modalImages, setModalImages] = useState<string[]>([]);
@@ -553,7 +554,7 @@ const LodgeDetailPage = () => {
       />
 
       <div className="flex items-center gap-2 mb-4">
-        <h1 className="text-3xl font-bold text-primary-900">{lodge.name}</h1>
+        <h1 className="text-3xl font-bold text-primary-900">{getLocalizedLodgeName(lodge, i18n.language)}</h1>
         <button
           onClick={handleBookmarkToggle}
           className={`text-2xl ${
@@ -584,7 +585,7 @@ const LodgeDetailPage = () => {
       {/* 설명 */}
       {lodge.description && (
         <div className="mb-6">
-          <p className="text-gray-700">{lodge.description}</p>
+          <p className="text-gray-700">{getLocalizedLodgeDescription(lodge, i18n.language)}</p>
         </div>
       )}
 
