@@ -36,6 +36,7 @@ export interface RoomType {
   seasonalPricing?: SeasonalPricing[];
   images?: RoomTypeImage[];
   pricePerNight?: number;
+  selectedRoom?: number;
 }
 
 export interface RoomTypeImage {
