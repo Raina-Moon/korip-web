@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import React, { useState } from "react";
 import { RoomType, SeasonalPricing } from "@/types/lodge";
 import { useTranslation } from "react-i18next";
+import { getLocalizedRoom } from "@/utils/getLocalizedRoom";
 
 interface RoomCardProps {
   room: RoomType;
@@ -24,9 +25,11 @@ export default function RoomCard({
   checkIn,
   checkOut,
 }: RoomCardProps) {
-  const { t } = useTranslation("lodge");
+  const { t, i18n } = useTranslation("lodge");
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+  const localizedRoom = getLocalizedRoom(room, i18n.language);
 
   const calculateTotalPrice = () => {
     if (!checkIn || !checkOut) {
@@ -84,7 +87,7 @@ export default function RoomCard({
       }
     }
   };
-  
+
   return (
     <div
       className="relative border border-gray-200 rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 animate-fade-in"
@@ -99,7 +102,9 @@ export default function RoomCard({
             width={400}
             height={200}
             className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-            onClick={() => openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)}
+            onClick={() =>
+              openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)
+            }
             role="button"
             aria-label={t("viewRoomImages", { name: room.name })}
             loading="lazy"
@@ -115,10 +120,10 @@ export default function RoomCard({
         id={`room-title-${room.id}`}
         className="text-xl font-semibold text-gray-900 mb-2 truncate"
       >
-        {room.name}
+        {localizedRoom.localizedName}
       </h3>
       <p className="text-gray-600 text-sm italic mb-3 line-clamp-2">
-        {room.description || t("noDescription")}
+        {localizedRoom.localizedDescription || t("noDescription")}
       </p>
       <div className="flex flex-col gap-2 text-gray-600 text-sm mb-3">
         <p>{t("maxAdults", { count: room.maxAdults })}</p>

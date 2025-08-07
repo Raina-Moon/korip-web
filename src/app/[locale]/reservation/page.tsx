@@ -26,8 +26,12 @@ const ReservationPage = () => {
   const adults = searchParams.get("adults");
   const children = searchParams.get("children");
   const roomCount = searchParams.get("roomCount");
-  const lodgeName = searchParams.get("lodgeName") || "Unknown Lodge";
-  const roomName = searchParams.get("roomName") || "Unknown Room";
+  const lodgeName = decodeURIComponent(
+    searchParams.get("lodgeName") || "Unknown Lodge"
+  );
+  const roomName = decodeURIComponent(
+    searchParams.get("roomName") || "Unknown Room"
+  );
 
   const countryCodes = ["kr", "us", "jp", "cn", "gb", "de", "fr", "au", "ca"];
 

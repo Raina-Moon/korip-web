@@ -1,10 +1,12 @@
 export interface Lodge {
   id: number;
   name: string;
+  nameEn?: string;
   address: string;
   latitude: number;
   longitude: number;
   description: string | null;
+  descriptionEn?: string;
   accommodationType: string;
   roomTypes: RoomType[];
   images: LodgeImage[];
@@ -23,7 +25,9 @@ export interface LodgeImage {
 export interface RoomType {
   id?: number;
   name: string;
+  nameEn?: string;
   description: string | null;
+  descriptionEn?: string;
   basePrice: number;
   weekendPrice?: number;
   maxAdults: number;
@@ -32,6 +36,7 @@ export interface RoomType {
   seasonalPricing?: SeasonalPricing[];
   images?: RoomTypeImage[];
   pricePerNight?: number;
+  selectedRoom?: number;
 }
 
 export interface RoomTypeImage {

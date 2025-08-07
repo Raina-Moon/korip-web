@@ -1,3 +1,5 @@
+import { RoomType } from "./lodge";
+
 export interface Reservation {
   id: number;
   lodgeId: number;
@@ -15,11 +17,7 @@ export interface Reservation {
     name: string;
     address: string;
   };
-  roomType: {
-    id: number;
-    name: string;
-    images?: RoomTypeImage[] | string[];
-  };
+  roomType: RoomType;
   user: {
     id: number;
     nickname: string;
