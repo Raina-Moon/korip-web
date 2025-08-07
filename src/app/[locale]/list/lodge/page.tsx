@@ -5,6 +5,8 @@ import { useGetAvailableLodgeQuery } from "@/lib/lodge/lodgeApi";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { hideLoading, showLoading } from "@/lib/store/loadingSlice";
 import { Lodge, RoomType } from "@/types/lodge";
+import { getLocalizedLodgeName } from "@/utils/getLocalizedLodgeField";
+import { getLocalizedRoom } from "@/utils/getLocalizedRoom";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
 import { useLocale } from "@/utils/useLocale";
 import { useSearchParams } from "next/navigation";
@@ -12,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function LodgeListPage() {
-  const { t } = useTranslation("list-lodge");
+  const { t, i18n } = useTranslation("list-lodge");
 
   const searchParams = useSearchParams();
 
@@ -48,7 +50,7 @@ export default function LodgeListPage() {
 
   const router = useLoadingRouter();
   const dispatch = useAppDispatch();
-  const locale = useLocale();
+  const locale = useLocale();  
 
   const handleRoomChange = (delta: number) =>
     setRoom((prev) => Math.max(1, prev + delta));
@@ -188,7 +190,9 @@ export default function LodgeListPage() {
           <p className="text-lg text-gray-600 text-center">{t("noResults")}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lodges?.map((lodge: Lodge) => (
+            {lodges?.map((lodge: Lodge) =>{
+              const lodgeName = getLocalizedLodgeName(lodge, i18n.language);
+              return (
               <div
                 key={lodge.id}
                 className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
@@ -213,7 +217,7 @@ export default function LodgeListPage() {
 
                 <div className="space-y-2">
                   <h2 className="text-lg font-bold text-gray-900">
-                    {lodge.name}
+                    {lodgeName}
                   </h2>
                   <div className="flex items-center gap-2 text-sm text-yellow-600">
                     <span>⭐ {lodge.averageRating?.toFixed(1) ?? "0.0"}</span>
@@ -225,13 +229,15 @@ export default function LodgeListPage() {
                     {t("region", { address: lodge.address })}
                   </p>
 
-                  {lodge.roomTypes?.map((room: RoomType) => (
+                  {lodge.roomTypes?.map((room: RoomType) => {
+                    const roomName = getLocalizedRoom(room, i18n.language).localizedName;
+                    return (
                     <div
                       key={room.id}
                       className="border border-gray-200 bg-gray-50 rounded-lg p-3 space-y-1 hover:bg-gray-100 transition-colors duration-200"
                     >
                       <p className="text-sm font-medium text-gray-900">
-                        {room.name}
+                        {roomName}
                       </p>
                       <p className="text-sm text-gray-600">
                         {t("maxAdults", { count: room.maxAdults })}
@@ -245,10 +251,10 @@ export default function LodgeListPage() {
                         })}
                       </p>
                     </div>
-                  ))}
+            )})}
                 </div>
               </div>
-            ))}
+)})}
           </div>
         )}
       </div>
