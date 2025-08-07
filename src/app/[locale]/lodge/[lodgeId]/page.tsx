@@ -260,9 +260,9 @@ const LodgeDetailPage = () => {
     const localizedLodgeName = lodge
       ? getLocalizedLodgeName(lodge, i18n.language)
       : "Unknown Lodge";
-    const room = lodge?.roomTypes.find((r) => r.id === roomTypeId);
+    const selectedRoom = lodge?.roomTypes.find((r) => r.id === roomTypeId);
     const localizedRoomName = room
-      ? getLocalizedRoom(room, i18n.language).localizedName
+      ? getLocalizedRoom(selectedRoom!, i18n.language).localizedName
       : roomName;
 
     const reservationData = {
