@@ -2,7 +2,6 @@
 
 import { confirmReservation } from "@/lib/reservation/reservationThunk";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { Reservation } from "@/types/reservation";
 import { getNights } from "@/utils/getNights";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,11 +9,32 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Home, Calendar, Users, User, MessageSquare } from "lucide-react";
 
+interface PendingReservation {
+  lodgeId: number;
+  roomTypeId: number;
+  lodgeName: string;
+  roomName: string;
+  checkIn: string;
+  checkOut: string;
+  adults: number;
+  children: number;
+  roomCount: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email?: string | null;
+  nationality?: string | null;
+  specialRequests?: string | null;
+}
+
 const ReservationSuccessPage = () => {
-  const { t } = useTranslation("reservation-success");
+  const { t, i18n } = useTranslation("reservation-success");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [pending, setPending] = useState<Reservation | null>(null);
+  const [pending, setPending] = useState<PendingReservation | null>(null);
+
+  const lodgeName = pending?.lodgeName || "Unknown Lodge";
+  const roomName = pending?.roomName || "Unknown Room";
 
   const reservationId = searchParams.get("reservationId");
 
@@ -89,13 +109,13 @@ const ReservationSuccessPage = () => {
               <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.lodge")}
               </span>
-              <p className="text-gray-800">{pending.lodge?.name}</p>
+              <p className="text-gray-800">{lodgeName}</p>
             </div>
             <div>
               <span className="text-sm font-medium text-gray-500">
                 {t("success.labels.roomType")}
               </span>
-              <p className="text-gray-800">{pending.roomType?.name}</p>
+              <p className="text-gray-800">{roomName}</p>
             </div>
           </div>
         </div>
