@@ -39,7 +39,11 @@ import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
 import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
-import { getLocalizedLodgeDescription, getLocalizedLodgeName } from "@/utils/getLocalizedLodgeField";
+import {
+  getLocalizedLodgeDescription,
+  getLocalizedLodgeName,
+} from "@/utils/getLocalizedLodgeField";
+import { getLocalizedRoom } from "@/utils/getLocalizedRoom";
 
 const LodgeDetailPage = () => {
   const { t, i18n } = useTranslation("lodge");
@@ -253,6 +257,14 @@ const LodgeDetailPage = () => {
   };
 
   const handleReserve = async (roomTypeId: number, roomName: string) => {
+    const localizedLodgeName = lodge
+      ? getLocalizedLodgeName(lodge, i18n.language)
+      : "Unknown Lodge";
+    const room = lodge?.roomTypes.find((r) => r.id === roomTypeId);
+    const localizedRoomName = room
+      ? getLocalizedRoom(room, i18n.language).localizedName
+      : roomName;
+
     const reservationData = {
       type: "lodge",
       lodgeId: Number(lodgeId),
@@ -262,8 +274,8 @@ const LodgeDetailPage = () => {
       adults,
       children,
       roomCount: room,
-      lodgeName: lodge?.name || "Unknown Lodge",
-      roomName,
+      lodgeName: localizedLodgeName,
+      roomName: localizedRoomName,
     };
 
     localStorage.setItem("pendingReservation", JSON.stringify(reservationData));
@@ -276,8 +288,8 @@ const LodgeDetailPage = () => {
       adults: String(adults),
       children: String(children),
       roomCount: String(room),
-      lodgeName: lodge?.name || "Unknown Lodge",
-      roomName,
+      lodgeName: localizedLodgeName,
+      roomName: localizedRoomName,
     }).toString();
 
     router.push(`/${locale}/reservation?${query}`);
@@ -554,7 +566,9 @@ const LodgeDetailPage = () => {
       />
 
       <div className="flex items-center gap-2 mb-4">
-        <h1 className="text-3xl font-bold text-primary-900">{getLocalizedLodgeName(lodge, i18n.language)}</h1>
+        <h1 className="text-3xl font-bold text-primary-900">
+          {getLocalizedLodgeName(lodge, i18n.language)}
+        </h1>
         <button
           onClick={handleBookmarkToggle}
           className={`text-2xl ${
@@ -585,7 +599,9 @@ const LodgeDetailPage = () => {
       {/* 설명 */}
       {lodge.description && (
         <div className="mb-6">
-          <p className="text-gray-700">{getLocalizedLodgeDescription(lodge, i18n.language)}</p>
+          <p className="text-gray-700">
+            {getLocalizedLodgeDescription(lodge, i18n.language)}
+          </p>
         </div>
       )}
 
