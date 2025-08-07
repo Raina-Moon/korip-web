@@ -64,17 +64,17 @@ const NewsListPage = () => {
             className="px-4 py-2 bg-primary-800 text-white rounded-md disabled:bg-gray-400 hover:bg-primary-600 transition-colors duration-200"
           >
             <i className="bi bi-chevron-left mr-2"></i>
-            {t("previous")}
+            Prev
           </button>
           <span className="text-primary-900">
-            {t("page")} {page} / {totalPages}
+            {page} / {totalPages}
           </span>
           <button
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
             className="px-4 py-2 bg-primary-800 text-white rounded-md disabled:bg-gray-400 hover:bg-primary-600 transition-colors duration-200"
           >
-            {t("next")}
+            Next
             <i className="bi bi-chevron-right ml-2"></i>
           </button>
         </div>
