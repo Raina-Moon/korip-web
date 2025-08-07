@@ -8,7 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import HTMLViewer from "@/components/HTMLViewer";
 
 const NewsDetailPage = () => {
-  const { t } = useTranslation("page");
+  const { t } = useTranslation("news-detail");
   const locale = useLocale();
   const router = useRouter();
   const { id } = useParams();
@@ -18,7 +18,7 @@ const NewsDetailPage = () => {
   return (
     <div className="container mx-auto px-5 py-10">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-primary-800 font-bold text-3xl">{t("news")}</h1>
+        <h1 className="text-primary-800 font-bold text-3xl">News</h1>
         <p
           onClick={() => router.push(`/${locale}/news/list`)}
           className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200 cursor-pointer"
@@ -29,8 +29,8 @@ const NewsDetailPage = () => {
       </div>
       <div className="border-b border-primary-800 mb-6"></div>
 
-      {isLoading && <p className="text-gray-600">{t("loading")}</p>}
-      {isError && <p className="text-red-600">{t("errorLoadingNews")}</p>}
+      {isLoading && <p className="text-gray-600">Loading...</p>}
+      {isError && <p className="text-red-600">Error loading news</p>}
       {!isLoading && !isError && !news && (
         <p className="text-gray-600">{t("newsNotFound")}</p>
       )}
