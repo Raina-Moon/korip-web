@@ -79,7 +79,7 @@ function ReservationCard({
           {t("childrenWithCount", { count: reservation.children })}
         </p>
         <p className="text-sm text-gray-700">
-          {t("roomCountWithUnit", { count: reservation.roomCount })}
+          {t("roomCountWithCount", { count: reservation.roomCount })}
         </p>
         <p className="text-sm text-gray-500">
           {t("createdAt", {

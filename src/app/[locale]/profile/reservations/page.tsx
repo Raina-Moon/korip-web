@@ -17,9 +17,13 @@ import { TicketReservation } from "@/types/ticketReservation";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { Reservation } from "@/types/reservation";
+import {
+  getLocalizedReservationLodgeName,
+  getLocalizedReservationRoomName,
+} from "@/utils/getLocalizedReservField";
 
 export default function ReservationListPage() {
-  const { t } = useTranslation("reservations");
+  const { t, i18n } = useTranslation("reservations");
   const [showingModal, setShowingModal] = useState(false);
   const [pending, setPending] = useState<Reservation | null>(null);
   const [filter, setFilter] = useState<
@@ -414,15 +418,20 @@ export default function ReservationListPage() {
                       className="text-primary-600 hover:text-primary-700 underline"
                       onClick={() => setShowingModal(false)}
                     >
-                      {pending.lodge?.name || "이름 없는 숙소"}
+                      {getLocalizedReservationLodgeName(
+                        pending,
+                        i18n.language
+                      ) || "이름 없는 숙소"}{" "}
                     </Link>
                   ) : (
-                    pending.lodge?.name || "이름 없는 숙소"
+                    getLocalizedReservationLodgeName(pending, i18n.language) ||
+                    "정보 없음"
                   )}
                 </p>
                 <p className="text-sm text-gray-700">
                   <strong>{t("modal.roomType")}:</strong>{" "}
-                  {pending.roomType?.name || "정보 없음"}
+                  {getLocalizedReservationRoomName(pending, i18n.language) ||
+                    "이름 없는 객실"}
                 </p>
                 <p className="text-sm text-gray-700">
                   <strong>{t("modal.checkIn")}:</strong>{" "}
