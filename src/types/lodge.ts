@@ -1,10 +1,12 @@
 export interface Lodge {
   id: number;
   name: string;
+  nameEn?: string;
   address: string;
   latitude: number;
   longitude: number;
   description: string | null;
+  descriptionEn?: string;
   accommodationType: string;
   roomTypes: RoomType[];
   images: LodgeImage[];
