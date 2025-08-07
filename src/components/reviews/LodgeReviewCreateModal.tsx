@@ -11,13 +11,14 @@ import "@smastrom/react-rating/style.css";
 import { Review } from "@/types/reivew";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { getLocalizedReviewLodge } from "@/utils/getLocalizedReviewLodge";
 
 interface Props {
   onClose: () => void;
 }
 
 const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
-  const { t } = useTranslation("lodge-review-create");
+  const { t, i18n } = useTranslation("lodge-review-create");
   const [reservationId, setReservationId] = useState<number | null>(null);
 
   const [createReview] = useCreateReviewMutation();
@@ -90,7 +91,8 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
             <option value="">{t("selectPlaceholder")}</option>
             {eligibleLodges?.map((r) => (
               <option key={r.id} value={r.id}>
-                {r.lodge.name} ({formatDate(r.checkIn)} ~ {formatDate(r.checkOut)})
+                {getLocalizedReviewLodge(r.lodge, i18n.language)} (
+                {formatDate(r.checkIn)} ~ {formatDate(r.checkOut)})
               </option>
             ))}
           </select>
@@ -100,7 +102,11 @@ const LodgeReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           <label className="block text-sm font-medium text-gray-700">
             {t("ratingLabel")}
           </label>
-          <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
+          <Rating
+            value={rating}
+            onChange={setRating}
+            style={{ maxWidth: 180 }}
+          />
         </div>
 
         <div className="space-y-2">
