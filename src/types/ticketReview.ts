@@ -7,6 +7,9 @@ export interface TicketReview {
   userId: number;
   rating: number;
   comment?: string;
+  originalLang?: "EN" | "KO" | null;
+  enTranslated?: string | null;
+  koTranslated?: string | null;
   createdAt: string;
   isHidden: boolean;
   user: {

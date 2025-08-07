@@ -105,8 +105,8 @@ const TicketReservationConfirmPage = () => {
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
         customerMobilePhone,
-        successUrl: `${window.location.origin}/ticket-reservation/success?reservationId=${reservationId}`,
-        failUrl: `${window.location.origin}/ticket-reservation/fail`,
+        successUrl: `${locale}/ticket-reservation/success?reservationId=${reservationId}`,
+        failUrl: `${locale}/ticket-reservation/fail`,
       });
     } catch (error) {
       console.error("Payment failed:", error);

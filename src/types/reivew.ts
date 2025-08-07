@@ -5,7 +5,12 @@ export interface Review {
   lodgeId: number;
   userId: number;
   rating: number;
+  
   comment?: string | null;
+  originalLang?: "EN" | "KO" | null;
+  enTranslated?: string | null;
+  koTranslated?: string | null;  
+
   createdAt: string;
   isHidden: boolean;
   lodge: LodgeSummary;
