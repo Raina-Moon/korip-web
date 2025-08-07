@@ -25,7 +25,9 @@ export interface LodgeImage {
 export interface RoomType {
   id?: number;
   name: string;
+  nameEn?: string;
   description: string | null;
+  descriptionEn?: string;
   basePrice: number;
   weekendPrice?: number;
   maxAdults: number;
