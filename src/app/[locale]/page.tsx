@@ -505,7 +505,7 @@ const Page = () => {
           {/* News Section */}
           <div className="w-full md:w-1/2">
             <div className="flex justify-between items-center mb-4">
-              <p className="text-primary-800 font-bold text-3xl">{t("news")}</p>
+              <p className="text-primary-800 font-bold text-3xl">News</p>
               <p
                 onClick={() => router.push(`/${locale}/news/list`)}
                 className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
@@ -539,7 +539,7 @@ const Page = () => {
           <div className="w-full md:w-1/2">
             <div className="flex justify-between items-center mb-4">
               <p className="text-primary-800 font-bold text-3xl">
-                {t("events")}
+                Events
               </p>
               <p
                 onClick={() => router.push(`/${locale}/events/list`)}
