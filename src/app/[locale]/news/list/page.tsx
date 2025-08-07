@@ -7,7 +7,7 @@ import { useGetAllNewsQuery } from "@/lib/news/newsApi";
 import { useRouter } from "next/navigation";
 
 const NewsListPage = () => {
-  const { t } = useTranslation("page");
+  const { t } = useTranslation("news-list");
   const locale = useLocale();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -25,11 +25,11 @@ const NewsListPage = () => {
 
   return (
     <div className="container mx-auto px-5 py-10">
-      <h1 className="text-primary-800 font-bold text-3xl mb-6">{t("news")}</h1>
+      <h1 className="text-primary-800 font-bold text-3xl mb-6">News</h1>
       <div className="border-b border-primary-800 mb-6"></div>
 
-      {isLoading && <p className="text-gray-600">{t("loading")}</p>}
-      {isError && <p className="text-red-600">{t("errorLoadingNews")}</p>}
+      {isLoading && <p className="text-gray-600">Loading...</p>}
+      {isError && <p className="text-red-600">Error loading news</p>}
       {!isLoading && !isError && data?.items?.length === 0 && (
         <p className="text-gray-600">{t("noNewsAvailable")}</p>
       )}

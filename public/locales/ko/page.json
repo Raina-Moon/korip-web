@@ -31,5 +31,6 @@
   "guestSelection": "인원 선택",
   "selectDateWarning": "날짜를 선택해주세요.",
   "selectCheckinCheckoutWarning": "체크인과 체크아웃 날짜를 선택해주세요.",
-  "date" : "날짜"
+  "date" : "날짜",
+  "seeMore": "더보기"
 }

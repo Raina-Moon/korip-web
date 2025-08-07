@@ -30,7 +30,8 @@
   "children": "Children",
   "guestSelection": "Guest Selection",
   "selectDateWarning": "Please select a date.",
-"selectCheckinCheckoutWarning": "Please select check-in and check-out dates.",
-"date" : "Date",
-"selectDate": "Select Date"
+  "selectCheckinCheckoutWarning": "Please select check-in and check-out dates.",
+  "date": "Date",
+  "selectDate": "Select Date",
+  "seeMore": "More"
 }

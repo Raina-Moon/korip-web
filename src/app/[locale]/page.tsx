@@ -505,10 +505,10 @@ const Page = () => {
           {/* News Section */}
           <div className="w-full md:w-1/2">
             <div className="flex justify-between items-center mb-4">
-              <p className="text-primary-800 font-bold text-3xl">{t("news")}</p>
+              <p className="text-primary-800 font-bold text-3xl">News</p>
               <p
                 onClick={() => router.push(`/${locale}/news/list`)}
-                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
+                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200 cursor-pointer"
               >
                 {t("seeMore")} <i className="bi bi-chevron-right ml-1"></i>
               </p>
@@ -538,12 +538,10 @@ const Page = () => {
           {/* Events Section */}
           <div className="w-full md:w-1/2">
             <div className="flex justify-between items-center mb-4">
-              <p className="text-primary-800 font-bold text-3xl">
-                {t("events")}
-              </p>
+              <p className="text-primary-800 font-bold text-3xl">Events</p>
               <p
                 onClick={() => router.push(`/${locale}/events/list`)}
-                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200"
+                className="text-primary-600 hover:text-primary-800 text-sm font-medium transition-colors duration-200 cursor-pointer"
               >
                 {t("seeMore")} <i className="bi bi-chevron-right ml-1"></i>
               </p>
