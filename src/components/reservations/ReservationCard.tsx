@@ -1,4 +1,8 @@
 import { Reservation } from "@/types/reservation";
+import {
+  getLocalizedReservationLodgeName,
+  getLocalizedReservationRoomName,
+} from "@/utils/getLocalizedReservField";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,7 +13,17 @@ function ReservationCard({
   reservation: Reservation;
   onClick: (r: Reservation) => void;
 }) {
-  const { t } = useTranslation("reservation-card");
+  const { t, i18n } = useTranslation("reservation-card");
+
+  const localizedLodgeName = getLocalizedReservationLodgeName(
+    reservation,
+    i18n.language
+  );
+  const localizedRoomName = getLocalizedReservationRoomName(
+    reservation,
+    i18n.language
+  );
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "CONFIRMED":
@@ -46,13 +60,13 @@ function ReservationCard({
     >
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-xl font-semibold text-primary-700">
-          {reservation.lodge?.name || t("noName")}
+          {localizedLodgeName}
         </h2>
         {getStatusBadge(reservation.status)}
       </div>
       <div className="space-y-2">
         <p className="text-sm text-gray-700">
-          {t("roomType")}: {reservation.roomType?.name || t("정보 없음")}
+          {t("roomType")}: {localizedRoomName}
         </p>
         <p className="text-sm text-gray-700">
           {t("checkIn")}: {reservation.checkIn.slice(0, 10)}
@@ -65,7 +79,7 @@ function ReservationCard({
           {t("childrenWithCount", { count: reservation.children })}
         </p>
         <p className="text-sm text-gray-700">
-          {t("roomCountWithUnit", { count: reservation.roomCount })}
+          {t("roomCountWithCount", { count: reservation.roomCount })}
         </p>
         <p className="text-sm text-gray-500">
           {t("createdAt", {

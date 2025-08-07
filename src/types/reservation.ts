@@ -15,6 +15,7 @@ export interface Reservation {
   lodge: {
     id: number;
     name: string;
+    nameEn?: string;
     address: string;
   };
   roomType: RoomType;
