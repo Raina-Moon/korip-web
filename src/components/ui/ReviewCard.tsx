@@ -6,6 +6,7 @@ import { MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import "@smastrom/react-rating/style.css";
 import { useTranslation } from "react-i18next";
+import { getLocalizedComment } from "@/utils/getLocalizedComment";
 
 export type GenericReview = Review | TicketReview;
 
@@ -44,7 +45,7 @@ const ReviewCard = ({
   setEditingRating,
   isLoggedIn,
 }: ReviewCardProps) => {
-  const {t} = useTranslation("review");
+  const { t, i18n } = useTranslation("review");
   const isOwner = myUserId !== undefined && myUserId === review.userId;
   const isEditing = editingId === String(review.id);
   const [closeDropDown, setCloseDropDown] = useState(false);
@@ -90,13 +91,19 @@ const ReviewCard = ({
         {isTicketReview(review) && review.reservation && (
           <div className="text-sm text-gray-500 mb-2">
             <span className="mr-2">
-              <strong>{t("usedOn", { date: review.reservation.date.slice(0, 10) })}</strong>
+              <strong>
+                {t("usedOn", { date: review.reservation.date.slice(0, 10) })}
+              </strong>
             </span>
             <span className="mr-2">
-              <strong>{t("adults", { count: review.reservation.adults })}</strong>
+              <strong>
+                {t("adults", { count: review.reservation.adults })}
+              </strong>
             </span>
             <span>
-              <strong>{t("children", { count: review.reservation.children })}</strong>
+              <strong>
+                {t("children", { count: review.reservation.children })}
+              </strong>
             </span>
           </div>
         )}
@@ -119,11 +126,7 @@ const ReviewCard = ({
                     review.reservation.checkIn,
                     review.reservation.checkOut
                   );
-                  return (
-                    <strong>
-                      {t("nightDays",{ nights, days })}
-                    </strong>
-                  );
+                  return <strong>{t("nightDays", { nights, days })}</strong>;
                 })()}
               </span>
             </div>
@@ -183,9 +186,7 @@ const ReviewCard = ({
       </div>
 
       {review.isHidden ? (
-        <div className="text-gray-400 italic mt-2">
-          {t("hiddenByAdmin")}
-        </div>
+        <div className="text-gray-400 italic mt-2">{t("hiddenByAdmin")}</div>
       ) : (
         <>
           {!isEditing && (
@@ -227,7 +228,10 @@ const ReviewCard = ({
               </div>
             </div>
           ) : (
-            <p className="mt-2 text-gray-700">{review.comment}</p>
+            <p className="mt-2 text-gray-700">
+              {" "}
+              {getLocalizedComment(review, i18n.language)}
+            </p>
           )}
         </>
       )}
