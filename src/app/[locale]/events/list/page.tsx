@@ -7,7 +7,7 @@ import { useGetAllEventsQuery } from "@/lib/events/eventsApi";
 import { useRouter } from "next/navigation";
 
 const EventsListPage = () => {
-  const { t } = useTranslation("page");
+  const { t } = useTranslation("events-list");
   const locale = useLocale();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -25,11 +25,11 @@ const EventsListPage = () => {
 
   return (
     <div className="container mx-auto px-5 py-10">
-      <h1 className="text-primary-800 font-bold text-3xl mb-6">{t("events")}</h1>
+      <h1 className="text-primary-800 font-bold text-3xl mb-6">Events</h1>
       <div className="border-b border-primary-800 mb-6"></div>
 
-      {isLoading && <p className="text-gray-600">{t("loading")}</p>}
-      {isError && <p className="text-red-600">{t("errorLoadingEvents")}</p>}
+      {isLoading && <p className="text-gray-600">Loading...</p>}
+      {isError && <p className="text-red-600">Error loading events</p>}
       {!isLoading && !isError && data?.items?.length === 0 && (
         <p className="text-gray-600">{t("noEventsAvailable")}</p>
       )}
@@ -64,17 +64,17 @@ const EventsListPage = () => {
             className="px-4 py-2 bg-primary-800 text-white rounded-md disabled:bg-gray-400 hover:bg-primary-600 transition-colors duration-200"
           >
             <i className="bi bi-chevron-left mr-2"></i>
-            {t("previous")}
+            Prev
           </button>
           <span className="text-primary-900">
-            {t("page")} {page} / {totalPages}
+            {page} / {totalPages}
           </span>
           <button
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
             className="px-4 py-2 bg-primary-800 text-white rounded-md disabled:bg-gray-400 hover:bg-primary-600 transition-colors duration-200"
           >
-            {t("next")}
+            Next
             <i className="bi bi-chevron-right ml-2"></i>
           </button>
         </div>
