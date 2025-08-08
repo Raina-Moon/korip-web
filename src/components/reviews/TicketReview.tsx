@@ -16,6 +16,8 @@ import TicketReviewCreateModal from "./TicketReviewCreateModal";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { showConfirm } from "@/utils/showConfirm";
+import { getLocalizedField } from "@/utils/getLocalizedField";
+import { useLocale } from "@/utils/useLocale";
 
 const TicketReview = () => {
   const { t } = useTranslation("ticket-review");
@@ -39,6 +41,8 @@ const TicketReview = () => {
   const reviews = data?.data || [];
   const totalCount = data?.total || 0;
   const totalPages = Math.ceil(totalCount / pageSize);
+
+  const locale = useLocale();
 
   const toggleMenu = (id: string) => {
     setOpenMenuId((prevId) => (prevId === id ? null : id));
@@ -139,12 +143,19 @@ const TicketReview = () => {
                 {review.reservation && (
                   <p className="text-md text-primary-900">
                     <span className="text-lg font-semibold mr-3">
-                      {review.reservation?.ticketType?.name || t("unknown")}
+                      {getLocalizedField(
+                        review.reservation?.ticketType?.name,
+                        review.reservation?.ticketType?.nameEn,
+                        locale
+                      ) || t("unknown")}{" "}
                     </span>
                     <span className="text-gray-600 ml-1 text-sm">
                       -{" "}
-                      {review.reservation?.ticketType?.lodge?.name ||
-                        t("noLodge")}
+                      {getLocalizedField(
+                        review.reservation?.ticketType?.lodge?.name,
+                        review.reservation?.ticketType?.lodge?.nameEn,
+                        locale
+                      ) || t("noLodge")}
                     </span>
                     ({review.reservation?.date?.slice(0, 10) || t("unknown")})
                   </p>
@@ -198,7 +209,9 @@ const TicketReview = () => {
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
                 />
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">{t("editRatingLabel")}</span>
+                  <span className="text-sm text-gray-600">
+                    {t("editRatingLabel")}
+                  </span>
                   <Rating
                     value={editingRating ?? 0}
                     onChange={setEditingRating}
