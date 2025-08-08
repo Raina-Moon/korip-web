@@ -116,18 +116,6 @@ const TicketDetailPage = () => {
     (b) => b.ticketTypeId === Number(ticketId)
   );
 
-  // Log API responses for debugging
-  useEffect(() => {
-    console.log("Ticket:", ticket);
-    console.log("Lodges with Tickets:", lodgesWithTickets);
-    console.log(
-      "Current Lodge:",
-      lodgesWithTickets?.find((lodge) =>
-        lodge.ticketTypes.some((t) => t.id === Number(ticketId))
-      )
-    );
-  }, [ticket, lodgesWithTickets, ticketId]);
-
   // Find the lodge containing the current ticket
   const currentLodge = lodgesWithTickets?.find((lodge) =>
     lodge.ticketTypes.some((t) => t.id === Number(ticketId))
