@@ -21,6 +21,7 @@ import {
   getLocalizedReservationLodgeName,
   getLocalizedReservationRoomName,
 } from "@/utils/getLocalizedReservField";
+import { getLocalizedTicketTypeName } from "@/utils/getLocalizedTicketReservation";
 
 export default function ReservationListPage() {
   const { t, i18n } = useTranslation("reservations");
@@ -495,7 +496,8 @@ export default function ReservationListPage() {
               <div className="space-y-2">
                 <p className="text-sm text-gray-700">
                   <strong>{t("ticketModal.ticketName")}:</strong>{" "}
-                  {selectedTicket.ticketType?.name || t("modal.none")}
+                  {getLocalizedTicketTypeName(selectedTicket, i18n.language) ||
+                    t("modal.none")}
                 </p>
                 <p className="text-sm text-gray-700">
                   <strong>{t("ticketModal.useDate")}:</strong>{" "}

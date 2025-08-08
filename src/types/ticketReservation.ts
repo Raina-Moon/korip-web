@@ -20,8 +20,10 @@ export interface TicketReservation {
   ticketType: {
     id: number;
     name: string;
+    nameEn?: string;
     lodge:{
       name: string;
+      nameEn?: string;
     }
   };
 

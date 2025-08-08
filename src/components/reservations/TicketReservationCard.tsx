@@ -1,4 +1,5 @@
 import { TicketReservation } from "@/types/ticketReservation";
+import { getLocalizedTicketTypeName } from "@/utils/getLocalizedTicketReservation";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +12,7 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
   ticket,
   onClick,
 }) => {
-  const { t } = useTranslation("ticket-reservation-card");
+  const { t, i18n } = useTranslation("ticket-reservation-card");
   const formatKSTDate = (utcDateStr: string) => {
     const utcDate = new Date(utcDateStr);
     const kst = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
@@ -54,7 +55,7 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
     >
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-xl font-semibold text-primary-700">
-          {ticket.ticketType?.name || t("noName")}
+          {getLocalizedTicketTypeName(ticket, i18n.language) || t("modal.none")}
         </h2>
         {getStatusBadge(ticket.status)}
       </div>
