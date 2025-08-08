@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { useGetAllEventsQuery } from "@/lib/events/eventsApi";
 import { useRouter } from "next/navigation";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const EventsListPage = () => {
   const { t } = useTranslation("events-list");
@@ -45,7 +46,9 @@ const EventsListPage = () => {
                 onClick={() => router.push(`/${locale}/events/${event.id}`)}
                 className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
               >
-                <p className="text-lg font-medium">{event.title}</p>
+                <p className="text-lg font-medium">
+                  {getLocalizedField(event.title, event.titleEn, locale)}
+                </p>
                 <p className="text-sm text-gray-600">
                   {new Date(event.createdAt).toLocaleDateString(locale)}
                 </p>
