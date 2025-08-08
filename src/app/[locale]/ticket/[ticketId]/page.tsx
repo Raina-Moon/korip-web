@@ -150,6 +150,11 @@ const TicketDetailPage = () => {
   }, [isLoading, dispatch]);
 
   useEffect(() => {
+    console.log("Current Ticket :", currentTicket);
+    console.log("Related Tickets :", relatedTickets);
+  }, [currentTicket, relatedTickets]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         showingLoginModal &&
