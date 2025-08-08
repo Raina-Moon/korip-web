@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
 import { useGetAllNewsQuery } from "@/lib/news/newsApi";
 import { useGetAllEventsQuery } from "@/lib/events/eventsApi";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const Page = () => {
   const { t } = useTranslation("page");
@@ -524,7 +525,9 @@ const Page = () => {
                       onClick={() => router.push(`/${locale}/news/${news.id}`)}
                       className="cursor-pointer text-primary-900 hover:text-primary-600 transition-colors duration-200"
                     >
-                      <p className="text-sm font-medium">{news.title}</p>
+                      <p className="text-sm font-medium">
+                        {getLocalizedField(news.title, news.titleEn, locale)}
+                      </p>
                       <p className="text-xs text-gray-600">
                         {new Date(news.createdAt).toLocaleDateString(locale)}
                       </p>
@@ -559,7 +562,9 @@ const Page = () => {
                       }
                       className="cursor-pointer text-primary-900 hover:text-primary-600 transition-colors duration-200"
                     >
-                      <p className="text-sm font-medium">{event.title}</p>
+                      <p className="text-sm font-medium">
+                        {getLocalizedField(event.title, event.titleEn, locale)}
+                      </p>
                       <p className="text-xs text-gray-600">
                         {new Date(event.createdAt).toLocaleDateString(locale)}
                       </p>
