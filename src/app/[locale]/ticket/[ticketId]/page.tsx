@@ -127,10 +127,10 @@ const TicketDetailPage = () => {
     (t) => t.id === Number(ticketId)
   ) || {
     id: Number(ticketId),
-    name: getLocalizedField(ticket?.name, ticket?.nameEn, locale) ?? "",
-    nameEn: ticket?.nameEn,
-    description: getLocalizedField(ticket?.description, ticket?.descriptionEn, locale) ?? "",
-    descriptionEn: ticket?.descriptionEn,
+    name: ticket?.name ?? "",
+    nameEn: ticket?.nameEn ?? undefined,
+    description: ticket?.description ?? "",
+    descriptionEn: ticket?.descriptionEn ?? undefined,
     adultPrice: ticket?.adultPrice ?? 0,
     childPrice: ticket?.childPrice ?? 0,
     availableAdultTickets: ticket?.availableAdultTickets ?? 0,
