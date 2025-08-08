@@ -69,8 +69,6 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     return isBeforeOrToday && isNotReviewed;
   });
 
-  console.log("✅ eligibleTickets", eligibleTickets);
-
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}년 ${
