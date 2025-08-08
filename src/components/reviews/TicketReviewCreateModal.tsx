@@ -69,6 +69,8 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
     return isBeforeOrToday && isNotReviewed;
   });
 
+  console.log("✅ eligibleTickets", eligibleTickets);
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}년 ${
@@ -121,7 +123,12 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
             <option value="">{t("selectPlaceholder")}</option>
             {eligibleTickets?.map((t) => (
               <option key={t.id} value={t.id}>
-                {getLocalizedField(t.ticketType.name, t.ticketType.nameEn, locale)} - {formatDate(t.date)}
+                {getLocalizedField(
+                  t.ticketType.name,
+                  t.ticketType.nameEn,
+                  locale
+                )}{" "}
+                - {formatDate(t.date)}
               </option>
             ))}
           </select>
@@ -131,7 +138,11 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
           <label className="block text-sm font-medium text-gray-700">
             {t("ratingLabel")}
           </label>
-          <Rating value={rating} onChange={setRating} style={{ maxWidth: 180 }} />
+          <Rating
+            value={rating}
+            onChange={setRating}
+            style={{ maxWidth: 180 }}
+          />
         </div>
 
         <div className="space-y-2">
