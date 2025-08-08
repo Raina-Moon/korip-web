@@ -4,7 +4,9 @@ export interface Ticket {
   reviewCount: number;
   id: number;
   name: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   region: string;
   lodgeId: number;
   adultPrice: number;
@@ -35,6 +37,7 @@ export interface TicketImage {
 export interface Lodge {
   id: number;
   name: string;
+  nameEn?: string;
   address: string;
   images: TicketImage[];
   latitude: number;
@@ -55,7 +58,9 @@ export interface TicketInventory {
 export interface TicketType {
   id: number;
   name: string;
+  nameEn?: string;
   description: string;
+  descriptionEn?: string;
   adultPrice: number;
   childPrice: number;
   availableAdultTickets: number;
@@ -68,6 +73,7 @@ export interface TicketType {
 export interface LodgeWithTickets {
   id: number;
   name: string;
+  nameEn?: string;
   address: string;
   images: { imageUrl: string }[];
   ticketTypes: TicketType[];
