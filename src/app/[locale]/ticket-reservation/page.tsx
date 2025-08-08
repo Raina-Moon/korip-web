@@ -1,5 +1,6 @@
 "use client";
 
+import { getLocalizedField } from "@/utils/getLocalizedField";
 import { useLocale } from "@/utils/useLocale";
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -19,8 +20,10 @@ const TicketReservationPage = () => {
   const ticketTypeId = searchParams.get("ticketTypeId") ?? "";
   const date = searchParams.get("date") ?? "";
   const lodgeName = searchParams.get("lodgeName") ?? "Unknown Lodge";
+  const lodgeNameEn = searchParams.get("lodgeNameEn") || undefined;
   const ticketTypeName =
     searchParams.get("ticketTypeName") ?? "Unknown Ticket Type";
+  const ticketTypeNameEn = searchParams.get("ticketTypeNameEn") || undefined;
 
   const [adults, setAdults] = useState<number>(
     Number(searchParams.get("adults") || "1")
@@ -99,9 +102,13 @@ const TicketReservationPage = () => {
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-6">
       <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
       <div className="border border-gray-300 rounded-lg p-4 space-y-2">
-        <p className="font-semibold">{lodgeName}</p>
+        <p className="font-semibold">
+          {" "}
+          {getLocalizedField(lodgeName, lodgeNameEn, locale)}
+        </p>
         <p className="text-gray-700">
-          {t("ticketType")}: {ticketTypeName}
+          {t("ticketType")}:{" "}
+          {getLocalizedField(ticketTypeName, ticketTypeNameEn, locale)}
         </p>
         <p className="text-gray-700">
           {t("date")}: {date}
