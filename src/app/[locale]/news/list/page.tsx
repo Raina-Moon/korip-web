@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
 import { useGetAllNewsQuery } from "@/lib/news/newsApi";
 import { useRouter } from "next/navigation";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const NewsListPage = () => {
   const { t } = useTranslation("news-list");
@@ -45,7 +46,9 @@ const NewsListPage = () => {
                 onClick={() => router.push(`/${locale}/news/${news.id}`)}
                 className="text-primary-900 hover:text-primary-600 transition-colors duration-200"
               >
-                <p className="text-lg font-medium">{news.title}</p>
+                <p className="text-lg font-medium">
+                  {getLocalizedField(news.title, news.titleEn, locale)}
+                </p>
                 <p className="text-sm text-gray-600">
                   {new Date(news.createdAt).toLocaleDateString(locale)}
                 </p>

@@ -6,6 +6,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useGetNewsByIdQuery } from "@/lib/news/newsApi";
 import { useParams, useRouter } from "next/navigation";
 import HTMLViewer from "@/components/HTMLViewer";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const NewsDetailPage = () => {
   const { t } = useTranslation("news-detail");
@@ -14,6 +15,13 @@ const NewsDetailPage = () => {
   const { id } = useParams();
 
   const { data: news, isLoading, isError } = useGetNewsByIdQuery(Number(id));
+
+  const titleToShow = getLocalizedField(news?.title, news?.titleEn, locale);
+  const contentToShow = getLocalizedField(
+    news?.content,
+    news?.contentEn,
+    locale
+  );
 
   return (
     <div className="container mx-auto px-5 py-10">
@@ -38,13 +46,13 @@ const NewsDetailPage = () => {
       {news && (
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-semibold text-primary-900 mb-4">
-            {news.title}
+            {titleToShow}
           </h2>
           <p className="text-sm text-gray-600 mb-4">
             {new Date(news.createdAt).toLocaleDateString(locale)}
           </p>
           <div className="prose prose-primary max-w-none text-gray-800">
-            <HTMLViewer html={news.content} />
+            <HTMLViewer html={contentToShow} />
           </div>
         </div>
       )}
