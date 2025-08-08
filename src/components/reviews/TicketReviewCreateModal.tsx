@@ -11,6 +11,8 @@ import "@smastrom/react-rating/style.css";
 import { fetchTicketReservations } from "@/lib/ticket-reservation/ticketReservationThunk";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { useLocale } from "@/utils/useLocale";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 interface Props {
   onClose: () => void;
@@ -23,6 +25,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   );
 
   const dispatch = useAppDispatch();
+  const locale = useLocale();
 
   const [createReview] = useCreateTicketReviewMutation();
   const tickets = useAppSelector((state) => state.ticketReservation.list);
@@ -118,7 +121,7 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
             <option value="">{t("selectPlaceholder")}</option>
             {eligibleTickets?.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.ticketType.name} - {formatDate(t.date)}
+                {getLocalizedField(t.ticketType.name, t.ticketType.nameEn, locale)} - {formatDate(t.date)}
               </option>
             ))}
           </select>
