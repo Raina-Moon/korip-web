@@ -13,3 +13,10 @@ export const getLocalizedTicketDescription = (
 ): string => {
   return getLocalizedField(ticket.description, ticket.descriptionEn, locale);
 };
+
+export const getLocalizedLodgeNameFromLodgeWithTickets = (
+  lodge: { name: string; nameEn?: string | null },
+  locale: string
+): string => {
+  return getLocalizedField(lodge.name, lodge.nameEn, locale);
+};
