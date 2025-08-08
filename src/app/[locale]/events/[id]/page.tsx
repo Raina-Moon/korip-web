@@ -6,6 +6,7 @@ import { useLocale } from "@/utils/useLocale";
 import { useGetEventByIdQuery } from "@/lib/events/eventsApi";
 import { useParams, useRouter } from "next/navigation";
 import HTMLViewer from "@/components/HTMLViewer";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const EventDetailPage = () => {
   const { t } = useTranslation("events-detail");
@@ -14,6 +15,13 @@ const EventDetailPage = () => {
   const { id } = useParams();
 
   const { data: event, isLoading, isError } = useGetEventByIdQuery(Number(id));
+
+  const titleToShow = getLocalizedField(event?.title, event?.titleEn, locale);
+  const contentToShow = getLocalizedField(
+    event?.content,
+    event?.contentEn,
+    locale
+  );
 
   return (
     <div className="container mx-auto px-5 py-10">
@@ -38,13 +46,13 @@ const EventDetailPage = () => {
       {event && (
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-semibold text-primary-900 mb-4">
-            {event.title}
+            {titleToShow}
           </h2>
           <p className="text-sm text-gray-600 mb-4">
             {new Date(event.createdAt).toLocaleDateString(locale)}
           </p>
           <div className="prose prose-primary max-w-none text-gray-800">
-            <HTMLViewer html={event.content} />
+            <HTMLViewer html={contentToShow} />
           </div>
         </div>
       )}
