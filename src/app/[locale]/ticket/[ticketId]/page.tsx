@@ -251,6 +251,7 @@ const TicketDetailPage = () => {
   const handleReserve = (ticket: {
     id: number;
     name: string;
+    nameEn?: string | null;
     adultPrice: number;
     childPrice: number;
   }) => {
@@ -279,7 +280,9 @@ const TicketDetailPage = () => {
       adults: String(adults),
       children: String(children),
       lodgeName: currentLodge?.name || ticket.name || "Unknown Lodge",
+      lodgeNameEn: currentLodge?.nameEn || ticket.nameEn || "Unknown Lodge",
       ticketTypeName: ticket.name,
+      ticketTypeNameEn: ticket.nameEn || "Unknown Ticket",
       adultPrice: String(ticket.adultPrice ?? 0),
       childPrice: String(ticket.childPrice ?? 0),
     }).toString();
