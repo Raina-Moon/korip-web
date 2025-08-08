@@ -65,6 +65,14 @@ const TicketReservationPage = () => {
       lodgeName,
       ticketTypeName,
       totalPrice,
+      ticketType: {
+        name: ticketTypeName,
+        nameEn: ticketTypeNameEn,
+        lodge: {
+          name: lodgeName,
+          nameEn: lodgeNameEn,
+        },
+      },
     };
 
     localStorage.setItem("pendingTicketReservation", JSON.stringify(pending));
