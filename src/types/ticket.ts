@@ -4,7 +4,7 @@ export interface Ticket {
   reviewCount: number;
   id: number;
   name: string;
-  nameEn: string;
+  nameEn?: string;
   description?: string;
   descriptionEn?: string;
   region: string;
