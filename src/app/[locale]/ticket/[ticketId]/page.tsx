@@ -27,7 +27,7 @@ import {
   useDeleteTicketBookmarkMutation,
   useGetMyTicketBookmarksQuery,
 } from "@/lib/ticket-bookmark/ticketBookmarkApi";
-import { TicketBookmark } from "@/types/ticket";
+import { TicketBookmark, TicketType } from "@/types/ticket";
 import ImageModal from "@/components/ui/ImageModal";
 import { useCreateReportTicketReviewMutation } from "@/lib/report-ticket-review/reportTicketReviewApi";
 import { useTranslation } from "react-i18next";
@@ -37,6 +37,7 @@ import { showConfirm } from "@/utils/showConfirm";
 import KakaoMapModal from "@/components/ui/KakaoMapModal";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
+import { getLocalizedField } from "@/utils/getLocalizedField";
 
 const TicketDetailPage = () => {
   const { t } = useTranslation("ticket");
@@ -122,14 +123,21 @@ const TicketDetailPage = () => {
   );
 
   // Current ticket (either from currentLodge or fallback)
-  const currentTicket = currentLodge?.ticketTypes.find(
+  const currentTicket: TicketType = currentLodge?.ticketTypes.find(
     (t) => t.id === Number(ticketId)
   ) || {
     id: Number(ticketId),
-    name: ticket?.name || "Unknown Ticket",
-    description: ticket?.description || "",
+    name: getLocalizedField(ticket?.name, ticket?.nameEn, locale) ?? "",
+    nameEn: ticket?.nameEn,
+    description: getLocalizedField(ticket?.description, ticket?.descriptionEn, locale) ?? "",
+    descriptionEn: ticket?.descriptionEn,
     adultPrice: ticket?.adultPrice ?? 0,
     childPrice: ticket?.childPrice ?? 0,
+    availableAdultTickets: ticket?.availableAdultTickets ?? 0,
+    availableChildTickets: ticket?.availableChildTickets ?? 0,
+    date: ticket?.date ?? "",
+    reviewCount: ticket?.reviewCount ?? 0,
+    averageRating: ticket?.averageRating ?? 0,
   };
 
   // Related tickets (other tickets from the same lodge, excluding current ticket)
@@ -407,7 +415,11 @@ const TicketDetailPage = () => {
                   className="text-2xl font-bold text-gray-900"
                   aria-label={t("ticketName")}
                 >
-                  {ticket.lodge.name}
+                  {getLocalizedField(
+                    ticket.lodge.name,
+                    ticket.lodge.nameEn,
+                    locale
+                  )}{" "}
                 </h1>
                 <button
                   onClick={handleBookmarkToggle}
@@ -441,10 +453,18 @@ const TicketDetailPage = () => {
             <div className="border-b border-gray-200 pb-4 mb-4">
               <div className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {currentTicket.name}
+                  {getLocalizedField(
+                    currentTicket.name,
+                    currentTicket.nameEn,
+                    locale
+                  )}{" "}
                 </h3>
                 <p className="text-sm text-gray-600 italic">
-                  {currentTicket.description || t("noDescription")}
+                  {getLocalizedField(
+                    currentTicket.description,
+                    currentTicket.descriptionEn,
+                    locale
+                  ) || t("noDescription")}
                 </p>
                 <p className="text-sm text-gray-600">
                   {t("adultPrice", {
@@ -487,14 +507,26 @@ const TicketDetailPage = () => {
                       }
                       role="button"
                       aria-label={t("selectTicket", {
-                        name: relatedTicket.name,
+                        name: getLocalizedField(
+                          relatedTicket.name,
+                          relatedTicket.nameEn,
+                          locale
+                        ),
                       })}
                     >
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {relatedTicket.name}
+                        {getLocalizedField(
+                          relatedTicket.name,
+                          relatedTicket.nameEn,
+                          locale
+                        )}{" "}
                       </h3>
                       <p className="text-sm text-gray-600 italic">
-                        {relatedTicket.description || t("noDescription")}
+                        {getLocalizedField(
+                          relatedTicket.description,
+                          relatedTicket.descriptionEn,
+                          locale
+                        ) || t("noDescription")}
                       </p>
                       <p className="text-sm text-gray-600">
                         {t("adultPrice", {
