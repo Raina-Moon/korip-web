@@ -3,6 +3,10 @@
 import { useAppDispatch } from "@/lib/store/hooks";
 import { confirmTicketReservation } from "@/lib/ticket-reservation/ticketReservationThunk";
 import { TicketReservation } from "@/types/ticketReservation";
+import {
+  getLocalizedLodgeNameFromLodgeWithTickets,
+  getLocalizedTicketName,
+} from "@/utils/getLocalizedTicketName";
 import { useLocale } from "@/utils/useLocale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -15,6 +19,9 @@ const TicketReservationSuccessPage = () => {
   const [pending, setPending] = useState<Partial<TicketReservation> | null>(
     null
   );
+
+  console.log("🏨 lodge:", pending?.ticketType?.lodge);
+  console.log("🎫 ticketType:", pending?.ticketType);
 
   const reservationId = searchParams.get("reservationId");
 
@@ -63,7 +70,22 @@ const TicketReservationSuccessPage = () => {
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">{t("lodge")}</td>
-              <td className="py-2 px-4">{pending.ticketType?.lodge.name}</td>
+              <td className="py-2 px-4">
+                {pending.ticketType?.lodge &&
+                  getLocalizedLodgeNameFromLodgeWithTickets(
+                    pending.ticketType.lodge,
+                    locale
+                  )}
+              </td>
+            </tr>
+            <tr className="border-t">
+              <td className="py-2 px-4 font-medium bg-gray-50">
+                {t("ticket")}
+              </td>
+              <td className="py-2 px-4">
+                {pending.ticketType &&
+                  getLocalizedTicketName(pending.ticketType, locale)}
+              </td>
             </tr>
             <tr className="border-t">
               <td className="py-2 px-4 font-medium bg-gray-50">{t("date")}</td>
