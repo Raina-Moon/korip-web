@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { LodgeWithTickets } from "@/types/ticket";
 import TicketSearchBox from "@/components/ticket/TicketReservationSearckBox";
 import { useLoadingRouter } from "@/utils/useLoadingRouter";
+import { getLocalizedLodgeNameFromLodgeWithTickets, getLocalizedTicketName } from "@/utils/getLocalizedTicketName";
 
 const TicketListPage = () => {
   const { t } = useTranslation("list-ticket");
@@ -176,7 +177,7 @@ const TicketListPage = () => {
 
                 <div className="space-y-2">
                   <h2 className="text-lg font-bold text-gray-900">
-                    {lodge.name}
+                    {getLocalizedLodgeNameFromLodgeWithTickets(lodge, locale)}
                   </h2>
                   <div className="flex gap-2 text-sm text-yellow-600">
                     <span>⭐ {lodge.averageRating.toFixed(1)}</span>
@@ -201,7 +202,7 @@ const TicketListPage = () => {
                       }}
                     >
                       <p className="text-sm font-medium text-gray-900">
-                        {ticket.name}
+                        {getLocalizedTicketName(ticket, locale)}
                       </p>
                       <p className="text-sm text-gray-600">
                         {t("adultPrice", {

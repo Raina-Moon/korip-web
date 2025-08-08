@@ -139,7 +139,17 @@ const LoginPage = () => {
           localStorage.removeItem("pendingReservation");
           router.push(`/${locale}/reservation?${query}`);
         } else {
-          router.push(`/${locale}${redirectPath}`);
+          const isLocalePrefixed = redirectPath.startsWith(`/${locale}`);
+
+          router.push(
+            isLocalePrefixed
+              ? redirectPath
+              : `/${locale}${
+                  redirectPath.startsWith("/")
+                    ? redirectPath
+                    : `/${redirectPath}`
+                }`
+          );
         }
         dispatch(setRedirectAfterLogin(null));
       } else {

@@ -105,13 +105,13 @@ const TicketReservationConfirmPage = () => {
         customerName: `${firstName} ${lastName}`,
         customerEmail: email,
         customerMobilePhone,
-        successUrl: `${locale}/ticket-reservation/success?reservationId=${reservationId}`,
-        failUrl: `${locale}/ticket-reservation/fail`,
+        successUrl: `${window.location.origin}/${locale}/ticket-reservation/success?reservationId=${reservationId}`,
+        failUrl: `${window.location.origin}/${locale}/ticket-reservation/fail`,
       });
     } catch (error) {
       console.error("Payment failed:", error);
       toast.error(t("alertPaymentFail"));
-      router.push(`/${locale}/ticket-reservation/fail`);
+      router.push(`${locale}/ticket-reservation/fail`);
     }
   };
 
