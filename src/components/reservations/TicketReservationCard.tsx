@@ -61,7 +61,7 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
       </div>
       <div className="space-y-2">
         <p className="text-sm text-gray-700">
-          {t("date", { date: formatKSTDate(ticket.date) })}
+          {t("date")} : {formatKSTDate(ticket.date)}
         </p>
         <p className="text-sm text-gray-700">
           {t("adultsWithCount", { count: ticket.adults })},{" "}
@@ -71,7 +71,7 @@ const TicketReservationCard: React.FC<TicketReservationCardProps> = ({
           {t("totalPrice", {
             price: ticket.totalPrice?.toLocaleString() || "계산 안됨",
           })}
-          원
+          
         </p>
         <p className="text-sm text-gray-500">
           {t("createdAt", {

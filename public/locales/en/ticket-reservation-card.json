@@ -11,5 +11,6 @@
     "pending": "Pending",
     "cancelled": "Cancelled",
     "none": "No Status"
-  }
+  },
+  "totalPrice": "Total Price: {{price}} KRW"
 }
