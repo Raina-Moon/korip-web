@@ -139,7 +139,7 @@ const LoginPage = () => {
           localStorage.removeItem("pendingReservation");
           router.push(`/${locale}/reservation?${query}`);
         } else {
-          router.push(`/${locale}${redirectPath}`);
+          router.push(`/${redirectPath}`);
         }
         dispatch(setRedirectAfterLogin(null));
       } else {
