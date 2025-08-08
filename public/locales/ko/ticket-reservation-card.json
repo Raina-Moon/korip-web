@@ -9,5 +9,6 @@
     "pending": "진행중",
     "cancelled": "예약취소",
     "none": "상태 없음"
-  }
+  },
+  "totalPrice": "총 가격: {{price}}원"
 }
