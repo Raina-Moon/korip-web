@@ -22,16 +22,22 @@ This is a web platform for booking accommodations and tickets. Users can check e
 
 ## 🛠️ 기술 스택 (Tech Stack)
 
-- **Framework:** Next.js
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS, Sass
-- **State Management:** Redux Toolkit
-- **Data Fetching:** Axios
-- **Internationalization:** i18next, react-i18next
-- **Text Editor:** Tiptap
-- **Payment:** Toss Payments
-- **Authentication:** Google OAuth
-- **UI Components:** Radix UI, Lucide React
+<p align="left">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white" alt="Redux"/>
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios"/>
+  <br/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"/>
+  <img src="https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white" alt="Sass"/>
+  <img src="https://img.shields.io/badge/Radix_UI-161618?style=for-the-badge&logo=radix-ui&logoColor=white" alt="Radix UI"/>
+  <img src="https://img.shields.io/badge/i18next-26A69A?style=for-the-badge&logo=i18next&logoColor=white" alt="i18next"/>
+  <br/>
+  <img src="https://img.shields.io/badge/Tiptap-0D0D0D?style=for-the-badge&logo=tiptap&logoColor=white" alt="Tiptap"/>
+  <img src="https://img.shields.io/badge/Toss_Payments-0052FF?style=for-the-badge&logo=toss&logoColor=white" alt="Toss Payments"/>
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint"/>
+</p>
 
 ## 🚀 시작하기 (Getting Started)
 
