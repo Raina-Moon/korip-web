@@ -1,4 +1,8 @@
-# Korip Web (코립 웹)
+<p align="center">
+  <img src="public/images/koripsLogo.webp" alt="KORIPS Logo" width="200"/>
+</p>
+
+# KORIPS 코립스(한국 온천 숙소/티켓 예약 서비스)
 
 숙소 및 티켓 예매를 위한 웹 플랫폼입니다. 사용자는 이벤트를 확인하고, 숙소나 티켓을 예약하고, 후기를 남길 수 있습니다.
 
