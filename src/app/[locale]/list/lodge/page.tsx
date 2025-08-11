@@ -50,7 +50,7 @@ export default function LodgeListPage() {
 
   const router = useLoadingRouter();
   const dispatch = useAppDispatch();
-  const locale = useLocale();  
+  const locale = useLocale();
 
   const handleRoomChange = (delta: number) =>
     setRoom((prev) => Math.max(1, prev + delta));
@@ -129,7 +129,7 @@ export default function LodgeListPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-gray-50 py-10 px-3 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto animate-fade-in">
         <div className="relative z-50">
           <ReservationSearchBox
@@ -160,101 +160,140 @@ export default function LodgeListPage() {
           />
         </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {t("resultsCount", { count: lodges ? lodges.length : 0 })}
-          </h1>
-          <div className="flex flex-col">
-            <label
-              htmlFor="sort"
-              className="text-sm font-medium text-gray-900 mb-1"
-            >
-              {t("sortLabel")}
-            </label>
-            <select
-              id="sort"
-              value={selectedSort}
-              onChange={handleSortChange}
-              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-              aria-label={t("sortLabel")}
-            >
-              <option value="popularity">{t("sort.popularity")}</option>
-              <option value="reviews">{t("sort.reviews")}</option>
-              <option value="price_asc">{t("sort.price_asc")}</option>
-              <option value="price_desc">{t("sort.price_desc")}</option>
-            </select>
+        <div className="mb-6">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              {t("resultsCount", { count: lodges ? lodges.length : 0 })}
+            </h1>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <label htmlFor="sort" className="sr-only">
+                {t("sortLabel")}
+              </label>
+
+              <select
+                id="sort"
+                value={selectedSort}
+                onChange={handleSortChange}
+                aria-label={t("sortLabel")}
+                className={`
+          h-9 text-sm border border-gray-300 rounded-lg
+          px-2 md:px-3 bg-white text-gray-700
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+          w-auto min-w-[9.5rem] md:min-w-[14rem]
+        `}
+              >
+                <option value="popularity">{t("sort.popularity")}</option>
+                <option value="reviews">{t("sort.reviews")}</option>
+                <option value="price_asc">{t("sort.price_asc")}</option>
+                <option value="price_desc">{t("sort.price_desc")}</option>
+              </select>
+            </div>
           </div>
         </div>
 
         {lodges?.length === 0 ? (
-          <p className="text-lg text-gray-600 text-center">{t("noResults")}</p>
+          <p className="text-base sm:text-lg text-gray-600 text-center">
+            {t("noResults")}
+          </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lodges?.map((lodge: Lodge) =>{
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {lodges?.map((lodge: Lodge) => {
               const lodgeName = getLocalizedLodgeName(lodge, i18n.language);
               return (
-              <div
-                key={lodge.id}
-                className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                role="button"
-                tabIndex={0}
-                aria-label={t("selectLodge", { name: lodge.name })}
-                onClick={() => handleLodgeClick(lodge.id)}
-              >
-                <div className="relative w-full h-48 rounded-lg mb-4">
-                  {lodge.images?.[0]?.imageUrl ? (
-                    <img
-                      src={lodge.images[0].imageUrl}
-                      alt={lodge.name}
-                      className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
-                      {t("noImage")}
+                <article
+                  key={lodge.id}
+                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden focus-within:ring-2 focus-within:ring-primary-500"
+                >
+                  <button
+                    type="button"
+                    className="w-full text-left"
+                    onClick={() => handleLodgeClick(lodge.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleLodgeClick(lodge.id);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={t("selectLodge", {
+                      name: lodgeName || lodge.name,
+                    })}
+                  >
+                    <div className="relative w-full overflow-hidden bg-gray-100">
+                      <div className="aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/9]">
+                        {lodge.images?.[0]?.imageUrl ? (
+                          <img
+                            src={lodge.images[0].imageUrl}
+                            alt={lodgeName || lodge.name}
+                            loading="lazy"
+                            className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                            {t("noImage")}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="space-y-2">
-                  <h2 className="text-lg font-bold text-gray-900">
-                    {lodgeName}
-                  </h2>
-                  <div className="flex items-center gap-2 text-sm text-yellow-600">
-                    <span>⭐ {lodge.averageRating?.toFixed(1) ?? "0.0"}</span>
-                    <span className="text-gray-600">
-                      {t("reviewsCount", { count: lodge.reviewCount ?? 0 })}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {t("region", { address: lodge.address })}
-                  </p>
+                    <div className="p-4 sm:p-5 space-y-3">
+                      <h2 className="text-base sm:text-lg font-bold text-gray-900 line-clamp-2">
+                        {lodgeName}
+                      </h2>
 
-                  {lodge.roomTypes?.map((room: RoomType) => {
-                    const roomName = getLocalizedRoom(room, i18n.language).localizedName;
-                    return (
-                    <div
-                      key={room.id}
-                      className="border border-gray-200 bg-gray-50 rounded-lg p-3 space-y-1 hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      <p className="text-sm font-medium text-gray-900">
-                        {roomName}
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="text-yellow-600">
+                          ⭐ {lodge.averageRating?.toFixed(1) ?? "0.0"}
+                        </span>
+                        <span className="text-gray-600">
+                          {t("reviewsCount", { count: lodge.reviewCount ?? 0 })}
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {t("region", { address: lodge.address })}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {t("maxAdults", { count: room.maxAdults })}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {t("maxChildren", { count: room.maxChildren })}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {t("pricePerNight", {
-                          price: room.pricePerNight?.toLocaleString(),
-                        })}
-                      </p>
+
+                      {lodge.roomTypes?.length ? (
+                        <div className="space-y-2">
+                          {lodge.roomTypes.map((room: RoomType) => {
+                            const roomName = getLocalizedRoom(
+                              room,
+                              i18n.language
+                            ).localizedName;
+                            return (
+                              <div
+                                key={room.id}
+                                className="border border-gray-200 bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
+                              >
+                                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                  {roomName}
+                                </p>
+                                <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600">
+                                  <p>
+                                    {t("maxAdults", { count: room.maxAdults })}
+                                  </p>
+                                  <p>
+                                    {t("maxChildren", {
+                                      count: room.maxChildren,
+                                    })}
+                                  </p>
+                                  <p className="col-span-2 sm:col-span-1">
+                                    {t("pricePerNight", {
+                                      price:
+                                        room.pricePerNight?.toLocaleString(),
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : null}
                     </div>
-            )})}
-                </div>
-              </div>
-)})}
+                  </button>
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
