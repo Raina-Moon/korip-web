@@ -19,7 +19,7 @@ export default function CheckinInput({
     left: number;
     width: number;
   }>({ top: 0, left: 0, width: 300 });
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +42,22 @@ export default function CheckinInput({
       setOpen(true);
     }
   };
+
+  const useMediaQuery = (query: string) => {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+      const media = window.matchMedia(query);
+      if (media.matches !== matches) setMatches(media.matches);
+      const listener = () => setMatches(media.matches);
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }, [matches, query]);
+
+    return matches;
+  };
+
+  const isMd = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
     if (!open) return;
@@ -76,7 +92,8 @@ export default function CheckinInput({
           placeholder={t("checkInDatePlaceholder")}
         />
       </label>
-      {open && typeof window !== "undefined" &&
+      {open &&
+        typeof window !== "undefined" &&
         createPortal(
           <div
             ref={calendarRef}
@@ -101,7 +118,7 @@ export default function CheckinInput({
                 }
               }}
               selectRange
-              showDoubleView
+              showDoubleView={isMd}
               value={range}
               minDate={new Date()}
             />

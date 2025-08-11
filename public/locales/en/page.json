@@ -1,6 +1,7 @@
 {
   "welcome": "A soothing break in your everyday life",
-  "greeting": "Discover and book hot springs throughout Korea with ease, and melt away your stress and fatigue.",
+  "greeting_part1": "Discover and book hot springs throughout Korea ",
+  "greeting_part2": "with ease, and melt away your stress and fatigue.",
   "accommodation": "Accommodation",
   "ticket": "Ticket",
   "selectRegion": "Region",
