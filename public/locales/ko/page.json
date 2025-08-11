@@ -1,6 +1,7 @@
 {
   "welcome": "당신의 일상에 따뜻한 쉼표를",
-  "greeting": "전국 온천을 간편하게 예약하고, 지친 몸과 마음을 녹여보세요.",
+  "greeting_part1": "전국 온천을 간편하게 예약하고,",
+  "greeting_part2": "지친 몸과 마음을 녹여보세요.",
   "accommodation": "숙박",
   "ticket": "티켓",
   "selectRegion": "지역 선택",
@@ -31,6 +32,6 @@
   "guestSelection": "인원 선택",
   "selectDateWarning": "날짜를 선택해주세요.",
   "selectCheckinCheckoutWarning": "체크인과 체크아웃 날짜를 선택해주세요.",
-  "date" : "날짜",
+  "date": "날짜",
   "seeMore": "더보기"
 }
