@@ -88,7 +88,7 @@ const HeaderBar = () => {
             alt="korip logo"
             width={128}
             height={40}
-            className="w-20 md:w-32 h-auto"
+            className="w-20 md:w-30 h-auto"
             priority
           />
         </button>
