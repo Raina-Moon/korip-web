@@ -71,7 +71,6 @@ export default function TicketSearchBox({
 
   return (
     <div className="w-full max-w-[72rem] mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-8 border border-gray-200 animate-fade-in">
-      {/* grid that stacks on mobile, flows into columns on larger screens */}
       <div
         className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
         role="group"
@@ -125,10 +124,10 @@ export default function TicketSearchBox({
           </button>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col xs:col-span-2 sm:col-span-1">
           <label
             htmlFor="adults"
-            className="text-xs font-medium text-gray-900 mb-1 uppercase tracking-wide text-left"
+            className="text-xs font-medium text-gray-900 mb-1 uppercase tracking-wide text-left whitespace-nowrap"
           >
             {t("adult")}
           </label>
@@ -140,10 +139,10 @@ export default function TicketSearchBox({
           />
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col xs:col-span-2 sm:col-span-1">
           <label
             htmlFor="children"
-            className="text-xs font-medium text-gray-900 mb-1 uppercase tracking-wide text-left"
+            className="text-xs font-medium text-gray-900 mb-1 uppercase tracking-wide text-left whitespace-nowrap"
           >
             {t("children")}
           </label>
@@ -155,7 +154,6 @@ export default function TicketSearchBox({
           />
         </div>
 
-        {/* push the search button to full width on small screens */}
         <div className="flex items-end col-span-1 xs:col-span-2 sm:col-span-1 lg:col-span-1">
           <button
             className="h-11 w-full bg-primary-500 text-white px-4 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 transition"
@@ -168,10 +166,8 @@ export default function TicketSearchBox({
         </div>
       </div>
 
-      {/* Calendar: full-screen modal on mobile; anchored dropdown on desktop */}
       {calendarOpen && (
         <>
-          {/* backdrop (mobile & desktop) */}
           <div
             className="fixed inset-0 bg-black/30 z-[99] sm:bg-transparent sm:static sm:hidden"
             aria-hidden="true"
@@ -198,7 +194,6 @@ export default function TicketSearchBox({
               }
             }}
             onMouseLeave={() => {
-              // only apply hover-close on desktop
               if (window.innerWidth >= 640) {
                 const timeout = window.setTimeout(
                   () => setCalendarOpen(false),
@@ -208,7 +203,6 @@ export default function TicketSearchBox({
               }
             }}
           >
-            {/* mobile header for modal */}
             <div className="flex justify-end sm:hidden mb-2">
               <button
                 className="p-2 rounded-lg hover:bg-gray-100"
