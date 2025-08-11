@@ -2,5 +2,6 @@
   "loginPrompt": "Login to Continue",
   "loginButton": "Login",
   "logoutButton": "Logout",
-  "adminButton": "Go to Admin"
+  "adminButton": "Go to Admin",
+  "profileButton": "Go to Profile"
 }
