@@ -38,7 +38,6 @@ const FavoritesPage = () => {
   const [deleteTicketBookmark] = useDeleteTicketBookmarkMutation();
 
   const dispatch = useAppDispatch();
-
   const router = useRouter();
 
   const handleDeleteBookmark = async (lodgeId: number) => {
@@ -65,46 +64,62 @@ const FavoritesPage = () => {
     }
   }, [isLoading, isTicketLoading, dispatch]);
 
-  if (isError) return <div>Error loading bookmarks</div>;
+  if (isError) return <div className="px-4 py-6">{t("error")}</div>;
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">{t("title")}</h1>
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
+        {t("title")}
+      </h1>
 
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setSelectedType("LODGING")}
-          className={`px-4 py-2 rounded border ${
-            selectedType === "LODGING"
-              ? "bg-primary-700 text-white"
-              : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
-          }`}
-        >
-          {t("tab.lodging")}
-        </button>
-        <button
-          onClick={() => setSelectedType("TICKET")}
-          className={`px-4 py-2 rounded border ${
-            selectedType === "TICKET"
-              ? "bg-primary-700 text-white"
-              : "text-primary-800 border-primary-700 hover:bg-primary-700 hover:text-white"
-          }`}
-        >
-          {t("tab.ticket")}
-        </button>
+      <div
+        role="tablist"
+        aria-label={t("title")}
+        className="mb-6 flex w-full flex-col gap-2 sm:flex-row sm:items-center"
+      >
+        <div className="inline-flex w-full sm:w-auto rounded-xl border border-primary-700 overflow-hidden">
+          <button
+            role="tab"
+            aria-selected={selectedType === "LODGING"}
+            onClick={() => setSelectedType("LODGING")}
+            className={`w-1/2 sm:w-auto px-4 py-2 text-sm sm:text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
+              selectedType === "LODGING"
+                ? "bg-primary-700 text-white"
+                : "text-primary-800 hover:bg-primary-700/10"
+            }`}
+          >
+            {t("tab.lodging")}
+          </button>
+          <button
+            role="tab"
+            aria-selected={selectedType === "TICKET"}
+            onClick={() => setSelectedType("TICKET")}
+            className={`w-1/2 sm:w-auto px-4 py-2 text-sm sm:text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
+              selectedType === "TICKET"
+                ? "bg-primary-700 text-white"
+                : "text-primary-800 hover:bg-primary-700/10"
+            }`}
+          >
+            {t("tab.ticket")}
+          </button>
+        </div>
       </div>
 
       {selectedType === "LODGING" && (
         <>
-          {isLoading && <p className="text-gray-500">{t("loading")}</p>}
-          {isError && <p className="text-red-500">{t("error")}</p>}
+          {isLoading && (
+            <p className="text-gray-500 text-sm sm:text-base">{t("loading")}</p>
+          )}
 
           {bookmarks && bookmarks.length === 0 && (
-            <p className="text-gray-500">{t("empty")}</p>
+            <p className="text-gray-500 text-sm sm:text-base">{t("empty")}</p>
           )}
 
           {bookmarks && bookmarks.length > 0 && (
-            <ul className="space-y-4">
+            <ul
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+              aria-live="polite"
+            >
               {bookmarks.map((bookmark: Bookmark) => {
                 const lodgeName = getLocalizedLodgeName(
                   bookmark.lodge,
@@ -113,26 +128,40 @@ const FavoritesPage = () => {
                 return (
                   <li
                     key={bookmark.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      router.push(`/${locale}/lodge/${bookmark.lodgeId}`);
-                    }}
-                    className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
+                    className="group relative rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm transition hover:shadow-md"
                   >
-                    <div>
-                      <h2 className="text-lg font-bold">{lodgeName}</h2>
-                      <p className="text-gray-600">{bookmark.lodge?.address}</p>
-                    </div>
-
                     <button
                       onClick={(e) => {
-                        e.preventDefault();
-                        handleDeleteBookmark(bookmark.lodgeId);
+                        e.stopPropagation();
+                        router.push(`/${locale}/lodge/${bookmark.lodgeId}`);
                       }}
-                      className="text-red-500 hover:text-red-700 ml-4"
+                      className="block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-lg"
                     >
-                      <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
+                      <h2 className="text-base sm:text-lg font-semibold truncate">
+                        {lodgeName}
+                      </h2>
+                      <p className="mt-1 text-gray-600 text-sm line-clamp-2 sm:line-clamp-2">
+                        {bookmark.lodge?.address}
+                      </p>
                     </button>
+
+                    <div className="absolute top-3 right-3">
+                      <button
+                        aria-label={t("unfavorite")}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteBookmark(bookmark.lodgeId);
+                        }}
+                        className="rounded-full p-1.5 transition hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                      >
+                        <HeartIcon
+                          className="w-6 h-6"
+                          fill="red"
+                          stroke="red"
+                        />
+                      </button>
+                    </div>
                   </li>
                 );
               })}
@@ -144,42 +173,60 @@ const FavoritesPage = () => {
       {selectedType === "TICKET" && (
         <>
           {isTicketLoading && (
-            <p className="text-gray-500">{t("loadingTickets")}</p>
+            <p className="text-gray-500 text-sm sm:text-base">
+              {t("loadingTickets")}
+            </p>
           )}
-          {isTicketError && <p className="text-red-500">{t("ticketError")}</p>}
+          {isTicketError && (
+            <p className="text-red-500 text-sm sm:text-base">
+              {t("ticketError")}
+            </p>
+          )}
 
           {ticketBookmarks && ticketBookmarks.length === 0 && (
-            <p className="text-gray-500">{t("ticketEmpty")}</p>
+            <p className="text-gray-500 text-sm sm:text-base">
+              {t("ticketEmpty")}
+            </p>
           )}
 
           {ticketBookmarks && ticketBookmarks.length > 0 && (
-            <ul className="space-y-4">
+            <ul
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+              aria-live="polite"
+            >
               {ticketBookmarks.map((bookmark: TicketBookmark) => (
                 <li
                   key={bookmark.id}
-                  onClick={() =>
-                    router.push(`/${locale}/ticket/${bookmark.ticketType?.id}`)
-                  }
-                  className="cursor-pointer flex justify-between items-center border rounded-lg p-4 shadow-sm bg-white hover:bg-gray-50 transition"
+                  className="group relative rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm transition hover:shadow-md"
                 >
-                  <div>
-                    <h2 className="text-lg font-bold">
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/${locale}/ticket/${bookmark.ticketType?.id}`
+                      )
+                    }
+                    className="block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-lg"
+                  >
+                    <h2 className="text-base sm:text-lg font-semibold truncate">
                       {bookmark.ticketType?.name}
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="mt-1 text-gray-600 text-sm line-clamp-2 sm:line-clamp-2">
                       {bookmark.ticketType?.lodge?.address}
                     </p>
-                  </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteTicketBookmark(bookmark.ticketTypeId);
-                    }}
-                    className="text-red-500 hover:text-red-700 ml-4"
-                  >
-                    <HeartIcon fill="red" stroke="red" className="w-6 h-6" />
                   </button>
+
+                  <div className="absolute top-3 right-3">
+                    <button
+                      aria-label={t("unfavorite")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteTicketBookmark(bookmark.ticketTypeId);
+                      }}
+                      className="rounded-full p-1.5 transition hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                    >
+                      <HeartIcon className="w-6 h-6" fill="red" stroke="red" />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
