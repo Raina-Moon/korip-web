@@ -64,9 +64,7 @@ const LodgeDetailPage = () => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
-
   const dispatch = useAppDispatch();
-
   const locale = useLocale();
 
   const [checkIn, setCheckIn] = useState("");
@@ -82,7 +80,6 @@ const LodgeDetailPage = () => {
   const routerWithLoading = useLoadingRouter();
 
   const { data: lodge, isLoading, isError } = useGetLodgeByIdQuery(lodgeId);
-
   const imageUrl = lodge?.images?.map((image) => image.imageUrl) ?? [];
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -114,6 +111,7 @@ const LodgeDetailPage = () => {
   const loginModalContext = useAppSelector(
     (state) => state.auth.loginModalContext
   );
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -138,11 +136,8 @@ const LodgeDetailPage = () => {
   };
 
   useEffect(() => {
-    if (isLoading) {
-      dispatch(showLoading());
-    } else {
-      dispatch(hideLoading());
-    }
+    if (isLoading) dispatch(showLoading());
+    else dispatch(hideLoading());
   }, [isLoading, dispatch]);
 
   useEffect(() => {
@@ -299,7 +294,6 @@ const LodgeDetailPage = () => {
     if (!isAuthenticated) {
       dispatch(openLoginModal("lodge/bookmark"));
       dispatch(setRedirectAfterLogin(redirectPath));
-
       return;
     }
     try {
@@ -373,8 +367,8 @@ const LodgeDetailPage = () => {
       lodgeId,
     });
 
-    if (isLoading) return <div>Loading reviews...</div>;
-    if (isError) return <div>Error loading reviews.</div>;
+    if (isLoading) return <div className="text-sm text-gray-500 p-2">Loading reviews...</div>;
+    if (isError) return <div className="text-sm text-red-600 p-2">Error loading reviews.</div>;
 
     const typesReviews = data.reviews as Review[];
     const visibleReviews = typesReviews.filter((r) => !r.isHidden);
@@ -407,22 +401,21 @@ const LodgeDetailPage = () => {
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-lg font-semibold text-primary-900">
-            {t("reviewTitle", { count: totalReviews })}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div className="text-lg sm:text-xl font-semibold text-primary-900">
+            {t("reviewTitle", { count: totalReviews })}{" "}
             {averageRating && (
               <>
-                {" "}
-                <span className="font-bold text-yellow-600">
-                  {averageRating}
-                </span>{" "}
-                / 5
+                <span className="font-bold text-yellow-600">{averageRating}</span> / 5
               </>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-sm font-medium text-gray-700">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label
+              htmlFor="sort"
+              className="text-sm font-medium text-gray-700 min-w-max"
+            >
               {t("sortBy")}
             </label>
             <select
@@ -433,7 +426,7 @@ const LodgeDetailPage = () => {
                   e.target.value as "latest" | "oldest" | "highest" | "lowest"
                 )
               }
-              className="border border-gray-300 rounded-md p-2"
+              className="border border-gray-300 rounded-md p-2 w-full sm:w-40 focus:outline-none focus:ring-2 focus:ring-primary-400"
             >
               <option value="latest">{t("latest")}</option>
               <option value="oldest">{t("oldest")}</option>
@@ -442,8 +435,9 @@ const LodgeDetailPage = () => {
             </select>
           </div>
         </div>
+
         {visibleReviews.length > 0 ? (
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="flex flex-col gap-4 mt-2">
             {sortedReviews.map((review: Review) => (
               <ReviewCard
                 key={review.id}
@@ -466,7 +460,7 @@ const LodgeDetailPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-4">{t("noReviews")}</p>
+          <p className="text-gray-500 mt-2">{t("noReviews")}</p>
         )}
       </div>
     );
@@ -520,95 +514,94 @@ const LodgeDetailPage = () => {
     router.push(`/${locale}/lodge/${lodgeId}?${query}`);
   };
 
-  if (isError) return <div>{t("errorLoading")}</div>;
-  if (!lodge) return <div>{t("noLodge")}</div>;
+  if (isError) return <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{t("errorLoading")}</div>;
+  if (!lodge) return <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{t("noLodge")}</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="w-full h-80 rounded-xl overflow-hidden mb-6 cursor-pointer">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="w-full h-48 sm:h-64 md:h-80 lg:h-[420px] rounded-xl overflow-hidden mb-6 sm:mb-8 cursor-pointer">
         {imageUrl[0] ? (
           <Image
             src={imageUrl[0]}
             alt={lodge.name}
-            width={1200}
-            height={400}
+            width={1600}
+            height={900}
             className="object-cover w-full h-full"
             onClick={() => openModal(imageUrl, 0)}
+            priority
           />
         ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-sm sm:text-base">
             No image
           </div>
         )}
       </div>
 
-      <ReservationSearchBox
-        checkIn={checkIn}
-        setCheckIn={setCheckIn}
-        checkOut={checkOut}
-        setCheckOut={setCheckOut}
-        dateRange={dateRange}
-        setDateRange={setDateRange}
-        calendar={calendar}
-        setCalendar={setCalendar}
-        isActive={isActive}
-        setIsActive={setIsActive}
-        adults={adults}
-        setAdults={setAdults}
-        room={room}
-        setRoom={setRoom}
-        children={children}
-        setChildren={setChildren}
-        handleAdultChange={handleAdultChange}
-        handleRoomChange={handleRoomChange}
-        handleChildrenChange={handleChildrenChange}
-        handleSearch={handleSearch}
-      />
+      <div className="mb-6 sm:mb-8">
+        <ReservationSearchBox
+          checkIn={checkIn}
+          setCheckIn={setCheckIn}
+          checkOut={checkOut}
+          setCheckOut={setCheckOut}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+          calendar={calendar}
+          setCalendar={setCalendar}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          adults={adults}
+          setAdults={setAdults}
+          room={room}
+          setRoom={setRoom}
+          children={children}
+          setChildren={setChildren}
+          handleAdultChange={handleAdultChange}
+          handleRoomChange={handleRoomChange}
+          handleChildrenChange={handleChildrenChange}
+          handleSearch={handleSearch}
+        />
+      </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        <h1 className="text-3xl font-bold text-primary-900">
+      <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-900 leading-tight">
           {getLocalizedLodgeName(lodge, i18n.language)}
         </h1>
         <button
           onClick={handleBookmarkToggle}
-          className={`text-2xl ${
-            isBookmarked ? "text-red-500" : "text-gray-400"
-          } hover:text-red-600`}
-          aria-label={
-            isBookmarked ? "Remove from favorites" : "Add to favorites"
-          }
+          className={`inline-flex items-center justify-center rounded-full p-2 sm:p-2.5 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-400 ${
+            isBookmarked ? "text-red-500" : "text-gray-400 hover:text-red-600"
+          }`}
+          aria-label={isBookmarked ? "Remove from favorites" : "Add to favorites"}
         >
           {isBookmarked ? (
             <Heart fill="red" stroke="red" className="w-6 h-6" />
           ) : (
-            <HeartOff className="w-6 h-6 text-gray-400" />
+            <HeartOff className="w-6 h-6" />
           )}
         </button>
       </div>
-      <div
-        className="flex items-center gap-1.5 text-base text-gray-600 cursor-pointer hover:text-primary-500 transition-colors duration-200 animate-fade-in"
-        style={{ animationDelay: "0.2s" }}
+
+      <button
+        type="button"
         onClick={() => setIsMapModalOpen(true)}
-        role="button"
+        className="flex items-center gap-2 text-sm sm:text-base text-gray-600 hover:text-primary-600 transition-colors mb-5 sm:mb-6"
         aria-label={t("viewMap")}
       >
-        <i className="bi bi-geo-alt text-primary-500"></i>
-        {lodge.address}
-      </div>
+        <i className="bi bi-geo-alt text-primary-500" aria-hidden />
+        <span className="text-left break-words">{lodge.address}</span>
+      </button>
 
-      {/* 설명 */}
       {lodge.description && (
-        <div className="mb-6">
-          <p className="text-gray-700">
+        <div className="mb-6 sm:mb-8">
+          <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
             {getLocalizedLodgeDescription(lodge, i18n.language)}
           </p>
         </div>
       )}
 
-      {/* 객실 목록 */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">{t("roomInfo")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+      <div className="mb-8 sm:mb-12">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">{t("roomInfo")}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {lodge.roomTypes
             ?.filter((room) => room.id !== undefined)
             .map((room) => (
@@ -625,11 +618,10 @@ const LodgeDetailPage = () => {
         </div>
       </div>
 
-      <div className="mt-12 border-t pt-6">
+      <div className="mt-10 sm:mt-12 border-t pt-6 sm:pt-8">
         <FetchReviews lodgeId={lodgeId} />
       </div>
 
-      {/* ✅ 모달 */}
       <ImageModal
         isOpen={isOpen}
         images={modalImages}
@@ -643,9 +635,9 @@ const LodgeDetailPage = () => {
       {showingLoginModal && (
         <div
           onClick={() => dispatch(closeLoginModal())}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
         >
-          <div onClick={(e) => e.stopPropagation()}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md sm:max-w-lg">
             <LoginPromptModal
               isOpen={showingLoginModal}
               context={loginModalContext}
