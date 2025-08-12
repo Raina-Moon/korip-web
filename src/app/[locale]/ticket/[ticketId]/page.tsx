@@ -117,12 +117,10 @@ const TicketDetailPage = () => {
     (b) => b.ticketTypeId === Number(ticketId)
   );
 
-  // Find the lodge containing the current ticket
   const currentLodge = lodgesWithTickets?.find((lodge) =>
     lodge.ticketTypes.some((t) => t.id === Number(ticketId))
   );
 
-  // Current ticket (either from currentLodge or fallback)
   const currentTicket: TicketType = currentLodge?.ticketTypes.find(
     (t) => t.id === Number(ticketId)
   ) || {
@@ -140,7 +138,6 @@ const TicketDetailPage = () => {
     averageRating: ticket?.averageRating ?? 0,
   };
 
-  // Related tickets (other tickets from the same lodge, excluding current ticket)
   const relatedTickets =
     currentLodge?.ticketTypes.filter((t) => t.id !== Number(ticketId)) || [];
 
@@ -360,7 +357,11 @@ const TicketDetailPage = () => {
   });
 
   if (isTicketError || isSearchError) {
-    return <p className="text-red-600 text-center">{t("error")}</p>;
+    return (
+      <p className="text-red-600 text-center px-4 sm:px-6 lg:px-8">
+        {t("error")}
+      </p>
+    );
   }
 
   if (!ticket) {
@@ -374,19 +375,20 @@ const TicketDetailPage = () => {
   const imageUrl = ticket?.lodge?.images?.map((img) => img.imageUrl) ?? [];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-[72rem] mx-auto animate-fade-in">
-        <div className="relative w-full h-64 sm:h-80 rounded-xl overflow-hidden shadow-lg mb-6 cursor-pointer z-0 animate-fade-in">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-xl mx-auto animate-fade-in">
+        <div className="relative w-full h-52 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden shadow-md sm:shadow-lg mb-6 sm:mb-8 cursor-pointer z-0 animate-fade-in">
           {imageUrl[0] ? (
             <Image
               src={imageUrl[0]}
               alt={ticket.name}
-              width={1152}
-              height={320}
+              width={1600}
+              height={900}
               className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
               onClick={() => openModal(imageUrl, 0)}
               role="button"
               aria-label={t("viewImages")}
+              priority
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
@@ -395,7 +397,7 @@ const TicketDetailPage = () => {
           )}
         </div>
 
-        <div className="relative z-20">
+        <div className="relative z-20 mb-6 sm:mb-8">
           <TicketSearchBox
             date={date}
             setDate={setDate}
@@ -407,26 +409,26 @@ const TicketDetailPage = () => {
           />
         </div>
 
-        <div className="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg p-6 animate-fade-in">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <div
-                className="flex justify-between items-center animate-fade-in"
-                style={{ animationDelay: "0.1s" }}
+        <div className="mt-4 bg-white border border-gray-200 rounded-xl shadow-md sm:shadow-lg p-4 sm:p-6 animate-fade-in">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
+              style={{ animationDelay: "0.1s" }}
+            >
+              <h1
+                className="text-xl sm:text-2xl font-bold text-gray-900"
+                aria-label={t("ticketName")}
               >
-                <h1
-                  className="text-2xl font-bold text-gray-900"
-                  aria-label={t("ticketName")}
-                >
-                  {getLocalizedField(
-                    ticket.lodge.name,
-                    ticket.lodge.nameEn,
-                    locale
-                  )}{" "}
-                </h1>
+                {getLocalizedField(
+                  ticket.lodge.name,
+                  ticket.lodge.nameEn,
+                  locale
+                )}
+              </h1>
+              <div className="flex items-center">
                 <button
                   onClick={handleBookmarkToggle}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
+                  className={`flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 ${
                     isBookmarked ? "text-red-500" : "text-gray-400"
                   } hover:text-primary-500`}
                   aria-label={
@@ -441,62 +443,69 @@ const TicketDetailPage = () => {
                   )}
                 </button>
               </div>
-              <div
-                className="flex items-center gap-1.5 text-base text-gray-600 cursor-pointer hover:text-primary-500 transition-colors duration-200 animate-fade-in"
-                style={{ animationDelay: "0.2s" }}
-                onClick={() => setIsMapModalOpen(true)}
-                role="button"
-                aria-label={t("viewMap")}
-              >
-                <i className="bi bi-geo-alt text-primary-500"></i>
-                {ticket.lodge.address}
-              </div>
             </div>
 
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <div className="border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div
+              className="flex items-start sm:items-center gap-2 text-sm sm:text-base text-gray-600 cursor-pointer hover:text-primary-600 transition-colors duration-200"
+              style={{ animationDelay: "0.2s" }}
+              onClick={() => setIsMapModalOpen(true)}
+              role="button"
+              aria-label={t("viewMap")}
+            >
+              <i className="bi bi-geo-alt text-primary-500 mt-0.5 sm:mt-0"></i>
+              <span className="leading-relaxed break-words">
+                {ticket.lodge.address}
+              </span>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <div className="border border-gray-200 rounded-lg p-4 sm:p-5 space-y-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
                   {getLocalizedField(
                     currentTicket.name,
                     currentTicket.nameEn,
                     locale
-                  )}{" "}
+                  )}
                 </h3>
-                <p className="text-sm text-gray-600 italic">
+                <p className="text-sm sm:text-base text-gray-600 italic">
                   {getLocalizedField(
                     currentTicket.description,
                     currentTicket.descriptionEn,
                     locale
                   ) || t("noDescription")}
                 </p>
-                <p className="text-sm text-gray-600">
-                  {t("adultPrice", {
-                    price: (currentTicket.adultPrice ?? 0).toLocaleString(),
-                  })}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {t("childPrice", {
-                    price: (currentTicket.childPrice ?? 0).toLocaleString(),
-                  })}
-                </p>
-                <button
-                  onClick={() => handleReserve(currentTicket)}
-                  className="mt-2 h-9 bg-primary-500 text-white px-3 py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-48 text-sm font-medium flex items-center justify-center gap-1.5"
-                  aria-label={t("reserveButton")}
-                  role="button"
-                >
-                  <i className="bi bi-ticket text-xs"></i>
-                  {t("reserveButton")}
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm sm:text-base text-gray-700">
+                  <p>
+                    {t("adultPrice", {
+                      price: (currentTicket.adultPrice ?? 0).toLocaleString(),
+                    })}
+                  </p>
+                  <p>
+                    {t("childPrice", {
+                      price: (currentTicket.childPrice ?? 0).toLocaleString(),
+                    })}
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <button
+                    onClick={() => handleReserve(currentTicket)}
+                    className="mt-2 h-10 sm:h-9 bg-primary-500 text-white px-4 sm:px-3 py-2 sm:py-1.5 rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-52 text-sm font-medium flex items-center justify-center gap-1.5"
+                    aria-label={t("reserveButton")}
+                    role="button"
+                  >
+                    <i className="bi bi-ticket text-xs" />
+                    {t("reserveButton")}
+                  </button>
+                </div>
               </div>
             </div>
 
             {relatedTickets.length > 0 && (
-              <div className="mt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="mt-4 sm:mt-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">
                   {t("relatedTickets")}
                 </h2>
-                <div className="grid gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {relatedTickets.map((relatedTicket) => (
                     <div
                       key={relatedTicket.id}
@@ -517,34 +526,36 @@ const TicketDetailPage = () => {
                         ),
                       })}
                     >
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                         {getLocalizedField(
                           relatedTicket.name,
                           relatedTicket.nameEn,
                           locale
-                        )}{" "}
+                        )}
                       </h3>
-                      <p className="text-sm text-gray-600 italic">
+                      <p className="text-sm text-gray-600 italic line-clamp-3">
                         {getLocalizedField(
                           relatedTicket.description,
                           relatedTicket.descriptionEn,
                           locale
                         ) || t("noDescription")}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {t("adultPrice", {
-                          price: (
-                            relatedTicket.adultPrice ?? 0
-                          ).toLocaleString(),
-                        })}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {t("childPrice", {
-                          price: (
-                            relatedTicket.childPrice ?? 0
-                          ).toLocaleString(),
-                        })}
-                      </p>
+                      <div className="grid grid-cols-1 gap-1 text-sm text-gray-700">
+                        <p>
+                          {t("adultPrice", {
+                            price: (
+                              relatedTicket.adultPrice ?? 0
+                            ).toLocaleString(),
+                          })}
+                        </p>
+                        <p>
+                          {t("childPrice", {
+                            price: (
+                              relatedTicket.childPrice ?? 0
+                            ).toLocaleString(),
+                          })}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -553,9 +564,9 @@ const TicketDetailPage = () => {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-200 pt-6 animate-fade-in">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="mt-8 sm:mt-10 border-t border-gray-200 pt-5 sm:pt-6 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
               {t("totalReviews", { totalVisible })}
               {averageRating && (
                 <span className="font-bold text-yellow-600">
@@ -564,10 +575,11 @@ const TicketDetailPage = () => {
                 </span>
               )}
             </h2>
-            <div className="flex flex-col">
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
               <label
                 htmlFor="sort"
-                className="text-xs font-medium text-gray-900 mb-0.5 uppercase tracking-wide"
+                className="text-xs sm:text-sm font-medium text-gray-900 uppercase tracking-wide"
               >
                 {t("sortBy")}
               </label>
@@ -579,7 +591,7 @@ const TicketDetailPage = () => {
                     e.target.value as "latest" | "oldest" | "highest" | "lowest"
                   )
                 }
-                className="h-9 border border-gray-200 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200"
+                className="h-9 border border-gray-200 rounded-xl px-2 py-1.5 text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 transition-all duration-200 w-full sm:w-44"
                 aria-label={t("sortBy")}
               >
                 <option value="latest">{t("latest")}</option>
@@ -591,7 +603,7 @@ const TicketDetailPage = () => {
           </div>
 
           {reviews && reviews.length > 0 ? (
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4">
               {sortedReviews.map((review: TicketReview) => (
                 <ReviewCard
                   key={review.id}
@@ -614,7 +626,7 @@ const TicketDetailPage = () => {
               ))}
             </div>
           ) : (
-            <p className="text-lg text-gray-600 text-center">
+            <p className="text-base sm:text-lg text-gray-600 text-center">
               {t("noReviews")}
             </p>
           )}
@@ -623,9 +635,13 @@ const TicketDetailPage = () => {
         {showingLoginModal && (
           <div
             onClick={() => dispatch(closeLoginModal())}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
           >
-            <div onClick={(e) => e.stopPropagation()} ref={modalRef}>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              ref={modalRef}
+              className="w-full max-w-md"
+            >
               <LoginPromptModal
                 isOpen={showingLoginModal}
                 context={loginModalContext}
