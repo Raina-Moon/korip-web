@@ -11,5 +11,7 @@
   "nightsDays": "{{nights}} night(s), {{days}} day(s)",
   "usedOn": "Used on: {{date}}",
   "adults": "Adults: {{count}}",
-  "children": "Children: {{count}}"
+  "children": "Children: {{count}}",
+  "readMore": "Show more",
+  "readLess": "Show less"
 }

@@ -11,5 +11,7 @@
   "nightsDays": "{{nights}}박 {{days}}일",
   "usedOn": "이용일: {{date}}",
   "adults": "성인: {{count}}명",
-  "children": "어린이: {{count}}명"
+  "children": "어린이: {{count}}명",
+  "readMore": "더보기",
+  "readLess": "접기"
 }
