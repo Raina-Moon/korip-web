@@ -74,11 +74,9 @@ export default function ReservationListPage() {
   useEffect(() => {
     setLodgeCurrentPage(1);
   }, [filter]);
-
   useEffect(() => {
     setTicketCurrentPage(1);
   }, [ticketFilter]);
-
   useEffect(() => {
     setLodgeCurrentPage(1);
     setTicketCurrentPage(1);
@@ -149,19 +147,15 @@ export default function ReservationListPage() {
 
   const filteredList =
     filter === "ALL" ? list : list.filter((r) => r.status === filter);
-
   const formatDate = (date: Date) => date.toISOString().slice(0, 10);
-
   const filteredTicketList =
     ticketFilter === "ALL"
       ? ticketState.list
       : ticketState.list.filter((t) => t.status === ticketFilter);
-
   const openTicketModal = (ticket: TicketReservation) => {
     setSelectedTicket(ticket);
     setTicketModalOpen(true);
   };
-
   const formatKSTDate = (utcDateStr: string) => {
     const utcDate = new Date(utcDateStr);
     const kst = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
@@ -169,93 +163,106 @@ export default function ReservationListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full bg-white p-8 rounded-xl shadow-lg space-y-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center sm:text-left">
           {t("title")}
         </h1>
 
-        <div className="flex justify-center gap-4">
-          <button
-            onClick={() => setTypeFilter("LODGING")}
-            className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-              typeFilter === "LODGING"
-                ? "bg-primary-600 text-white shadow-md"
-                : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-            } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
-          >
-            {t("lodgingTab")}
-          </button>
-          <button
-            onClick={() => setTypeFilter("TICKET")}
-            className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-              typeFilter === "TICKET"
-                ? "bg-primary-600 text-white shadow-md"
-                : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-            } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
-          >
-            {t("ticketTab")}
-          </button>
+        <div
+          role="tablist"
+          aria-label={t("title")}
+          className="mt-4 mb-6 flex justify-center sm:justify-start"
+        >
+          <div className="inline-flex w-full sm:w-auto rounded-xl overflow-hidden border border-primary-700">
+            <button
+              role="tab"
+              aria-selected={typeFilter === "LODGING"}
+              onClick={() => setTypeFilter("LODGING")}
+              className={`w-1/2 sm:w-auto px-4 py-2 text-sm sm:text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
+                typeFilter === "LODGING"
+                  ? "bg-primary-700 text-white"
+                  : "text-primary-800 hover:bg-primary-700/10"
+              }`}
+            >
+              {t("lodgingTab")}
+            </button>
+            <button
+              role="tab"
+              aria-selected={typeFilter === "TICKET"}
+              onClick={() => setTypeFilter("TICKET")}
+              className={`w-1/2 sm:w-auto px-4 py-2 text-sm sm:text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
+                typeFilter === "TICKET"
+                  ? "bg-primary-700 text-white"
+                  : "text-primary-800 hover:bg-primary-700/10"
+              }`}
+            >
+              {t("ticketTab")}
+            </button>
+          </div>
         </div>
 
         {typeFilter === "LODGING" ? (
           <>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                onClick={() => setFilter("ALL")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  filter === "ALL"
-                    ? "bg-primary-600 text-white"
-                    : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
-              >
-                {t("filter.all")}
-              </button>
-              <button
-                onClick={() => setFilter("PENDING")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  filter === "PENDING"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-yellow-700 hover:bg-yellow-100"
-                } focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2`}
-              >
-                {t("filter.pending")}
-              </button>
-              <button
-                onClick={() => setFilter("CONFIRMED")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  filter === "CONFIRMED"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-green-700 hover:bg-green-100"
-                } focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
-              >
-                {t("filter.confirmed")}
-              </button>
-              <button
-                onClick={() => setFilter("CANCELLED")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  filter === "CANCELLED"
-                    ? "bg-red-600 text-white"
-                    : "bg-gray-100 text-red-700 hover:bg-red-100"
-                } focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2`}
-              >
-                {t("filter.cancelled")}
-              </button>
+            {/* Lodging filters - mobile horizontal scroll pills */}
+            <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto sm:overflow-visible whitespace-nowrap pb-1">
+                <button
+                  onClick={() => setFilter("ALL")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    filter === "ALL"
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-100 text-primary-800 hover:bg-gray-200"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
+                >
+                  {t("filter.all")}
+                </button>
+                <button
+                  onClick={() => setFilter("PENDING")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    filter === "PENDING"
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-100 text-yellow-700 hover:bg-yellow-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500`}
+                >
+                  {t("filter.pending")}
+                </button>
+                <button
+                  onClick={() => setFilter("CONFIRMED")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    filter === "CONFIRMED"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-green-700 hover:bg-green-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500`}
+                >
+                  {t("filter.confirmed")}
+                </button>
+                <button
+                  onClick={() => setFilter("CANCELLED")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    filter === "CANCELLED"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 text-red-700 hover:bg-red-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500`}
+                >
+                  {t("filter.cancelled")}
+                </button>
+              </div>
             </div>
 
             {loading && (
-              <p className="text-gray-600 text-center">{t("loading")}</p>
+              <p className="mt-4 text-gray-600 text-center">{t("loading")}</p>
             )}
             {error && (
-              <p className="text-red-600 bg-red-100 p-4 rounded-lg text-center">
+              <p className="mt-4 text-red-600 bg-red-50 border border-red-200 p-4 rounded-lg text-center">
                 {error}
               </p>
             )}
             {!loading && !error && filteredList.length === 0 && (
-              <p className="text-gray-500 text-center">{t("empty")}</p>
+              <p className="mt-4 text-gray-500 text-center">{t("empty")}</p>
             )}
             {!loading && !error && filteredList.length > 0 && (
-              <div className="space-y-4">
+              <div className="mt-4 space-y-4 sm:space-y-5">
                 {filteredList.map((reservation) => (
                   <ReservationCard
                     key={reservation.id}
@@ -267,16 +274,16 @@ export default function ReservationListPage() {
             )}
 
             {totalPages > 1 && (
-              <div className="mt-6 flex justify-center items-center gap-2">
+              <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i}
                     onClick={() => setLodgeCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition ${
                       lodgeCurrentPage === i + 1
                         ? "bg-primary-600 text-white"
                         : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-                    } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
+                    } focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
                   >
                     {i + 1}
                   </button>
@@ -286,62 +293,67 @@ export default function ReservationListPage() {
           </>
         ) : (
           <>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                onClick={() => setTicketFilter("ALL")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  ticketFilter === "ALL"
-                    ? "bg-primary-600 text-white"
-                    : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
-              >
-                {t("filter.all")}
-              </button>
-              <button
-                onClick={() => setTicketFilter("PENDING")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  ticketFilter === "PENDING"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-yellow-700 hover:bg-yellow-100"
-                } focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2`}
-              >
-                {t("filter.pending")}
-              </button>
-              <button
-                onClick={() => setTicketFilter("CONFIRMED")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  ticketFilter === "CONFIRMED"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-green-700 hover:bg-green-100"
-                } focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
-              >
-                {t("filter.confirmed")}
-              </button>
-              <button
-                onClick={() => setTicketFilter("CANCELLED")}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  ticketFilter === "CANCELLED"
-                    ? "bg-red-600 text-white"
-                    : "bg-gray-100 text-red-700 hover:bg-red-100"
-                } focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2`}
-              >
-                {t("filter.cancelled")}
-              </button>
+            {/* Ticket filters - mobile horizontal scroll pills */}
+            <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto sm:overflow-visible whitespace-nowrap pb-1">
+                <button
+                  onClick={() => setTicketFilter("ALL")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    ticketFilter === "ALL"
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-100 text-primary-800 hover:bg-gray-200"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
+                >
+                  {t("filter.all")}
+                </button>
+                <button
+                  onClick={() => setTicketFilter("PENDING")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    ticketFilter === "PENDING"
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-100 text-yellow-700 hover:bg-yellow-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500`}
+                >
+                  {t("filter.pending")}
+                </button>
+                <button
+                  onClick={() => setTicketFilter("CONFIRMED")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    ticketFilter === "CONFIRMED"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-green-700 hover:bg-green-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500`}
+                >
+                  {t("filter.confirmed")}
+                </button>
+                <button
+                  onClick={() => setTicketFilter("CANCELLED")}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                    ticketFilter === "CANCELLED"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 text-red-700 hover:bg-red-100"
+                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500`}
+                >
+                  {t("filter.cancelled")}
+                </button>
+              </div>
             </div>
 
             {ticketState.loading && (
-              <p className="text-gray-600 text-center">{t("loading")}</p>
+              <p className="mt-4 text-gray-600 text-center">{t("loading")}</p>
             )}
             {ticketState.error && (
-              <p className="text-red-600 bg-red-100 p-4 rounded-lg text-center">
+              <p className="mt-4 text-red-600 bg-red-50 border border-red-200 p-4 rounded-lg text-center">
                 {ticketState.error}
               </p>
             )}
             {!ticketState.loading && filteredTicketList.length === 0 && (
-              <p className="text-gray-500 text-center">{t("emptyTicket")}</p>
+              <p className="mt-4 text-gray-500 text-center">
+                {t("emptyTicket")}
+              </p>
             )}
             {!ticketState.loading && filteredTicketList.length > 0 && (
-              <div className="space-y-4">
+              <div className="mt-4 space-y-4 sm:space-y-5">
                 {filteredTicketList.map((ticket) => (
                   <TicketReservationCard
                     key={ticket.id}
@@ -353,16 +365,16 @@ export default function ReservationListPage() {
             )}
 
             {ticketState.totalPages > 1 && (
-              <div className="mt-6 flex justify-center items-center gap-2">
+              <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
                 {Array.from({ length: ticketState.totalPages }, (_, i) => (
                   <button
                     key={i}
                     onClick={() => setTicketCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition ${
                       ticketCurrentPage === i + 1
                         ? "bg-primary-600 text-white"
                         : "bg-gray-100 text-primary-800 hover:bg-gray-200"
-                    } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
+                    } focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
                   >
                     {i + 1}
                   </button>
@@ -372,265 +384,263 @@ export default function ReservationListPage() {
           </>
         )}
 
-        <div className="mt-6 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <Link
             href="/profile"
-            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+            className="px-6 py-3 rounded-lg bg-primary-600 text-white text-sm sm:text-base hover:bg-primary-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             {t("backToMain")}
           </Link>
         </div>
-
-        {showingModal && pending && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
-              <h2 className="text-2xl font-semibold text-primary-700">
-                {t("modal.title")}
-              </h2>
-
-              {pending.roomType?.images?.[0] && (
-                <img
-                  src={
-                    typeof pending.roomType.images[0] === "string"
-                      ? pending.roomType.images[0]
-                      : pending.roomType.images[0]?.imageUrl
-                  }
-                  alt="Room Image"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              )}
-
-              <div className="space-y-2">
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.lodge")}:</strong>{" "}
-                  {pending.lodge?.id ? (
-                    <Link
-                      href={{
-                        pathname: `/lodge/${pending.lodge.id}`,
-                        query: {
-                          roomTypeId: pending.roomType.id,
-                          checkIn: formatDate(today),
-                          checkOut: formatDate(tomorrow),
-                          adults: 1,
-                          children: 0,
-                          roomCount: 1,
-                        },
-                      }}
-                      className="text-primary-600 hover:text-primary-700 underline"
-                      onClick={() => setShowingModal(false)}
-                    >
-                      {getLocalizedReservationLodgeName(
-                        pending,
-                        i18n.language
-                      ) || "이름 없는 숙소"}{" "}
-                    </Link>
-                  ) : (
-                    getLocalizedReservationLodgeName(pending, i18n.language) ||
-                    "정보 없음"
-                  )}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.roomType")}:</strong>{" "}
-                  {getLocalizedReservationRoomName(pending, i18n.language) ||
-                    "이름 없는 객실"}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.checkIn")}:</strong>{" "}
-                  {pending.checkIn.slice(0, 10)}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.checkOut")}:</strong>{" "}
-                  {pending.checkOut.slice(0, 10)}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.adults")}:</strong>{" "}
-                  {t("modal.adultsWithCount", { count: pending.adults })}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.children")}:</strong>{" "}
-                  {t("modal.childrenWithCount", { count: pending.children })}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.roomCount")}:</strong>{" "}
-                  {t("modal.roomCountWithUnit", { count: pending.roomCount })}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.createdAt")}:</strong>{" "}
-                  {new Date(pending.createdAt).toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.specialRequests")}:</strong>{" "}
-                  {parsedSpecialRequests(pending.specialRequests).length > 0
-                    ? parsedSpecialRequests(pending.specialRequests).join(", ")
-                    : t("modal.none")}
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                {pending.status === "CONFIRMED" && (
-                  <button
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
-                    onClick={() => setShowCancelModal(true)}
-                  >
-                    {t("modal.cancel")}
-                  </button>
-                )}
-                <button
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-                  onClick={() => setShowingModal(false)}
-                >
-                  {t("modal.close")}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {ticketModalOpen && selectedTicket && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
-              <h2 className="text-2xl font-semibold text-primary-700">
-                {t("ticketModal.title")}
-              </h2>
-
-              <div className="space-y-2">
-                <p className="text-sm text-gray-700">
-                  <strong>{t("ticketModal.ticketName")}:</strong>{" "}
-                  {getLocalizedTicketTypeName(selectedTicket, i18n.language) ||
-                    t("modal.none")}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("ticketModal.useDate")}:</strong>{" "}
-                  {formatKSTDate(selectedTicket.date)}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.adults")}:</strong>{" "}
-                  {t("modal.adultsWithCount", { count: selectedTicket.adults })}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("modal.children")}:</strong>{" "}
-                  {t("modal.childrenWithCount", {
-                    count: selectedTicket.children,
-                  })}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("ticketModal.totalPrice")}:</strong>{" "}
-                  {selectedTicket.totalPrice?.toLocaleString() || "계산 안됨"}원
-                </p>
-                <p className="text-sm text-gray-700">
-                  <strong>{t("ticketModal.createdAt")}:</strong>{" "}
-                  {new Date(selectedTicket.createdAt).toLocaleString()}
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                {selectedTicket.status === "CONFIRMED" && (
-                  <button
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
-                    onClick={() => setShowTicketCancelModal(true)}
-                  >
-                    {t("ticketModal.cancel")}
-                  </button>
-                )}
-                <button
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-                  onClick={() => setTicketModalOpen(false)}
-                >
-                  {t("ticketModal.close")}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showCancelModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
-              <h2 className="text-2xl font-semibold text-primary-700">
-                {t("refund.title")}
-              </h2>
-              <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                {t("refund.lodgingPolicy")}
-              </p>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={agreeRefundPolicy}
-                  onChange={(e) => setAgreeRefundPolicy(e.target.checked)}
-                  className="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                />
-                <span className="text-sm text-gray-700">
-                  {t("refund.agreeText")}
-                </span>
-              </label>
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setShowCancelModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-                >
-                  {t("refund.close")}
-                </button>
-                <button
-                  disabled={!agreeRefundPolicy || isCancelling}
-                  onClick={handleReservationCancel}
-                  className={`px-4 py-2 rounded-lg text-white transition-all duration-200 ${
-                    agreeRefundPolicy && !isCancelling
-                      ? "bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  {isCancelling ? t("refund.cancelling") : t("refund.cancel")}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showTicketCancelModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
-              <h2 className="text-2xl font-semibold text-primary-700">
-                {t("refund.title")}
-              </h2>
-              <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                {t("refund.ticketPolicy")}
-              </p>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={agreeTicketRefundPolicy}
-                  onChange={(e) => setAgreeTicketRefundPolicy(e.target.checked)}
-                  className="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                />
-                <span className="text-sm text-gray-700">
-                  {t("refund.agreeText")}
-                </span>
-              </label>
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setShowTicketCancelModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-                >
-                  {t("refund.close")}
-                </button>
-                <button
-                  disabled={!agreeTicketRefundPolicy || isTicketCancelling}
-                  onClick={handleTicketCancel}
-                  className={`px-4 py-2 rounded-lg text-white transition-all duration-200 ${
-                    agreeTicketRefundPolicy && !isTicketCancelling
-                      ? "bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  {isTicketCancelling
-                    ? t("refund.cancelling")
-                    : t("refund.cancel")}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {showingModal && pending && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 py-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md sm:max-w-lg p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-700">
+              {t("modal.title")}
+            </h2>
+
+            {pending.roomType?.images?.[0] && (
+              <img
+                src={
+                  typeof pending.roomType.images[0] === "string"
+                    ? pending.roomType.images[0]
+                    : pending.roomType.images[0]?.imageUrl
+                }
+                alt="Room Image"
+                className="w-full h-44 sm:h-56 object-cover rounded-lg"
+              />
+            )}
+
+            <div className="space-y-2 text-sm sm:text-base">
+              <p className="text-gray-700">
+                <strong>{t("modal.lodge")}:</strong>{" "}
+                {pending.lodge?.id ? (
+                  <Link
+                    href={{
+                      pathname: `/lodge/${pending.lodge.id}`,
+                      query: {
+                        roomTypeId: pending.roomType.id,
+                        checkIn: formatDate(today),
+                        checkOut: formatDate(tomorrow),
+                        adults: 1,
+                        children: 0,
+                        roomCount: 1,
+                      },
+                    }}
+                    className="text-primary-600 hover:text-primary-700 underline"
+                    onClick={() => setShowingModal(false)}
+                  >
+                    {getLocalizedReservationLodgeName(pending, i18n.language) ||
+                      "이름 없는 숙소"}
+                  </Link>
+                ) : (
+                  getLocalizedReservationLodgeName(pending, i18n.language) ||
+                  "정보 없음"
+                )}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.roomType")}:</strong>{" "}
+                {getLocalizedReservationRoomName(pending, i18n.language) ||
+                  "이름 없는 객실"}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.checkIn")}:</strong>{" "}
+                {pending.checkIn.slice(0, 10)}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.checkOut")}:</strong>{" "}
+                {pending.checkOut.slice(0, 10)}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.adults")}:</strong>{" "}
+                {t("modal.adultsWithCount", { count: pending.adults })}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.children")}:</strong>{" "}
+                {t("modal.childrenWithCount", { count: pending.children })}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.roomCount")}:</strong>{" "}
+                {t("modal.roomCountWithUnit", { count: pending.roomCount })}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.createdAt")}:</strong>{" "}
+                {new Date(pending.createdAt).toLocaleString()}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.specialRequests")}:</strong>{" "}
+                {parsedSpecialRequests(pending.specialRequests).length > 0
+                  ? parsedSpecialRequests(pending.specialRequests).join(", ")
+                  : t("modal.none")}
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 sm:gap-3">
+              {pending.status === "CONFIRMED" && (
+                <button
+                  className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm sm:text-base hover:bg-red-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                  onClick={() => setShowCancelModal(true)}
+                >
+                  {t("modal.cancel")}
+                </button>
+              )}
+              <button
+                className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm sm:text-base hover:bg-primary-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                onClick={() => setShowingModal(false)}
+              >
+                {t("modal.close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {ticketModalOpen && selectedTicket && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 py-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md sm:max-w-lg p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-700">
+              {t("ticketModal.title")}
+            </h2>
+
+            <div className="space-y-2 text-sm sm:text-base">
+              <p className="text-gray-700">
+                <strong>{t("ticketModal.ticketName")}:</strong>{" "}
+                {getLocalizedTicketTypeName(selectedTicket, i18n.language) ||
+                  t("modal.none")}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("ticketModal.useDate")}:</strong>{" "}
+                {formatKSTDate(selectedTicket.date)}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.adults")}:</strong>{" "}
+                {t("modal.adultsWithCount", { count: selectedTicket.adults })}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("modal.children")}:</strong>{" "}
+                {t("modal.childrenWithCount", {
+                  count: selectedTicket.children,
+                })}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("ticketModal.totalPrice")}:</strong>{" "}
+                {(selectedTicket.totalPrice?.toLocaleString() ?? "") + "원"}
+              </p>
+              <p className="text-gray-700">
+                <strong>{t("ticketModal.createdAt")}:</strong>{" "}
+                {new Date(selectedTicket.createdAt).toLocaleString()}
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 sm:gap-3">
+              {selectedTicket.status === "CONFIRMED" && (
+                <button
+                  className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm sm:text-base hover:bg-red-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                  onClick={() => setShowTicketCancelModal(true)}
+                >
+                  {t("ticketModal.cancel")}
+                </button>
+              )}
+              <button
+                className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm sm:text-base hover:bg-primary-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                onClick={() => setTicketModalOpen(false)}
+              >
+                {t("ticketModal.close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 py-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md sm:max-w-lg p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-700">
+              {t("refund.title")}
+            </h2>
+            <p className="text-sm sm:text-base text-gray-700 whitespace-pre-wrap">
+              {t("refund.lodgingPolicy")}
+            </p>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={agreeRefundPolicy}
+                onChange={(e) => setAgreeRefundPolicy(e.target.checked)}
+                className="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              />
+              <span className="text-sm sm:text-base text-gray-700">
+                {t("refund.agreeText")}
+              </span>
+            </label>
+            <div className="flex justify-end gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              >
+                {t("refund.close")}
+              </button>
+              <button
+                disabled={!agreeRefundPolicy || isCancelling}
+                onClick={handleReservationCancel}
+                className={`px-4 py-2 rounded-lg text-white transition ${
+                  agreeRefundPolicy && !isCancelling
+                    ? "bg-red-600 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-500"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {isCancelling ? t("refund.cancelling") : t("refund.cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTicketCancelModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 py-6">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md sm:max-w-lg p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-700">
+              {t("refund.title")}
+            </h2>
+            <p className="text-sm sm:text-base text-gray-700 whitespace-pre-wrap">
+              {t("refund.ticketPolicy")}
+            </p>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={agreeTicketRefundPolicy}
+                onChange={(e) => setAgreeTicketRefundPolicy(e.target.checked)}
+                className="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              />
+              <span className="text-sm sm:text-base text-gray-700">
+                {t("refund.agreeText")}
+              </span>
+            </label>
+            <div className="flex justify-end gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowTicketCancelModal(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              >
+                {t("refund.close")}
+              </button>
+              <button
+                disabled={!agreeTicketRefundPolicy || isTicketCancelling}
+                onClick={handleTicketCancel}
+                className={`px-4 py-2 rounded-lg text-white transition ${
+                  agreeTicketRefundPolicy && !isTicketCancelling
+                    ? "bg-red-600 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-500"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {isTicketCancelling
+                  ? t("refund.cancelling")
+                  : t("refund.cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
