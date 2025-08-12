@@ -105,69 +105,82 @@ const EmailPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md rounded-2xl shadow-xl bg-white px-8 py-10 flex flex-col items-center gap-6 border border-gray-200">
-        <h1 className="text-primary-800 font-bold text-2xl sm:text-3xl mb-3">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg rounded-2xl shadow-xl bg-white px-6 sm:px-8 md:px-10 py-8 sm:py-10 flex flex-col items-center gap-6 border border-gray-200">
+        <h1 className="text-primary-800 font-bold text-xl sm:text-2xl md:text-3xl text-center mb-1 sm:mb-2">
           {t("title")}
         </h1>
+
         <div className="w-full flex flex-col gap-2">
-          <div className="flex items-center gap-1 mb-1 relative group">
-            <span className="text-gray-700 font-medium text-base">
+          <div className="flex items-start sm:items-center gap-2 mb-1">
+            <span className="text-gray-700 font-medium text-sm sm:text-base leading-snug">
               {t("instruction.short")}
             </span>
-            <button
-              type="button"
-              aria-label="More info"
-              tabIndex={0}
-              className="text-primary-600 hover:text-primary-800 outline-none focus-visible:text-primary-800 relative"
-              onMouseEnter={() => setShowTip(true)}
-              onMouseLeave={() => setShowTip(false)}
-              onClick={() => setShowTip((v) => !v)}
-            >
-              <Info size={18} />
-              {showTip && (
-                <div
-                  ref={tipRef}
-                  className="absolute left-full top-1 z-20 ml-2 w-64 bg-white border border-gray-300 rounded-lg p-3 shadow-lg text-sm text-gray-700 animate-fadeIn"
-                  style={{
-                    minWidth: "220px",
-                    maxWidth: "300px",
-                  }}
-                >
-                  {t("instruction.long")}
-                </div>
-              )}
-            </button>
+
+            <div className="relative inline-block">
+              <button
+                type="button"
+                aria-label="More info"
+                tabIndex={0}
+                className="text-primary-600 hover:text-primary-800 outline-none focus-visible:text-primary-800"
+                onMouseEnter={() => setShowTip(true)}
+                onMouseLeave={() => setShowTip(false)}
+                onClick={() => setShowTip((v) => !v)}
+              >
+                <Info size={18} />
+                {showTip && (
+                  <div
+                    ref={tipRef}
+                    className={[
+                      "absolute z-50 px-3 py-2 rounded-lg border shadow-lg bg-white text-gray-700",
+                      "text-xs sm:text-sm leading-relaxed break-words",
+                      "w-64 max-w-[calc(100vw-2rem)]",
+                      "left-1/2 -translate-x-1/2 top-[calc(100%+8px)]",
+                      "sm:top-auto sm:bottom-[calc(100%+8px)] sm:left-1/2 sm:-translate-x-1/2 sm:translate-y-0",
+                      "md:bottom-auto md:top-1/2 md:left-full md:ml-2 md:translate-x-0 md:-translate-y-1/2",
+                    ].join(" ")}
+                  >
+                    {t("instruction.long")}
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
+
           <input
             id="email"
             value={email}
             type="email"
             placeholder={t("placeholder")}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 text-lg outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-200"
+            className="border border-gray-300 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-200 w-full"
             autoFocus
+            autoComplete="email"
+            inputMode="email"
           />
         </div>
+
         <button
           onClick={handleSubmit}
           disabled={isLoading || remaining > 0}
-          className={`
-            mt-2 w-full py-2 rounded-lg font-semibold text-base transition
-            ${
-              isLoading || remaining > 0
-                ? "bg-gray-300 text-gray-400 cursor-not-allowed"
-                : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md"
-            }
-          `}
+          className={[
+            "mt-2 w-full rounded-lg font-semibold transition",
+            "text-sm sm:text-base",
+            isLoading || remaining > 0
+              ? "bg-gray-300 text-gray-400 cursor-not-allowed py-2.5"
+              : "bg-primary-700 text-white hover:bg-primary-500 active:bg-primary-800 shadow-md py-2.5 sm:py-3",
+          ].join(" ")}
         >
           {isLoading ? t("button.loading") : t("button.default")}
         </button>
 
         {(isSuccess || remaining > 0) && (
-          <div className="w-full text-center bg-blue-50 border border-blue-200 text-primary-800 rounded-lg p-3 animate-fadeIn">
-            <p className="font-medium">{t("success")}</p>
-            <p className="text-xs mt-1 text-primary-600">
+          <div
+            className="w-full text-center bg-blue-50 border border-blue-200 text-primary-800 rounded-lg p-3 animate-fadeIn"
+            aria-live="polite"
+          >
+            <p className="font-medium text-sm sm:text-base">{t("success")}</p>
+            <p className="text-xs sm:text-sm mt-1 text-primary-600">
               {t("timer.label")}{" "}
               <span className="font-mono tracking-wide">
                 {formatTime(remaining)}
@@ -176,6 +189,22 @@ const EmailPage = () => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fade-in 0.25s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
