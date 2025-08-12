@@ -28,6 +28,51 @@ interface ReviewCardProps {
   isLoggedIn: boolean;
 }
 
+function CollapsibleText({ text }: { text: string }) {
+  const { t, i18n } = useTranslation("review");
+  const [expanded, setExpanded] = useState(false);
+  const [limit, setLimit] = useState(260);
+
+  useEffect(() => {
+    const applyLimit = () => {
+      if (typeof window === "undefined") return;
+      const isMobile = window.matchMedia("(max-width: 640px)").matches;
+      setLimit(isMobile ? 140 : 260);
+    };
+    applyLimit();
+    window.addEventListener("resize", applyLimit);
+    return () => window.removeEventListener("resize", applyLimit);
+  }, []);
+
+  const isLong = text.length > limit;
+  const display = expanded || !isLong ? text : text.slice(0, limit) + "…";
+
+  const readMoreLabel = t("readMore", {
+    defaultValue: i18n.language === "ko" ? "더보기" : "Read more",
+  }) as string;
+  const readLessLabel = t("readLess", {
+    defaultValue: i18n.language === "ko" ? "접기" : "Read less",
+  }) as string;
+
+  return (
+    <div>
+      <p className="text-gray-700 text-sm sm:text-base break-words whitespace-pre-wrap">
+        {display}
+      </p>
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-1 text-xs sm:text-sm font-medium text-primary-700 hover:text-primary-800 underline underline-offset-2"
+          aria-expanded={expanded}
+        >
+          {expanded ? readLessLabel : readMoreLabel}
+        </button>
+      )}
+    </div>
+  );
+}
+
 const ReviewCard = ({
   review,
   myUserId,
@@ -50,10 +95,14 @@ const ReviewCard = ({
   const isEditing = editingId === String(review.id);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       if (openMenuId === String(review.id)) {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(e.target as Node)
+        ) {
           toggleMenu(String(review.id));
         }
       }
@@ -78,19 +127,27 @@ const ReviewCard = ({
     return { nights, days };
   };
 
+  const localizedComment = getLocalizedComment(review, i18n.language) || "";
+
   return (
     <div className="border rounded-xl p-4 sm:p-5 bg-white shadow-sm hover:shadow-md transition">
       <div className="mb-3 sm:mb-4">
         {isTicketReview(review) && review.reservation && (
           <div className="text-xs sm:text-sm text-gray-500 mb-2 flex flex-wrap gap-x-3 gap-y-1">
             <span>
-              <strong>{t("usedOn", { date: review.reservation.date.slice(0, 10) })}</strong>
+              <strong>
+                {t("usedOn", { date: review.reservation.date.slice(0, 10) })}
+              </strong>
             </span>
             <span>
-              <strong>{t("adults", { count: review.reservation.adults })}</strong>
+              <strong>
+                {t("adults", { count: review.reservation.adults })}
+              </strong>
             </span>
             <span>
-              <strong>{t("children", { count: review.reservation.children })}</strong>
+              <strong>
+                {t("children", { count: review.reservation.children })}
+              </strong>
             </span>
           </div>
         )}
@@ -100,10 +157,12 @@ const ReviewCard = ({
           review.reservation?.checkOut && (
             <div className="text-xs sm:text-sm text-gray-500 mb-2 flex flex-wrap gap-x-3 gap-y-1">
               <span>
-                <strong>{t("checkIn")}:</strong> {review.reservation.checkIn.slice(0, 10)}
+                <strong>{t("checkIn")}:</strong>{" "}
+                {review.reservation.checkIn.slice(0, 10)}
               </span>
               <span>
-                <strong>{t("checkOut")}:</strong> {review.reservation.checkOut.slice(0, 10)}
+                <strong>{t("checkOut")}:</strong>{" "}
+                {review.reservation.checkOut.slice(0, 10)}
               </span>
               <span>
                 {(() => {
@@ -184,7 +243,12 @@ const ReviewCard = ({
         <>
           {!isEditing && (
             <div className="flex items-center gap-2">
-              <Rating style={{ maxWidth: 120 }} className="max-w-[88px] sm:max-w-[120px]" value={review.rating} readOnly />
+              <Rating
+                style={{ maxWidth: 120 }}
+                className="max-w-[88px] sm:max-w-[120px]"
+                value={review.rating}
+                readOnly
+              />
             </div>
           )}
 
@@ -198,7 +262,9 @@ const ReviewCard = ({
                 placeholder={t("editPlaceholder") as string}
               />
               <div className="flex items-center gap-3">
-                <span className="text-xs sm:text-sm text-gray-600">{t("yourRating")}</span>
+                <span className="text-xs sm:text-sm text-gray-600">
+                  {t("yourRating")}
+                </span>
                 <Rating
                   value={editingRating ?? 0}
                   onChange={setEditingRating}
@@ -222,9 +288,9 @@ const ReviewCard = ({
               </div>
             </div>
           ) : (
-            <p className="mt-2 sm:mt-3 text-gray-700 text-sm sm:text-base break-words">
-              {getLocalizedComment(review, i18n.language)}
-            </p>
+            <div className="mt-2 sm:mt-3">
+              <CollapsibleText text={localizedComment} />
+            </div>
           )}
         </>
       )}
