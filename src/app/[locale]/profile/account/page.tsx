@@ -21,7 +21,6 @@ const AccountPage = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
-
   const locale = useLocale();
 
   const [updateNicknameMutation, { isLoading: isUpdating }] =
@@ -50,6 +49,7 @@ const AccountPage = () => {
       await updateNicknameMutation(trimmedNickname).unwrap();
       dispatch(updateNickname(trimmedNickname));
       toast.success(t("nicknameUpdated"));
+      setSuccessMessage(t("nicknameUpdated"));
       setNickname("");
     } catch (err: unknown) {
       if (
@@ -62,7 +62,7 @@ const AccountPage = () => {
       ) {
         setErrorMessage(
           (err as { data: { message?: string } }).data.message ||
-          t("nicknameUpdateFailed")
+            t("nicknameUpdateFailed")
         );
       } else {
         setErrorMessage(t("nicknameUpdateFailed"));
@@ -104,53 +104,72 @@ const AccountPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-900 text-center">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center sm:text-left">
           {t("title")}
         </h1>
 
-        <section className="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-md">
-          <h2 className="text-xl font-semibold text-primary-700">
-            {t("changeNickname")}
-          </h2>
-          <form onSubmit={handleNicknameSubmit} className="space-y-4">
-            <div>
-              <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder={t("nicknamePlaceholder")}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-400"
-                disabled={isUpdating}
-              />
-              {errorMessage && (
-                <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
-              )}
-            </div>
-            <button
-              type="submit"
-              disabled={isUpdating}
-              className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? t("updating") : t("updateNickname")}
-            </button>
-          </form>
-        </section>
+        <div className="mt-4" aria-live="polite">
+          {successMessage && (
+            <p className="text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-sm sm:text-base">
+              {successMessage}
+            </p>
+          )}
+          {errorMessage && (
+            <p className="text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2 text-sm sm:text-base">
+              {errorMessage}
+            </p>
+          )}
+        </div>
 
-        <section className="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-md">
-          <h2 className="text-xl font-semibold text-red-600">
-            {t("dangerZone")}
-          </h2>
-          <p className="text-sm text-gray-600">{t("deleteWarning")}</p>
-          <button
-            onClick={handleDeleteAccount}
-            disabled={isDeleting}
-            className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isDeleting ? t("deleting") : t("deleteAccount")}
-          </button>
-        </section>
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+          <section className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-md">
+            <h2 className="text-lg sm:text-xl font-semibold text-primary-700">
+              {t("changeNickname")}
+            </h2>
+            <form
+              onSubmit={handleNicknameSubmit}
+              className="mt-4 space-y-3 sm:space-y-4"
+            >
+              <div>
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder={t("nicknamePlaceholder")}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 sm:px-4 sm:py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-gray-400"
+                  disabled={isUpdating}
+                  inputMode="text"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isUpdating}
+                className="w-full rounded-lg bg-primary-600 text-white py-3 sm:py-3.5 text-sm sm:text-base font-medium transition-all hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isUpdating ? t("updating") : t("updateNickname")}
+              </button>
+            </form>
+          </section>
+
+          <section className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-md">
+            <h2 className="text-lg sm:text-xl font-semibold text-red-600">
+              {t("dangerZone")}
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600">
+              {t("deleteWarning")}
+            </p>
+            <button
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="mt-4 w-full rounded-lg bg-red-600 text-white py-3 sm:py-3.5 text-sm sm:text-base font-medium transition-all hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isDeleting ? t("deleting") : t("deleteAccount")}
+            </button>
+          </section>
+        </div>
       </div>
     </div>
   );
