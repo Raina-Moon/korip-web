@@ -85,14 +85,7 @@ export default function RoomCard({
 
   return (
     <div
-      className="
-        relative border border-gray-200 rounded-2xl bg-white
-        p-4 sm:p-5
-        shadow-sm md:shadow-lg
-        transition-all duration-300
-        md:hover:shadow-xl md:hover:scale-[1.01]
-        animate-fade-in
-      "
+      className="relative border border-gray-200 rounded-2xl bg-white p-4 sm:p-5 shadow-sm md:shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-[1.01] animate-fade-in"
       role="article"
       aria-labelledby={`room-title-${room.id}`}
     >
