@@ -130,10 +130,10 @@ export default function RoomCard({
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p
-          className="
-            inline-flex items-center text-base sm:text-lg font-bold text-primary-700
-            bg-primary-50 sm:bg-primary-100 px-3 py-1 rounded-full
-          "
+          className={`
+    inline-flex items-center text-base sm:text-lg font-bold text-primary-700
+    bg-primary-50 sm:bg-primary-100 px-3 py-1 rounded-full
+  `}
           aria-live="polite"
         >
           {t("totalPrice")}: ₩{(calculateTotalPrice() ?? 0).toLocaleString()}
