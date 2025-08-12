@@ -333,7 +333,7 @@ const LoginPage = () => {
 
         <div className="relative">
           <hr className="border-gray-200" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-sm text-gray-600">
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-sm text-gray-600 whitespace-nowrap">
             {t("orSignInWith")}
           </span>
         </div>
