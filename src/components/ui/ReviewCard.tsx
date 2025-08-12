@@ -48,62 +48,49 @@ const ReviewCard = ({
   const { t, i18n } = useTranslation("review");
   const isOwner = myUserId !== undefined && myUserId === review.userId;
   const isEditing = editingId === String(review.id);
-  const [closeDropDown, setCloseDropDown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const clickOutsideHandler = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setCloseDropDown(true);
+    const onDocClick = (e: MouseEvent) => {
+      if (openMenuId === String(review.id)) {
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+          toggleMenu(String(review.id));
+        }
       }
     };
-    document.addEventListener("click", clickOutsideHandler);
-    return () => {
-      document.removeEventListener("click", clickOutsideHandler);
-    };
-  }, []);
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [openMenuId, review.id, toggleMenu]);
 
-  function isTicketReview(review: GenericReview): review is TicketReview {
-    return (review as TicketReview).ticketReservationId !== undefined;
+  function isTicketReview(r: GenericReview): r is TicketReview {
+    return (r as TicketReview).ticketReservationId !== undefined;
   }
-
-  function isLodgeReview(review: GenericReview): review is Review {
-    return (review as Review).reservationId === undefined;
+  function isLodgeReview(r: GenericReview): r is Review {
+    return (r as Review).reservationId === undefined;
   }
 
   const getNightsAndDays = (checkInStr: string, checkOutStr: string) => {
     const checkIn = new Date(checkInStr);
     const checkOut = new Date(checkOutStr);
-
     const diffTime = checkOut.getTime() - checkIn.getTime();
     const nights = diffTime / (1000 * 60 * 60 * 24);
     const days = nights + 1;
-
     return { nights, days };
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition">
-      <div className="mb-2 relative">
+    <div className="border rounded-xl p-4 sm:p-5 bg-white shadow-sm hover:shadow-md transition">
+      <div className="mb-3 sm:mb-4">
         {isTicketReview(review) && review.reservation && (
-          <div className="text-sm text-gray-500 mb-2">
-            <span className="mr-2">
-              <strong>
-                {t("usedOn", { date: review.reservation.date.slice(0, 10) })}
-              </strong>
-            </span>
-            <span className="mr-2">
-              <strong>
-                {t("adults", { count: review.reservation.adults })}
-              </strong>
+          <div className="text-xs sm:text-sm text-gray-500 mb-2 flex flex-wrap gap-x-3 gap-y-1">
+            <span>
+              <strong>{t("usedOn", { date: review.reservation.date.slice(0, 10) })}</strong>
             </span>
             <span>
-              <strong>
-                {t("children", { count: review.reservation.children })}
-              </strong>
+              <strong>{t("adults", { count: review.reservation.adults })}</strong>
+            </span>
+            <span>
+              <strong>{t("children", { count: review.reservation.children })}</strong>
             </span>
           </div>
         )}
@@ -111,20 +98,18 @@ const ReviewCard = ({
         {isLodgeReview(review) &&
           review.reservation?.checkIn &&
           review.reservation?.checkOut && (
-            <div className="text-sm text-gray-500 mb-2">
-              <span className="mr-2">
-                <strong>{t("checkIn")}:</strong>{" "}
-                {review.reservation.checkIn.slice(0, 10)}
+            <div className="text-xs sm:text-sm text-gray-500 mb-2 flex flex-wrap gap-x-3 gap-y-1">
+              <span>
+                <strong>{t("checkIn")}:</strong> {review.reservation.checkIn.slice(0, 10)}
               </span>
-              <span className="mr-2">
-                <strong>{t("checkOut")}:</strong>{" "}
-                {review.reservation.checkOut.slice(0, 10)}
+              <span>
+                <strong>{t("checkOut")}:</strong> {review.reservation.checkOut.slice(0, 10)}
               </span>
               <span>
                 {(() => {
                   const { nights, days } = getNightsAndDays(
-                    review.reservation.checkIn,
-                    review.reservation.checkOut
+                    review.reservation!.checkIn!,
+                    review.reservation!.checkOut!
                   );
                   return <strong>{t("nightDays", { nights, days })}</strong>;
                 })()}
@@ -132,104 +117,112 @@ const ReviewCard = ({
             </div>
           )}
 
-        <div className="flex items-center">
-          <span className="text-md text-primary-800 font-medium mr-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="text-sm sm:text-base text-primary-800 font-medium">
             {review.user?.nickname}
           </span>
-          <span className="text-sm text-gray-500">
+          <span className="text-xs sm:text-sm text-gray-500">
             {formattedDate(review.createdAt)}
           </span>
-        </div>
 
-        {isOwner ? (
-          <div className="relative">
-            <button
-              onClick={() => toggleMenu(String(review.id))}
-              className="text-gray-500 hover:text-gray-800 focus:outline-none ml-2"
-              aria-label="Options"
-            >
-              <MoreVertical />
-            </button>
-            {openMenuId === String(review.id) && (
-              <div
-                className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10"
-                ref={dropdownRef}
-                onMouseEnter={() => setCloseDropDown(false)}
-                onMouseLeave={() => setCloseDropDown(true)}
-              >
+          <div className="ml-auto relative">
+            {isOwner ? (
+              <>
                 <button
-                  onClick={() => startEditing(review)}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => toggleMenu(String(review.id))}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                  aria-haspopup="menu"
+                  aria-expanded={openMenuId === String(review.id)}
+                  aria-label={t("edit")}
                 >
-                  {t("edit")}
+                  <MoreVertical className="h-5 w-5" />
                 </button>
+
+                {openMenuId === String(review.id) && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute right-0 mt-2 min-w-32 bg-white border rounded-lg shadow-lg z-20 overflow-hidden"
+                    role="menu"
+                  >
+                    <button
+                      onClick={() => startEditing(review)}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      {t("edit")}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(review)}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+                      role="menuitem"
+                    >
+                      {t("delete")}
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              isLoggedIn &&
+              !review.isHidden && (
                 <button
-                  onClick={() => handleDelete(review)}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                  onClick={() => handleReport(review.id)}
+                  className="text-xs sm:text-sm text-red-500 hover:underline px-2 py-1"
                 >
-                  {t("delete")}
+                  {t("report")}
                 </button>
-              </div>
+              )
             )}
           </div>
-        ) : (
-          isLoggedIn &&
-          !review.isHidden && (
-            <button
-              onClick={() => handleReport(review.id)}
-              className="text-sm text-red-500 hover:underline ml-2"
-            >
-              {t("report")}
-            </button>
-          )
-        )}
+        </div>
       </div>
 
       {review.isHidden ? (
-        <div className="text-gray-400 italic mt-2">{t("hiddenByAdmin")}</div>
+        <div className="text-gray-400 italic mt-2 text-sm sm:text-base">
+          {t("hiddenByAdmin")}
+        </div>
       ) : (
         <>
           {!isEditing && (
             <div className="flex items-center gap-2">
-              <Rating
-                style={{ maxWidth: 100 }}
-                value={review.rating}
-                readOnly
-              />
+              <Rating style={{ maxWidth: 120 }} className="max-w-[88px] sm:max-w-[120px]" value={review.rating} readOnly />
             </div>
           )}
 
           {isEditing && isOwner ? (
-            <div className="mt-2 flex flex-col gap-2">
-              <input
-                type="text"
+            <div className="mt-3 sm:mt-4 flex flex-col gap-3">
+              <textarea
                 value={editingComment}
                 onChange={(e) => setEditingComment(e.target.value)}
-                className="border rounded px-3 py-2"
+                rows={3}
+                className="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
+                placeholder={t("editPlaceholder") as string}
               />
-              <Rating
-                value={editingRating ?? 0}
-                onChange={setEditingRating}
-                style={{ maxWidth: 100 }}
-              />
-              <div className="flex gap-2">
+              <div className="flex items-center gap-3">
+                <span className="text-xs sm:text-sm text-gray-600">{t("yourRating")}</span>
+                <Rating
+                  value={editingRating ?? 0}
+                  onChange={setEditingRating}
+                  style={{ maxWidth: 120 }}
+                  className="max-w-[100px] sm:max-w-[120px]"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   onClick={() => saveEdit(review)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm sm:text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   {t("save")}
                 </button>
                 <button
                   onClick={cancelEditing}
-                  className="px-4 py-2 border rounded"
+                  className="px-4 py-2 rounded-md border text-sm sm:text-base hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   {t("cancel")}
                 </button>
               </div>
             </div>
           ) : (
-            <p className="mt-2 text-gray-700">
-              {" "}
+            <p className="mt-2 sm:mt-3 text-gray-700 text-sm sm:text-base break-words">
               {getLocalizedComment(review, i18n.language)}
             </p>
           )}
