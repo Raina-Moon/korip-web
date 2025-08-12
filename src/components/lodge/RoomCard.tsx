@@ -32,9 +32,7 @@ export default function RoomCard({
   const localizedRoom = getLocalizedRoom(room, i18n.language);
 
   const calculateTotalPrice = () => {
-    if (!checkIn || !checkOut) {
-      return room.basePrice;
-    }
+    if (!checkIn || !checkOut) return room.basePrice;
 
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
@@ -47,7 +45,6 @@ export default function RoomCard({
     }
 
     let total = 0;
-
     dates.forEach((date) => {
       const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 
@@ -57,20 +54,18 @@ export default function RoomCard({
         return date >= fromDate && date <= toDate;
       });
 
-      let priceForDate: number;
-
-      if (seasonal) {
-        priceForDate = isWeekend ? seasonal.weekendPrice : seasonal.basePrice;
-      } else {
-        priceForDate = isWeekend
-          ? room.weekendPrice ?? room.basePrice
-          : room.basePrice;
-      }
+      const priceForDate = seasonal
+        ? isWeekend
+          ? seasonal.weekendPrice
+          : seasonal.basePrice
+        : isWeekend
+        ? room.weekendPrice ?? room.basePrice
+        : room.basePrice;
 
       total += priceForDate;
     });
 
-    return total * 1;
+    return total;
   };
 
   const handleReserveClick = async () => {
@@ -90,18 +85,25 @@ export default function RoomCard({
 
   return (
     <div
-      className="relative border border-gray-200 rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 animate-fade-in"
+      className="
+        relative border border-gray-200 rounded-2xl bg-white
+        p-4 sm:p-5
+        shadow-sm md:shadow-lg
+        transition-all duration-300
+        md:hover:shadow-xl md:hover:scale-[1.01]
+        animate-fade-in
+      "
       role="article"
       aria-labelledby={`room-title-${room.id}`}
     >
-      <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
+      <div className="relative w-full rounded-xl overflow-hidden mb-4 aspect-[16/10] sm:aspect-[4/3] md:aspect-[16/9]">
         {room.images?.[0]?.imageUrl ? (
           <Image
             src={room.images[0].imageUrl}
             alt={t("roomImageAlt", { name: room.name })}
-            width={400}
-            height={200}
-            className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 md:hover:scale-105"
             onClick={() =>
               openModal(room.images?.map((img) => img.imageUrl) ?? [], 0)
             }
@@ -118,57 +120,74 @@ export default function RoomCard({
 
       <h3
         id={`room-title-${room.id}`}
-        className="text-xl font-semibold text-gray-900 mb-2 truncate"
+        className="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2"
+        title={localizedRoom.localizedName}
       >
         {localizedRoom.localizedName}
       </h3>
-      <p className="text-gray-600 text-sm italic mb-3 line-clamp-2">
+
+      <p className="text-gray-600 text-xs sm:text-sm italic mb-3 sm:mb-4 line-clamp-3 md:line-clamp-2">
         {localizedRoom.localizedDescription || t("noDescription")}
       </p>
-      <div className="flex flex-col gap-2 text-gray-600 text-sm mb-3">
+
+      <div className="grid grid-cols-2 gap-y-1 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
         <p>{t("maxAdults", { count: room.maxAdults })}</p>
         <p>{t("maxChildren", { count: room.maxChildren })}</p>
       </div>
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-lg font-bold text-primary-700 bg-primary-100 px-3 py-1 rounded-full">
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p
+          className="
+            inline-flex items-center text-base sm:text-lg font-bold text-primary-700
+            bg-primary-50 sm:bg-primary-100 px-3 py-1 rounded-full
+          "
+          aria-live="polite"
+        >
           {t("totalPrice")}: ₩{(calculateTotalPrice() ?? 0).toLocaleString()}
         </p>
+
+        <button
+          onClick={handleReserveClick}
+          disabled={isLoading}
+          className={`
+            w-full sm:w-auto sm:min-w-[11rem] h-10
+            bg-primary-600 text-white px-4 rounded-xl
+            hover:bg-primary-700
+            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+            transition-all duration-200
+            inline-flex items-center justify-center gap-2
+            ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
+          `}
+          aria-label={t("reserve")}
+        >
+          {isLoading ? (
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
+              />
+            </svg>
+          ) : (
+            <i className="bi bi-ticket text-xs" aria-hidden="true"></i>
+          )}
+          {t("reserve")}
+        </button>
       </div>
-      <button
-        onClick={handleReserveClick}
-        disabled={isLoading}
-        className={`w-full sm:w-48 h-10 bg-primary-600 text-white px-4 py-2 rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center gap-2 ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-        aria-label={t("reserve")}
-        role="button"
-      >
-        {isLoading ? (
-          <svg
-            className="animate-spin h-5 w-5 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
-            />
-          </svg>
-        ) : (
-          <i className="bi bi-ticket text-xs"></i>
-        )}
-        {t("reserve")}
-      </button>
 
       <style jsx>{`
         @keyframes fade-in {
