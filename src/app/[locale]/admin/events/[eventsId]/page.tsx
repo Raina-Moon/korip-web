@@ -11,7 +11,7 @@ import HTMLViewer from "@/components/HTMLViewer";
 import { ArrowLeft } from "lucide-react";
 
 const EventDetailPage = () => {
-  const { eventId } = useParams();
+  const { eventsId } = useParams();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const locale = useLocale();
@@ -20,17 +20,17 @@ const EventDetailPage = () => {
   const isLoading = useAppSelector((state) => state["admin/events"].state === "loading");
 
   useEffect(() => {
-    if (typeof eventId === "string") {
-      dispatch(fetchEventById(Number(eventId)));
+    if (typeof eventsId === "string") {
+      dispatch(fetchEventById(Number(eventsId)));
     }
     return () => {
       dispatch(clearCurrentEvent());
     };
-  }, [dispatch, eventId]);
+  }, [dispatch, eventsId]);
 
   const handleDelete = async () => {
     if (!confirm("정말 삭제하시겠습니까?")) return;
-    const result = await dispatch(deleteEventThunk(Number(eventId)));
+    const result = await dispatch(deleteEventThunk(Number(eventsId)));
     if (deleteEventThunk.fulfilled.match(result)) {
       toast.success("삭제되었습니다.");
       router.push(`/${locale}/admin/events`);

@@ -13,7 +13,7 @@ import { useLocale } from "@/utils/useLocale";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const EventEditPage = () => {
-  const { eventId } = useParams();
+  const { eventsId } = useParams();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const locale = useLocale();
@@ -27,13 +27,13 @@ const EventEditPage = () => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    if (typeof eventId === "string") {
-      dispatch(fetchEventById(Number(eventId)));
+    if (typeof eventsId === "string") {
+      dispatch(fetchEventById(Number(eventsId)));
     }
     return () => {
       dispatch(clearCurrentEvent());
     };
-  }, [dispatch, eventId]);
+  }, [dispatch, eventsId]);
 
   useEffect(() => {
     if (event) {
@@ -44,16 +44,16 @@ const EventEditPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !content || typeof eventId !== "string") {
+    if (!title || !content || typeof eventsId !== "string") {
       toast.error("입력값을 확인해주세요.");
       return;
     }
     const result = await dispatch(
-      updateEventThunk({ id: Number(eventId), data: { title, content } })
+      updateEventThunk({ id: Number(eventsId), data: { title, content } })
     );
     if (updateEventThunk.fulfilled.match(result)) {
       toast.success("수정되었습니다.");
-      router.push(`/${locale}/admin/events/${eventId}`);
+      router.push(`/${locale}/admin/events/${eventsId}`);
     } else {
       toast.error("수정에 실패했습니다.");
     }
