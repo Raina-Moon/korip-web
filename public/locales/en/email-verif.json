@@ -17,7 +17,7 @@
     "verifyFail": "❌ Email verification failed. Token may be invalid or expired.",
     "notVerified": "Please verify your email first.",
     "expired": "Verification expired. Please request it again.",
-    "conflict": "Nickname or email already taken.",
+    "conflict": "Nickname already taken.",
     "signupFail": "Signup failed. Please try again."
   },
   "privacy": {
