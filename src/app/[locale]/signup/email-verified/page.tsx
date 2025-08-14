@@ -8,7 +8,7 @@ import {
 import { useLocale } from "@/utils/useLocale";
 import { Check, Lock, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -26,6 +26,7 @@ const EmailVerifPage = () => {
 
   const [signup, { isLoading }] = useSignUpMutation();
   const [verifyEmailToken] = useVerifyEmailTokenMutation();
+  const nickRef = useRef<HTMLInputElement>(null);
 
   const searchParams = useSearchParams();
 
@@ -86,7 +87,9 @@ const EmailVerifPage = () => {
         toast.error(t("alert.notVerified"));
         router.push(`/${locale}/signup/email`);
       } else if (status === 409) {
-        toast.error(t("alert.expired"));
+        toast.error(t("alert.conflict"));
+        nickRef.current?.focus();
+        return;
       } else {
         toast.error(t("alert.signupFail"));
       }
@@ -129,6 +132,7 @@ const EmailVerifPage = () => {
           <div className="relative">
             <input
               id="nickname"
+              ref={nickRef}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className={`pl-10 border ${
