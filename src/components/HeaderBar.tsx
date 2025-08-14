@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react"; // useRef ⬅️ 추가
+import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import { logoutUser } from "../lib/auth/logoutThunk";
 import i18n from "i18next";
@@ -16,6 +16,9 @@ const HeaderBar = () => {
 
   const [isDesktop, setIsDesktop] = useState(false);
 
+  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
@@ -27,6 +30,28 @@ const HeaderBar = () => {
     { name: "English", code: "en" },
     { name: "한국어", code: "ko" },
   ];
+
+  const clearTimers = () => {
+    if (openTimer.current) clearTimeout(openTimer.current);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+
+  const scheduleOpen = () => {
+    clearTimers();
+    openTimer.current = setTimeout(() => setMenuOpen(true), 80);
+  };
+
+  const scheduleClose = () => {
+    clearTimers();
+    closeTimer.current = setTimeout(() => setMenuOpen(false), 200);
+  };
+
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
+
+  const onProfileEnter = () => isDesktop && scheduleOpen();
+  const onProfileLeave = () => isDesktop && scheduleClose();
 
   useEffect(() => {
     const updateLanguage = () => {
@@ -41,7 +66,10 @@ const HeaderBar = () => {
 
   useEffect(() => {
     const check = () =>
-      setIsDesktop(typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches);
+      setIsDesktop(
+        typeof window !== "undefined" &&
+          window.matchMedia("(min-width: 768px)").matches
+      );
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -71,9 +99,6 @@ const HeaderBar = () => {
   const goProfile = () => {
     router.push(user ? `/${locale}/profile` : `/${locale}/login`);
   };
-
-  const onProfileEnter = () => isDesktop && setMenuOpen(true);
-  const onProfileLeave = () => isDesktop && setMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-primary-800 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
@@ -122,6 +147,8 @@ const HeaderBar = () => {
             onMouseLeave={onProfileLeave}
           >
             <button
+              onMouseEnter={onProfileEnter}
+              onMouseLeave={onProfileLeave}
               onClick={() => setMenuOpen((v) => !v)}
               className="relative flex h-10 w-10 items-center justify-center rounded-full"
               aria-haspopup="menu"
@@ -142,10 +169,21 @@ const HeaderBar = () => {
               <i className="bi bi-person-circle text-primary-800 text-2xl md:text-3xl relative z-10" />
             </button>
 
+            {menuOpen && (
+              <div
+                onMouseEnter={onProfileEnter}
+                onMouseLeave={onProfileLeave}
+                className="absolute right-0 top-10 w-64 h-3"
+                style={{ background: "transparent" }}
+              />
+            )}
+
             {/* Dropdown */}
             {menuOpen && (
               <div
                 role="menu"
+                onMouseEnter={onProfileEnter}
+                onMouseLeave={onProfileLeave}
                 className="absolute right-0 top-12 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-4 space-y-3 z-50 animate-dropdown"
               >
                 {!user ? (
@@ -166,7 +204,9 @@ const HeaderBar = () => {
                       <p className="text-gray-900 text-sm font-semibold truncate">
                         {user.nickname}
                       </p>
-                      <p className="text-gray-600 text-xs truncate">{user.email}</p>
+                      <p className="text-gray-600 text-xs truncate">
+                        {user.email}
+                      </p>
                     </div>
 
                     <button
@@ -189,7 +229,9 @@ const HeaderBar = () => {
                       <p className="text-gray-900 text-sm font-semibold truncate">
                         {user.nickname}
                       </p>
-                      <p className="text-gray-600 text-xs truncate">{user.email}</p>
+                      <p className="text-gray-600 text-xs truncate">
+                        {user.email}
+                      </p>
                     </div>
 
                     <button
