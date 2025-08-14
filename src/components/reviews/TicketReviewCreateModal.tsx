@@ -36,9 +36,9 @@ const TicketReviewCreateModal: React.FC<Props> = ({ onClose }) => {
   });
 
   const reviewedReservationIds = new Set<number>(
-    (myReviews?.data ?? [])
-      .map((r) => r.reservation?.id)
-      .filter((id): id is number => typeof id === "number")
+    ((myReviews as any)?.reviews ?? [])
+      .map((r: any) => r?.reservation?.id)
+      .filter((id: any): id is number => typeof id === "number")
   );
 
   const [ticketTypeId, setTicketTypeId] = useState<number | null>(null);
