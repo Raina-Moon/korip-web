@@ -8,6 +8,9 @@
 
 This is a web platform for booking accommodations and tickets. Users can check events, book lodges or tickets, and leave reviews.
 
+📄 **SaaS 사업계획서 (Business Plan)**  
+[https://raina-moon.github.io/korips_business_plan/](https://raina-moon.github.io/korips_business_plan/)
+
 ---
 
 ## ✨ 주요 기능 (Key Features)
@@ -108,7 +111,3 @@ npm run dev
 The project is deployed at:
 **[https://korips.com](https://korips.com)**
 
-아래 테스트 계정으로 로그인하여 기능을 확인해볼 수 있습니다:
-You can log in with the following test account to explore the features:
-- **이메일 / Email:** `test@example.com`
-- **비밀번호 / Password:** `1234`
