@@ -21,6 +21,7 @@ import {
   Moon,
 } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 type UserT = {
   nickname: string;
