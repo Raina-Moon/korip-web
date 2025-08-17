@@ -6,13 +6,115 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "q1": "How do I make a reservation?",
-    "a1": "Choose a lodge, select your dates, and follow the booking steps to complete your reservation on our platform.",
-    "q2": "Can I cancel my booking?",
-    "a2": "Yes. Cancellation policies vary by lodge. Please review the cancellation terms on the lodge detail page before confirming.",
-    "q3": "How do I contact support?",
-    "a3": {
-      "before": "You can reach our support team directly through the"
+    "subtitle": "Find quick answers by category or search below.",
+    "searchLabel": "Search FAQs",
+    "searchPlaceholder": "Type a keyword (booking, refund, invoice...)",
+    "resultsCount": "{{count}} result(s)",
+    "empty": "No results. Try a different keyword or contact support.",
+    "feedback": {
+      "question": "Was this page helpful?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "cta": {
+      "title": "Still need help?",
+      "desc": "If you can't find the answer, contact our support team anytime.",
+      "button": "Contact Support"
+    },
+    "a3": { "before": "You can reach our support team via" },
+
+    "booking": {
+      "title": "Booking",
+      "qna": [
+        {
+          "q": "How do I make a reservation?",
+          "a": "Choose a hot spring lodge, select the dates and room type, then follow the checkout steps to complete your booking."
+        },
+        {
+          "q": "Can I modify my booking dates or guests?",
+          "a": "Yes, if the lodge policy allows changes. Go to My Reservations and choose the reservation to request a change.",
+          "linkToContact": true
+        },
+        {
+          "q": "Where can I see my reservations?",
+          "a": "Open your account menu and go to My Reservations to view, modify, or cancel."
+        }
+      ]
+    },
+
+    "payment": {
+      "title": "Payment & Refund",
+      "qna": [
+        {
+          "q": "Which payment methods are supported?",
+          "a": "We support major credit/debit cards and local methods. Options may vary by region."
+        },
+        {
+          "q": "How do refunds work?",
+          "a": "Refunds follow the lodge's cancellation policy. After approval, it may take 3–10 business days to appear in your statement."
+        },
+        {
+          "q": "Can I get a tax invoice or receipt?",
+          "a": "Yes. You can download a receipt from the reservation detail page after payment."
+        }
+      ]
+    },
+
+    "account": {
+      "title": "Account",
+      "qna": [
+        {
+          "q": "I forgot my password. What should I do?",
+          "a": "Use the Reset Password link on the sign-in page and check your email for a verification code."
+        },
+        {
+          "q": "How do I change language?",
+          "a": "Use the language menu in the header to switch between English and Korean."
+        },
+        {
+          "q": "How do I delete my account?",
+          "a": "You can request account deletion in Account Settings. Some data may be retained as required by law.",
+          "linkToContact": true
+        }
+      ]
+    },
+
+    "policy": {
+      "title": "Policies",
+      "qna": [
+        {
+          "q": "What is the cancellation policy?",
+          "a": "Policies differ by lodge. Check the lodge detail page for free cancellation windows and fees."
+        },
+        {
+          "q": "How is my data protected?",
+          "a": "We use industry-standard encryption and follow applicable regulations to protect your personal data."
+        },
+        {
+          "q": "Are service fees refundable?",
+          "a": "Service fees are generally non-refundable unless required by local regulations."
+        }
+      ]
+    },
+
+    "technical": {
+      "title": "Technical",
+      "qna": [
+        {
+          "q": "I see an error during checkout.",
+          "a": "Clear cache/cookies and try again. If the issue persists, send us the screenshot and time of the error.",
+          "linkToContact": true
+        },
+        {
+          "q": "My payment was charged but booking didn’t complete.",
+          "a": "The booking may be pending. It usually resolves within minutes. If not, contact support with your payment ID.",
+          "linkToContact": true
+        },
+        {
+          "q": "Do you have a mobile app?",
+          "a": "The web app is fully responsive. Native apps are under consideration."
+        }
+      ]
     }
   },
   "contact": {
@@ -21,7 +123,7 @@
       "nameLabel": "Your Name",
       "namePlaceholder": "Your Name",
       "emailLabel": "Your Email",
-      "emailPlaceholder": "your@email.com",
+      "emailPlaceholder": "you@example.com",
       "messageLabel": "Your Message",
       "messagePlaceholder": "Tell us how we can help",
       "submit": "Send Message"
