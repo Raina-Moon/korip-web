@@ -1,0 +1,36 @@
+{
+  "contact": {
+    "title": "Support",
+    "createButton": "New inquiry",
+    "createTitle": "Create a new inquiry",
+    "loginRequired": "Please log in to use support features.",
+    "successBody": "Your inquiry has been submitted successfully.",
+    "form": {
+      "required": "Please fill in all required fields.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter a title",
+      "submit": "Submit"
+    }
+  },
+  "support": {
+    "form": {
+      "questionLabel": "Question",
+      "questionPlaceholder": "Write your question here..."
+    },
+    "status": {
+      "pending": "Pending",
+      "answered": "Answered"
+    },
+    "empty": "No inquiries yet.",
+    "answerPreview": "A:",
+    "waitingForAnswer": "Awaiting admin response.",
+    "detailTitle": "Support Detail",
+    "submittedAt": "Submitted at",
+    "answeredAt": "Answered at",
+    "notFound": "Ticket not found."
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "loading": "Loading..."
+}

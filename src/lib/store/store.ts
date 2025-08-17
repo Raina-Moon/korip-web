@@ -6,6 +6,7 @@ import { hotspringApi } from "../hotspring/hotspringApi";
 import adminUserReducer from "../admin/user/adminUserSlice";
 import lodgeReducer from "../admin/lodge/lodgeSlice";
 import reportsReducer from "../admin/reports/reportsSlice";
+import adminSupportReducer from "../admin/support/supportSlice";
 import { lodgeApi } from "../lodge/lodgeApi";
 import { priceApi } from "../price/priceApi";
 import reservationReducer from "../reservation/reservationSlice";
@@ -26,6 +27,7 @@ import newsSliceReducer from "../admin/news/newsSlice";
 import eventsSliceReducer from "../admin/events/eventsSlice";
 import { newsApi } from "../news/newsApi";
 import { eventsApi } from "../events/eventsApi";
+import { supportApi } from "../support/supportApi";
 
 export const store = configureStore({
   reducer: {
@@ -38,9 +40,10 @@ export const store = configureStore({
     "admin/reports": reportsReducer,
     "admin/ticketReports": reportsTicketReducer,
     "admin/news": newsSliceReducer,
-    "admin/events" : eventsSliceReducer,
-    adminReservation : adminReservationReducer,
-    adminTicketReservation : adminTicketReservationReducer,
+    "admin/events": eventsSliceReducer,
+    "admin/support": adminSupportReducer,
+    adminReservation: adminReservationReducer,
+    adminTicketReservation: adminTicketReservationReducer,
     [lodgeApi.reducerPath]: lodgeApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
     reservation: reservationReducer,
@@ -56,6 +59,7 @@ export const store = configureStore({
     [reportTicketReviewApi.reducerPath]: reportTicketReviewApi.reducer,
     [newsApi.reducerPath]: newsApi.reducer,
     [eventsApi.reducerPath]: eventsApi.reducer,
+    [supportApi.reducerPath]: supportApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -72,7 +76,8 @@ export const store = configureStore({
       ticketReviewApi.middleware,
       reportTicketReviewApi.middleware,
       newsApi.middleware,
-      eventsApi.middleware
+      eventsApi.middleware,
+      supportApi.middleware
     ),
 });
 
