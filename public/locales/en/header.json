@@ -3,5 +3,6 @@
   "loginButton": "Login",
   "logoutButton": "Logout",
   "adminButton": "Go to Admin",
-  "profileButton": "Go to Profile"
+  "profileButton": "Go to Profile",
+  "greetingInline": "Hello, {{nickname}}"
 }

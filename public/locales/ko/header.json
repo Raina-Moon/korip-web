@@ -3,5 +3,6 @@
   "loginButton": "로그인",
   "logoutButton": "로그아웃",
   "adminButton": "관리자 페이지로 이동",
-  "profileButton": "프로필로 이동"
+  "profileButton": "프로필로 이동",
+  "greetingInline": "{{nickname}}님 안녕하세요"
 }
