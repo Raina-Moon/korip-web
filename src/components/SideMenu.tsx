@@ -17,11 +17,8 @@ import {
   Settings as SettingsIcon,
   HelpCircle,
   Mail,
-  Sun,
-  Moon,
 } from "lucide-react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 
 type UserT = {
   nickname: string;
@@ -48,14 +45,6 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const menuRef = useRef<HTMLElement>(null);
-
-  const { theme, setTheme, resolvedTheme } = useTheme();
-
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const isDark = (theme === "system" ? resolvedTheme : theme) === "dark";
-  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
