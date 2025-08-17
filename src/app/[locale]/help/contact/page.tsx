@@ -14,6 +14,7 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 type SupportItem = {
   id: number;
+  name: string;
   question: string;
   answer?: string | null;
   status: "PENDING" | "ANSWERED";
@@ -29,7 +30,7 @@ const ContactListPage = () => {
   const user = useAppSelector((s) => s.auth.user);
 
   const [openCreate, setOpenCreate] = useState(false);
-  const [form, setForm] = useState({ name: "", question: "" });
+  const [form, setForm] = useState({ title: "", question: "" });
 
   const redirected = useRef(false);
   const loginUrl = `/${locale}/login?next=${encodeURIComponent(
@@ -44,11 +45,7 @@ const ContactListPage = () => {
     }
   }, [user, router, loginUrl, t]);
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useGetMySupportsQuery(
+  const { data, isLoading, error } = useGetMySupportsQuery(
     { page: 1, pageSize: 10 },
     { skip: !user }
   );
@@ -69,17 +66,17 @@ const ContactListPage = () => {
 
   const onSubmitCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const name = form.name.trim();
+    const title = form.title.trim();
     const question = form.question.trim();
-    if (!name || !question) {
+    if (!title || !question) {
       toast.error(t("contact.form.required") as string);
       return;
     }
     try {
-      await createSupport({ name, question }).unwrap();
+      await createSupport({ name: title, question }).unwrap();
       toast.success(t("contact.successBody") as string);
       setOpenCreate(false);
-      setForm({ name: "", question: "" });
+      setForm({ title: "", question: "" });
     } catch (err) {
       const e = err as FetchBaseQueryError;
       if (e?.status === 401 && !redirected.current) {
@@ -119,7 +116,7 @@ const ContactListPage = () => {
               onClick={() => router.push(`/${locale}/help/support/${it.id}`)}
             >
               <div className="flex items-center justify-between gap-3">
-                <div className="font-medium line-clamp-1">{it.question}</div>
+                <div className="font-medium line-clamp-1">{it.name}</div>
                 <span
                   className={
                     "text-xs px-2 py-1 rounded border shrink-0 " +
@@ -152,7 +149,9 @@ const ContactListPage = () => {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">{t("contact.createTitle")}</h2>
+              <h2 className="text-xl font-semibold">
+                {t("contact.createTitle")}
+              </h2>
               <button onClick={() => setOpenCreate(false)} aria-label="Close">
                 ✕
               </button>
@@ -160,19 +159,29 @@ const ContactListPage = () => {
             <form onSubmit={onSubmitCreate} className="space-y-4">
               <input
                 type="text"
-                name="name"
-                placeholder={t("contact.form.namePlaceholder") as string}
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                name="title"
+                placeholder={
+                  (t("contact.form.titlePlaceholder") as string) ||
+                  ((t("contact.form.namePlaceholder") as string) ?? "")
+                }
+                value={form.title}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
                 className="w-full border rounded-lg px-4 py-2"
                 required
-                aria-label={t("contact.form.nameLabel")}
+                aria-label={
+                  (t("contact.form.titleLabel") as string) ||
+                  ((t("contact.form.nameLabel") as string) ?? "")
+                }
               />
               <textarea
                 name="question"
                 placeholder={t("support.form.questionPlaceholder") as string}
                 value={form.question}
-                onChange={(e) => setForm((f) => ({ ...f, question: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, question: e.target.value }))
+                }
                 rows={6}
                 className="w-full border rounded-lg px-4 py-2"
                 required
