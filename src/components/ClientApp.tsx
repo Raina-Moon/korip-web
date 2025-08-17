@@ -9,15 +9,8 @@ import HeaderWrapper from "@/components/HeaderWrapper";
 import GlobalLoadingOverlay from "@/components/GlobalLoadingOverlay";
 import NavigationEvents from "@/lib/providers/NavigationEvents";
 import { Toaster } from "react-hot-toast";
-import { ThemeProvider } from "next-themes";
 export default function ClientApp({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem
-      disableTransitionOnChange
-    >
       <Providers>
         <TranslationsProvider>
           <Toaster
@@ -51,6 +44,5 @@ export default function ClientApp({ children }: { children: React.ReactNode }) {
           <NavigationEvents />
         </TranslationsProvider>
       </Providers>
-    </ThemeProvider>
   );
 }
