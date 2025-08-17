@@ -7,8 +7,8 @@
     "successBody": "Your inquiry has been submitted successfully.",
     "form": {
       "required": "Please fill in all required fields.",
-      "nameLabel": "Name",
-      "namePlaceholder": "Your name",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter a title",
       "submit": "Submit"
     }
   },
