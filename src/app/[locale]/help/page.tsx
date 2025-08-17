@@ -43,7 +43,7 @@ function FAQItem({
       </button>
       <div
         id={`faq-panel-${id}`}
-        className="px-4 pt-0 pb-4"
+        className="px-4 pt-0"
         style={{
           overflow: "hidden",
           transition: "max-height 220ms ease",
