@@ -1,0 +1,32 @@
+{
+  "sidebar": {
+    "support": "Support",
+    "faq": "FAQ",
+    "contact": "Contact"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "q1": "How do I make a reservation?",
+    "a1": "Choose a lodge, select your dates, and follow the booking steps to complete your reservation on our platform.",
+    "q2": "Can I cancel my booking?",
+    "a2": "Yes. Cancellation policies vary by lodge. Please review the cancellation terms on the lodge detail page before confirming.",
+    "q3": "How do I contact support?",
+    "a3": {
+      "before": "You can reach our support team directly through the"
+    }
+  },
+  "contact": {
+    "title": "Contact Support",
+    "form": {
+      "nameLabel": "Your Name",
+      "namePlaceholder": "Your Name",
+      "emailLabel": "Your Email",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "Your Message",
+      "messagePlaceholder": "Tell us how we can help",
+      "submit": "Send Message"
+    },
+    "successTitle": "Thank you!",
+    "successBody": "Your message has been sent to our support team. We’ll get back to you shortly."
+  }
+}

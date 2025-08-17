@@ -1,0 +1,32 @@
+{
+  "sidebar": {
+    "support": "지원",
+    "faq": "자주 묻는 질문",
+    "contact": "문의"
+  },
+  "faq": {
+    "title": "자주 묻는 질문 (FAQ)",
+    "q1": "예약은 어떻게 하나요?",
+    "a1": "원하는 온천 숙소를 선택하고 날짜를 설정한 뒤, 안내되는 단계에 따라 예약을 완료하시면 됩니다.",
+    "q2": "예약 취소가 가능한가요?",
+    "a2": "가능합니다. 취소 규정은 숙소별로 상이하니, 예약 전 숙소 상세 페이지의 취소 정책을 확인해주세요.",
+    "q3": "고객 지원팀에 어떻게 연락하나요?",
+    "a3": {
+      "before": "다음의"
+    }
+  },
+  "contact": {
+    "title": "고객 지원 문의",
+    "form": {
+      "nameLabel": "이름",
+      "namePlaceholder": "이름을 입력하세요",
+      "emailLabel": "이메일",
+      "emailPlaceholder": "you@example.com",
+      "messageLabel": "문의 내용",
+      "messagePlaceholder": "어떤 도움을 드리면 될까요?",
+      "submit": "메시지 보내기"
+    },
+    "successTitle": "감사합니다!",
+    "successBody": "문의가 고객 지원팀으로 전달되었습니다. 최대한 빠르게 답변드리겠습니다."
+  }
+}
