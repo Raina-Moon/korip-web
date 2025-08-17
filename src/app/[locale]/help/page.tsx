@@ -43,14 +43,17 @@ function FAQItem({
       </button>
       <div
         id={`faq-panel-${id}`}
-        className="px-4 pt-0"
-        style={{
-          overflow: "hidden",
-          transition: "max-height 220ms ease",
-          maxHeight: open ? 400 : 0,
-        }}
+        aria-hidden={!open}
+        className={`px-4 transition-[max-height,padding,opacity] duration-200 ease-in-out ${
+          open ? "py-4 opacity-100" : "py-0 opacity-0 pointer-events-none"
+        }`}
+        style={{ overflow: "hidden", maxHeight: open ? 400 : 0 }}
       >
-        <div className="text-gray-700 leading-relaxed pt-2">{answer}</div>
+        <div
+          className={`text-gray-700 leading-relaxed ${open ? "pt-2" : "pt-0"}`}
+        >
+          {answer}
+        </div>
       </div>
     </div>
   );
@@ -60,30 +63,60 @@ export default function FAQPage() {
   const { t } = useTranslation("help");
   const locale = useLocale();
 
-  const categories = ["booking", "payment", "account", "policy", "technical"] as const;
-  const [activeCat, setActiveCat] = useState<(typeof categories)[number]>("booking");
-  const [query, setQuery] = useState("");
+  const categories = [
+    "booking",
+    "payment",
+    "account",
+    "policy",
+    "technical",
+  ] as const;
+  const [activeCat, setActiveCat] =
+    useState<(typeof categories)[number]>("booking");
+
+  const [input, setInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const allFaqs = useMemo(() => {
-    return categories.map((cat) => {
-      const items = getQnaArray(t, cat);
-      return { cat, items };
-    });
+    return categories.map((cat) => ({
+      cat,
+      title: String(t(`faq.${cat}.title`)),
+      items: getQnaArray(t, cat),
+    }));
   }, [t]);
 
-  const filtered = useMemo(() => {
-    const lower = query.trim().toLowerCase();
+  const isSearching = searchTerm.trim().length > 0;
+
+  const tabItems = useMemo(() => {
     const selected = allFaqs.find((c) => c.cat === activeCat)?.items ?? [];
-    const list = Array.isArray(selected) ? selected : [];
+    return Array.isArray(selected) ? selected : [];
+  }, [allFaqs, activeCat]);
 
-    if (!lower) return list;
+  const searchGroups = useMemo(() => {
+    if (!isSearching) return [];
+    const q = searchTerm.trim().toLowerCase();
 
-    return list.filter((it: any) => {
-      const q = String(it?.q ?? "").toLowerCase();
-      const a = String(it?.a ?? "").toLowerCase();
-      return q.includes(lower) || a.includes(lower);
-    });
-  }, [query, activeCat, allFaqs]);
+    return allFaqs
+      .map(({ cat, title, items }) => {
+        const catTitle = String(title || "").toLowerCase();
+        const filtered = (items || []).filter((it: any) => {
+          const qq = String(it?.q ?? "").toLowerCase();
+          const aa = String(it?.a ?? "").toLowerCase();
+          return qq.includes(q) || aa.includes(q) || catTitle.includes(q);
+        });
+        return { cat, title, items: filtered };
+      })
+      .filter((g) => g.items.length > 0);
+  }, [isSearching, searchTerm, allFaqs]);
+
+  const resultsCount = isSearching
+    ? searchGroups.reduce((sum, g) => sum + g.items.length, 0)
+    : tabItems.length;
+
+  const doSearch = () => setSearchTerm(input);
+  const clearSearch = () => {
+    setInput("");
+    setSearchTerm("");
+  };
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4">
@@ -92,7 +125,7 @@ export default function FAQPage() {
         <p className="text-gray-600 mt-2">{t("faq.subtitle")}</p>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 flex gap-2">
         <label htmlFor="faq-search" className="sr-only">
           {t("faq.searchLabel")}
         </label>
@@ -101,115 +134,156 @@ export default function FAQPage() {
           type="search"
           placeholder={t("faq.searchPlaceholder") as string}
           className="w-full border rounded-lg px-4 py-2"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") doSearch();
+          }}
         />
+        <button
+          onClick={doSearch}
+          className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+          aria-label={t("faq.searchLabel")}
+        >
+          {t("common.search", { defaultValue: "Search" })}
+        </button>
+        {isSearching && (
+          <button
+            onClick={clearSearch}
+            className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+          >
+            {t("common.clear", { defaultValue: "Clear" })}
+          </button>
+        )}
       </div>
 
-      <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCat(cat)}
-            className={`px-3 py-1.5 rounded-full border text-sm whitespace-nowrap transition
-              ${
-                activeCat === cat
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => !isSearching && setActiveCat(cat)}
+              className={`px-3 py-1.5 rounded-full border text-sm whitespace-nowrap transition ${
+                activeCat === cat && !isSearching
                   ? "bg-primary-700 text-white border-primary-700"
                   : "bg-white text-gray-800 border-gray-200 hover:bg-gray-50"
-              }`}
-            aria-pressed={activeCat === cat}
-          >
-            {t(`faq.${cat}.title`)}
-          </button>
-        ))}
-      </div>
-
-      <div className="text-sm text-gray-500 mb-3">
-        {t("faq.resultsCount", { count: Array.isArray(filtered) ? filtered.length : 0 })}
-      </div>
-
-      <div className="space-y-3">
-        {Array.isArray(filtered) && filtered.length > 0 ? (
-          filtered.map((item: any, idx: number) => (
-            <FAQItem
-              key={`${activeCat}-${idx}`}
-              id={`${activeCat}-${idx}`}
-              question={String(item?.q ?? "")}
-              answer={
-                <span>
-                  {String(item?.a ?? "")}{" "}
-                  {item?.linkToContact ? (
-                    <>
-                      {t("faq.a3.before")}{" "}
-                      <Link href={`/${locale}/help/contact`} className="text-primary-700 underline">
-                        {t("contact.title")}
-                      </Link>
-                      .
-                    </>
-                  ) : null}
-                </span>
+              } ${isSearching ? "opacity-50 cursor-not-allowed" : ""}`}
+              aria-pressed={activeCat === cat}
+              aria-disabled={isSearching}
+              title={
+                isSearching
+                  ? (t("faq.searchingAll", {
+                      defaultValue: "Searching all categories",
+                    }) as string)
+                  : ""
               }
-              defaultOpen={idx === 0 && !query}
-            />
-          ))
+            >
+              {t(`faq.${cat}.title`)}
+            </button>
+          ))}
+        </div>
+
+        <div className="text-sm text-gray-500">
+          {t("faq.resultsCount", { count: resultsCount })}
+        </div>
+      </div>
+
+      <div className="space-y-5">
+        {isSearching ? (
+          searchGroups.length > 0 ? (
+            searchGroups.map((group) => (
+              <div key={group.cat} className="space-y-3">
+                <div className="text-sm font-medium text-gray-700">
+                  {group.title}{" "}
+                  <span className="text-gray-400">({group.items.length})</span>
+                </div>
+                <div className="space-y-3">
+                  {group.items.map((item: any, idx: number) => (
+                    <FAQItem
+                      key={`${group.cat}-${idx}`}
+                      id={`${group.cat}-${idx}`}
+                      question={String(item?.q ?? "")}
+                      answer={
+                        <span>
+                          {String(item?.a ?? "")}{" "}
+                          {item?.linkToContact ? (
+                            <>
+                              {t("faq.a3.before")}{" "}
+                              <Link
+                                href={`/${locale}/help/contact`}
+                                className="text-primary-700 underline"
+                              >
+                                {t("contact.title")}
+                              </Link>
+                              .
+                            </>
+                          ) : null}
+                        </span>
+                      }
+                      defaultOpen={false}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-600">
+              {t("faq.empty")}
+            </div>
+          )
         ) : (
-          <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-600">
-            {t("faq.empty")}
+          <div className="space-y-3">
+            {tabItems.length > 0 ? (
+              tabItems.map((item: any, idx: number) => (
+                <FAQItem
+                  key={`${activeCat}-${idx}`}
+                  id={`${activeCat}-${idx}`}
+                  question={String(item?.q ?? "")}
+                  answer={
+                    <span>
+                      {String(item?.a ?? "")}{" "}
+                      {item?.linkToContact ? (
+                        <>
+                          {t("faq.a3.before")}{" "}
+                          <Link
+                            href={`/${locale}/help/contact`}
+                            className="text-primary-700 underline"
+                          >
+                            {t("contact.title")}
+                          </Link>
+                          .
+                        </>
+                      ) : null}
+                    </span>
+                  }
+                  defaultOpen={idx === 0}
+                />
+              ))
+            ) : (
+              <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-600">
+                {t("faq.empty")}
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      <div className="mt-8 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-700">{t("faq.feedback.question")}</span>
-          <div className="flex gap-2">
-            <button
-              className="px-3 py-1.5 text-sm rounded-full border border-gray-300 hover:bg-gray-50"
-              onClick={() => console.log("FAQ helpful: yes")}
-              aria-label={t("faq.feedback.yes")}
-            >
-              👍 {t("faq.feedback.yes")}
-            </button>
-            <button
-              className="px-3 py-1.5 text-sm rounded-full border border-gray-300 hover:bg-gray-50"
-              onClick={() => console.log("FAQ helpful: no")}
-              aria-label={t("faq.feedback.no")}
-            >
-              👎 {t("faq.feedback.no")}
-            </button>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 p-4 bg-[#FAFAFA]">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <div className="font-medium text-gray-900">{t("faq.cta.title")}</div>
-              <p className="text-gray-600 text-sm">{t("faq.cta.desc")}</p>
+      <div className="mt-8 rounded-xl border border-gray-200 p-4 bg-[#FAFAFA]">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <div className="font-medium text-gray-900">
+              {t("faq.cta.title")}
             </div>
-            <Link
-              href={`/${locale}/help/contact`}
-              className="px-4 py-2 rounded-lg bg-primary-700 text-white hover:bg-primary-800 transition"
-            >
-              {t("faq.cta.button")}
-            </Link>
+            <p className="text-gray-600 text-sm">{t("faq.cta.desc")}</p>
           </div>
+          <Link
+            href={`/${locale}/help/contact`}
+            className="px-4 py-2 rounded-lg bg-primary-700 text-white hover:bg-primary-800 transition"
+          >
+            {t("faq.cta.button")}
+          </Link>
         </div>
       </div>
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: (Array.isArray(filtered) ? filtered : []).slice(0, 8).map((f: any) => ({
-              "@type": "Question",
-              name: String(f?.q ?? ""),
-              acceptedAnswer: { "@type": "Answer", text: String(f?.a ?? "") }
-            })),
-          }),
-        }}
-      />
     </div>
   );
 }
