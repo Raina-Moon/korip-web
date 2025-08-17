@@ -90,6 +90,15 @@ const AdminPage = () => {
             iconPath="M12 8c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm0 2c-2.21 0-4 1.79-4 4v4h8v-4c0-2.21-1.79-4-4-4z"
           />
         </Link>
+
+        <Link href={`/${locale}/admin/support`}>
+          <AdminCard
+            iconColor="text-teal-500"
+            title="문의 관리"
+            description="사용자 문의 확인 및 답변"
+            iconPath="M7 8h10M7 12h6m-6 8l-4-4V5a2 2 0 012-2h10l4 4v9a2 2 0 01-2 2H7z"
+          />
+        </Link>
       </section>
     </div>
   );
