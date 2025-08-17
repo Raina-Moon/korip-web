@@ -296,7 +296,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
             style={{
               overflow: "hidden",
               transition: "max-height 220ms ease",
-              maxHeight: supportOpen ? 160 : 0, // 항목 2개면 충분
+              maxHeight: supportOpen ? 160 : 0,
             }}
           >
             <button
