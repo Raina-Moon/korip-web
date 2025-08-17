@@ -133,7 +133,7 @@ export default function FAQPage() {
           id="faq-search"
           type="search"
           placeholder={t("faq.searchPlaceholder") as string}
-          className="w-full border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-primary-500"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -142,7 +142,7 @@ export default function FAQPage() {
         />
         <button
           onClick={doSearch}
-          className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+          className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-primary-50"
           aria-label={t("faq.searchLabel")}
         >
           {t("common.search", { defaultValue: "Search" })}
@@ -150,7 +150,7 @@ export default function FAQPage() {
         {isSearching && (
           <button
             onClick={clearSearch}
-            className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50"
+            className="px-3 py-2 rounded-lg text-white border-primary-500 bg-primary-500 hover:bg-primary-600"
           >
             {t("common.clear", { defaultValue: "Clear" })}
           </button>
