@@ -145,14 +145,14 @@ export default function FAQPage() {
           className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-primary-50"
           aria-label={t("faq.searchLabel")}
         >
-          {t("common.search", { defaultValue: "Search" })}
+          Search{" "}
         </button>
         {isSearching && (
           <button
             onClick={clearSearch}
             className="px-3 py-2 rounded-lg text-white border-primary-500 bg-primary-500 hover:bg-primary-600"
           >
-            {t("common.clear", { defaultValue: "Clear" })}
+            Clear{" "}
           </button>
         )}
       </div>
