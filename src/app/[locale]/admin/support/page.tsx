@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchAllSupports } from "@/lib/admin/support/supportThunk";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/utils/useLocale";
 
 export default function AdminSupportListPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const locale = useLocale();
 
   const { list, total, page, limit, state, error } = useAppSelector(
     (s: any) => s["admin/support"]
@@ -82,7 +84,7 @@ export default function AdminSupportListPage() {
               <tr
                 key={it.id}
                 className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => router.push(`/admin/support/${it.id}`)}
+                onClick={() => router.push(`${locale}/admin/support/${it.id}`)}
               >
                 <td className="px-4 py-2">{it.id}</td>
                 <td className="px-4 py-2">

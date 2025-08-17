@@ -4,12 +4,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { patchSupport } from "@/lib/admin/support/supportThunk";
+import { useLocale } from "@/utils/useLocale";
 
 export default function AdminSupportDetailPage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const locale = useLocale();
 
   const { list, state } = useAppSelector((s: any) => s["admin/support"]);
   const itemFromList = useMemo(
@@ -41,7 +43,7 @@ export default function AdminSupportDetailPage() {
         })
       ).unwrap();
       alert("저장되었습니다.");
-      router.push("/admin/support");
+      router.push(`${locale}/admin/support`);
     } catch {
       alert("저장에 실패했습니다.");
     }
@@ -68,7 +70,7 @@ export default function AdminSupportDetailPage() {
         <div className="mt-4">
           <button
             className="border rounded px-3 py-1"
-            onClick={() => router.push("/admin/support")}
+            onClick={() => router.push(`${locale}/admin/support`)}
           >
             목록으로
           </button>
@@ -83,7 +85,7 @@ export default function AdminSupportDetailPage() {
     <div className="max-w-3xl mx-auto p-6">
       <button
         className="text-sm text-gray-600 hover:underline mb-4"
-        onClick={() => router.push("/admin/support")}
+        onClick={() => router.push(`${locale}/admin/support`)}
       >
         ← 목록으로
       </button>
