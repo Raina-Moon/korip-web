@@ -11,38 +11,38 @@ import NavigationEvents from "@/lib/providers/NavigationEvents";
 import { Toaster } from "react-hot-toast";
 export default function ClientApp({ children }: { children: React.ReactNode }) {
   return (
-    <Providers>
-      <TranslationsProvider>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#222",
-              color: "#fff",
-              fontWeight: 600,
-              borderRadius: "10px",
-              fontSize: "16px",
-            },
-            success: {
+      <Providers>
+        <TranslationsProvider>
+          <Toaster
+            position="top-center"
+            toastOptions={{
               style: {
                 background: "#222",
                 color: "#fff",
+                fontWeight: 600,
+                borderRadius: "10px",
+                fontSize: "16px",
               },
-            },
-            error: {
-              style: {
-                background: "#222",
-                color: "#fff",
+              success: {
+                style: {
+                  background: "#222",
+                  color: "#fff",
+                },
               },
-            },
-          }}
-        />
-        <AuthLoader />
-        <HeaderWrapper />
-        <GlobalLoadingOverlay />
-        {children}
-        <NavigationEvents />
-      </TranslationsProvider>
-    </Providers>
+              error: {
+                style: {
+                  background: "#222",
+                  color: "#fff",
+                },
+              },
+            }}
+          />
+          <AuthLoader />
+          <HeaderWrapper />
+          <GlobalLoadingOverlay />
+          {children}
+          <NavigationEvents />
+        </TranslationsProvider>
+      </Providers>
   );
 }

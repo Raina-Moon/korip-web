@@ -17,8 +17,6 @@ import {
   Settings as SettingsIcon,
   HelpCircle,
   Mail,
-  Sun,
-  Moon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -47,14 +45,6 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const menuRef = useRef<HTMLElement>(null);
-
-  const { theme, setTheme, resolvedTheme } = useTheme();
-
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const isDark = (theme === "system" ? resolvedTheme : theme) === "dark";
-  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
@@ -131,45 +121,26 @@ const SideMenu: React.FC<SideMenuProps> = ({
       >
         <div className="flex items-center justify-between pb-4 border-b border-gray-200 shrink-0 pr-2">
           <h2 className="text-base font-semibold text-primary-900">Menu</h2>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={toggleTheme}
-              aria-label={
-                isDark
-                  ? t("lightMode", { defaultValue: "Light mode" })
-                  : t("darkMode", { defaultValue: "Dark mode" })
-              }
-              className="h-9 w-9 inline-flex items-center justify-center rounded-md hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          <button
+            onClick={onClose}
+            aria-label={t("closeMenu")}
+            className="h-9 w-9 inline-flex items-center justify-center rounded-md hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
             >
-              {mounted &&
-                (isDark ? (
-                  <Sun className="h-5 w-5 text-gray-700" />
-                ) : (
-                  <Moon className="h-5 w-5 text-gray-700" />
-                ))}
-            </button>
-
-            <button
-              onClick={onClose}
-              aria-label={t("closeMenu")}
-              className="h-9 w-9 inline-flex items-center justify-center rounded-md hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-gray-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto pt-6 pr-2 space-y-6">
