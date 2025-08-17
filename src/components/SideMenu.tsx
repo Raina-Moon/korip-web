@@ -15,6 +15,8 @@ import {
   CalendarDays,
   MessageSquare,
   Settings as SettingsIcon,
+  HelpCircle,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,10 +47,14 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const menuRef = useRef<HTMLElement>(null);
 
   const [profileOpen, setProfileOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   useEffect(() => {
     if (pathname?.replace(`/${locale}`, "").startsWith("/profile")) {
       setProfileOpen(true);
+    }
+    if (pathname?.replace(`/${locale}`, "").startsWith("/help")) {
+      setSupportOpen(true);
     }
   }, [pathname, locale]);
 
@@ -77,6 +83,11 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const handleNavigation = (path: string) => {
     onClose();
     router.push(`/${locale}${path}`);
+  };
+
+  const isActive = (path: string) => {
+    const full = `/${locale}${path}`;
+    return pathname === full || pathname.startsWith(`${full}/`);
   };
 
   if (typeof document === "undefined") return null;
@@ -141,80 +152,6 @@ const SideMenu: React.FC<SideMenuProps> = ({
                   defaultValue: "{{nickname}}님 안녕하세요",
                 })}
               </p>
-
-              <div className="rounded-xl border border-gray-200 overflow-hidden bg-[#FAFAFA]">
-                <button
-                  onClick={() => setProfileOpen((v) => !v)}
-                  aria-expanded={profileOpen}
-                  aria-controls="profile-submenu"
-                  className="w-full flex items-center justify-between px-3 py-3 hover:bg-white transition text-sm"
-                >
-                  <span className="flex items-center gap-2 text-gray-800">
-                    <User className="h-5 w-5 text-primary-800" />
-                    {t("profile", { defaultValue: "Profile" })}
-                  </span>
-                  {profileOpen ? (
-                    <ChevronDown className="h-5 w-5 text-gray-500 transition-transform" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5 text-gray-500 transition-transform" />
-                  )}
-                </button>
-
-                <div
-                  id="profile-submenu"
-                  className="grid grid-cols-1"
-                  style={{
-                    overflow: "hidden",
-                    transition: "max-height 220ms ease",
-                    maxHeight: profileOpen ? 320 : 0,
-                  }}
-                >
-                  <button
-                    onClick={() => handleNavigation("/profile/account")}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
-                  >
-                    <UserCog className="h-4 w-4 text-primary-700" />
-                    {t("account", { defaultValue: "Account" })}
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("/profile/favorites")}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
-                  >
-                    <Heart className="h-4 w-4 text-primary-700" />
-                    {t("favorites", { defaultValue: "Favorites" })}
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("/profile/reservations")}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
-                  >
-                    <CalendarDays className="h-4 w-4 text-primary-700" />
-                    {t("reservations", { defaultValue: "Reservations" })}
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("/profile/reviews")}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
-                  >
-                    <MessageSquare className="h-4 w-4 text-primary-700" />
-                    {t("reviews", { defaultValue: "Reviews" })}
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("/profile/settings")}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
-                  >
-                    <SettingsIcon className="h-4 w-4 text-primary-700" />
-                    {t("settings", { defaultValue: "Settings" })}
-                  </button>
-                </div>
-              </div>
-
-              {user.role === "ADMIN" && (
-                <button
-                  onClick={() => handleNavigation("/admin")}
-                  className="w-full bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary-700 transition"
-                >
-                  {t("adminPage")}
-                </button>
-              )}
             </div>
           ) : (
             <div className="text-left">
@@ -253,6 +190,138 @@ const SideMenu: React.FC<SideMenuProps> = ({
             >
               <Home className="h-5 w-5 text-primary-800" />
               {t("home")}
+            </button>
+          </div>
+        </div>
+
+        {user && (
+          <>
+            <div className="rounded-xl border border-gray-200 overflow-hidden bg-[#FAFAFA]">
+              <button
+                onClick={() => setProfileOpen((v) => !v)}
+                aria-expanded={profileOpen}
+                aria-controls="profile-submenu"
+                className="w-full flex items-center justify-between px-3 py-3 hover:bg-white transition text-sm"
+              >
+                <span className="flex items-center gap-2 text-gray-800">
+                  <User className="h-5 w-5 text-primary-800" />
+                  {t("profile", { defaultValue: "Profile" })}
+                </span>
+                {profileOpen ? (
+                  <ChevronDown className="h-5 w-5 text-gray-500 transition-transform" />
+                ) : (
+                  <ChevronRight className="h-5 w-5 text-gray-500 transition-transform" />
+                )}
+              </button>
+
+              <div
+                id="profile-submenu"
+                className="grid grid-cols-1"
+                style={{
+                  overflow: "hidden",
+                  transition: "max-height 220ms ease",
+                  maxHeight: profileOpen ? 320 : 0,
+                }}
+              >
+                <button
+                  onClick={() => handleNavigation("/profile/account")}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
+                >
+                  <UserCog className="h-4 w-4 text-primary-700" />
+                  {t("account", { defaultValue: "Account" })}
+                </button>
+                <button
+                  onClick={() => handleNavigation("/profile/favorites")}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
+                >
+                  <Heart className="h-4 w-4 text-primary-700" />
+                  {t("favorites", { defaultValue: "Favorites" })}
+                </button>
+                <button
+                  onClick={() => handleNavigation("/profile/reservations")}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
+                >
+                  <CalendarDays className="h-4 w-4 text-primary-700" />
+                  {t("reservations", { defaultValue: "Reservations" })}
+                </button>
+                <button
+                  onClick={() => handleNavigation("/profile/reviews")}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
+                >
+                  <MessageSquare className="h-4 w-4 text-primary-700" />
+                  {t("reviews", { defaultValue: "Reviews" })}
+                </button>
+                <button
+                  onClick={() => handleNavigation("/profile/settings")}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-white transition text-left"
+                >
+                  <SettingsIcon className="h-4 w-4 text-primary-700" />
+                  {t("settings", { defaultValue: "Settings" })}
+                </button>
+              </div>
+            </div>
+
+            {user.role === "ADMIN" && (
+              <button
+                onClick={() => handleNavigation("/admin")}
+                className="w-full bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary-700 transition"
+              >
+                {t("adminPage")}
+              </button>
+            )}
+          </>
+        )}
+
+        <div className="rounded-xl border border-gray-200 overflow-hidden bg-[#FAFAFA]">
+          <button
+            onClick={() => setSupportOpen((v) => !v)}
+            aria-expanded={supportOpen}
+            aria-controls="support-submenu"
+            className="w-full flex items-center justify-between px-3 py-3 hover:bg-white transition text-sm"
+          >
+            <span className="flex items-center gap-2 text-gray-800">
+              <HelpCircle className="h-5 w-5 text-primary-800" />
+              {t("support", { defaultValue: "Support" })}
+            </span>
+            {supportOpen ? (
+              <ChevronDown className="h-5 w-5 text-gray-500 transition-transform" />
+            ) : (
+              <ChevronRight className="h-5 w-5 text-gray-500 transition-transform" />
+            )}
+          </button>
+
+          <div
+            id="support-submenu"
+            className="grid grid-cols-1"
+            style={{
+              overflow: "hidden",
+              transition: "max-height 220ms ease",
+              maxHeight: supportOpen ? 160 : 0, // 항목 2개면 충분
+            }}
+          >
+            <button
+              onClick={() => handleNavigation("/help")}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm transition text-left
+                  ${
+                    isActive("/help")
+                      ? "bg-white text-primary-800"
+                      : "text-gray-700 hover:bg-white hover:text-primary-800"
+                  }`}
+            >
+              <HelpCircle className="h-4 w-4 text-primary-700" />
+              {t("faq", { defaultValue: "FAQ" })}
+            </button>
+            <button
+              onClick={() => handleNavigation("/help/contact")}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm transition text-left
+                  ${
+                    isActive("/help/contact")
+                      ? "bg-white text-primary-800"
+                      : "text-gray-700 hover:bg-white hover:text-primary-800"
+                  }`}
+            >
+              <Mail className="h-4 w-4 text-primary-700" />
+              {t("contact", { defaultValue: "Contact" })}
             </button>
           </div>
         </div>
