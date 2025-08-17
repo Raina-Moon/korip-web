@@ -5,10 +5,7 @@ import resetPasswordReducer from "../reset-password/resetPasswordSlice";
 import { hotspringApi } from "../hotspring/hotspringApi";
 import adminUserReducer from "../admin/user/adminUserSlice";
 import lodgeReducer from "../admin/lodge/lodgeSlice";
-import roomTypeReducer from "../admin/lodge/roomTypeSlice";
 import reportsReducer from "../admin/reports/reportsSlice";
-import roomInventoryReducer from "../admin/lodge/roomInventorySlice";
-import roomPricingReducer from "../admin/lodge/roomPricingSlice";
 import { lodgeApi } from "../lodge/lodgeApi";
 import { priceApi } from "../price/priceApi";
 import reservationReducer from "../reservation/reservationSlice";
@@ -38,10 +35,7 @@ export const store = configureStore({
     [hotspringApi.reducerPath]: hotspringApi.reducer,
     "admin/user": adminUserReducer,
     "admin/lodge": lodgeReducer,
-    "admin/roomType": roomTypeReducer,
     "admin/reports": reportsReducer,
-    "admin/roomInventory": roomInventoryReducer,
-    "admin/roomPricing": roomPricingReducer,
     "admin/ticketReports": reportsTicketReducer,
     "admin/news": newsSliceReducer,
     "admin/events" : eventsSliceReducer,
