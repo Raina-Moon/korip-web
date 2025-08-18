@@ -31,7 +31,10 @@ export default function AdminSupportDetailPage() {
     }
   }, [itemFromList]);
 
-  const title = (itemFromList as any)?.title ?? (itemFromList as any)?.name ?? "(제목 없음)";
+  const title =
+    (itemFromList as any)?.title ??
+    (itemFromList as any)?.name ??
+    "(제목 없음)";
   const localeBase = locale.startsWith("/") ? locale : `/${locale}`;
 
   const onSave = async () => {
@@ -106,7 +109,16 @@ export default function AdminSupportDetailPage() {
       </div>
 
       <section className="rounded-xl border p-4 mb-6">
-        <div className="text-sm font-semibold text-gray-500 mb-2">Q</div>
+        <div className="text-sm font-semibold text-gray-500 mb-2">
+          문의자 정보
+        </div>
+        <div className="text-sm text-gray-700">
+          닉네임: {it.user?.nickname ?? "-"}
+        </div>
+        <div className="text-sm text-gray-700">
+          이메일: {it.user?.email ?? "-"}
+        </div>
+        <div className="text-sm font-semibold text-primary-700 mb-2">Q</div>
         <div className="prose whitespace-pre-wrap break-words">
           {it.question}
         </div>
@@ -155,7 +167,8 @@ export default function AdminSupportDetailPage() {
         </div>
 
         <div className="text-xs text-gray-400 mt-3">
-          답변 일시: {it.answeredAt ? new Date(it.answeredAt).toLocaleString() : "-"}
+          답변 일시:{" "}
+          {it.answeredAt ? new Date(it.answeredAt).toLocaleString() : "-"}
         </div>
       </section>
     </div>
