@@ -32,6 +32,7 @@ export default function AdminSupportDetailPage() {
   }, [itemFromList]);
 
   const title = (itemFromList as any)?.title ?? (itemFromList as any)?.name ?? "(제목 없음)";
+  const localeBase = locale.startsWith("/") ? locale : `/${locale}`;
 
   const onSave = async () => {
     try {
@@ -43,7 +44,7 @@ export default function AdminSupportDetailPage() {
         })
       ).unwrap();
       alert("저장되었습니다.");
-      router.push(`${locale}/admin/support`);
+      router.push(`${localeBase}/admin/support`);
     } catch {
       alert("저장에 실패했습니다.");
     }
@@ -70,7 +71,7 @@ export default function AdminSupportDetailPage() {
         <div className="mt-4">
           <button
             className="border rounded px-3 py-1"
-            onClick={() => router.push(`${locale}/admin/support`)}
+            onClick={() => router.push(`${localeBase}/admin/support`)}
           >
             목록으로
           </button>
@@ -85,7 +86,7 @@ export default function AdminSupportDetailPage() {
     <div className="max-w-3xl mx-auto p-6">
       <button
         className="text-sm text-gray-600 hover:underline mb-4"
-        onClick={() => router.push(`${locale}/admin/support`)}
+        onClick={() => router.push(`${localeBase}/admin/support`)}
       >
         ← 목록으로
       </button>
@@ -140,7 +141,7 @@ export default function AdminSupportDetailPage() {
           <div className="flex items-center gap-2">
             <button
               className="border rounded px-4 py-2 hover:bg-gray-50"
-              onClick={() => router.push("/admin/support")}
+              onClick={() => router.push(`${localeBase}/admin/support`)}
             >
               취소
             </button>

@@ -113,7 +113,7 @@ const ContactListPage = () => {
             <li
               key={it.id}
               className="p-4 cursor-pointer hover:bg-gray-50"
-              onClick={() => router.push(`/${locale}/help/support/${it.id}`)}
+              onClick={() => router.push(`/${locale}/help/contact/${it.id}`)}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="font-medium line-clamp-1">{it.name}</div>

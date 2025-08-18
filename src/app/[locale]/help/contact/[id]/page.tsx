@@ -1,4 +1,3 @@
-// app/[locale]/help/contact/[id]/page.tsx
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -70,7 +69,7 @@ export default function ContactDetailPage() {
         onClick={() => router.push(backUrl)}
         className="text-sm text-gray-600 hover:underline mb-6"
       >
-        ← {t("common.cancel")}
+        ← {t("common.back")}
       </button>
 
       {isLoading || isFetching ? (
@@ -94,7 +93,7 @@ export default function ContactDetailPage() {
           </div>
 
           <section className="rounded-xl border p-4">
-            <div className="text-sm font-semibold text-gray-500 mb-2">Q</div>
+            <div className="text-sm font-semibold text-primary-700 mb-2">Q</div>
             <div className="prose whitespace-pre-wrap break-words">
               {ticket.question}
             </div>

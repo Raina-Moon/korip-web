@@ -30,7 +30,7 @@
     "notFound": "Ticket not found."
   },
   "common": {
-    "cancel": "Cancel"
+    "back": "Back"
   },
   "loading": "Loading..."
 }
