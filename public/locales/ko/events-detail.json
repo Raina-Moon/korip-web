@@ -1,4 +1,6 @@
 {
-    "backToList": "목록으로 돌아가기",
-    "eventNotFound": "이벤트를 찾을 수 없습니다."
+  "backToList": "목록으로 돌아가기",
+  "eventNotFound": "이벤트를 찾을 수 없습니다.",
+  "nextArticle": "다음글",
+  "prevArticle": "이전글"
 }

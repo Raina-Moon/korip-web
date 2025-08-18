@@ -3,7 +3,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/utils/useLocale";
-import { useGetNewsByIdQuery } from "@/lib/news/newsApi";
+import {
+  useGetAdjacentNewsByIdQuery,
+  useGetNewsByIdQuery,
+} from "@/lib/news/newsApi";
 import { useParams, useRouter } from "next/navigation";
 import HTMLViewer from "@/components/HTMLViewer";
 import { getLocalizedField } from "@/utils/getLocalizedField";
@@ -26,8 +29,18 @@ const NewsDetailPage = () => {
   const locale = useLocale();
   const router = useRouter();
   const { id } = useParams();
+  const newsId = Number(id);
 
   const { data: news, isLoading, isError } = useGetNewsByIdQuery(Number(id));
+
+  const { data: adjacent } = useGetAdjacentNewsByIdQuery(newsId, {
+    skip: !newsId || isLoading || isError,
+  });
+
+  const go = (targetId?: number | null) => {
+    if (!targetId) return;
+    router.push(`/${locale}/news/${targetId}`);
+  };
 
   const titleToShow = getLocalizedField(news?.title, news?.titleEn, locale);
   const contentToShow = getLocalizedField(
@@ -116,6 +129,40 @@ const NewsDetailPage = () => {
             "
           >
             <HTMLViewer html={contentToShow} />
+          </div>
+
+          <div className="mt-10 border-t border-gray-200 pt-6 text-sm sm:text-base">
+            {adjacent?.next && (
+              <div
+                onClick={() => go(adjacent.next?.id)}
+                className="cursor-pointer hover:underline mb-4"
+              >
+                <strong>{t("nextArticle") ?? "다음글"}</strong>
+                <div className="text-gray-700">
+                  {getLocalizedField(
+                    adjacent.next.title,
+                    adjacent.next.titleEn,
+                    locale
+                  )}
+                </div>
+              </div>
+            )}
+
+            {adjacent?.prev && (
+              <div
+                onClick={() => go(adjacent.prev?.id)}
+                className="cursor-pointer hover:underline"
+              >
+                <strong>{t("prevArticle") ?? "이전글"}</strong>
+                <div className="text-gray-700">
+                  {getLocalizedField(
+                    adjacent.prev.title,
+                    adjacent.prev.titleEn,
+                    locale
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </article>
       )}

@@ -8,6 +8,11 @@ interface GetNewsListResponse {
   limit: number;
 }
 
+interface AdjacentRes {
+  prev: Pick<News, "id" | "title" | "titleEn" | "createdAt"> | null;
+  next: Pick<News, "id" | "title" | "titleEn" | "createdAt"> | null;
+}
+
 export const newsApi = createApi({
   reducerPath: "newsApi",
   baseQuery: fetchBaseQuery({
@@ -27,7 +32,15 @@ export const newsApi = createApi({
       query: (id) => `/${id}`,
       providesTags: (result, error, id) => [{ type: "News", id }],
     }),
+    getAdjacentNewsById: builder.query<AdjacentRes, number>({
+      query: (id) => `/${id}/adjacent`,
+      providesTags: (result, error, id) => [{ type: "News", id }],
+    }),
   }),
 });
 
-export const { useGetAllNewsQuery, useGetNewsByIdQuery } = newsApi;
+export const {
+  useGetAllNewsQuery,
+  useGetNewsByIdQuery,
+  useGetAdjacentNewsByIdQuery,
+} = newsApi;
