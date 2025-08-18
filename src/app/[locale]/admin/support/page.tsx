@@ -23,6 +23,7 @@ export default function AdminSupportListPage() {
   }, [dispatch, curPage, curLimit]);
 
   const totalPages = Math.max(1, Math.ceil(total / curLimit));
+  const localeBase = locale.startsWith("/") ? locale : `/${locale}`;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -84,7 +85,9 @@ export default function AdminSupportListPage() {
               <tr
                 key={it.id}
                 className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => router.push(`${locale}/admin/support/${it.id}`)}
+                onClick={() =>
+                  router.push(`${localeBase}/admin/support/${it.id}`)
+                }
               >
                 <td className="px-4 py-2">{it.id}</td>
                 <td className="px-4 py-2">
@@ -111,7 +114,9 @@ export default function AdminSupportListPage() {
                   {new Date(it.createdAt).toLocaleString()}
                 </td>
                 <td className="px-4 py-2">
-                  {it.answeredAt ? new Date(it.answeredAt).toLocaleString() : "-"}
+                  {it.answeredAt
+                    ? new Date(it.answeredAt).toLocaleString()
+                    : "-"}
                 </td>
               </tr>
             ))}
