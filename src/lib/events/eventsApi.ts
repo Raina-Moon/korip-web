@@ -8,6 +8,11 @@ interface GetEventListResponse {
   limit: number;
 }
 
+interface AdjacentRes {
+  prev: Pick<Event, "id" | "title" | "titleEn" | "createdAt"> | null;
+  next: Pick<Event, "id" | "title" | "titleEn" | "createdAt"> | null;
+}
+
 export const eventsApi = createApi({
   reducerPath: "eventsApi",
   baseQuery: fetchBaseQuery({
@@ -16,7 +21,10 @@ export const eventsApi = createApi({
   }),
   tagTypes: ["Events"],
   endpoints: (builder) => ({
-    getAllEvents: builder.query<GetEventListResponse, { page?: number; limit?: number }>({
+    getAllEvents: builder.query<
+      GetEventListResponse,
+      { page?: number; limit?: number }
+    >({
       query: ({ page = 1, limit = 10 }) => `?page=${page}&limit=${limit}`,
       providesTags: ["Events"],
     }),
@@ -24,7 +32,15 @@ export const eventsApi = createApi({
       query: (id) => `/${id}`,
       providesTags: (result, error, id) => [{ type: "Events", id }],
     }),
+    getAdjacentEventById: builder.query<AdjacentRes, number>({
+      query: (id) => `/${id}/adjacent`,
+      providesTags: (result, error, id) => [{ type: "Events", id }],
+    }),
   }),
 });
 
-export const { useGetAllEventsQuery, useGetEventByIdQuery } = eventsApi;
+export const {
+  useGetAllEventsQuery,
+  useGetEventByIdQuery,
+  useGetAdjacentEventByIdQuery,
+} = eventsApi;
