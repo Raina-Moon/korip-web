@@ -5,7 +5,10 @@ export interface Support {
   userId: number;
   name: string;
   question: string;
+  questionKo?: string | null;
+  originalLang?: string | null;
   answer?: string | null;
+  answerEn?: string | null;
   status: SupportStatus;
   createdAt: string;
   updatedAt: string;
