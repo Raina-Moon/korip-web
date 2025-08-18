@@ -325,7 +325,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
         </div>
 
         {user && (
-          <div className="shrink-0 border-t border-gray-200 p-4 pt-3">
+          <div className="shrink-0 p-4 pt-3">
             <button
               onClick={async () => {
                 await onLogout();
