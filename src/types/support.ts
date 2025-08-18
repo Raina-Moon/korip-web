@@ -10,6 +10,11 @@ export interface Support {
   createdAt: string;
   updatedAt: string;
   answeredAt?: string | null;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 export interface SupportPagination {
