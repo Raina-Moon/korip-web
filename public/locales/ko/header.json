@@ -4,5 +4,12 @@
   "logoutButton": "로그아웃",
   "adminButton": "관리자 페이지로 이동",
   "profileButton": "프로필로 이동",
-  "greetingInline": "{{nickname}}님 안녕하세요"
+  "greetingInline": "{{nickname}}님 안녕하세요",
+  "home" : "홈으로 이동",
+  "profile": "프로필",
+  "account": "계정 설정",
+  "favorites": "즐겨찾기",
+  "reservations": "예약관리",
+  "reviews": "리뷰관리",
+  "settings": "설정"
 }

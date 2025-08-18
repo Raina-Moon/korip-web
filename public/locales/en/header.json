@@ -4,5 +4,12 @@
   "logoutButton": "Logout",
   "adminButton": "Go to Admin",
   "profileButton": "Go to Profile",
-  "greetingInline": "Hello, {{nickname}}"
+  "greetingInline": "Hello, {{nickname}}",
+  "home": "Home",
+  "profile": "Profile",
+  "account": "Account",
+  "favorites": "Favorites",
+  "reservations": "Reservations",
+  "reviews": "Reviews",
+  "settings": "Settings"
 }
