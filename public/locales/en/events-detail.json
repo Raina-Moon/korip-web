@@ -1,4 +1,6 @@
 {
-    "backToList": "Back to List",
-    "eventNotFound": "Event not found."
+  "backToList": "Back to List",
+  "eventNotFound": "Event not found.",
+  "nextArticle": "Next",
+  "prevArticle": "Prev"
 }
