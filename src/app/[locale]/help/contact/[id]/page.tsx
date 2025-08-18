@@ -93,7 +93,7 @@ export default function ContactDetailPage() {
           </div>
 
           <section className="rounded-xl border p-4">
-            <div className="text-sm font-semibold text-gray-500 mb-2">Q</div>
+            <div className="text-sm font-semibold text-primary-700 mb-2">Q</div>
             <div className="prose whitespace-pre-wrap break-words">
               {ticket.question}
             </div>
