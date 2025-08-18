@@ -183,6 +183,15 @@ const SideMenu: React.FC<SideMenuProps> = ({
             </div>
           )}
 
+          {user?.role === "ADMIN" && (
+            <button
+              onClick={() => handleNavigation("/admin")}
+              className="w-full bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary-700 transition"
+            >
+              관리자 페이지
+            </button>
+          )}
+
           <div className="pt-6 border-t border-gray-200">
             <button
               onClick={() => handleNavigation("/")}
@@ -192,16 +201,14 @@ const SideMenu: React.FC<SideMenuProps> = ({
               {t("home")}
             </button>
           </div>
-        </div>
 
-        {user && (
-          <>
-            <div className="rounded-xl border border-gray-200 overflow-hidden bg-[#FAFAFA]">
+          {user && (
+            <>
               <button
                 onClick={() => setProfileOpen((v) => !v)}
                 aria-expanded={profileOpen}
                 aria-controls="profile-submenu"
-                className="w-full flex items-center justify-between px-3 py-3 hover:bg-white transition text-sm"
+                className="pt-6 w-full flex items-center justify-between px-3 py-3 text-sm border-t border-gray-200 hover:bg-white transition"
               >
                 <span className="flex items-center gap-2 text-gray-800">
                   <User className="h-5 w-5 text-primary-800" />
@@ -259,18 +266,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
                   {t("settings", { defaultValue: "Settings" })}
                 </button>
               </div>
-            </div>
-
-            {user.role === "ADMIN" && (
-              <button
-                onClick={() => handleNavigation("/admin")}
-                className="w-full bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary-700 transition"
-              >
-                {t("adminPage")}
-              </button>
-            )}
-          </>
-        )}
+            </>
+          )}
+        </div>
 
         <div className="rounded-xl border border-gray-200 overflow-hidden bg-[#FAFAFA]">
           <button
