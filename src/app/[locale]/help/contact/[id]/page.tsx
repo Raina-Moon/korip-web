@@ -1,4 +1,3 @@
-// app/[locale]/help/contact/[id]/page.tsx
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -70,7 +69,7 @@ export default function ContactDetailPage() {
         onClick={() => router.push(backUrl)}
         className="text-sm text-gray-600 hover:underline mb-6"
       >
-        ← {t("common.cancel")}
+        ← {t("common.back")}
       </button>
 
       {isLoading || isFetching ? (
