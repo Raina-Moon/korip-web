@@ -119,7 +119,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
         `}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        <div className="flex items-center justify-between pb-4 border-b border-gray-200 shrink-0 pr-2">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-200 shrink-0 pr-2">
           <h2 className="text-base font-semibold text-primary-900">Menu</h2>
           <button
             onClick={onClose}
