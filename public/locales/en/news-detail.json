@@ -1,4 +1,6 @@
 {
   "backToList": "Back to List",
-  "newsNotFound": "News not found."
+  "newsNotFound": "News not found.",
+  "nextArticle": "Next",
+  "prevArticle": "Prev"
 }
