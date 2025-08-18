@@ -8,18 +8,7 @@ import { useAppSelector } from "@/lib/store/hooks";
 import toast from "react-hot-toast";
 import { useGetSupportByIdQuery } from "@/lib/support/supportApi";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-
-type Ticket = {
-  id: number;
-  title?: string;      
-  name?: string;       
-  question: string;
-  answer?: string | null;
-  status: "PENDING" | "ANSWERED";
-  createdAt: string;
-  updatedAt: string;
-  answeredAt?: string | null;
-};
+import { Support } from "@/types/support";
 
 export default function ContactDetailPage() {
   const { t } = useTranslation("contact");
@@ -43,12 +32,9 @@ export default function ContactDetailPage() {
     }
   }, [user, router, loginUrl, t]);
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    error,
-  } = useGetSupportByIdQuery(idNum, { skip: !user || Number.isNaN(idNum) });
+  const { data, isLoading, isFetching, error } = useGetSupportByIdQuery(idNum, {
+    skip: !user || Number.isNaN(idNum),
+  });
 
   useEffect(() => {
     const e = error as FetchBaseQueryError | undefined;
@@ -60,8 +46,13 @@ export default function ContactDetailPage() {
     }
   }, [error, router, loginUrl, t]);
 
-  const ticket = data as Ticket | undefined;
-  const title = ticket?.title || ticket?.name || t("support.detailTitle");
+  const contact = data as Support | undefined;
+  const title = contact?.name || t("support.detailTitle");
+
+  const answerForUser =
+    contact?.originalLang === "EN"
+      ? contact?.answerEn ?? contact?.answer ?? ""
+      : contact?.answer ?? "";
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4">
@@ -74,7 +65,7 @@ export default function ContactDetailPage() {
 
       {isLoading || isFetching ? (
         <div className="text-gray-600">{t("loading")}</div>
-      ) : !ticket ? (
+      ) : !contact ? (
         <div className="text-gray-600">{t("support.notFound")}</div>
       ) : (
         <div className="space-y-6">
@@ -83,37 +74,37 @@ export default function ContactDetailPage() {
             <span
               className={
                 "text-xs px-2 py-1 rounded border shrink-0 " +
-                (ticket.status === "ANSWERED"
+                (contact.status === "ANSWERED"
                   ? "bg-green-50 text-green-700 border-green-200"
                   : "bg-amber-50 text-amber-700 border-amber-200")
               }
             >
-              {t(`support.status.${ticket.status.toLowerCase()}`)}
+              {t(`support.status.${contact.status.toLowerCase()}`)}
             </span>
           </div>
 
           <section className="rounded-xl border p-4">
             <div className="text-sm font-semibold text-primary-700 mb-2">Q</div>
             <div className="prose whitespace-pre-wrap break-words">
-              {ticket.question}
+              {contact.question}
             </div>
             <div className="text-xs text-gray-400 mt-2">
               {t("support.submittedAt")}:{" "}
-              {new Date(ticket.createdAt).toLocaleString()}
+              {new Date(contact.createdAt).toLocaleString()}
             </div>
           </section>
 
           <section className="rounded-xl border p-4">
             <div className="text-sm font-semibold text-gray-500 mb-2">A</div>
-            {ticket.answer ? (
+            {answerForUser ? (
               <>
                 <div className="prose whitespace-pre-wrap break-words">
-                  {ticket.answer}
+                  {answerForUser}
                 </div>
                 <div className="text-xs text-gray-400 mt-2">
                   {t("support.answeredAt")}:{" "}
-                  {ticket.answeredAt
-                    ? new Date(ticket.answeredAt).toLocaleString()
+                  {contact.answeredAt
+                    ? new Date(contact.answeredAt).toLocaleString()
                     : "-"}
                 </div>
               </>

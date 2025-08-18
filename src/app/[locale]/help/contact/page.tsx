@@ -11,17 +11,7 @@ import {
   useCreateSupportMutation,
 } from "@/lib/support/supportApi";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-
-type SupportItem = {
-  id: number;
-  name: string;
-  question: string;
-  answer?: string | null;
-  status: "PENDING" | "ANSWERED";
-  createdAt: string;
-  updatedAt: string;
-  answeredAt?: string | null;
-};
+import { Support } from "@/types/support";
 
 const ContactListPage = () => {
   const { t } = useTranslation("contact");
@@ -34,7 +24,7 @@ const ContactListPage = () => {
 
   const redirected = useRef(false);
   const loginUrl = `/${locale}/login?next=${encodeURIComponent(
-    `/${locale}/help/support`
+    `/${locale}/help/contact`
   )}`;
 
   useEffect(() => {
@@ -60,7 +50,7 @@ const ContactListPage = () => {
     }
   }, [error, router, loginUrl, t]);
 
-  const list = (data?.items ?? []) as SupportItem[];
+  const list = (data?.items ?? []) as Support[];
 
   const [createSupport, { isLoading: creating }] = useCreateSupportMutation();
 
@@ -109,39 +99,46 @@ const ContactListPage = () => {
         <div className="text-gray-600">{t("support.empty")}</div>
       ) : (
         <ul className="divide-y rounded-lg border">
-          {list.map((it) => (
-            <li
-              key={it.id}
-              className="p-4 cursor-pointer hover:bg-gray-50"
-              onClick={() => router.push(`/${locale}/help/contact/${it.id}`)}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="font-medium line-clamp-1">{it.name}</div>
-                <span
-                  className={
-                    "text-xs px-2 py-1 rounded border shrink-0 " +
-                    (it.status === "ANSWERED"
-                      ? "bg-green-50 text-green-700 border-green-200"
-                      : "bg-amber-50 text-amber-700 border-amber-200")
-                  }
-                >
-                  {t(`support.status.${it.status.toLowerCase()}`)}
-                </span>
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                {new Date(it.createdAt).toLocaleString()}
-              </div>
-              {it.answer ? (
-                <div className="text-sm text-gray-700 mt-2 line-clamp-2">
-                  {t("support.answerPreview")} {it.answer}
+          {list.map((it) => {
+            const answerForUser =
+              it.originalLang === "EN"
+                ? it.answerEn ?? it.answer ?? ""
+                : it.answer ?? "";
+
+            return (
+              <li
+                key={it.id}
+                className="p-4 cursor-pointer hover:bg-gray-50"
+                onClick={() => router.push(`/${locale}/help/contact/${it.id}`)}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="font-medium line-clamp-1">{it.name}</div>
+                  <span
+                    className={
+                      "text-xs px-2 py-1 rounded border shrink-0 " +
+                      (it.status === "ANSWERED"
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : "bg-amber-50 text-amber-700 border-amber-200")
+                    }
+                  >
+                    {t(`support.status.${it.status.toLowerCase()}`)}
+                  </span>
                 </div>
-              ) : (
-                <div className="text-sm text-gray-500 mt-2">
-                  {t("support.waitingForAnswer")}
+                <div className="text-xs text-gray-500 mt-1">
+                  {new Date(it.createdAt).toLocaleString()}
                 </div>
-              )}
-            </li>
-          ))}
+                {answerForUser ? (
+                  <div className="text-sm text-gray-700 mt-2 line-clamp-2">
+                    {t("support.answerPreview")} {answerForUser}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500 mt-2">
+                    {t("support.waitingForAnswer")}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
 
